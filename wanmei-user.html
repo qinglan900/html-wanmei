@@ -60,8 +60,8 @@
         .data-table th { padding: 12px 8px; font-weight: 600; font-size: 14px; vertical-align: middle; }
         .data-table td { padding: 12px 8px; font-size: 14px; vertical-align: middle; }
         .subnav-item { cursor: pointer; transition: background-color 0.2s ease; font-size: 14px; }
-        .subnav-item:hover { background-color: #374151; }
-        .subnav-item.active { background-color: #FF6B35; color: white; padding-left: 1rem; }
+        .subnav-item:hover { background-color: #d0d0d0; }
+        .subnav-item.active { color: rgba(26, 188, 156, 0.8); }
         .modal-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.5); z-index: 999; display: flex; align-items: flex-start; justify-content: center; padding: 1rem; }
         .modal-overlay.hidden { display: none; }
         .modal-container { background: white; border-radius: 3px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
@@ -76,6 +76,13 @@
         .tag-capsule { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 12px; font-size: 12px; margin: 2px; }
         .tag-auto { background-color: #EFF6FF; color: #3B82F6; }
         .tag-manual { background-color: #FFF7E6; color: #F59E0B; }
+        .tag-remove-btn { margin-left: 4px; background: none; border: none; color: #F59E0B; cursor: pointer; font-size: 14px; line-height: 1; padding: 0 2px; opacity: 0.7; transition: opacity 0.15s; }
+        .tag-remove-btn:hover { opacity: 1; }
+        .tag-add-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 12px; border: 1px dashed #D1D5DB; background: transparent; color: #9CA3AF; cursor: pointer; margin: 2px; transition: all 0.15s; }
+        .tag-add-btn:hover { border-color: #F59E0B; color: #F59E0B; background: #FFF7E6; }
+        .add-tag-dropdown { position: absolute; top: 100%; left: 0; z-index: 10; margin-top: 4px; background: white; border: 1px solid #E5E7EB; border-radius: 3px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 160px; padding: 4px 0; }
+        .add-tag-item { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; transition: background 0.1s; }
+        .add-tag-item:hover { background-color: #FFF7E6; }
         .condition-item { padding: 8px 12px; cursor: pointer; border-radius: 3px; font-size: 13px; transition: all 0.15s; }
         .condition-item:hover { background-color: #FFF7E6; color: #FF6B35; }
         .condition-item.selected { background-color: #FF6B35; color: white; }
@@ -95,18 +102,14 @@
 </head>
 <body class="bg-neutral-100 min-h-screen">
     <div class="flex min-h-screen">
-        <aside class="w-36 bg-neutral-800 text-neutral-300 flex-shrink-0 flex flex-col">
-            <div class="px-4 py-4 border-b border-neutral-700">
-                <div class="text-white font-bold text-sm">皖美e行</div>
-                <div class="text-xs text-neutral-400 mt-1">用户中心</div>
-            </div>
+        <aside class="w-36 bg-[#e8e8e8] flex-shrink-0 flex flex-col border-r border-[#d8d8d8]">
             <nav class="flex-1 py-2">
-                <div class="px-4 py-2 text-xs text-neutral-500 uppercase tracking-wider">会员管理</div>
-                <div id="subnav-member-list" class="subnav-item active px-4 py-2" onclick="switchSubnav('member-list');showPage('member-list')">会员列表</div>
-                <div id="subnav-member-level" class="subnav-item px-4 py-2" onclick="switchSubnav('member-level');showPage('member-level')">会员等级管理</div>
-                <div id="subnav-growth-query" class="subnav-item px-4 py-2" onclick="switchSubnav('growth-query');showPage('growth-query')">成长值管理</div>
-                <div class="px-4 py-2 text-xs text-neutral-500 uppercase tracking-wider mt-2">标签管理</div>
-                <div id="subnav-tag-management" class="subnav-item px-4 py-2" onclick="switchSubnav('tag-management');showPage('tag-management')">标签列表</div>
+                <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">会员管理</div>
+                <div id="subnav-member-list" class="subnav-item active block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('member-list');showPage('member-list')"><span class="font-semibold">·</span><span> 会员列表</span></div>
+                <div id="subnav-member-level" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('member-level');showPage('member-level')"><span class="font-semibold">·</span><span> 会员等级管理</span></div>
+                <div id="subnav-growth-query" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('growth-query');showPage('growth-query')"><span class="font-semibold">·</span><span> 成长值管理</span></div>
+                <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5] mt-2">标签管理</div>
+                <div id="subnav-tag-management" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('tag-management');showPage('tag-management')"><span class="font-semibold">·</span><span> 标签列表</span></div>
             </nav>
         </aside>
 
@@ -176,7 +179,7 @@
                             </div>
                         </div>
                         <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
-                            <button class="btn btn-batch-action btn-md" onclick="openSetTagsBatch()">批量设置标签</button>
+                            <button class="btn btn-batch-action btn-md batch-action-btn" disabled onclick="openSetTagsBatch()">批量设置标签</button>
                         </div>
                         <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
                             <table class="data-table w-full">
@@ -452,10 +455,7 @@
                         </div>
                     </div>
                     <div class="bg-white rounded border border-neutral-200 p-6 mb-3">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-sm font-bold text-neutral-800">标签信息</h3>
-                            <button class="btn btn-primary btn-sm edit-only hidden" onclick="showManageTagsModal()">设置标签</button>
-                        </div>
+                        <h3 class="text-sm font-bold text-neutral-800 mb-4">标签信息</h3>
                         <div class="flex gap-8">
                             <div class="flex-1">
                                 <div class="text-xs text-neutral-500 mb-2">自动标签</div>
@@ -463,7 +463,20 @@
                             </div>
                             <div class="flex-1">
                                 <div class="text-xs text-neutral-500 mb-2">手动标签</div>
-                                <div><span class="tag-capsule tag-manual">VIP客户</span></div>
+                                <div class="flex flex-wrap items-center gap-1">
+                                    <span class="tag-capsule tag-manual edit-only hidden" data-tag="VIP客户" data-original="true">VIP客户 <button class="tag-remove-btn" onclick="removeManualTag(this)" title="移除标签">&times;</button></span>
+                                    <!-- 新增标签按钮 -->
+                                    <div class="relative edit-only hidden" id="add-tag-wrapper">
+                                        <button class="tag-add-btn" onclick="toggleAddTagDropdown()" title="新增标签">
+                                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                        </button>
+                                        <div id="add-tag-dropdown" class="add-tag-dropdown hidden">
+                                            <label class="add-tag-item"><input type="checkbox" class="add-tag-checkbox" value="重点跟进" onchange="addManualTag(this)"> 重点跟进</label>
+                                            <label class="add-tag-item"><input type="checkbox" class="add-tag-checkbox" value="投诉用户" onchange="addManualTag(this)"> 投诉用户</label>
+                                            <label class="add-tag-item"><input type="checkbox" class="add-tag-checkbox" value="待回访" onchange="addManualTag(this)"> 待回访</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1188,25 +1201,25 @@
                                     编辑时不可切换条件类型
                                 </div>
                                 <div class="flex gap-4">
-                                    <div class="w-48 border border-neutral-200 rounded p-2 flex-shrink-0">
+                                    <div class="w-48 border border-neutral-200 rounded p-2 flex-shrink-0 opacity-50 pointer-events-none">
                                         <div class="text-xs text-neutral-500 mb-2 font-semibold px-2">会员行为</div>
-                                        <div class="condition-item selected" data-type="edit" data-key="consumption_amount">累计消费金额</div>
+                                        <div class="condition-item selected disabled" data-type="edit" data-key="consumption_amount">累计消费金额</div>
                                     </div>
                                     <div class="flex-1 border border-neutral-200 rounded p-4">
                                         <div id="tag-edit-condition-form">
                                             <div class="grid grid-cols-2 gap-4">
                                                 <div>
                                                     <label class="text-sm text-neutral-600 mb-1 block">最小值 <span class="text-error">*</span></label>
-                                                    <input type="number" value="1000" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus">
+                                                    <input type="number" value="1000" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" oninput="updateConditionMeaning('edit')">
                                                 </div>
                                                 <div>
                                                     <label class="text-sm text-neutral-600 mb-1 block">最大值</label>
-                                                    <input type="number" placeholder="选填" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus">
+                                                    <input type="number" placeholder="选填" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" oninput="updateConditionMeaning('edit')">
                                                 </div>
                                             </div>
                                             <div class="mt-2 text-xs text-neutral-500">单位：元</div>
                                         </div>
-                                        <div id="tag-edit-condition-meaning" class="mt-3 text-sm text-primary font-medium">累计消费金额≥ 1000元</div>
+                                        <div id="tag-edit-condition-meaning" class="mt-3 text-sm text-primary font-medium"></div>
                                     </div>
                                 </div>
                             </div>
@@ -1309,27 +1322,29 @@
         </div>
     </div>
 
-    <!-- 弹窗4: 管理标签 -->
-    <div id="modal-manage-tags" class="modal-overlay hidden" onclick="if(event.target===this)closeModal('modal-manage-tags')">
-        <div class="modal-container max-w-md w-full my-8">
-            <div class="flex justify-between items-center px-4 py-4 border-b border-neutral-200">
-                <h3 class="text-base font-bold">管理标签</h3>
-                <button class="close-modal" onclick="closeModal('modal-manage-tags')"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <!-- 抽屉：批量设置标签 -->
+    <div id="drawer-set-tags" class="drawer-overlay fixed inset-0 bg-black/50 z-[999] hidden" onclick="closeSetTagsDrawer()">
+        <div class="drawer-container fixed top-0 right-0 h-full bg-white shadow-2xl w-[400px] transform transition-transform duration-300 ease-in-out translate-x-full" onclick="event.stopPropagation()">
+            <!-- 标题区 -->
+            <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
+                <h2 class="text-base font-bold text-neutral-900">批量设置标签</h2>
+                <button onclick="closeSetTagsDrawer()" class="text-neutral-500 hover:text-neutral-700 cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
-            <div class="p-5">
-                <div class="mb-4">
-                    <label class="text-sm text-neutral-600 mb-2 block">已有手动标签</label>
-                    <div id="existing-manual-tags" class="flex flex-wrap gap-1">
-                        <span class="tag-capsule tag-manual">VIP客户 <button class="ml-1 text-yellow-400 hover:text-yellow-600" onclick="removeExistingTag(this,'VIP客户')">&times;</button></span>
-                    </div>
-                    <div id="no-manual-tag-hint" class="text-xs text-neutral-400 hidden">暂无手动标签</div>
+            <!-- 内容区（可滚动） -->
+            <div class="flex-1 overflow-y-auto px-5 py-4" style="max-height: calc(100vh - 140px);">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm text-neutral-700">已选择</span>
+                    <span class="text-base font-semibold text-neutral-900"><span id="drawer-batch-count">0</span> 位会员</span>
                 </div>
                 <div>
-                    <label class="text-sm text-neutral-600 mb-2 block">选择手动标签</label>
-                    <div id="available-tags-list" class="space-y-2 border border-neutral-200 rounded p-3 max-h-48 overflow-y-auto">
-                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="manage-tag-checkbox" value="重点跟进"> 重点跟进</label>
-                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="manage-tag-checkbox" value="投诉用户"> 投诉用户</label>
-                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="manage-tag-checkbox" value="待回访"> 待回访</label>
+                    <label class="text-sm text-neutral-700 mb-2 block">选择手动标签</label>
+                    <div class="space-y-2 border border-neutral-200 rounded p-3 max-h-64 overflow-y-auto">
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="batch-tag-checkbox" value="VIP客户"> VIP客户</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="batch-tag-checkbox" value="重点跟进"> 重点跟进</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="batch-tag-checkbox" value="投诉用户"> 投诉用户</label>
+                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="batch-tag-checkbox" value="待回访"> 待回访</label>
                     </div>
                 </div>
                 <div class="mt-4 pt-3 border-t border-neutral-200 text-xs text-neutral-500 flex items-center gap-1">
@@ -1337,36 +1352,10 @@
                     仅展示手动标签，自动标签由系统自动分配
                 </div>
             </div>
-            <div class="flex justify-end gap-3 px-4 py-4 bg-neutral-50 border-t border-neutral-200">
-                <button class="btn btn-secondary btn-md" onclick="closeModal('modal-manage-tags')">取 消</button>
-                <button class="btn btn-primary btn-md" onclick="saveManageTags()">确 认</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 弹窗7: 批量设置标签 -->
-    <div id="modal-set-tags" class="modal-overlay hidden" onclick="if(event.target===this)closeModal('modal-set-tags')">
-        <div class="modal-container max-w-md w-full my-8">
-            <div class="flex justify-between items-center px-4 py-4 border-b border-neutral-200">
-                <h3 class="text-base font-bold">批量设置标签</h3>
-                <button class="close-modal" onclick="closeModal('modal-set-tags')"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-5 space-y-4">
-                <div class="text-sm text-neutral-600">已选中 <span id="batch-selected-count" class="font-bold text-primary">0</span> 位会员</div>
-                <div>
-                    <label class="text-sm text-neutral-600 mb-1 block">选择标签 <span class="text-error">*</span></label>
-                    <select id="batch-tag-select" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus">
-                        <option value="">请选择标签</option>
-                        <option value="VIP客户">VIP客户</option>
-                        <option value="重点跟进">重点跟进</option>
-                        <option value="投诉用户">投诉用户</option>
-                        <option value="待回访">待回访</option>
-                    </select>
-                </div>
-            </div>
-            <div class="flex justify-end gap-3 px-4 py-4 bg-neutral-50 border-t border-neutral-200">
-                <button class="btn btn-secondary btn-md" onclick="closeModal('modal-set-tags')">取 消</button>
-                <button class="btn btn-primary btn-md" onclick="saveSetTags()">确 认</button>
+            <!-- 底部按钮区 -->
+            <div class="px-5 py-4 border-t border-neutral-200 bg-neutral-50 flex justify-end gap-3">
+                <button class="btn btn-secondary btn-md" onclick="closeSetTagsDrawer()">取 消</button>
+                <button class="btn btn-primary btn-md" onclick="saveBatchSetTags()">确 认</button>
             </div>
         </div>
     </div>
@@ -1414,6 +1403,12 @@
             var target = document.getElementById('page-' + pageId);
             if (target) target.classList.add('active');
             if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // 编辑标签页面初始化
+            if (pageId === 'tag-edit') {
+                currentSelectedCondition.edit = 'consumption_amount';
+                updateConditionMeaning('edit');
+            }
         }
 
         function switchSubnav(navId) {
@@ -1425,6 +1420,29 @@
         function showMemberDetail(mode) {
             showPage('member-detail');
             var isEdit = mode === 'edit';
+
+            // 重置所有编辑态输入框的值
+            document.querySelectorAll('.member-field-edit input, .member-field-edit select, .member-field-edit textarea').forEach(function(el) {
+                if (el.type === 'checkbox' || el.type === 'radio') {
+                    el.checked = false;
+                } else if (el.tagName === 'SELECT') {
+                    el.selectedIndex = 0;
+                } else {
+                    el.value = '';
+                }
+            });
+
+            // 重置手动标签区域：移除所有动态新增的标签胶囊
+            var manualTagContainer = document.querySelector('#page-member-detail .flex-wrap');
+            if (manualTagContainer) {
+                var allManualTags = manualTagContainer.querySelectorAll('.tag-capsule.tag-manual');
+                allManualTags.forEach(function(tag) {
+                    if (!tag.getAttribute('data-original')) {
+                        tag.remove();
+                    }
+                });
+            }
+
             var title = document.getElementById('member-detail-title');
             if (title) title.textContent = isEdit ? '会员详情 - 编辑' : '会员详情 - 查看';
             document.querySelectorAll('.member-field').forEach(function(el) {
@@ -1482,6 +1500,7 @@
                 document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(function(m) {
                     m.classList.add('hidden');
                 });
+                closeSetTagsDrawer();
             }
         });
 
@@ -1524,8 +1543,8 @@
             var checkboxes = document.querySelectorAll('.' + prefix + '-checkbox');
             var count = 0;
             checkboxes.forEach(function(cb) { if (cb.checked) count++; });
-            var countEl = document.getElementById('batch-selected-count');
-            if (countEl) countEl.textContent = count;
+            var batchButtons = document.querySelectorAll('.batch-action-btn');
+            batchButtons.forEach(function(btn) { btn.disabled = count === 0; });
         }
 
         function toggleTagDropdown() {
@@ -1754,40 +1773,90 @@
             showToast('验证码已发送', 'success');
         }
 
-        function showManageTagsModal() {
-            openModal('modal-manage-tags');
+        function toggleAddTagDropdown() {
+            var dropdown = document.getElementById('add-tag-dropdown');
+            if (dropdown) dropdown.classList.toggle('hidden');
+            updateAddTagDropdown();
         }
 
-        function removeExistingTag(btn, tagName) {
+        function updateAddTagDropdown() {
+            var existingTags = [];
+            document.querySelectorAll('.tag-capsule.tag-manual').forEach(function(el) {
+                var tag = el.getAttribute('data-tag') || el.textContent.replace(/\s*×\s*/, '').trim();
+                existingTags.push(tag);
+            });
+            var items = document.querySelectorAll('.add-tag-item');
+            items.forEach(function(item) {
+                var cb = item.querySelector('.add-tag-checkbox');
+                if (cb) {
+                    item.style.display = existingTags.indexOf(cb.value) >= 0 ? 'none' : 'flex';
+                }
+            });
+        }
+
+        function addManualTag(cb) {
+            if (!cb.checked) return;
+            var tagName = cb.value;
+            var wrapper = document.getElementById('add-tag-wrapper');
+            if (!wrapper) return;
+            var isEditMode = wrapper.classList.contains('hidden') === false;
+            var newTag = document.createElement('span');
+            newTag.className = 'tag-capsule tag-manual edit-only';
+            if (!isEditMode) newTag.classList.add('hidden');
+            newTag.setAttribute('data-tag', tagName);
+            newTag.innerHTML = tagName + ' <button class="tag-remove-btn" onclick="removeManualTag(this)" title="移除标签">&times;</button>';
+            wrapper.parentNode.insertBefore(newTag, wrapper);
+            cb.checked = false;
+            showToast('标签 "' + tagName + '" 已添加', 'success');
+        }
+
+        function removeManualTag(btn) {
             var capsule = btn.parentElement;
+            var tagName = capsule.getAttribute('data-tag') || capsule.textContent.replace(/\s*/, '').trim();
             if (capsule) capsule.remove();
+            updateAddTagDropdown();
+            showToast('标签 "' + tagName + '" 已移除', 'success');
         }
 
-        function saveManageTags() {
-            var checkboxes = document.querySelectorAll('.manage-tag-checkbox:checked');
-            var newTags = [];
-            checkboxes.forEach(function(cb) { newTags.push(cb.value); });
-            showToast('标签设置成功', 'success');
-            closeModal('modal-manage-tags');
-        }
+        document.addEventListener('click', function(e) {
+            var wrapper = document.getElementById('add-tag-wrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                var dropdown = document.getElementById('add-tag-dropdown');
+                if (dropdown) dropdown.classList.add('hidden');
+            }
+        });
 
         function openSetTagsBatch() {
             var checkboxes = document.querySelectorAll('.member-checkbox');
             var count = 0;
             checkboxes.forEach(function(cb) { if (cb.checked) count++; });
-            var countEl = document.getElementById('batch-selected-count');
+            if (count === 0) { showToast('请先选择要操作的会员', 'error'); return; }
+            var countEl = document.getElementById('drawer-batch-count');
             if (countEl) countEl.textContent = count;
-            openModal('modal-set-tags');
+            var batchTagCheckboxes = document.querySelectorAll('.batch-tag-checkbox');
+            batchTagCheckboxes.forEach(function(cb) { cb.checked = false; });
+            var overlay = document.getElementById('drawer-set-tags');
+            var container = overlay ? overlay.querySelector('.drawer-container') : null;
+            if (overlay) overlay.classList.remove('hidden');
+            if (container) { container.classList.remove('translate-x-full'); container.classList.add('translate-x-0'); }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        function saveSetTags() {
-            var select = document.getElementById('batch-tag-select');
-            if (!select || !select.value) {
-                showToast('请选择标签', 'error');
-                return;
+        function closeSetTagsDrawer() {
+            var overlay = document.getElementById('drawer-set-tags');
+            var container = overlay ? overlay.querySelector('.drawer-container') : null;
+            if (overlay && container) {
+                container.classList.remove('translate-x-0');
+                container.classList.add('translate-x-full');
+                setTimeout(function() { overlay.classList.add('hidden'); }, 300);
             }
+        }
+
+        function saveBatchSetTags() {
+            var checkedTags = document.querySelectorAll('.batch-tag-checkbox:checked');
+            if (checkedTags.length === 0) { showToast('请选择至少一个标签', 'error'); return; }
+            closeSetTagsDrawer();
             showToast('批量设置标签成功', 'success');
-            closeModal('modal-set-tags');
         }
 
         function toggleMemberStatus(btn) {
@@ -1834,7 +1903,11 @@
             }
         });
 
-        lucide.createIcons();
+        function initMemberSelectAll() {
+            updateBatchActions('member');
+        }
+
+        lucide.createIcons(); initMemberSelectAll();
     </script>
 </body>
 </html>

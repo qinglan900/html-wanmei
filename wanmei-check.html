@@ -73,8 +73,8 @@
         }
 
         function handleExport() { showToast('导出任务已提交，请稍后查看', 'success'); }
-        function handleAppealSubmit() { showToast('申诉提交成功', 'success'); setTimeout(function() { showPage('appeal'); switchSubnav('appeal'); }, 1000); }
-        function handleAppealAudit() { showToast('审核提交成功', 'success'); setTimeout(function() { showPage('appeal'); switchSubnav('appeal'); }, 1000); }
+        function handleAppealSubmit() { showToast('账单复核提交成功', 'success'); setTimeout(function() { showPage('appeal'); switchSubnav('appeal'); }, 1000); }
+        function handleAppealAudit() { showToast('复核审核提交成功', 'success'); setTimeout(function() { showPage('appeal'); switchSubnav('appeal'); }, 1000); }
         
         var payOrderData = {
             'PAY202605180001': { orderNo: 'PAY202605180001', bizNo: 'OIL20260518001', merchant: '城东加油站', amount: '300.00', channel: '平台自有', status: '已支付', statusCls: 'status-success', time: '2026-05-18 10:23:45', txn: 'ICBC123456', refunds: [], logs: ['[2026-05-18 10:23:45] 支付订单创建并完成支付'] },
@@ -237,7 +237,7 @@
             });
 
             document.getElementById('batch-refund-count').textContent = count;
-            document.getElementById('batch-refund-total').value = totalAmount.toFixed(2);
+            document.getElementById('batch-refund-total').textContent = totalAmount.toFixed(2);
             document.getElementById('batch-refund-reason').value = '';
 
             showModal('modal-batch-refund');
@@ -249,142 +249,325 @@
             showToast('批量退款申请已提交，共 ' + document.getElementById('batch-refund-count').textContent + ' 笔订单', 'success');
         }
         
-        function showAppealDetail(status) {
-            var auditSection = document.getElementById('appeal-audit-section');
-            var auditPassInfo = document.getElementById('appeal-audit-pass-info');
-            var auditRejectInfo = document.getElementById('appeal-audit-reject-info');
-            var appealStatusBadge = document.getElementById('appeal-status-badge');
+        var appealDrawerData = {
+            'pending': {
+                title: '账单复核详情',
+                bills: [{ no: 'JS-20260514-001', date: '2026-05-13', amount: '¥15,600.00' }],
+                reason: '账单JS-20260514-001中部分券码核销金额与实际不符，5月13日10:23的加油订单实际核销金额应为¥150.00而非¥100.00，请核实调整。',
+                amount: '+¥500.00',
+                attachments: ['凭证1.jpg', '凭证2.pdf'],
+                applicant: '张三（商户管理员）',
+                applyTime: '2026-05-14 09:30',
+                status: '待审核',
+                statusCls: 'status-warning',
+                mode: 'view'
+            },
+            'audit': {
+                title: '账单复核审核',
+                bills: [{ no: 'JS-20260514-001', date: '2026-05-13', amount: '¥15,600.00' }],
+                reason: '账单JS-20260514-001中部分券码核销金额与实际不符，5月13日10:23的加油订单实际核销金额应为¥150.00而非¥100.00，请核实调整。',
+                amount: '+¥500.00',
+                attachments: ['凭证1.jpg', '凭证2.pdf'],
+                applicant: '张三（商户管理员）',
+                applyTime: '2026-05-14 09:30',
+                status: '待审核',
+                statusCls: 'status-warning',
+                mode: 'audit'
+            },
+            'approved': {
+                title: '账单复核详情',
+                bills: [{ no: 'JS-20260512-003', date: '2026-05-11', amount: '¥4,200.00' }],
+                reason: '部分订单重复结算，申请扣减退款金额。',
+                amount: '-¥300.00',
+                attachments: ['退款凭证.pdf'],
+                applicant: '李五（驿达管理员）',
+                applyTime: '2026-05-13 10:00',
+                status: '审核通过',
+                statusCls: 'status-success',
+                mode: 'view',
+                auditResult: 'pass',
+                auditAmount: '-¥300.00',
+                auditDate: '2026-05-14',
+                auditNote: '经核实，确实存在重复结算，同意扣减。',
+                auditAuditor: '李四（平台管理员）',
+                auditTime: '2026-05-13 16:20'
+            },
+            'approved2': {
+                title: '账单复核详情',
+                bills: [
+                    { no: 'JS-20260510-001', date: '2026-05-09', amount: '¥21,500.00' },
+                    { no: 'JS-20260510-002', date: '2026-05-09', amount: '¥8,900.00' }
+                ],
+                reason: '多个账单中存在券码面额核算偏低的情况，申请补差。',
+                amount: '+¥1,200.00',
+                attachments: ['核算明细.xlsx', '差异对比.pdf'],
+                applicant: '张三（商户管理员）',
+                applyTime: '2026-05-11 14:30',
+                status: '审核通过',
+                statusCls: 'status-success',
+                mode: 'view',
+                auditResult: 'pass',
+                auditAmount: '+¥1,200.00',
+                auditDate: '2026-05-13',
+                auditNote: '经核实，券码面额确实存在差异，同意补差。',
+                auditAuditor: '李四（平台管理员）',
+                auditTime: '2026-05-12 09:15'
+            },
+            'rejected': {
+                title: '账单复核详情',
+                bills: [{ no: 'JS-20260511-002', date: '2026-05-10', amount: '¥8,900.00' }],
+                reason: '订单金额与实际消费不符，申请调账。',
+                amount: '+¥200.00',
+                attachments: [],
+                applicant: '王六（中石化管理员）',
+                applyTime: '2026-05-12 08:45',
+                status: '审核驳回',
+                statusCls: 'status-error',
+                mode: 'view',
+                auditResult: 'reject',
+                auditNote: '复核材料不足，无法核实差异金额。请补充完整交易凭证后重新提交复核申请。',
+                auditAuditor: '李四（平台管理员）',
+                auditTime: '2026-05-13 14:20'
+            }
+        };
 
-            if (auditSection) auditSection.style.display = 'none';
-            if (auditPassInfo) auditPassInfo.style.display = 'none';
-            if (auditRejectInfo) auditRejectInfo.style.display = 'none';
+        function openAppealDrawer(dataKey) {
+            var data = appealDrawerData[dataKey];
+            if (!data) return;
 
-            switch(status) {
-                case 'pending':
-                    if (appealStatusBadge) {
-                        appealStatusBadge.textContent = '待审核';
-                        appealStatusBadge.className = 'status-badge status-warning';
-                    }
-                    break;
-                case 'audit':
-                    if (auditSection) auditSection.style.display = 'block';
-                    if (appealStatusBadge) {
-                        appealStatusBadge.textContent = '待审核';
-                        appealStatusBadge.className = 'status-badge status-warning';
-                    }
-                    break;
-                case 'approved':
-                case 'approved2':
-                    if (auditPassInfo) auditPassInfo.style.display = 'block';
-                    if (appealStatusBadge) {
-                        appealStatusBadge.textContent = '审核通过';
-                        appealStatusBadge.className = 'status-badge status-success';
-                    }
-                    break;
-                case 'rejected':
-                    if (auditRejectInfo) auditRejectInfo.style.display = 'block';
-                    if (appealStatusBadge) {
-                        appealStatusBadge.textContent = '审核驳回';
-                        appealStatusBadge.className = 'status-badge status-error';
-                    }
-                    break;
+            var el;
+            el = document.getElementById('appeal-drawer-title'); if (el) el.textContent = data.title;
+            el = document.getElementById('appeal-drawer-reason'); if (el) el.textContent = data.reason;
+            el = document.getElementById('appeal-drawer-amount'); if (el) el.textContent = data.amount;
+            el = document.getElementById('appeal-drawer-applicant'); if (el) el.textContent = data.applicant;
+            el = document.getElementById('appeal-drawer-applyTime'); if (el) el.textContent = data.applyTime;
+            el = document.getElementById('appeal-drawer-status'); if (el) { el.textContent = data.status; el.className = 'status-badge ' + data.statusCls; }
+
+            var billsContainer = document.getElementById('appeal-drawer-bills');
+            if (billsContainer) {
+                billsContainer.innerHTML = '';
+                for (var i = 0; i < data.bills.length; i++) {
+                    var b = data.bills[i];
+                    billsContainer.innerHTML += '<div class="flex items-center gap-2 mb-1"><i data-lucide="file-text" class="w-4 h-4 text-neutral-400"></i><span class="text-sm font-medium">' + b.no + '</span><span class="text-xs text-neutral-400">' + b.date + '</span><span class="text-xs text-neutral-400">原结算金额：' + b.amount + '</span></div>';
+                }
             }
 
-            showPage('appeal-detail');
+            var attachContainer = document.getElementById('appeal-drawer-attachments');
+            if (attachContainer) {
+                attachContainer.innerHTML = '';
+                if (data.attachments.length === 0) {
+                    attachContainer.innerHTML = '<span class="text-sm text-neutral-400">无</span>';
+                } else {
+                    for (var j = 0; j < data.attachments.length; j++) {
+                        attachContainer.innerHTML += '<span class="text-sm text-primary cursor-pointer hover:underline">' + data.attachments[j] + '</span>';
+                    }
+                }
+            }
+
+            var auditForm = document.getElementById('appeal-drawer-audit-form');
+            var passInfo = document.getElementById('appeal-drawer-pass-info');
+            var rejectInfo = document.getElementById('appeal-drawer-reject-info');
+            var footer = document.getElementById('appeal-drawer-footer');
+
+            if (auditForm) auditForm.style.display = 'none';
+            if (passInfo) passInfo.style.display = 'none';
+            if (rejectInfo) rejectInfo.style.display = 'none';
+            if (footer) footer.style.display = 'none';
+
+            if (data.mode === 'audit') {
+                if (auditForm) auditForm.style.display = 'block';
+                if (footer) footer.style.display = 'flex';
+                // 审核模式：两列布局，右侧显示审核表单
+                var contentEl = document.getElementById('appeal-drawer-content');
+                if (contentEl) contentEl.className = 'grid grid-cols-2 gap-6';
+                var rightEl = document.getElementById('appeal-drawer-right');
+                if (rightEl) rightEl.style.display = '';
+            } else if (data.auditResult === 'pass') {
+                if (passInfo) passInfo.style.display = 'block';
+                el = document.getElementById('drawer-pass-amount'); if (el) el.textContent = data.auditAmount;
+                el = document.getElementById('drawer-pass-date'); if (el) el.textContent = data.auditDate;
+                el = document.getElementById('drawer-pass-note'); if (el) el.textContent = data.auditNote;
+                el = document.getElementById('drawer-pass-auditor'); if (el) el.textContent = data.auditAuditor;
+                el = document.getElementById('drawer-pass-time'); if (el) el.textContent = data.auditTime;
+                // 审核通过：两列布局，右侧显示审核结果
+                var contentEl2 = document.getElementById('appeal-drawer-content');
+                if (contentEl2) contentEl2.className = 'grid grid-cols-2 gap-6';
+                var rightEl2 = document.getElementById('appeal-drawer-right');
+                if (rightEl2) rightEl2.style.display = '';
+            } else if (data.auditResult === 'reject') {
+                if (rejectInfo) rejectInfo.style.display = 'block';
+                el = document.getElementById('drawer-reject-note'); if (el) el.textContent = data.auditNote;
+                el = document.getElementById('drawer-reject-auditor'); if (el) el.textContent = data.auditAuditor;
+                el = document.getElementById('drawer-reject-time'); if (el) el.textContent = data.auditTime;
+                // 审核驳回：两列布局，右侧显示驳回信息
+                var contentEl3 = document.getElementById('appeal-drawer-content');
+                if (contentEl3) contentEl3.className = 'grid grid-cols-2 gap-6';
+                var rightEl3 = document.getElementById('appeal-drawer-right');
+                if (rightEl3) rightEl3.style.display = '';
+            } else {
+                // 待审核查看模式：单列布局，隐藏右侧审核区域
+                var contentEl4 = document.getElementById('appeal-drawer-content');
+                if (contentEl4) contentEl4.className = 'grid grid-cols-1 gap-6';
+                var rightEl4 = document.getElementById('appeal-drawer-right');
+                if (rightEl4) rightEl4.style.display = 'none';
+            }
+
+            var drawer = document.getElementById('appeal-drawer');
+            if (drawer) drawer.classList.add('active');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeAppealDrawer() {
+            var drawer = document.getElementById('appeal-drawer');
+            if (drawer) drawer.classList.remove('active');
+        }
+
+        var adjustDrawerData = {
+            '中国石油安徽分公司': {
+                merchant: '中国石油安徽分公司',
+                total: '+¥500.00',
+                records: [
+                    { no: 'SS-20260514-001', amount: '+¥500.00', reason: '商品金额核算差异', date: '2026-05-14', auditor: '李四' }
+                ]
+            },
+            '驿达石化能源': {
+                merchant: '驿达石化能源',
+                total: '-¥300.00',
+                records: [
+                    { no: 'SS-20260513-001', amount: '-¥300.00', reason: '部分订单重复结算，申请扣减', date: '2026-05-14', auditor: '李四' }
+                ]
+            }
+        };
+
+        function openAdjustDrawer(tdEl) {
+            var row = tdEl.parentElement;
+            var merchantCell = row.querySelector('td:first-child');
+            var merchantName = merchantCell ? merchantCell.textContent.trim() : '';
+            var data = adjustDrawerData[merchantName];
+
+            var merchantEl = document.getElementById('adjust-drawer-merchant');
+            var totalEl = document.getElementById('adjust-drawer-total');
+            var tbody = document.getElementById('adjust-drawer-tbody');
+
+            if (merchantEl) merchantEl.textContent = merchantName;
+
+            if (data) {
+                if (totalEl) totalEl.textContent = data.total;
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    for (var i = 0; i < data.records.length; i++) {
+                        var r = data.records[i];
+                        var amtCls = r.amount.indexOf('-') >= 0 ? 'text-error' : 'text-success';
+                        tbody.innerHTML += '<tr class="border-b border-neutral-200 h-10 table-row"><td class="text-left"><a class="text-primary cursor-pointer hover:underline" onclick="openAppealDrawer(\'approved\')">' + r.no + '</a></td><td class="text-right font-semibold tabular-nums ' + amtCls + '">' + r.amount + '</td><td class="text-left">' + r.reason + '</td><td class="text-left">' + r.date + '</td><td class="text-left">' + r.auditor + '</td></tr>';
+                    }
+                }
+            } else {
+                if (totalEl) totalEl.textContent = '¥0.00';
+                if (tbody) tbody.innerHTML = '<tr class="border-b border-neutral-200 h-10"><td colspan="5" class="text-center text-neutral-400">无调账记录</td></tr>';
+            }
+
+            var drawer = document.getElementById('adjust-drawer');
+            if (drawer) drawer.style.display = 'flex';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeAdjustDrawer() {
+            var drawer = document.getElementById('adjust-drawer');
+            if (drawer) drawer.style.display = 'none';
+        }
+
+        function submitAppealAudit() {
+            closeAppealDrawer();
+            showToast('复核审核提交成功', 'success');
         }
         var merchantBillData = [
             { id: 'JS-20260514-001', merchant: '中国石油安徽分公司', date: '2026-05-13', genTime: '2026-05-14 02:35', coupons: 156, original: '¥17,550.00', originalNum: 17550, adjust: '+¥500.00', adjustNum: 500, final: '¥18,050.00', finalNum: 18050,
               adjustRecords: [{ appealNo: 'SS-20260514-001', amount: '+¥500.00', reason: '商品金额核算差异', time: '2026-05-14 15:30' }],
               distributors: [
-                  { name: '数科公司', activity: '活动A', amount: '¥5,460.00', ratio: '31.11%' },
-                  { name: '数科公司', activity: '活动B', amount: '¥3,900.00', ratio: '22.22%' },
-                  { name: '联网公司', activity: '活动C', amount: '¥3,120.00', ratio: '17.78%' },
-                  { name: '驿达集团', activity: '活动D', amount: '¥1,560.00', ratio: '8.89%' },
-                  { name: '交控集团', activity: '活动E', amount: '¥1,560.00', ratio: '8.89%' },
-                  { name: '平台运营方', activity: '平台发券', amount: '¥1,950.00', ratio: '11.11%' }
+                  { name: '皖通公司', activity: '皖通春日加油活动', amount: '¥5,460.00', ratio: '35.00%' },
+                  { name: '皖通公司', activity: '皖通高速出行活动', amount: '¥3,900.00', ratio: '25.00%' },
+                  { name: '皖通公司', activity: '皖通新能源充电活动', amount: '¥3,120.00', ratio: '20.00%' },
+                  { name: '皖通公司', activity: '皖通驿达服务区活动', amount: '¥1,560.00', ratio: '10.00%' },
+                  { name: '皖通公司', activity: '皖通交控能源活动', amount: '¥1,560.00', ratio: '10.00%' }
               ],
               details: [
-                  { seq: 1, orderNo: 'OD20260513001', code: 'QM20260513001', type: '加油', couponType: '积分兑换券', time: '2026-05-13 10:23', face: '¥100.00', amt: '¥100.00', share: '数科公司 ¥60.00 / 联网公司 ¥40.00', status: '已核销', statusCls: 'status-success' },
-                  { seq: 2, orderNo: 'OD20260513002', code: 'QM20260513002', type: '充电', couponType: '积分兑换券', time: '2026-05-13 11:45', face: '¥50.00', amt: '¥50.00', share: '数科公司 ¥30.00 / 联网公司 ¥20.00', status: '已核销', statusCls: 'status-success' },
-                  { seq: 3, orderNo: 'OD20260513003', code: 'QM20260513003', type: '加油', couponType: '平台发券', time: '2026-05-13 14:12', face: '¥200.00', amt: '¥200.00', share: '平台运营方 ¥200.00', status: '已核销', statusCls: 'status-success' },
-                  { seq: 4, orderNo: 'OD20260512001', code: 'QM20260512001', type: '洗车', couponType: '积分兑换券', time: '2026-05-12 16:30', face: '¥80.00', amt: '-¥80.00', share: '数科公司 -¥48.00 / 联网公司 -¥32.00', status: '已退货', statusCls: 'status-error' }
+                  { seq: 1, orderNo: 'OD20260513001', code: 'QM20260513001', type: '加油', time: '2026-05-13 10:23', face: '¥100.00', amt: '¥100.00', share: '皖通公司 ¥100.00', status: '已核销', statusCls: 'status-success' },
+                  { seq: 2, orderNo: 'OD20260513002', code: 'QM20260513002', type: '充电', time: '2026-05-13 11:45', face: '¥50.00', amt: '¥50.00', share: '皖通公司 ¥50.00', status: '已核销', statusCls: 'status-success' },
+                  { seq: 3, orderNo: 'OD20260512001', code: 'QM20260512001', type: '洗车', time: '2026-05-12 16:30', face: '¥80.00', amt: '-¥80.00', share: '皖通公司 -¥80.00', status: '已退货', statusCls: 'status-error' }
               ]
             },
             { id: 'JS-20260514-002', merchant: '中石化安徽分公司', date: '2026-05-13', genTime: '2026-05-14 02:36', coupons: 89, original: '¥8,900.00', originalNum: 8900, adjust: '¥0.00', adjustNum: 0, final: '¥8,900.00', finalNum: 8900,
               adjustRecords: [],
               distributors: [
-                  { name: '数科公司', activity: '活动A', amount: '¥5,340.00', ratio: '60.00%' },
-                  { name: '联网公司', activity: '活动B', amount: '¥3,560.00', ratio: '40.00%' }
+                  { name: '皖通公司', activity: '皖通春日加油活动', amount: '¥5,340.00', ratio: '60.00%' },
+                  { name: '皖通公司', activity: '皖通高速出行活动', amount: '¥3,560.00', ratio: '40.00%' }
               ],
               details: [
-                  { seq: 1, orderNo: 'OD20260513010', code: 'QM20260513010', type: '加油', couponType: '积分兑换券', time: '2026-05-13 09:15', face: '¥100.00', amt: '¥100.00', share: '数科公司 ¥60.00 / 联网公司 ¥40.00', status: '已核销', statusCls: 'status-success' },
-                  { seq: 2, orderNo: 'OD20260513011', code: 'QM20260513011', type: '加油', couponType: '积分兑换券', time: '2026-05-13 10:30', face: '¥200.00', amt: '¥200.00', share: '数科公司 ¥120.00 / 联网公司 ¥80.00', status: '已核销', statusCls: 'status-success' }
-              ]
-            },
-            { id: 'JS-20260514-004', merchant: '中国石油安徽分公司', date: '2026-05-14', genTime: '2026-05-15 02:35', coupons: 45, original: '¥4,500.00', originalNum: 4500, adjust: '¥0.00', adjustNum: 0, final: '¥4,500.00', finalNum: 4500,
-              adjustRecords: [],
-              distributors: [
-                  { name: '平台运营方', activity: '平台发券', amount: '¥4,500.00', ratio: '100.00%' }
-              ],
-              details: [
-                  { seq: 1, orderNo: 'OD20260514050', code: 'QM20260514050', type: '加油', couponType: '平台发券', time: '2026-05-14 08:30', face: '¥100.00', amt: '¥100.00', share: '平台运营方 ¥100.00', status: '已核销', statusCls: 'status-success' },
-                  { seq: 2, orderNo: 'OD20260514051', code: 'QM20260514051', type: '充电', couponType: '平台发券', time: '2026-05-14 10:15', face: '¥150.00', amt: '¥150.00', share: '平台运营方 ¥150.00', status: '已核销', statusCls: 'status-success' },
-                  { seq: 3, orderNo: 'OD20260514052', code: 'QM20260514052', type: '加油', couponType: '平台发券', time: '2026-05-14 14:20', face: '¥200.00', amt: '¥200.00', share: '平台运营方 ¥200.00', status: '已核销', statusCls: 'status-success' }
+                  { seq: 1, orderNo: 'OD20260513010', code: 'QM20260513010', type: '加油', time: '2026-05-13 09:15', face: '¥100.00', amt: '¥100.00', share: '皖通公司 ¥100.00', status: '已核销', statusCls: 'status-success' },
+                  { seq: 2, orderNo: 'OD20260513011', code: 'QM20260513011', type: '加油', time: '2026-05-13 10:30', face: '¥200.00', amt: '¥200.00', share: '皖通公司 ¥200.00', status: '已核销', statusCls: 'status-success' }
               ]
             },
             { id: 'JS-20260514-003', merchant: '驿达石化能源', date: '2026-05-13', genTime: '2026-05-14 02:37', coupons: 42, original: '¥4,200.00', originalNum: 4200, adjust: '-¥300.00', adjustNum: -300, final: '¥3,900.00', finalNum: 3900,
               adjustRecords: [{ appealNo: 'SS-20260513-001', amount: '-¥300.00', reason: '部分订单重复结算，申请扣减', time: '2026-05-13 16:20' }],
-              distributors: [{ name: '数科公司', activity: '活动A', amount: '¥2,520.00', ratio: '60.00%' }, { name: '联网公司', activity: '活动B', amount: '¥1,680.00', ratio: '40.00%' }],
+              distributors: [{ name: '皖通公司', activity: '皖通春日加油活动', amount: '¥2,520.00', ratio: '60.00%' }, { name: '皖通公司', activity: '皖通高速出行活动', amount: '¥1,680.00', ratio: '40.00%' }],
               details: [
-                  { seq: 1, orderNo: 'OD20260513020', code: 'QM20260513020', type: '充电', couponType: '积分兑换券', time: '2026-05-13 08:00', face: '¥50.00', amt: '¥50.00', share: '数科公司 ¥30.00 / 联网公司 ¥20.00', status: '已核销', statusCls: 'status-success' },
-                  { seq: 2, orderNo: 'OD20260513021', code: 'QM20260513021', type: '充电', couponType: '积分兑换券', time: '2026-05-13 14:30', face: '¥100.00', amt: '-¥100.00', share: '数科公司 -¥60.00 / 联网公司 -¥40.00', status: '已退货', statusCls: 'status-error' }
+                  { seq: 1, orderNo: 'OD20260513020', code: 'QM20260513020', type: '充电', time: '2026-05-13 08:00', face: '¥50.00', amt: '¥50.00', share: '皖通公司 ¥50.00', status: '已核销', statusCls: 'status-success' },
+                  { seq: 2, orderNo: 'OD20260513021', code: 'QM20260513021', type: '充电', time: '2026-05-13 14:30', face: '¥100.00', amt: '-¥100.00', share: '皖通公司 -¥100.00', status: '已退货', statusCls: 'status-error' }
               ]
             },
             { id: 'JS-20260513-001', merchant: '交控新能源', date: '2026-05-12', genTime: '2026-05-13 02:33', coupons: 67, original: '¥6,700.00', originalNum: 6700, adjust: '¥0.00', adjustNum: 0, final: '¥6,700.00', finalNum: 6700,
               adjustRecords: [],
-              distributors: [{ name: '数科公司', activity: '活动A', amount: '¥4,020.00', ratio: '60.00%' }, { name: '联网公司', activity: '活动B', amount: '¥2,680.00', ratio: '40.00%' }],
+              distributors: [{ name: '皖通公司', activity: '皖通春日加油活动', amount: '¥4,020.00', ratio: '60.00%' }, { name: '皖通公司', activity: '皖通高速出行活动', amount: '¥2,680.00', ratio: '40.00%' }],
               details: [
-                  { seq: 1, orderNo: 'OD20260512030', code: 'QM20260512030', type: '充电', couponType: '积分兑换券', time: '2026-05-12 09:00', face: '¥150.00', amt: '¥150.00', share: '数科公司 ¥90.00 / 联网公司 ¥60.00', status: '已核销', statusCls: 'status-success' }
+                  { seq: 1, orderNo: 'OD20260512030', code: 'QM20260512030', type: '充电', time: '2026-05-12 09:00', face: '¥150.00', amt: '¥150.00', share: '皖通公司 ¥150.00', status: '已核销', statusCls: 'status-success' }
               ]
             },
             { id: 'JS-20260513-002', merchant: '中国石油安徽分公司', date: '2026-05-12', genTime: '2026-05-13 02:34', coupons: 203, original: '¥20,300.00', originalNum: 20300, adjust: '+¥1,200.00', adjustNum: 1200, final: '¥21,500.00', finalNum: 21500,
               adjustRecords: [{ appealNo: 'SS-20260512-001', amount: '+¥800.00', reason: '券码面额核算偏低，申请补差', time: '2026-05-12 17:00' }, { appealNo: 'SS-20260513-002', amount: '+¥400.00', reason: '部分订单遗漏结算', time: '2026-05-13 10:15' }],
-              distributors: [{ name: '数科公司', activity: '活动A', amount: '¥12,180.00', ratio: '60.00%' }, { name: '联网公司', activity: '活动B', amount: '¥8,120.00', ratio: '40.00%' }],
+              distributors: [{ name: '皖通公司', activity: '皖通春日加油活动', amount: '¥12,180.00', ratio: '60.00%' }, { name: '皖通公司', activity: '皖通高速出行活动', amount: '¥8,120.00', ratio: '40.00%' }],
               details: [
-                  { seq: 1, orderNo: 'OD20260512040', code: 'QM20260512040', type: '加油', couponType: '积分兑换券', time: '2026-05-12 10:00', face: '¥300.00', amt: '¥300.00', share: '数科公司 ¥180.00 / 联网公司 ¥120.00', status: '已核销', statusCls: 'status-success' },
-                  { seq: 2, orderNo: 'OD20260512041', code: 'QM20260512041', type: '加油', couponType: '积分兑换券', time: '2026-05-12 15:20', face: '¥50.00', amt: '¥50.00', share: '数科公司 ¥30.00 / 联网公司 ¥20.00', status: '已核销', statusCls: 'status-success' },
-                  { seq: 3, orderNo: 'OD20260511042', code: 'QM20260511042', type: '洗车', couponType: '积分兑换券', time: '2026-05-11 11:10', face: '¥200.00', amt: '-¥200.00', share: '数科公司 -¥120.00 / 联网公司 -¥80.00', status: '已退货', statusCls: 'status-error' }
+                  { seq: 1, orderNo: 'OD20260512040', code: 'QM20260512040', type: '加油', time: '2026-05-12 10:00', face: '¥300.00', amt: '¥300.00', share: '皖通公司 ¥300.00', status: '已核销', statusCls: 'status-success' },
+                  { seq: 2, orderNo: 'OD20260512041', code: 'QM20260512041', type: '加油', time: '2026-05-12 15:20', face: '¥50.00', amt: '¥50.00', share: '皖通公司 ¥50.00', status: '已核销', statusCls: 'status-success' },
+                  { seq: 3, orderNo: 'OD20260511042', code: 'QM20260511042', type: '洗车', time: '2026-05-11 11:10', face: '¥200.00', amt: '-¥200.00', share: '皖通公司 -¥200.00', status: '已退货', statusCls: 'status-error' }
               ]
             }
         ];
 
         var activityBillData = [
-            { id: 'HF-20260514-001', issuer: '数科公司', date: '2026-05-13', genTime: '2026-05-14 02:38', totalAmount: '¥18,960.00', merchantCount: 3,
+            { id: 'HF-20260514-001', activityName: '皖通春日加油活动', date: '2026-05-13', genTime: '2026-05-14 02:38', totalAmount: '¥14,820.00', merchantCount: 3,
               merchants: [
-                  { name: '中国石油安徽分公司', settleDate: '2026-05-13', coupons: 156, amount: '¥9,360.00', ratio: '49.37%' },
-                  { name: '中石化安徽分公司', settleDate: '2026-05-13', coupons: 89, amount: '¥5,340.00', ratio: '28.16%' },
-                  { name: '驿达石化能源', settleDate: '2026-05-13', coupons: 42, amount: '¥4,260.00', ratio: '22.47%' }
+                  { name: '中国石油安徽分公司', settleDate: '2026-05-13', coupons: 98, amount: '¥9,360.00', ratio: '63.16%' },
+                  { name: '中石化安徽分公司', settleDate: '2026-05-13', coupons: 56, amount: '¥3,360.00', ratio: '22.67%' },
+                  { name: '驿达石化能源', settleDate: '2026-05-13', coupons: 28, amount: '¥2,100.00', ratio: '14.17%' }
               ]
             },
-            { id: 'HF-20260514-002', issuer: '联网公司', date: '2026-05-13', genTime: '2026-05-14 02:39', totalAmount: '¥12,640.00', merchantCount: 2,
+            { id: 'HF-20260514-002', activityName: '皖通高速出行活动', date: '2026-05-13', genTime: '2026-05-14 02:39', totalAmount: '¥9,540.00', merchantCount: 3,
               merchants: [
-                  { name: '中国石油安徽分公司', settleDate: '2026-05-13', coupons: 156, amount: '¥6,240.00', ratio: '49.37%' },
-                  { name: '中石化安徽分公司', settleDate: '2026-05-13', coupons: 89, amount: '¥3,560.00', ratio: '28.16%' },
-                  { name: '驿达石化能源', settleDate: '2026-05-13', coupons: 42, amount: '¥2,840.00', ratio: '22.47%' }
+                  { name: '中国石油安徽分公司', settleDate: '2026-05-13', coupons: 58, amount: '¥5,800.00', ratio: '60.80%' },
+                  { name: '中石化安徽分公司', settleDate: '2026-05-13', coupons: 33, amount: '¥1,980.00', ratio: '20.76%' },
+                  { name: '驿达石化能源', settleDate: '2026-05-13', coupons: 14, amount: '¥1,760.00', ratio: '18.44%' }
               ]
             },
-            { id: 'HF-20260514-003', issuer: '平台运营方', date: '2026-05-13', genTime: '2026-05-14 02:40', totalAmount: '¥4,500.00', merchantCount: 2,
+            { id: 'HF-20260514-003', activityName: '皖通新能源充电活动', date: '2026-05-13', genTime: '2026-05-14 02:40', totalAmount: '¥8,920.00', merchantCount: 3,
               merchants: [
-                  { name: '中国石油安徽分公司', settleDate: '2026-05-13', coupons: 45, amount: '¥3,000.00', ratio: '66.67%' },
-                  { name: '中石化安徽分公司', settleDate: '2026-05-13', coupons: 20, amount: '¥1,500.00', ratio: '33.33%' }
+                  { name: '中国石油安徽分公司', settleDate: '2026-05-13', coupons: 42, amount: '¥4,200.00', ratio: '47.09%' },
+                  { name: '中石化安徽分公司', settleDate: '2026-05-13', coupons: 30, amount: '¥3,000.00', ratio: '33.63%' },
+                  { name: '驿达石化能源', settleDate: '2026-05-13', coupons: 12, amount: '¥1,720.00', ratio: '19.28%' }
               ]
             },
-            { id: 'HF-20260513-001', issuer: '数科公司', date: '2026-05-12', genTime: '2026-05-13 02:36', totalAmount: '¥22,500.00', merchantCount: 4,
+            { id: 'HF-20260513-001', activityName: '皖通春日加油活动', date: '2026-05-12', genTime: '2026-05-13 02:36', totalAmount: '¥16,200.00', merchantCount: 4,
               merchants: [
-                  { name: '中国石油安徽分公司', settleDate: '2026-05-12', coupons: 203, amount: '¥12,180.00', ratio: '54.13%' },
-                  { name: '中石化安徽分公司', settleDate: '2026-05-12', coupons: 67, amount: '¥4,020.00', ratio: '17.87%' },
-                  { name: '驿达石化能源', settleDate: '2026-05-12', coupons: 30, amount: '¥3,600.00', ratio: '16.00%' },
-                  { name: '交控新能源', settleDate: '2026-05-12', coupons: 50, amount: '¥2,700.00', ratio: '12.00%' }
+                  { name: '中国石油安徽分公司', settleDate: '2026-05-12', coupons: 120, amount: '¥12,000.00', ratio: '74.07%' },
+                  { name: '中石化安徽分公司', settleDate: '2026-05-12', coupons: 40, amount: '¥2,400.00', ratio: '14.81%' },
+                  { name: '驿达石化能源', settleDate: '2026-05-12', coupons: 20, amount: '¥1,200.00', ratio: '7.41%' },
+                  { name: '交控新能源', settleDate: '2026-05-12', coupons: 10, amount: '¥600.00', ratio: '3.70%' }
+              ]
+            },
+            { id: 'HF-20260513-002', activityName: '皖通高速出行活动', date: '2026-05-12', genTime: '2026-05-13 02:37', totalAmount: '¥6,300.00', merchantCount: 3,
+              merchants: [
+                  { name: '中国石油安徽分公司', settleDate: '2026-05-12', coupons: 83, amount: '¥4,980.00', ratio: '79.05%' },
+                  { name: '中石化安徽分公司', settleDate: '2026-05-12', coupons: 27, amount: '¥810.00', ratio: '12.86%' },
+                  { name: '交控新能源', settleDate: '2026-05-12', coupons: 40, amount: '¥510.00', ratio: '8.10%' }
               ]
             }
         ];
@@ -415,7 +598,7 @@
                         for (var j = 0; j < bill.adjustRecords.length; j++) {
                             var r = bill.adjustRecords[j];
                             var amtCls = r.amount.indexOf('+') >= 0 ? 'text-success' : 'text-error';
-                            tbody.innerHTML += '<tr class="border-b border-neutral-200 h-10 table-row"><td class="text-left">' + r.appealNo + '</td><td class="text-right font-semibold tabular-nums ' + amtCls + '">' + r.amount + '</td><td class="text-left">' + r.reason + '</td><td class="text-left">' + r.time + '</td></tr>';
+                            tbody.innerHTML += '<tr class="border-b border-neutral-200 h-10 table-row"><td class="text-left"><a class="text-primary cursor-pointer hover:underline" onclick="openAppealDrawer(\'approved\')">' + r.appealNo + '</a></td><td class="text-right font-semibold tabular-nums ' + amtCls + '">' + r.amount + '</td><td class="text-left">' + r.reason + '</td><td class="text-left">' + r.time + '</td></tr>';
                         }
                     }
                 } else {
@@ -440,43 +623,128 @@
                 for (var m = 0; m < bill.details.length; m++) {
                     var dt = bill.details[m];
                     var amtCls = dt.amt.indexOf('-') >= 0 ? 'text-error' : '';
-                    var couponTypeLabel = dt.couponType || '积分兑换券';
-                    detailTbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row"><td class="text-center text-neutral-600">' + dt.seq + '</td><td class="text-left">' + dt.orderNo + '</td><td class="text-left">' + dt.code + '</td><td class="text-left">' + dt.type + '</td><td class="text-left">' + couponTypeLabel + '</td><td class="text-left">' + dt.time + '</td><td class="text-right tabular-nums">' + dt.face + '</td><td class="text-right tabular-nums ' + amtCls + '">' + dt.amt + '</td><td class="text-left text-xs">' + dt.share + '</td><td class="text-left"><span class="status-badge ' + dt.statusCls + '">' + dt.status + '</span></td></tr>';
+                    detailTbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row"><td class="text-center text-neutral-600">' + dt.seq + '</td><td class="text-left">' + dt.orderNo + '</td><td class="text-left">' + dt.code + '</td><td class="text-left">' + dt.type + '</td><td class="text-left">' + dt.time + '</td><td class="text-right tabular-nums">' + dt.face + '</td><td class="text-right tabular-nums ' + amtCls + '">' + dt.amt + '</td><td class="text-left text-xs">' + dt.share + '</td><td class="text-left"><span class="status-badge ' + dt.statusCls + '">' + dt.status + '</span></td></tr>';
                 }
             }
 
             showPage('merchant-bill-detail');
         }
 
-        function showActivityBillDetail(billId) {
-            var bill = null;
-            for (var i = 0; i < activityBillData.length; i++) {
-                if (activityBillData[i].id === billId) { bill = activityBillData[i]; break; }
+        function updateMerchantBillBatchBar() {
+            var checkboxes = document.querySelectorAll('.merchant-bill-checkbox');
+            var count = 0;
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) count++;
             }
-            if (!bill) return;
+            var bar = document.getElementById('merchant-bill-batch-bar');
+            var countEl = document.getElementById('merchant-bill-selected-count');
+            var reviewBtn = document.getElementById('merchant-bill-review-btn');
+            if (countEl) countEl.textContent = count;
+            if (reviewBtn) reviewBtn.disabled = count === 0;
+            var selectAll = document.getElementById('merchant-bill-select-all');
+            if (selectAll) selectAll.checked = checkboxes.length > 0 && count === checkboxes.length;
+        }
 
-            var el;
-            el = document.getElementById('ab-detail-issuer'); if (el) el.textContent = bill.issuer;
-            el = document.getElementById('ab-detail-date'); if (el) el.textContent = bill.date;
-            el = document.getElementById('ab-detail-total'); if (el) el.textContent = bill.totalAmount;
-            el = document.getElementById('ab-detail-merchantCount'); if (el) el.textContent = bill.merchantCount;
+        function clearMerchantBillSelection() {
+            var checkboxes = document.querySelectorAll('.merchant-bill-checkbox');
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+            var selectAll = document.getElementById('merchant-bill-select-all');
+            if (selectAll) selectAll.checked = false;
+            updateMerchantBillBatchBar();
+        }
 
-            var tbody = document.getElementById('ab-detail-merchant-tbody');
-            if (tbody) {
-                tbody.innerHTML = '';
-                for (var j = 0; j < bill.merchants.length; j++) {
-                    var m = bill.merchants[j];
-                    tbody.innerHTML += '<tr class="border-b border-neutral-200 h-10 table-row"><td class="text-left">' + m.name + '</td><td class="text-left">' + m.settleDate + '</td><td class="text-right">' + m.coupons + '</td><td class="text-right font-semibold tabular-nums">' + m.amount + '</td><td class="text-right">' + m.ratio + '</td></tr>';
+        function getSelectedMerchantBillIds() {
+            var ids = [];
+            var checkboxes = document.querySelectorAll('.merchant-bill-checkbox');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) ids.push(checkboxes[i].getAttribute('data-id'));
+            }
+            return ids;
+        }
+
+        function openReviewDrawer(billIds) {
+            openReviewDrawerModal(billIds);
+        }
+
+        function openBatchReviewDrawer() {
+            var ids = getSelectedMerchantBillIds();
+            if (ids.length === 0) { showToast('请先选择账单', 'warning'); return; }
+            openReviewDrawer(ids);
+        }
+
+        function openReviewDrawerModal(billIds) {
+            var container = document.getElementById('review-drawer-bills');
+            if (container) {
+                container.innerHTML = '';
+                for (var i = 0; i < billIds.length; i++) {
+                    var billId = billIds[i];
+                    var div = document.createElement('div');
+                    div.className = 'flex items-center gap-2';
+                    div.innerHTML = '<i data-lucide="file-text" class="w-4 h-4 text-neutral-400"></i><span class="text-sm font-medium">' + billId + '</span>';
+                    container.appendChild(div);
                 }
             }
-            var tfoot = document.getElementById('ab-detail-merchant-tfoot');
-            if (tfoot) {
-                var totalCoupons = 0, totalAmt = bill.totalAmount;
-                for (var k = 0; k < bill.merchants.length; k++) totalCoupons += bill.merchants[k].coupons;
-                tfoot.innerHTML = '<tr class="bg-neutral-50 h-10 font-semibold"><td class="text-left" colspan="2">合计</td><td class="text-right">' + totalCoupons + '</td><td class="text-right tabular-nums">' + totalAmt + '</td><td class="text-right">100.00%</td></tr>';
+            var timeEl = document.getElementById('review-drawer-time');
+            if (timeEl) {
+                var now = new Date();
+                timeEl.textContent = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
             }
+            var drawer = document.getElementById('review-drawer');
+            if (drawer) drawer.classList.add('active');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
 
-            showPage('activity-bill-detail');
+        function closeReviewDrawer() {
+            var drawer = document.getElementById('review-drawer');
+            if (drawer) drawer.classList.remove('active');
+        }
+
+        function submitReviewDrawer() {
+            closeReviewDrawer();
+            showToast('账单复核申请提交成功', 'success');
+            clearMerchantBillSelection();
+        }
+
+        function toggleActivityExpand(btn, expandId) {
+            var expandRow = document.getElementById(expandId);
+            if (!expandRow) return;
+            var isHidden = expandRow.classList.contains('hidden');
+            if (isHidden) {
+                expandRow.classList.remove('hidden');
+                btn.innerHTML = '<i data-lucide="chevron-up" class="w-4 h-4 inline-block"></i>收 起';
+            } else {
+                expandRow.classList.add('hidden');
+                btn.innerHTML = '<i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开';
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        var allActivityExpanded = false;
+
+        function toggleAllActivityExpand() {
+            allActivityExpanded = !allActivityExpanded;
+            var expandIds = ['expand-1', 'expand-2', 'expand-3', 'expand-4', 'expand-5'];
+            for (var i = 0; i < expandIds.length; i++) {
+                var expandRow = document.getElementById(expandIds[i]);
+                if (expandRow) {
+                    if (allActivityExpanded) {
+                        expandRow.classList.remove('hidden');
+                    } else {
+                        expandRow.classList.add('hidden');
+                    }
+                }
+            }
+            var btn = document.getElementById('toggle-all-expand-btn');
+            if (btn) {
+                if (allActivityExpanded) {
+                    btn.innerHTML = '<i data-lucide="chevrons-up" class="w-4 h-4"></i>全部收起';
+                } else {
+                    btn.innerHTML = '<i data-lucide="chevrons-down" class="w-4 h-4"></i>全部展开';
+                }
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function handleAccountAdd() { showToast('账户添加成功', 'success'); hideModal('modal-account-add'); }
@@ -637,7 +905,7 @@
 
             function updateBatchButtonsState() {
                 var anyChecked = Array.from(rowCheckboxes).some(function(cb) { return cb.checked; });
-                batchButtons.forEach(function(btn) { btn.dataset.anyChecked = anyChecked; });
+                batchButtons.forEach(function(btn) { btn.disabled = !anyChecked; });
             }
 
             selectAll.addEventListener('change', function(e) {
@@ -652,17 +920,28 @@
                 });
             });
 
-            batchButtons.forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    if (btn.dataset.anyChecked !== 'true') {
-                        showToast('请先选择要操作的记录', 'error');
-                        e.preventDefault();
-                    }
-                });
-            });
-
             updateSelectAll();
             updateBatchButtonsState();
+        }
+
+        function initMerchantBillSelectAll() {
+            var selectAll = document.getElementById('merchant-bill-select-all');
+            var rowCheckboxes = document.querySelectorAll('.merchant-bill-checkbox');
+
+            if (!selectAll || rowCheckboxes.length === 0) return;
+
+            selectAll.addEventListener('change', function(e) {
+                for (var i = 0; i < rowCheckboxes.length; i++) {
+                    rowCheckboxes[i].checked = e.target.checked;
+                }
+                updateMerchantBillBatchBar();
+            });
+
+            for (var i = 0; i < rowCheckboxes.length; i++) {
+                rowCheckboxes[i].addEventListener('change', function() {
+                    updateMerchantBillBatchBar();
+                });
+            }
         }
 
         function removeBill(el, billNo) {
@@ -887,6 +1166,10 @@
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal-content { background: white; border-radius: 3px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform: scale(0.95); transition: transform 0.2s ease; max-height: 80vh; overflow-y: auto; }
         .modal-overlay.active .modal-content { transform: scale(1); }
+        .drawer-overlay { display: none; }
+        .drawer-overlay.active { display: flex; }
+        .drawer-panel { transform: translateX(100%); transition: transform 0.3s ease; }
+        .drawer-overlay.active .drawer-panel { transform: translateX(0); }
         .modal-content::-webkit-scrollbar { width: 6px; }
         .modal-content::-webkit-scrollbar-thumb { background-color: #D1D5DB; border-radius: 3px; }
         .modal-content::-webkit-scrollbar-track { background: transparent; }
@@ -905,7 +1188,7 @@
                 <a onclick="switchSubnav('merchant-bill'); showPage('merchant-bill')" id="subnav-merchant-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 商户账单</span></a>
                 <a onclick="switchSubnav('activity-bill'); showPage('activity-bill')" id="subnav-activity-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 活动方账单</span></a>
                 <a onclick="switchSubnav('summary-bill'); showPage('summary-bill')" id="subnav-summary-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 汇总账单</span></a>
-                <a onclick="switchSubnav('appeal'); showPage('appeal')" id="subnav-appeal" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 申诉管理</span></a>
+                <a onclick="switchSubnav('appeal'); showPage('appeal')" id="subnav-appeal" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 账单复核管理</span></a>
                 <a onclick="switchSubnav('yima-recon'); showPage('yima-recon')" id="subnav-yima-recon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 翼码对账</span></a>
                 <a onclick="switchSubnav('trade-recon'); showPage('trade-recon')" id="subnav-trade-recon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 交易对账</span></a>
                 <a onclick="switchSubnav('settlement-account'); showPage('settlement-account')" id="subnav-settlement-account" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 结算账号</span></a>
@@ -966,9 +1249,9 @@
                         </div>
                     </div>
 
-                    <!-- 批量操作区（浅橙色背景，符合Design-System.md 1.1） -->
+                    <!-- 批量操作区（浅橙色背景，符合Design-System.md 1.1，常驻展示，未勾选时按钮 disabled） -->
                     <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
-                        <button class="btn btn-batch-action btn-md batch-action-btn" onclick="showBatchRefundModal()">批 量 退 款</button>
+                        <button class="btn btn-batch-action btn-md batch-action-btn" disabled onclick="showBatchRefundModal()">批 量 退 款</button>
                     </div>
 
                     <!-- 订单列表 -->
@@ -1550,7 +1833,7 @@
                     <div class="px-2 pb-2">
                         <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
                             <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                            <span class="text-sm text-neutral-600">温馨提示：结算单每日凌晨自动生成，默认"已生效"状态。如对账单有异议，请通过申诉管理模块发起申诉。调账金额不参与活动发行方分摊计算。</span>
+                            <span class="text-sm text-neutral-600">温馨提示：结算单每日凌晨自动生成，默认"已生效"状态。如对账单有异议，请勾选账单后点击发起账单复核。调账金额不参与活动发行方分摊计算。</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
                             <div class="inline-label-input">
@@ -1577,10 +1860,14 @@
                             <button class="btn btn-primary btn-md">查 询</button>
                         </div>
                     </div>
+                    <div id="merchant-bill-batch-bar" class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
+                        <button class="btn btn-batch-action btn-md" id="merchant-bill-review-btn" onclick="openBatchReviewDrawer()" disabled><i data-lucide="file-search" class="w-4 h-4"></i>发起账单复核</button>
+                    </div>
                     <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
                         <table class="data-table w-full">
                             <thead>
                                 <tr class="bg-neutral-50 border-b border-neutral-200">
+                                    <th class="w-10 text-center"><input type="checkbox" id="merchant-bill-select-all" class="cursor-pointer"></th>
                                     <th class="w-12 text-center">序号</th>
                                     <th class="text-left">账单号</th>
                                     <th class="text-left">商户名称</th>
@@ -1590,11 +1877,12 @@
                                     <th class="text-right">调账金额</th>
                                     <th class="text-right">最终金额</th>
                                     <th class="text-left">生成时间</th>
-                                    <th class="text-right w-24">操作</th>
+                                    <th class="text-right w-32">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="border-b border-neutral-200 table-row">
+                                    <td class="text-center"><input type="checkbox" class="merchant-bill-checkbox cursor-pointer" data-id="JS-20260514-001"></td>
                                     <td class="text-center text-neutral-600">1</td>
                                     <td class="text-left">JS-20260514-001</td>
                                     <td class="text-left">中国石油安徽分公司</td>
@@ -1604,9 +1892,10 @@
                                     <td class="text-right tabular-nums text-success">+¥500.00</td>
                                     <td class="text-right font-semibold tabular-nums">¥16,100.00</td>
                                     <td class="text-left text-neutral-500">2026-05-14 02:35</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-001')">查 看</button></td>
+                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-001')">查 看</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260514-001'])">账单复核</button></td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 table-row">
+                                    <td class="text-center"><input type="checkbox" class="merchant-bill-checkbox cursor-pointer" data-id="JS-20260514-002"></td>
                                     <td class="text-center text-neutral-600">2</td>
                                     <td class="text-left">JS-20260514-002</td>
                                     <td class="text-left">中石化安徽分公司</td>
@@ -1616,9 +1905,10 @@
                                     <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
                                     <td class="text-right font-semibold tabular-nums">¥8,900.00</td>
                                     <td class="text-left text-neutral-500">2026-05-14 02:36</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-002')">查 看</button></td>
+                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-002')">查 看</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260514-002'])">账单复核</button></td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 table-row">
+                                    <td class="text-center"><input type="checkbox" class="merchant-bill-checkbox cursor-pointer" data-id="JS-20260514-003"></td>
                                     <td class="text-center text-neutral-600">3</td>
                                     <td class="text-left">JS-20260514-003</td>
                                     <td class="text-left">驿达石化能源</td>
@@ -1628,22 +1918,11 @@
                                     <td class="text-right tabular-nums text-error">-¥300.00</td>
                                     <td class="text-right font-semibold tabular-nums">¥3,900.00</td>
                                     <td class="text-left text-neutral-500">2026-05-14 02:37</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-003')">查 看</button></td>
+                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-003')">查 看</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260514-003'])">账单复核</button></td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
+                                    <td class="text-center"><input type="checkbox" class="merchant-bill-checkbox cursor-pointer" data-id="JS-20260513-001"></td>
                                     <td class="text-center text-neutral-600">4</td>
-                                    <td class="text-left">JS-20260514-004</td>
-                                    <td class="text-left">中国石油安徽分公司</td>
-                                    <td class="text-left">2026-05-14</td>
-                                    <td class="text-right">45</td>
-                                    <td class="text-right font-semibold tabular-nums">¥4,500.00</td>
-                                    <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
-                                    <td class="text-right font-semibold tabular-nums">¥4,500.00</td>
-                                    <td class="text-left text-neutral-500">2026-05-15 02:35</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-004')">查 看</button></td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">5</td>
                                     <td class="text-left">JS-20260513-001</td>
                                     <td class="text-left">交控新能源</td>
                                     <td class="text-left">2026-05-12</td>
@@ -1652,10 +1931,11 @@
                                     <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
                                     <td class="text-right font-semibold tabular-nums">¥6,700.00</td>
                                     <td class="text-left text-neutral-500">2026-05-13 02:33</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260513-001')">查 看</button></td>
+                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260513-001')">查 看</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260513-001'])">账单复核</button></td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">6</td>
+                                    <td class="text-center"><input type="checkbox" class="merchant-bill-checkbox cursor-pointer" data-id="JS-20260513-002"></td>
+                                    <td class="text-center text-neutral-600">5</td>
                                     <td class="text-left">JS-20260513-002</td>
                                     <td class="text-left">中国石油安徽分公司</td>
                                     <td class="text-left">2026-05-12</td>
@@ -1664,13 +1944,13 @@
                                     <td class="text-right tabular-nums text-success">+¥1,200.00</td>
                                     <td class="text-right font-semibold tabular-nums">¥21,500.00</td>
                                     <td class="text-left text-neutral-500">2026-05-13 02:34</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260513-002')">查 看</button></td>
+                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260513-002')">查 看</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260513-002'])">账单复核</button></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="mx-2 mb-2 flex justify-between items-center py-2">
-                        <span class="text-sm text-neutral-600">共 <span class="font-semibold">33</span> 条记录</span>
+                        <span class="text-sm text-neutral-600">共 <span class="font-semibold">32</span> 条记录</span>
                         <div class="flex items-center gap-2">
                             <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
                             <div class="flex items-center gap-1">
@@ -1729,7 +2009,7 @@
                             <table class="data-table w-full">
                                 <thead>
                                     <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                        <th class="text-left">关联申诉单号</th>
+                                        <th class="text-left">关联复核单号</th>
                                         <th class="text-right">调账金额</th>
                                         <th class="text-left">调账原因</th>
                                         <th class="text-left">审核时间</th>
@@ -1737,7 +2017,7 @@
                                 </thead>
                                 <tbody id="adjust-record-tbody">
                                     <tr class="border-b border-neutral-200 h-10 table-row">
-                                        <td class="text-left">SS-20260514-001</td>
+                                        <td class="text-left"><a class="text-primary cursor-pointer hover:underline" onclick="openAppealDrawer('approved')">SS-20260514-001</a></td>
                                         <td class="text-right font-semibold tabular-nums text-success">+¥500.00</td>
                                         <td class="text-left">商品金额核算差异</td>
                                         <td class="text-left">2026-05-14 15:30</td>
@@ -1761,46 +2041,40 @@
                                 </thead>
                                 <tbody id="mb-detail-dist-tbody">
                                     <tr class="border-b border-neutral-200 h-10 table-row">
-                                        <td class="text-left">数科公司</td>
-                                        <td class="text-left">活动A</td>
+                                        <td class="text-left">皖通公司</td>
+                                        <td class="text-left">皖通春日加油活动</td>
                                         <td class="text-right font-semibold tabular-nums">¥5,460.00</td>
                                         <td class="text-right">35.00%</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 h-10 table-row">
-                                        <td class="text-left">数科公司</td>
-                                        <td class="text-left">活动B</td>
+                                        <td class="text-left">皖通公司</td>
+                                        <td class="text-left">皖通高速出行活动</td>
                                         <td class="text-right font-semibold tabular-nums">¥3,900.00</td>
                                         <td class="text-right">25.00%</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 h-10 table-row">
-                                        <td class="text-left">联网公司</td>
-                                        <td class="text-left">活动C</td>
+                                        <td class="text-left">皖通公司</td>
+                                        <td class="text-left">皖通新能源充电活动</td>
                                         <td class="text-right font-semibold tabular-nums">¥3,120.00</td>
                                         <td class="text-right">20.00%</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 h-10 table-row">
-                                        <td class="text-left">驿达集团</td>
-                                        <td class="text-left">活动D</td>
+                                        <td class="text-left">皖通公司</td>
+                                        <td class="text-left">皖通驿达服务区活动</td>
                                         <td class="text-right font-semibold tabular-nums">¥1,560.00</td>
                                         <td class="text-right">10.00%</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 h-10 table-row">
-                                        <td class="text-left">交控集团</td>
-                                        <td class="text-left">活动E</td>
+                                        <td class="text-left">皖通公司</td>
+                                        <td class="text-left">皖通交控能源活动</td>
                                         <td class="text-right font-semibold tabular-nums">¥1,560.00</td>
                                         <td class="text-right">10.00%</td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-10 table-row">
-                                        <td class="text-left">平台运营方</td>
-                                        <td class="text-left">平台发券</td>
-                                        <td class="text-right font-semibold tabular-nums">¥1,950.00</td>
-                                        <td class="text-right">12.50%</td>
                                     </tr>
                                 </tbody>
                                 <tfoot id="mb-detail-dist-tfoot">
                                     <tr class="bg-neutral-50 h-10 font-semibold">
                                         <td class="text-left" colspan="2">合计</td>
-                                        <td class="text-right tabular-nums">¥17,550.00</td>
+                                        <td class="text-right tabular-nums">¥15,600.00</td>
                                         <td class="text-right">100.00%</td>
                                     </tr>
                                 </tfoot>
@@ -1813,7 +2087,7 @@
                         <h2 class="text-sm font-semibold text-neutral-700">核销明细</h2>
                         <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-6 gap-x-4 gap-y-3 mb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-x-4 gap-y-3 mb-4">
                         <div class="inline-label-input">
                             <span class="label">订单号</span>
                             <input type="text" placeholder="请输入" class="input-focus">
@@ -1825,10 +2099,6 @@
                         <div class="inline-label-input">
                             <span class="label">业务类型</span>
                             <select><option value="">全部</option><option>加油</option><option>充电</option><option>洗车</option></select>
-                        </div>
-                        <div class="inline-label-input">
-                            <span class="label">券类型</span>
-                            <select><option value="">全部</option><option>平台发券</option><option>积分兑换券</option></select>
                         </div>
                         <div class="inline-label-input">
                             <span class="label">订单状态</span>
@@ -1849,7 +2119,6 @@
                                     <th class="text-left">订单号</th>
                                     <th class="text-left">券码ID</th>
                                     <th class="text-left">业务类型</th>
-                                    <th class="text-left">券类型</th>
                                     <th class="text-left">核销时间</th>
                                     <th class="text-right">券码面额</th>
                                     <th class="text-right">结算金额</th>
@@ -1894,8 +2163,8 @@
                     <div class="px-2 pb-2">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
                             <div class="inline-label-input">
-                                <span class="label">活动发行方</span>
-                                <select><option value="">全部</option><option>数科公司</option><option>联网公司</option><option>平台运营方</option></select>
+                                <span class="label">活动名称</span>
+                                <select><option value="">全部</option><option>皖通春日加油活动</option><option>皖通高速出行活动</option><option>皖通新能源充电活动</option></select>
                             </div>
                             <div class="date-range-input">
                                 <span class="label">账单日期</span>
@@ -1919,60 +2188,307 @@
                                 <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
                                     <th class="w-12 text-center">序号</th>
                                     <th class="text-left">账单号</th>
-                                    <th class="text-left">活动发行方</th>
+                                    <th class="text-left">活动名称</th>
                                     <th class="text-left">账单日期</th>
                                     <th class="text-right">涉及商户数</th>
                                     <th class="text-right">分摊总金额</th>
                                     <th class="text-left">生成时间</th>
-                                    <th class="text-right w-24">操作</th>
+                                    <th class="text-right w-40">操作 <button class="btn btn-text text-xs ml-1" id="toggle-all-expand-btn" onclick="toggleAllActivityExpand()" style="font-size:12px;"><i data-lucide="chevrons-down" class="w-3 h-3 inline-block"></i>全部</button></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">1</td>
-                                    <td class="text-left">HF-20260514-001</td>
-                                    <td class="text-left">数科公司</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-right">3</td>
-                                    <td class="text-right font-semibold tabular-nums">¥18,960.00</td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:38</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showActivityBillDetail('HF-20260514-001')">查 看</button></td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">2</td>
-                                    <td class="text-left">HF-20260514-002</td>
-                                    <td class="text-left">联网公司</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-right">2</td>
-                                    <td class="text-right font-semibold tabular-nums">¥12,640.00</td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:39</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showActivityBillDetail('HF-20260514-002')">查 看</button></td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">3</td>
-                                    <td class="text-left">HF-20260514-003</td>
-                                    <td class="text-left">平台运营方</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-right">2</td>
-                                    <td class="text-right font-semibold tabular-nums">¥4,500.00</td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:40</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showActivityBillDetail('HF-20260514-003')">查 看</button></td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">4</td>
-                                    <td class="text-left">HF-20260513-001</td>
-                                    <td class="text-left">数科公司</td>
-                                    <td class="text-left">2026-05-12</td>
-                                    <td class="text-right">4</td>
-                                    <td class="text-right font-semibold tabular-nums">¥22,500.00</td>
-                                    <td class="text-left text-neutral-500">2026-05-13 02:36</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showActivityBillDetail('HF-20260513-001')">查 看</button></td>
-                                </tr>
-                            </tbody>
+    <tr class="border-b border-neutral-200 h-12 table-row">
+        <td class="text-center text-neutral-600">1</td>
+        <td class="text-left">HF-20260514-001</td>
+        <td class="text-left">皖通春日加油活动</td>
+        <td class="text-left">2026-05-13</td>
+        <td class="text-right">3</td>
+        <td class="text-right font-semibold tabular-nums">¥14,820.00</td>
+        <td class="text-left text-neutral-500">2026-05-14 02:38</td>
+        <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-1')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
+    </tr>
+    <tr id="expand-1" class="hidden">
+        <td colspan="8" class="bg-neutral-50 px-8 py-3">
+            <table class="data-table w-full">
+                <thead>
+                    <tr class="bg-white border-b border-neutral-200 h-9">
+                        <th class="text-left text-xs font-medium text-neutral-500">商户名称</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">结算日期</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">券数</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">分摊金额</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">占比</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">中国石油安徽分公司</td>
+                        <td class="text-left text-sm">2026-05-13</td>
+                        <td class="text-right text-sm">98</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥9,360.00</td>
+                        <td class="text-right text-sm">63.16%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">中石化安徽分公司</td>
+                        <td class="text-left text-sm">2026-05-13</td>
+                        <td class="text-right text-sm">56</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥3,360.00</td>
+                        <td class="text-right text-sm">22.67%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">驿达石化能源</td>
+                        <td class="text-left text-sm">2026-05-13</td>
+                        <td class="text-right text-sm">28</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥2,100.00</td>
+                        <td class="text-right text-sm">14.17%</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="h-9 font-semibold text-sm">
+                        <td class="text-left" colspan="2">合计</td>
+                        <td class="text-right">182</td>
+                        <td class="text-right tabular-nums">¥14,820.00</td>
+                        <td class="text-right">100.00%</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+    <tr class="border-b border-neutral-200 h-12 table-row">
+        <td class="text-center text-neutral-600">2</td>
+        <td class="text-left">HF-20260514-002</td>
+        <td class="text-left">皖通高速出行活动</td>
+        <td class="text-left">2026-05-13</td>
+        <td class="text-right">3</td>
+        <td class="text-right font-semibold tabular-nums">¥9,540.00</td>
+        <td class="text-left text-neutral-500">2026-05-14 02:39</td>
+        <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-2')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
+    </tr>
+    <tr id="expand-2" class="hidden">
+        <td colspan="8" class="bg-neutral-50 px-8 py-3">
+            <table class="data-table w-full">
+                <thead>
+                    <tr class="bg-white border-b border-neutral-200 h-9">
+                        <th class="text-left text-xs font-medium text-neutral-500">商户名称</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">结算日期</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">券数</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">分摊金额</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">占比</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">中国石油安徽分公司</td>
+                        <td class="text-left text-sm">2026-05-13</td>
+                        <td class="text-right text-sm">58</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥5,800.00</td>
+                        <td class="text-right text-sm">60.80%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">中石化安徽分公司</td>
+                        <td class="text-left text-sm">2026-05-13</td>
+                        <td class="text-right text-sm">33</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥1,980.00</td>
+                        <td class="text-right text-sm">20.76%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">驿达石化能源</td>
+                        <td class="text-left text-sm">2026-05-13</td>
+                        <td class="text-right text-sm">14</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥1,760.00</td>
+                        <td class="text-right text-sm">18.44%</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="h-9 font-semibold text-sm">
+                        <td class="text-left" colspan="2">合计</td>
+                        <td class="text-right">105</td>
+                        <td class="text-right tabular-nums">¥9,540.00</td>
+                        <td class="text-right">100.00%</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+    <tr class="border-b border-neutral-200 h-12 table-row">
+        <td class="text-center text-neutral-600">3</td>
+        <td class="text-left">HF-20260514-003</td>
+        <td class="text-left">皖通新能源充电活动</td>
+        <td class="text-left">2026-05-13</td>
+        <td class="text-right">3</td>
+        <td class="text-right font-semibold tabular-nums">¥8,920.00</td>
+        <td class="text-left text-neutral-500">2026-05-14 02:40</td>
+        <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-3')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
+    </tr>
+    <tr id="expand-3" class="hidden">
+        <td colspan="8" class="bg-neutral-50 px-8 py-3">
+            <table class="data-table w-full">
+                <thead>
+                    <tr class="bg-white border-b border-neutral-200 h-9">
+                        <th class="text-left text-xs font-medium text-neutral-500">商户名称</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">结算日期</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">券数</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">分摊金额</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">占比</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">中国石油安徽分公司</td>
+                        <td class="text-left text-sm">2026-05-13</td>
+                        <td class="text-right text-sm">42</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥4,200.00</td>
+                        <td class="text-right text-sm">47.09%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">中石化安徽分公司</td>
+                        <td class="text-left text-sm">2026-05-13</td>
+                        <td class="text-right text-sm">30</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥3,000.00</td>
+                        <td class="text-right text-sm">33.63%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">驿达石化能源</td>
+                        <td class="text-left text-sm">2026-05-13</td>
+                        <td class="text-right text-sm">12</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥1,720.00</td>
+                        <td class="text-right text-sm">19.28%</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="h-9 font-semibold text-sm">
+                        <td class="text-left" colspan="2">合计</td>
+                        <td class="text-right">84</td>
+                        <td class="text-right tabular-nums">¥8,920.00</td>
+                        <td class="text-right">100.00%</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+    <tr class="border-b border-neutral-200 h-12 table-row">
+        <td class="text-center text-neutral-600">4</td>
+        <td class="text-left">HF-20260513-001</td>
+        <td class="text-left">皖通春日加油活动</td>
+        <td class="text-left">2026-05-12</td>
+        <td class="text-right">4</td>
+        <td class="text-right font-semibold tabular-nums">¥16,200.00</td>
+        <td class="text-left text-neutral-500">2026-05-13 02:36</td>
+        <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-4')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
+    </tr>
+    <tr id="expand-4" class="hidden">
+        <td colspan="8" class="bg-neutral-50 px-8 py-3">
+            <table class="data-table w-full">
+                <thead>
+                    <tr class="bg-white border-b border-neutral-200 h-9">
+                        <th class="text-left text-xs font-medium text-neutral-500">商户名称</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">结算日期</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">券数</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">分摊金额</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">占比</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">中国石油安徽分公司</td>
+                        <td class="text-left text-sm">2026-05-12</td>
+                        <td class="text-right text-sm">120</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥12,000.00</td>
+                        <td class="text-right text-sm">74.07%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">中石化安徽分公司</td>
+                        <td class="text-left text-sm">2026-05-12</td>
+                        <td class="text-right text-sm">40</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥2,400.00</td>
+                        <td class="text-right text-sm">14.81%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">驿达石化能源</td>
+                        <td class="text-left text-sm">2026-05-12</td>
+                        <td class="text-right text-sm">20</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥1,200.00</td>
+                        <td class="text-right text-sm">7.41%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">交控新能源</td>
+                        <td class="text-left text-sm">2026-05-12</td>
+                        <td class="text-right text-sm">10</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥600.00</td>
+                        <td class="text-right text-sm">3.70%</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="h-9 font-semibold text-sm">
+                        <td class="text-left" colspan="2">合计</td>
+                        <td class="text-right">190</td>
+                        <td class="text-right tabular-nums">¥16,200.00</td>
+                        <td class="text-right">100.00%</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+    <tr class="border-b border-neutral-200 h-12 table-row">
+        <td class="text-center text-neutral-600">5</td>
+        <td class="text-left">HF-20260513-002</td>
+        <td class="text-left">皖通高速出行活动</td>
+        <td class="text-left">2026-05-12</td>
+        <td class="text-right">3</td>
+        <td class="text-right font-semibold tabular-nums">¥6,300.00</td>
+        <td class="text-left text-neutral-500">2026-05-13 02:37</td>
+        <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-5')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
+    </tr>
+    <tr id="expand-5" class="hidden">
+        <td colspan="8" class="bg-neutral-50 px-8 py-3">
+            <table class="data-table w-full">
+                <thead>
+                    <tr class="bg-white border-b border-neutral-200 h-9">
+                        <th class="text-left text-xs font-medium text-neutral-500">商户名称</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">结算日期</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">券数</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">分摊金额</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">占比</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">中国石油安徽分公司</td>
+                        <td class="text-left text-sm">2026-05-12</td>
+                        <td class="text-right text-sm">83</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥4,980.00</td>
+                        <td class="text-right text-sm">79.05%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">中石化安徽分公司</td>
+                        <td class="text-left text-sm">2026-05-12</td>
+                        <td class="text-right text-sm">27</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥810.00</td>
+                        <td class="text-right text-sm">12.86%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">交控新能源</td>
+                        <td class="text-left text-sm">2026-05-12</td>
+                        <td class="text-right text-sm">40</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">¥510.00</td>
+                        <td class="text-right text-sm">8.10%</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="h-9 font-semibold text-sm">
+                        <td class="text-left" colspan="2">合计</td>
+                        <td class="text-right">150</td>
+                        <td class="text-right tabular-nums">¥6,300.00</td>
+                        <td class="text-right">100.00%</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+</tbody>
                         </table>
                     </div>
                     <div class="mx-2 mb-2 flex justify-between items-center py-2">
-                        <span class="text-sm text-neutral-600">共 <span class="font-semibold">16</span> 条记录</span>
+                        <span class="text-sm text-neutral-600">共 <span class="font-semibold">28</span> 条记录</span>
                         <div class="flex items-center gap-2">
                             <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
                             <div class="flex items-center gap-1">
@@ -1980,78 +2496,6 @@
                                 <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
                                 <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========== 活动方账单详情 ========== -->
-            <div id="page-activity-bill-detail" class="page">
-                <div class="bg-white rounded border border-neutral-200 mb-3">
-                    <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
-                        <div class="flex items-center gap-2">
-                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold">活动方账单详情</h1>
-                        </div>
-                        <div class="flex gap-3">
-                            <button class="btn btn-secondary btn-md" onclick="showPage('activity-bill'); switchSubnav('activity-bill')"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
-                            <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
-                        </div>
-                    </div>
-                    <div class="px-5 py-4">
-                        <div class="grid grid-cols-4 gap-4">
-                            <div><span class="text-sm text-neutral-500">活动发行方</span><p class="text-sm font-medium mt-1" id="ab-detail-issuer">数科公司</p></div>
-                            <div><span class="text-sm text-neutral-500">账单日期</span><p class="text-sm font-medium mt-1" id="ab-detail-date">2026-05-13</p></div>
-                            <div><span class="text-sm text-neutral-500">分摊总金额</span><p class="text-sm font-semibold tabular-nums mt-1" id="ab-detail-total">¥18,960.00</p></div>
-                            <div><span class="text-sm text-neutral-500">涉及商户数</span><p class="text-sm font-medium mt-1" id="ab-detail-merchantCount">3</p></div>
-                        </div>
-                    </div>
-                    <hr class="mx-6 border-t border-neutral-200">
-                    <div class="px-5 py-4">
-                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">商户分摊汇总</h2>
-                        <div class="overflow-x-auto">
-                            <table class="data-table w-full">
-                                <thead>
-                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                        <th class="text-left">商户名称</th>
-                                        <th class="text-left">结算日期</th>
-                                        <th class="text-right">券数</th>
-                                        <th class="text-right">分摊金额</th>
-                                        <th class="text-right">占比</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ab-detail-merchant-tbody">
-                                    <tr class="border-b border-neutral-200 h-10 table-row">
-                                        <td class="text-left">中国石油安徽分公司</td>
-                                        <td class="text-left">2026-05-13</td>
-                                        <td class="text-right">156</td>
-                                        <td class="text-right font-semibold tabular-nums">¥9,360.00</td>
-                                        <td class="text-right">49.37%</td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-10 table-row">
-                                        <td class="text-left">中石化安徽分公司</td>
-                                        <td class="text-left">2026-05-13</td>
-                                        <td class="text-right">89</td>
-                                        <td class="text-right font-semibold tabular-nums">¥5,340.00</td>
-                                        <td class="text-right">28.16%</td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-10 table-row">
-                                        <td class="text-left">驿达石化能源</td>
-                                        <td class="text-left">2026-05-13</td>
-                                        <td class="text-right">42</td>
-                                        <td class="text-right font-semibold tabular-nums">¥4,260.00</td>
-                                        <td class="text-right">22.47%</td>
-                                    </tr>
-                                </tbody>
-                                <tfoot id="ab-detail-merchant-tfoot">
-                                    <tr class="bg-neutral-50 h-10 font-semibold">
-                                        <td class="text-left" colspan="2">合计</td>
-                                        <td class="text-right">287</td>
-                                        <td class="text-right tabular-nums">¥18,960.00</td>
-                                        <td class="text-right">100.00%</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
                         </div>
                     </div>
                 </div>
@@ -2080,8 +2524,8 @@
                                 <select class="input-focus"><option value="">全部</option><option>中国石油安徽分公司</option><option>中石化安徽分公司</option><option>驿达石化能源</option><option>交控新能源</option></select>
                             </div>
                             <div class="inline-label-input">
-                                <span class="label">活动发行方</span>
-                                <select class="input-focus"><option value="">全部</option><option>数科公司</option><option>联网公司</option><option>平台运营方</option></select>
+                                <span class="label">活动名称</span>
+                                <select class="input-focus"><option value="">全部</option><option>皖通春日加油活动</option><option>皖通高速出行活动</option><option>皖通新能源充电活动</option></select>
                             </div>
                         </div>
                         <div class="flex justify-end gap-3 mt-3">
@@ -2093,70 +2537,103 @@
                         <table class="w-full border-collapse">
                             <thead>
                                 <tr class="bg-neutral-50">
-                                    <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200">商户</th>
-                                    <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">数科公司</th>
-                                    <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">联网公司</th>
-                                    <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">平台运营方</th>
-                                    <th class="p-2 text-right text-sm font-medium text-primary border border-neutral-200 bg-orange-50">调账金额</th>
-                                    <th class="p-2 text-right text-sm font-medium text-primary border border-neutral-200 bg-orange-50">商户汇总</th>
+                                    <th class="p-2 text-center text-sm font-medium text-neutral-600 border border-neutral-200" rowspan="2">商户</th>
+                                    <th class="p-2 text-center text-sm font-medium text-neutral-600 border border-neutral-200" colspan="3">活动名称</th>
+                                    <th class="p-2 text-center text-sm font-primary border border-neutral-200 bg-orange-50" rowspan="2">调账金额</th>
+                                    <th class="p-2 text-center text-sm font-primary border border-neutral-200 bg-orange-50" rowspan="2">商户汇总</th>
+                                </tr>
+                                <tr class="bg-neutral-50">
+                                    <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">皖通春日加油活动</th>
+                                    <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">皖通高速出行活动</th>
+                                    <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">皖通新能源充电活动</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="bg-white">
                                     <td class="p-2 font-medium text-sm border border-neutral-200">中国石油安徽分公司</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-detail')">¥9,360.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-detail')">¥6,240.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-platform')">¥3,000.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 bg-orange-50 cursor-pointer hover:bg-orange-100" onclick="showModal('modal-matrix-adjust')">+¥500.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums font-semibold border border-neutral-200 bg-orange-50">¥19,100.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥9,360.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥5,800.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥4,200.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 bg-orange-50 cursor-pointer hover:bg-orange-100 transition-colors" onclick="openAdjustDrawer(this)">+¥500.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums font-semibold border border-neutral-200 bg-orange-50">¥19,860.00</td>
                                 </tr>
-                                <tr>
+                                <tr class="bg-neutral-50/50">
                                     <td class="p-2 font-medium text-sm border border-neutral-200">中石化安徽分公司</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-detail')">¥5,340.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-detail')">¥3,560.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-platform')">¥2,000.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 bg-orange-50">¥0.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums font-semibold border border-neutral-200 bg-orange-50">¥10,900.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥3,360.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥1,980.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥3,000.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums text-neutral-400 border border-neutral-200 bg-orange-50">¥0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums font-semibold border border-neutral-200 bg-orange-50">¥8,340.00</td>
                                 </tr>
-                                <tr>
+                                <tr class="bg-white">
                                     <td class="p-2 font-medium text-sm border border-neutral-200">驿达石化能源</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-detail')">¥4,260.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-detail')">-¥360.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-platform')">¥1,500.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 bg-orange-50 cursor-pointer hover:bg-orange-100" onclick="showModal('modal-matrix-adjust')">-¥300.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums font-semibold border border-neutral-200 bg-orange-50">¥5,100.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥2,100.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥1,760.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums text-error border border-neutral-200 bg-red-50">-¥360.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums text-error border border-neutral-200 bg-orange-50 cursor-pointer hover:bg-orange-100 transition-colors" onclick="openAdjustDrawer(this)">-¥300.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums font-semibold border border-neutral-200 bg-orange-50">¥3,200.00</td>
                                 </tr>
-                                <tr>
+                                <tr class="bg-neutral-50/50">
                                     <td class="p-2 font-medium text-sm border border-neutral-200">交控新能源</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-detail')">¥4,020.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-detail')">¥2,680.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 cursor-pointer hover:bg-primary-light" onclick="showModal('modal-matrix-platform')">¥1,000.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 bg-orange-50">¥0.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums font-semibold border border-neutral-200 bg-orange-50">¥7,700.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥510.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums text-neutral-400 border border-neutral-200 bg-orange-50">¥0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums font-semibold border border-neutral-200 bg-orange-50">¥510.00</td>
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr class="bg-green-50 font-semibold">
                                     <td class="p-2 text-sm border border-neutral-200">活动方汇总</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥22,980.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥12,120.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥7,500.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥14,820.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥10,050.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥6,840.00</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 bg-green-100 font-bold">+¥200.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 bg-green-100 font-bold">¥42,800.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 bg-green-100 font-bold">¥31,910.00</td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
                 </div>
+                    <!-- 调账单明细抽屉 -->
+                    <div id="adjust-drawer" class="drawer-overlay fixed inset-0 bg-black/50 z-[999]" style="display:none;" onclick="closeAdjustDrawer()">
+                        <div class="fixed top-0 right-0 h-full bg-white shadow-2xl w-[600px]" onclick="event.stopPropagation()">
+                            <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
+                                <h2 class="text-base font-bold text-neutral-900">调账单明细</h2>
+                                <button class="text-neutral-500 hover:text-neutral-700 cursor-pointer" onclick="closeAdjustDrawer()">
+                                    <i data-lucide="x" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                            <div class="overflow-y-auto px-5 py-4" style="max-height: calc(100vh - 80px);">
+                                <div class="mb-4">
+                                    <span class="text-sm text-neutral-500">商户：</span>
+                                    <span id="adjust-drawer-merchant" class="text-sm font-medium"></span>
+                                    <span class="text-sm text-neutral-500 ml-4">调账金额合计：</span>
+                                    <span id="adjust-drawer-total" class="text-sm font-semibold"></span>
+                                </div>
+                                <table class="data-table w-full">
+                                    <thead>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                            <th class="text-left">复核单号</th>
+                                            <th class="text-right">调账金额</th>
+                                            <th class="text-left">调账原因</th>
+                                            <th class="text-left">计入账单日期</th>
+                                            <th class="text-left">审核人</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adjust-drawer-tbody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
             </div>
-
-            <!-- ========== 申诉管理列表 ========== -->
             <div id="page-appeal" class="page">
                 <div class="bg-white rounded border border-neutral-200">
                     <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold text-neutral-900">申诉管理</h1>
+                            <h1 class="text-base font-bold text-neutral-900">账单复核管理</h1>
                         </div>
                         <div class="flex gap-3">
                             <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
@@ -2169,11 +2646,11 @@
                                 <select><option value="">全部</option><option>中国石油安徽分公司</option><option>中石化安徽分公司</option><option>驿达石化能源</option><option>交控新能源</option></select>
                             </div>
                             <div class="inline-label-input">
-                                <span class="label">申诉状态</span>
+                                <span class="label">审核状态</span>
                                 <select><option value="">全部</option><option>待审核</option><option>审核通过</option><option>审核驳回</option></select>
                             </div>
                             <div class="date-range-input">
-                                <span class="label">申诉日期</span>
+                                <span class="label">复核日期</span>
                                 <input type="date" class="input-focus">
                                 <span class="separator">→</span>
                                 <input type="date" class="input-focus">
@@ -2188,18 +2665,15 @@
                             <button class="btn btn-primary btn-md">查 询</button>
                         </div>
                     </div>
-                    <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
-                        <button class="btn btn-batch-action btn-md" onclick="showPage('appeal-add')"><i data-lucide="plus" class="w-4 h-4"></i>新增申诉</button>
-                    </div>
                     <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
                         <table class="data-table w-full">
                             <thead>
                                 <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
                                     <th class="w-12 text-center">序号</th>
-                                    <th class="text-left">申诉单号</th>
-                                    <th class="text-left">申诉商户</th>
+                                    <th class="text-left">账单复核单号</th>
+                                    <th class="text-left">申请商户</th>
                                     <th class="text-left">关联账单</th>
-                                    <th class="text-left">申诉日期</th>
+                                    <th class="text-left">复核日期</th>
                                     <th class="text-right">期望调账金额</th>
                                     <th class="text-left">审核状态</th>
                                     <th class="text-left">调账计入日期</th>
@@ -2217,8 +2691,8 @@
                                     <td class="text-left"><span class="status-badge status-warning">待审核</span></td>
                                     <td class="text-left">-</td>
                                     <td class="text-right">
-                                        <button class="btn btn-text" onclick="showAppealDetail('pending')">查 看</button>
-                                        <button class="btn btn-text ml-2" onclick="showAppealDetail('audit')">审 核</button>
+                                        <button class="btn btn-text" onclick="openAppealDrawer('pending')">查 看</button>
+                                        <button class="btn btn-text ml-2" onclick="openAppealDrawer('audit')">审 核</button>
                                     </td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
@@ -2231,7 +2705,7 @@
                                     <td class="text-left"><span class="status-badge status-success">审核通过</span></td>
                                     <td class="text-left">2026-05-14</td>
                                     <td class="text-right">
-                                        <button class="btn btn-text" onclick="showAppealDetail('approved')">查 看</button>
+                                        <button class="btn btn-text" onclick="openAppealDrawer('approved')">查 看</button>
                                     </td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
@@ -2244,7 +2718,7 @@
                                     <td class="text-left"><span class="status-badge status-error">审核驳回</span></td>
                                     <td class="text-left">-</td>
                                     <td class="text-right">
-                                        <button class="btn btn-text" onclick="showAppealDetail('rejected')">查 看</button>
+                                        <button class="btn btn-text" onclick="openAppealDrawer('rejected')">查 看</button>
                                     </td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
@@ -2257,7 +2731,7 @@
                                     <td class="text-left"><span class="status-badge status-success">审核通过</span></td>
                                     <td class="text-left">2026-05-13</td>
                                     <td class="text-right">
-                                        <button class="btn btn-text" onclick="showAppealDetail('approved2')">查 看</button>
+                                        <button class="btn btn-text" onclick="openAppealDrawer('approved2')">查 看</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -2277,13 +2751,139 @@
                 </div>
             </div>
 
-            <!-- ========== 新增申诉 ========== -->
-            <div id="page-appeal-add" class="page">
+            <!-- ========== 账单复核抽屉 ========== -->
+            <div id="appeal-drawer" class="drawer-overlay fixed inset-0 bg-black/50 z-[999]" onclick="closeAppealDrawer()">
+                <div class="drawer-container fixed top-0 right-0 h-full bg-white shadow-2xl w-[800px] transform transition-transform duration-300 ease-in-out translate-x-0" onclick="event.stopPropagation()">
+                    <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
+                        <h2 class="text-base font-bold text-neutral-900" id="appeal-drawer-title">账单复核详情</h2>
+                        <button class="text-neutral-500 hover:text-neutral-700 cursor-pointer" onclick="closeAppealDrawer()">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="flex-1 overflow-y-auto px-5 py-4" style="max-height: calc(100vh - 140px);">
+                        <div id="appeal-drawer-content" class="grid grid-cols-2 gap-6">
+                            <!-- 左侧：复核信息 -->
+                            <div id="appeal-drawer-left">
+                                <h3 class="text-sm font-semibold text-neutral-700 mb-4">复核信息</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="text-sm text-neutral-500 block mb-1">关联账单</label>
+                                        <div id="appeal-drawer-bills" class="border border-neutral-200 rounded p-3 bg-neutral-50">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm text-neutral-500 block mb-1">复核原因</label>
+                                        <p id="appeal-drawer-reason" class="text-sm"></p>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm text-neutral-500 block mb-1">期望调账金额</label>
+                                        <p id="appeal-drawer-amount" class="text-sm font-semibold"></p>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm text-neutral-500 block mb-1">附件</label>
+                                        <div id="appeal-drawer-attachments" class="flex gap-2">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div><span class="text-sm text-neutral-500">复核申请人</span><p id="appeal-drawer-applicant" class="text-sm font-medium mt-1"></p></div>
+                                        <div><span class="text-sm text-neutral-500">复核时间</span><p id="appeal-drawer-applyTime" class="text-sm font-medium mt-1"></p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 右侧：审核信息 -->
+                            <div id="appeal-drawer-right">
+                                <h3 class="text-sm font-semibold text-neutral-700 mb-4">审核信息</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm text-neutral-500">审核状态</span>
+                                        <span id="appeal-drawer-status" class="status-badge"></span>
+                                    </div>
+                                    <!-- 审核操作区（仅审核模式显示） -->
+                                    <div id="appeal-drawer-audit-form" class="space-y-4" style="display:none;">
+                                        <div>
+                                            <label class="text-sm text-neutral-500 block mb-1">审核结果 <span class="text-error">*</span></label>
+                                            <div class="flex gap-4">
+                                                <label class="flex items-center gap-2 cursor-pointer">
+                                                    <input type="radio" name="drawer-audit-result" value="pass">
+                                                    <span class="text-sm">审核通过</span>
+                                                </label>
+                                                <label class="flex items-center gap-2 cursor-pointer">
+                                                    <input type="radio" name="drawer-audit-result" value="reject">
+                                                    <span class="text-sm">审核驳回</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm text-neutral-500 block mb-1">实际调账金额 <span class="text-error">*</span></label>
+                                            <input type="number" id="drawer-audit-amount" class="w-full border border-neutral-200 rounded p-2 text-sm h-8 input-focus" placeholder="审核通过时必填">
+                                        </div>
+                                        <div>
+                                            <label class="text-sm text-neutral-500 block mb-1">调账计入账单日期 <span class="text-error">*</span></label>
+                                            <input type="date" id="drawer-audit-date" class="w-full border border-neutral-200 rounded p-2 text-sm h-8 input-focus">
+                                            <p class="text-xs text-neutral-400 mt-1">调账金额将计入该日期的结算单</p>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm text-neutral-500 block mb-1">审核说明 <span class="text-error">*</span></label>
+                                            <textarea id="drawer-audit-note" class="w-full border border-neutral-200 rounded p-2 text-sm h-24 input-focus resize-none" placeholder="请输入审核说明"></textarea>
+                                        </div>
+                                    </div>
+                                    <!-- 审核通过信息（只读） -->
+                                    <div id="appeal-drawer-pass-info" class="space-y-4" style="display:none;">
+                                        <div>
+                                            <label class="text-sm text-neutral-500 block mb-1">审核结果</label>
+                                            <p class="text-sm font-semibold text-success">审核通过</p>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm text-neutral-500 block mb-1">实际调账金额</label>
+                                            <p id="drawer-pass-amount" class="text-sm font-semibold"></p>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm text-neutral-500 block mb-1">调账计入账单日期</label>
+                                            <p id="drawer-pass-date" class="text-sm"></p>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm text-neutral-500 block mb-1">审核说明</label>
+                                            <p id="drawer-pass-note" class="text-sm"></p>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div><span class="text-sm text-neutral-500">审核人</span><p id="drawer-pass-auditor" class="text-sm font-medium mt-1"></p></div>
+                                            <div><span class="text-sm text-neutral-500">审核时间</span><p id="drawer-pass-time" class="text-sm font-medium mt-1"></p></div>
+                                        </div>
+                                    </div>
+                                    <!-- 审核驳回信息（只读） -->
+                                    <div id="appeal-drawer-reject-info" class="space-y-4" style="display:none;">
+                                        <div>
+                                            <label class="text-sm text-neutral-500 block mb-1">审核结果</label>
+                                            <p class="text-sm font-semibold text-error">审核驳回</p>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm text-neutral-500 block mb-1">驳回原因</label>
+                                            <p id="drawer-reject-note" class="text-sm"></p>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div><span class="text-sm text-neutral-500">审核人</span><p id="drawer-reject-auditor" class="text-sm font-medium mt-1"></p></div>
+                                            <div><span class="text-sm text-neutral-500">审核时间</span><p id="drawer-reject-time" class="text-sm font-medium mt-1"></p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 底部按钮区 -->
+                    <div id="appeal-drawer-footer" class="px-5 py-4 border-t border-neutral-200 bg-neutral-50 flex justify-end gap-3" style="display:none;">
+                        <button class="btn btn-secondary btn-md" onclick="closeAppealDrawer()">取 消</button>
+                        <button class="btn btn-primary btn-md" onclick="submitAppealAudit()">提交审核</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 新增账单复核（已隐藏，改为弹窗） ========== -->
+            <div id="page-appeal-add" class="page" style="display:none">
                 <div class="bg-white rounded border border-neutral-200 mb-3">
                     <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
                         <div class="flex items-center gap-2">
                             <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold">新增申诉</h1>
+                            <h1 class="text-base font-bold">新增账单复核</h1>
                         </div>
                         <button class="btn btn-secondary btn-md" onclick="showPage('appeal'); switchSubnav('appeal')"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
                     </div>
@@ -2329,8 +2929,8 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="text-sm text-neutral-500 block mb-1">申诉原因 <span class="text-error">*</span></label>
-                                <textarea class="w-full border border-neutral-200 rounded p-2 text-sm h-24 input-focus resize-none" placeholder="请输入申诉原因，最多500字"></textarea>
+                                <label class="text-sm text-neutral-500 block mb-1">复核原因 <span class="text-error">*</span></label>
+                                <textarea class="w-full border border-neutral-200 rounded p-2 text-sm h-24 input-focus resize-none" placeholder="请输入复核原因，最多500字"></textarea>
                             </div>
                             <div>
                                 <label class="text-sm text-neutral-500 block mb-1">期望调账金额 <span class="text-error">*</span></label>
@@ -2352,149 +2952,8 @@
                 </div>
             </div>
 
-            <!-- ========== 申诉详情/审核 ========== -->
-            <div id="page-appeal-detail" class="page">
-                <div class="bg-white rounded border border-neutral-200 mb-3">
-                    <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
-                        <div class="flex items-center gap-2">
-                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold">申诉详情</h1>
-                        </div>
-                        <button class="btn btn-secondary btn-md" onclick="showPage('appeal'); switchSubnav('appeal')"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
-                    </div>
-                    <div class="px-5 py-4">
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <h2 class="text-sm font-semibold text-neutral-700 mb-4">申诉信息</h2>
-                                <div class="space-y-4">
-                                    <div>
-                                        <label class="text-sm text-neutral-500 block mb-1">关联账单</label>
-                                        <div class="border border-neutral-200 rounded p-3 bg-neutral-50">
-                                            <div class="flex items-center gap-2 mb-2">
-                                                <i data-lucide="file-text" class="w-4 h-4 text-neutral-400"></i>
-                                                <span class="text-sm font-medium">JS-20260514-001</span>
-                                                <span class="text-xs text-neutral-400">2026-05-13</span>
-                                                <span class="text-xs text-neutral-400">原结算金额：¥15,600.00</span>
-                                            </div>
-                                            <div class="flex items-center gap-2">
-                                                <i data-lucide="file-text" class="w-4 h-4 text-neutral-400"></i>
-                                                <span class="text-sm font-medium">JS-20260513-001</span>
-                                                <span class="text-xs text-neutral-400">2026-05-12</span>
-                                                <span class="text-xs text-neutral-400">原结算金额：¥20,300.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="text-sm text-neutral-500 block mb-1">申诉原因</label>
-                                        <p class="text-sm">账单JS-20260514-001中部分券码核销金额与实际不符，5月13日10:23的加油订单实际核销金额应为¥150.00而非¥100.00，请核实调整。</p>
-                                    </div>
-                                    <div>
-                                        <label class="text-sm text-neutral-500 block mb-1">期望调账金额</label>
-                                        <p class="text-sm font-semibold">¥500.00</p>
-                                    </div>
-                                    <div>
-                                        <label class="text-sm text-neutral-500 block mb-1">附件</label>
-                                        <div class="flex gap-2">
-                                            <span class="text-sm text-primary cursor-pointer hover:underline">凭证1.jpg</span>
-                                            <span class="text-sm text-primary cursor-pointer hover:underline">凭证2.pdf</span>
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div><span class="text-sm text-neutral-500">申诉人</span><p class="text-sm font-medium mt-1">张三（商户管理员）</p></div>
-                                        <div><span class="text-sm text-neutral-500">申诉时间</span><p class="text-sm font-medium mt-1">2026-05-14 09:30</p></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <h2 class="text-sm font-semibold text-neutral-700 mb-4">审核信息</h2>
-                                <div class="space-y-4">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-sm text-neutral-500">审核状态</span>
-                                        <span id="appeal-status-badge" class="status-badge status-warning">待审核</span>
-                                    </div>
 
-                                    <div id="appeal-audit-section" style="display: block;">
-                                        <div class="space-y-4">
-                                            <div>
-                                                <label class="text-sm text-neutral-500 block mb-1">审核结果 <span class="text-error">*</span></label>
-                                                <div class="flex gap-4">
-                                                    <label class="flex items-center gap-2 cursor-pointer">
-                                                        <input type="radio" name="audit-result" value="pass">
-                                                        <span class="text-sm">审核通过</span>
-                                                    </label>
-                                                    <label class="flex items-center gap-2 cursor-pointer">
-                                                        <input type="radio" name="audit-result" value="reject">
-                                                        <span class="text-sm">审核驳回</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label class="text-sm text-neutral-500 block mb-1">实际调账金额 <span class="text-error">*</span></label>
-                                                <input type="number" value="500" class="w-full border border-neutral-200 rounded p-2 text-sm h-8 input-focus" placeholder="审核通过时必填">
-                                            </div>
-                                            <div>
-                                                <label class="text-sm text-neutral-500 block mb-1">调账计入账单日期 <span class="text-error">*</span></label>
-                                                <input type="date" id="appeal-audit-date" value="2026-05-14" class="w-full border border-neutral-200 rounded p-2 text-sm h-8 input-focus" min="2026-05-18">
-                                                <p class="text-xs text-neutral-400 mt-1">仅可选择当日及之后的日期</p>
-                                            </div>
-                                            <div>
-                                                <label class="text-sm text-neutral-500 block mb-1">审核说明 <span class="text-error">*</span></label>
-                                                <textarea class="w-full border border-neutral-200 rounded p-2 text-sm h-24 input-focus resize-none" placeholder="请输入审核说明"></textarea>
-                                            </div>
-                                            <div class="flex gap-3 pt-2">
-                                                <button class="btn btn-primary btn-md" onclick="handleAppealAudit()">提交审核</button>
-                                                <button class="btn btn-secondary btn-md" onclick="showPage('appeal'); switchSubnav('appeal')">取 消</button>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <div id="appeal-audit-pass-info" style="display: none;">
-                                        <div class="space-y-4">
-                                            <div>
-                                                <label class="text-sm text-neutral-500 block mb-1">审核结果</label>
-                                                <p class="text-sm font-semibold text-success">审核通过</p>
-                                            </div>
-                                            <div>
-                                                <label class="text-sm text-neutral-500 block mb-1">实际调账金额</label>
-                                                <p class="text-sm font-semibold">+¥500.00</p>
-                                            </div>
-                                            <div>
-                                                <label class="text-sm text-neutral-500 block mb-1">调账计入账单日期</label>
-                                                <p class="text-sm">2026-05-18</p>
-                                            </div>
-                                            <div>
-                                                <label class="text-sm text-neutral-500 block mb-1">审核说明</label>
-                                                <p class="text-sm">经核实，订单券码核销金额确实存在差异，同意调账申请。</p>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-4">
-                                                <div><span class="text-sm text-neutral-500">审核人</span><p class="text-sm font-medium mt-1">李四（平台管理员）</p></div>
-                                                <div><span class="text-sm text-neutral-500">审核时间</span><p class="text-sm font-medium mt-1">2026-05-15 10:30</p></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div id="appeal-audit-reject-info" style="display: none;">
-                                        <div class="space-y-4">
-                                            <div>
-                                                <label class="text-sm text-neutral-500 block mb-1">审核结果</label>
-                                                <p class="text-sm font-semibold text-error">审核驳回</p>
-                                            </div>
-                                            <div>
-                                                <label class="text-sm text-neutral-500 block mb-1">驳回原因</label>
-                                                <p class="text-sm">申诉材料不足，无法核实差异金额。请补充完整交易凭证后重新申诉。</p>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-4">
-                                                <div><span class="text-sm text-neutral-500">审核人</span><p class="text-sm font-medium mt-1">李四（平台管理员）</p></div>
-                                                <div><span class="text-sm text-neutral-500">审核时间</span><p class="text-sm font-medium mt-1">2026-05-13 14:20</p></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!-- ========== 翼码对账列表 ========== -->
             <div id="page-yima-recon" class="page">
@@ -3302,6 +3761,51 @@
                 </div>
             </div>
 
+        <!-- ========== 账单复核申请 - 右侧弹窗 ========== -->
+        <div id="review-drawer" class="drawer-overlay fixed inset-0 z-[999] justify-end" onclick="if(event.target===this)closeReviewDrawer()">
+            <div class="drawer-panel w-[600px] h-full bg-white shadow-xl flex flex-col">
+                <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                        <h2 class="text-base font-bold text-neutral-900">账单复核申请</h2>
+                    </div>
+                    <button class="text-neutral-400 hover:text-neutral-700 cursor-pointer" onclick="closeReviewDrawer()"><i data-lucide="x" class="w-5 h-5"></i></button>
+                </div>
+                <div class="flex-1 overflow-y-auto px-5 py-4">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm text-neutral-500 block mb-1">关联账单 <span class="text-error">*</span></label>
+                            <div id="review-drawer-bills" class="border border-neutral-200 rounded p-3 bg-neutral-50 space-y-2">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-sm text-neutral-500 block mb-1">复核原因 <span class="text-error">*</span></label>
+                            <textarea class="w-full border border-neutral-200 rounded p-2 text-sm h-24 input-focus resize-none" placeholder="请输入复核原因，最多500字" maxlength="500"></textarea>
+                        </div>
+                        <div>
+                            <label class="text-sm text-neutral-500 block mb-1">期望调账金额 <span class="text-error">*</span></label>
+                            <input type="number" class="w-full border border-neutral-200 rounded p-2 text-sm h-8 input-focus" placeholder="可正可负，正数增加结算，负数减少结算">
+                        </div>
+                        <div>
+                            <label class="text-sm text-neutral-500 block mb-1">附件上传</label>
+                            <div class="border border-dashed border-neutral-300 rounded p-4 text-center cursor-pointer hover:border-primary transition-colors">
+                                <i data-lucide="upload" class="w-6 h-6 mx-auto text-neutral-400 mb-1"></i>
+                                <p class="text-xs text-neutral-400">点击或拖拽上传（jpg/png/pdf，最多3个，单个最大10MB）</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><span class="text-sm text-neutral-500">复核申请人</span><p class="text-sm font-medium mt-1">张三（商户管理员）</p></div>
+                            <div><span class="text-sm text-neutral-500">复核时间</span><p class="text-sm font-medium mt-1" id="review-drawer-time"></p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-4 border-t border-neutral-200 flex justify-end gap-3">
+                    <button class="btn btn-secondary btn-md" onclick="closeReviewDrawer()">取 消</button>
+                    <button class="btn btn-primary btn-md" onclick="submitReviewDrawer()">提交复核申请</button>
+                </div>
+            </div>
+        </div>
+
         </main>
     </div>
 
@@ -3536,7 +4040,7 @@
             <div class="p-5">
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div><span class="text-sm text-neutral-500">商户</span><p class="text-sm font-medium mt-1">中国石油安徽分公司</p></div>
-                    <div><span class="text-sm text-neutral-500">活动发行方</span><p class="text-sm font-medium mt-1">数科公司</p></div>
+                    <div><span class="text-sm text-neutral-500">活动发行方</span><p class="text-sm font-medium mt-1">皖通公司</p></div>
                 </div>
                 <table class="data-table w-full">
                     <thead>
@@ -3548,17 +4052,17 @@
                     </thead>
                     <tbody>
                         <tr class="border-b border-neutral-200 h-10 table-row">
-                            <td class="text-left">活动A</td>
+                            <td class="text-left">皖通春日加油活动</td>
                             <td class="text-right font-semibold tabular-nums">¥5,400.00</td>
                             <td class="text-right">57.69%</td>
                         </tr>
                         <tr class="border-b border-neutral-200 h-10 table-row">
-                            <td class="text-left">活动B</td>
+                            <td class="text-left">皖通高速出行活动</td>
                             <td class="text-right font-semibold tabular-nums">¥2,700.00</td>
                             <td class="text-right">28.85%</td>
                         </tr>
                         <tr class="border-b border-neutral-200 h-10 table-row">
-                            <td class="text-left">活动D</td>
+                            <td class="text-left">皖通驿达服务区活动</td>
                             <td class="text-right font-semibold tabular-nums">¥1,260.00</td>
                             <td class="text-right">13.46%</td>
                         </tr>
@@ -3567,48 +4071,6 @@
             </div>
             <div class="px-5 py-3 bg-neutral-50 border-t border-neutral-200 flex justify-end">
                 <button class="btn btn-secondary btn-md" onclick="hideModal('modal-matrix-detail')">关 闭</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== 矩阵-平台运营方分摊明细弹窗 ========== -->
-    <div id="modal-matrix-platform" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-matrix-platform')">
-        <div class="modal-content max-w-2xl w-full my-8">
-            <div class="px-5 py-3 flex justify-between items-center border-b border-neutral-200">
-                <h3 class="text-base font-semibold">分摊明细</h3>
-                <button onclick="hideModal('modal-matrix-platform')" class="text-neutral-400 hover:text-neutral-600 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-5">
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div><span class="text-sm text-neutral-500">商户</span><p class="text-sm font-medium mt-1">中国石油安徽分公司</p></div>
-                    <div><span class="text-sm text-neutral-500">活动发行方</span><p class="text-sm font-medium mt-1">平台运营方</p></div>
-                </div>
-                <table class="data-table w-full">
-                    <thead>
-                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                            <th class="text-left">活动名称</th>
-                            <th class="text-right">分摊金额</th>
-                            <th class="text-right">占比</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b border-neutral-200 h-10 table-row">
-                            <td class="text-left">平台发券</td>
-                            <td class="text-right font-semibold tabular-nums">¥3,000.00</td>
-                            <td class="text-right">100.00%</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr class="bg-neutral-50 h-10 font-semibold">
-                            <td class="text-left">合计</td>
-                            <td class="text-right tabular-nums">¥3,000.00</td>
-                            <td class="text-right">100.00%</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="px-5 py-3 bg-neutral-50 border-t border-neutral-200 flex justify-end">
-                <button class="btn btn-secondary btn-md" onclick="hideModal('modal-matrix-platform')">关 闭</button>
             </div>
         </div>
     </div>
@@ -3628,7 +4090,7 @@
                 <table class="data-table w-full">
                     <thead>
                         <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                            <th class="text-left">关联申诉单号</th>
+                            <th class="text-left">关联复核单号</th>
                             <th class="text-right">调账金额</th>
                             <th class="text-left">调账原因</th>
                             <th class="text-left">调账计入账单日期</th>
@@ -3690,33 +4152,34 @@
 
     <!-- ========== 批量退款弹窗 ========== -->
     <div id="modal-batch-refund" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-batch-refund')">
-        <div class="modal-content max-w-md w-full my-8">
-            <div class="flex justify-between items-center px-5 py-3 border-b border-neutral-200">
+        <div class="modal-content max-w-lg w-full my-8">
+            <div class="flex justify-between items-center px-5 py-4 border-b border-neutral-200">
                 <h3 class="text-base font-bold text-neutral-900">批量退款</h3>
-                <button onclick="hideModal('modal-batch-refund')" class="text-neutral-400 hover:text-neutral-600 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="hideModal('modal-batch-refund')" class="text-neutral-500 hover:text-neutral-700 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <div class="px-5 py-4">
-                <div class="space-y-3">
-                    <div>
-                        <span class="text-sm text-neutral-700">已选择 <span class="font-semibold" id="batch-refund-count">0</span> 笔订单</span>
+            <div class="px-5 py-5">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-neutral-700">已选择</span>
+                        <span class="text-base font-semibold text-neutral-900"><span id="batch-refund-count">0</span> 笔订单</span>
                     </div>
-                    <div>
-                        <span class="text-sm text-neutral-700">退款总额 (¥)</span>
-                        <input type="text" id="batch-refund-total" class="w-full h-9 px-3 border border-neutral-200 rounded mt-1.5 text-sm bg-neutral-50" readonly>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-neutral-700">退款总额</span>
+                        <span class="text-base font-semibold tabular-nums text-primary">¥<span id="batch-refund-total">0.00</span></span>
                     </div>
                     <div>
                         <span class="text-sm text-neutral-700">退款原因</span>
-                        <textarea id="batch-refund-reason" class="w-full px-3 py-1.5 border border-neutral-200 rounded mt-1.5 text-sm resize-none" rows="2" placeholder="可选"></textarea>
+                        <textarea id="batch-refund-reason" class="w-full px-3 py-2 border border-neutral-200 rounded mt-2 text-sm resize-none input-focus" rows="3" placeholder="请输入退款原因（选填）"></textarea>
                     </div>
                 </div>
             </div>
-            <div class="px-5 py-3 bg-neutral-50 border-t border-neutral-200 flex justify-end gap-3">
+            <div class="px-5 py-4 bg-neutral-50 border-t border-neutral-200 flex justify-end gap-3">
                 <button class="btn btn-secondary btn-md" onclick="hideModal('modal-batch-refund')">取 消</button>
-                <button class="btn btn-primary btn-md" onclick="handleBatchRefundSubmit()">确认退款</button>
+                <button class="btn btn-primary btn-md" onclick="handleBatchRefundSubmit()">确 认</button>
             </div>
         </div>
     </div>
 
-    <script>lucide.createIcons(); initBillDropdown(); initPayOrderSelectAll();</script>
+    <script>lucide.createIcons(); initBillDropdown(); initPayOrderSelectAll(); initMerchantBillSelectAll(); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
 </body>
 </html>

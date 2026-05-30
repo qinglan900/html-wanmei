@@ -1,0 +1,2701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>皖美 E 行 - 修车服务</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --color-primary: #4CAF50;
+      --color-primary-dark: #388E3C;
+      --color-primary-light: #66BB6A;
+      --color-primary-bg: #E8F5E9;
+      --color-white: #FFFFFF;
+      --color-bg-light: #F5F5F5;
+      --color-bg-lighter: #FAFAFA;
+      --color-text-primary: #333333;
+      --color-text-secondary: #666666;
+      --color-text-muted: #999999;
+      --color-text-disabled: #CCCCCC;
+      --color-success: #4CAF50;
+      --color-warning: #FF9800;
+      --color-danger: #F44336;
+      --color-info: #2196F3;
+      --color-neutral: #9E9E9E;
+      --color-border: #E0E0E0;
+      --color-border-focus: #BDBDBD;
+      --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 20px;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 12px;
+      --spacing-lg: 16px;
+      --spacing-xl: 24px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: var(--color-text-primary);
+      background: #E8E8E8;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      max-width: 450px;
+      margin: 0 auto;
+      background: var(--color-bg-light);
+      min-height: 100vh;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .view {
+      display: none;
+      flex-direction: column;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .view.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+
+    .navbar {
+      height: 56px;
+      background: var(--color-primary);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--spacing-lg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar-back {
+      color: var(--color-white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+
+    .navbar-back:active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar-title {
+      color: var(--color-white);
+      font-size: 18px;
+      font-weight: bold;
+      flex: 1;
+      text-align: center;
+    }
+
+    .navbar-action {
+      color: var(--color-white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      gap: var(--spacing-xs);
+      width: 32px;
+      text-align: right;
+      justify-content: flex-end;
+    }
+
+    .navbar-right {
+      width: 32px;
+      text-align: right;
+      cursor: pointer;
+      color: var(--color-white);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .search-section {
+      background: var(--color-white);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--color-bg-light);
+      border-radius: 24px;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      gap: var(--spacing-sm);
+    }
+
+    .search-box i {
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: var(--color-text-disabled);
+    }
+
+    .search-btn {
+      background: none;
+      border: none;
+      color: var(--color-primary);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-md);
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: 6px var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      background: var(--color-white);
+      font-size: 13px;
+      color: var(--color-text-primary);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+
+    .service-type-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
+      width: 100%;
+    }
+
+    .service-chip {
+      background: var(--color-bg-light);
+      padding: 4px var(--spacing-md);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--color-border);
+      user-select: none;
+    }
+
+    .service-chip.active {
+      background: var(--color-primary-bg);
+      border-color: var(--color-primary);
+      color: var(--color-primary-dark);
+    }
+
+    .reset-filter {
+      font-size: 12px;
+      color: var(--color-primary);
+      margin-left: auto;
+      cursor: pointer;
+    }
+
+    .list-container {
+      flex: 1;
+      padding-bottom: 20px;
+    }
+
+    .list-card {
+      background: var(--color-white);
+      border-radius: 0;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .list-item {
+      padding: var(--spacing-lg);
+      display: flex;
+      gap: var(--spacing-md);
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-white);
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .list-item:active {
+      background: var(--color-bg-lighter);
+    }
+
+    .list-item-image {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-md);
+      background: var(--color-primary-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-primary);
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .list-item-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .list-item-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+    }
+
+    .list-item-distance {
+      font-size: 12px;
+      color: var(--color-info);
+      margin-bottom: var(--spacing-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .list-item-rating {
+      font-size: 12px;
+      color: var(--color-warning);
+      margin-bottom: var(--spacing-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .list-item-address {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-bottom: var(--spacing-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .list-item-services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-xs);
+      margin: var(--spacing-sm) 0;
+    }
+
+    .service-tag {
+      background: var(--color-bg-light);
+      padding: 2px var(--spacing-sm);
+      border-radius: 12px;
+      font-size: 10px;
+      color: var(--color-text-secondary);
+    }
+
+    .list-item-phone {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .list-item-actions {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-sm);
+    }
+
+    .action-btn {
+      font-size: 13px;
+      padding: 4px var(--spacing-sm);
+      border-radius: 16px;
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      transition: all 0.2s;
+      color: var(--color-text-primary);
+    }
+
+    .action-btn i {
+      font-size: 12px;
+    }
+
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+
+    .action-btn.primary {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    .btn-primary {
+      height: 32px;
+      padding: 0 var(--spacing-md);
+      background: var(--color-primary);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.95);
+    }
+
+    .btn-secondary {
+      height: 32px;
+      padding: 0 var(--spacing-md);
+      background: var(--color-white);
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: var(--color-primary-bg);
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      background: var(--color-white);
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: var(--color-primary-bg);
+    }
+
+    .btn-icon:active {
+      transform: scale(0.95);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .tag-success {
+      background: var(--color-primary-bg);
+      color: var(--color-success);
+    }
+
+    .tag-danger {
+      background: #FFEBEE;
+      color: var(--color-danger);
+    }
+
+    .tag-warning {
+      background: #FFF3E0;
+      color: var(--color-warning);
+    }
+
+    .tag-default {
+      background: var(--color-bg-light);
+      color: var(--color-neutral);
+    }
+
+    .tag-info {
+      background: #E3F2FD;
+      color: var(--color-info);
+    }
+
+    .tag-purple {
+      background: #F3E5F5;
+      color: #9C27B0;
+    }
+
+    .view {
+      display: none;
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    }
+
+    .view.active {
+      display: block;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .detail-container {
+      padding-bottom: 80px;
+      background: var(--color-bg-light);
+    }
+
+    .detail-info-card {
+      background: var(--color-white);
+      margin: var(--spacing-md) var(--spacing-lg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-lg);
+    }
+
+    .detail-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .detail-rating {
+      font-size: 14px;
+      color: var(--color-warning);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .detail-info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-sm);
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .detail-info-row span {
+      color: var(--color-text-primary);
+      font-weight: 500;
+    }
+
+    .detail-section {
+      margin: var(--spacing-md) var(--spacing-lg);
+      background: var(--color-white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-lg);
+    }
+
+    .detail-section-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-md);
+      padding-bottom: var(--spacing-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .price-table th {
+      background: var(--color-bg-light);
+      padding: var(--spacing-sm) var(--spacing-md);
+      text-align: left;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+    }
+
+    .price-table td {
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    .review-item {
+      padding: var(--spacing-md) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .review-item:first-child {
+      padding-top: 0;
+    }
+
+    .review-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .review-user {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+
+    .review-time {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .review-rating {
+      font-size: 12px;
+      color: var(--color-warning);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .review-content {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    .review-images {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
+      flex-wrap: wrap;
+    }
+
+    .review-image-placeholder {
+      width: 60px;
+      height: 60px;
+      background: var(--color-bg-light);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted);
+    }
+
+    .queue-info {
+      display: flex;
+      gap: var(--spacing-lg);
+    }
+
+    .queue-item {
+      flex: 1;
+      text-align: center;
+      padding: var(--spacing-md);
+      background: var(--color-primary-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(76, 175, 80, 0.15);
+    }
+
+    .queue-label {
+      font-size: 12px;
+      color: var(--color-primary);
+      margin-bottom: var(--spacing-xs);
+      font-weight: 500;
+    }
+
+    .queue-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--color-primary-dark);
+    }
+
+    .qual-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .qual-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--color-bg-light);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--color-text-primary);
+    }
+
+    .detail-footer {
+      position: sticky;
+      bottom: 0;
+      background: var(--color-white);
+      padding: var(--spacing-md) var(--spacing-lg);
+      padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.02);
+      display: flex;
+      gap: var(--spacing-md);
+      z-index: 100;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .detail-footer .action-btn {
+      flex: 1;
+      height: 44px;
+      font-size: 15px;
+      border-radius: var(--radius-md);
+      font-weight: bold;
+      justify-content: center;
+      padding: 0 var(--spacing-md);
+    }
+
+    .btn-block {
+      flex: 1;
+      height: 44px;
+      border-radius: var(--radius-md);
+      font-weight: bold;
+      justify-content: center;
+    }
+
+    .form-container {
+      padding: var(--spacing-lg);
+      padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    }
+
+    .form-card {
+      background: var(--color-white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .datetime-row {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .datetime-row .form-input,
+    .datetime-row .form-select {
+      flex: 1;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-sm);
+      font-weight: 500;
+    }
+
+    .form-label .required {
+      color: var(--color-danger);
+      margin-left: 2px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--color-text-primary);
+      background: var(--color-white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--color-primary);
+    }
+
+    .form-input::placeholder {
+      color: var(--color-text-disabled);
+    }
+
+    .form-input:read-only {
+      background: var(--color-bg-light);
+    }
+
+    .form-textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--color-text-primary);
+      background: var(--color-white);
+      outline: none;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    .form-textarea:focus {
+      border-color: var(--color-primary);
+    }
+
+    .form-textarea::placeholder {
+      color: var(--color-text-disabled);
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      transition: all 0.2s;
+    }
+
+    .checkbox-item.checked {
+      border-color: var(--color-primary);
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+    }
+
+    .checkbox-item input {
+      display: none;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      transition: all 0.2s;
+    }
+
+    .radio-item.checked {
+      border-color: var(--color-primary);
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+    }
+
+    .radio-item input {
+      display: none;
+    }
+
+    .radio-label {
+      flex: 1;
+    }
+
+    .toggle-group {
+      display: flex;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .toggle-item {
+      flex: 1;
+      padding: 10px var(--spacing-md);
+      text-align: center;
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      background: var(--color-white);
+      transition: all 0.2s;
+      border-right: 1px solid var(--color-border);
+    }
+
+    .toggle-item:last-child {
+      border-right: none;
+    }
+
+    .toggle-item.active {
+      background: var(--color-primary);
+      color: var(--color-white);
+      font-weight: 500;
+    }
+
+    .form-select {
+      width: 100%;
+      height: 40px;
+      padding: 0 var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--color-text-primary);
+      background: var(--color-white);
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .form-select:focus {
+      border-color: var(--color-primary);
+    }
+
+    .btn-text {
+      background: none;
+      border: none;
+      color: var(--color-primary);
+      font-size: 13px;
+      cursor: pointer;
+      padding: var(--spacing-xs) 0;
+      transition: color 0.2s;
+    }
+
+    .btn-text:hover {
+      color: var(--color-primary-dark);
+    }
+
+    .timeline {
+      padding: var(--spacing-md) 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: var(--spacing-md);
+      padding-bottom: var(--spacing-lg);
+      position: relative;
+    }
+
+    .timeline-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 20px;
+      bottom: 0;
+      width: 2px;
+      background: var(--color-border);
+    }
+
+    .timeline-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      border: 2px solid var(--color-white);
+      box-shadow: 0 0 0 2px var(--color-primary);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .timeline-content {
+      flex: 1;
+    }
+
+    .timeline-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .timeline-time {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .timeline-desc {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .price-table thead {
+      background: var(--color-bg-light);
+    }
+
+    .price-table th {
+      padding: var(--spacing-sm) var(--spacing-xs);
+      text-align: left;
+      font-weight: bold;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+    }
+
+    .price-table td {
+      padding: var(--spacing-sm) var(--spacing-xs);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    .price-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .review-item {
+      padding: var(--spacing-md);
+      background: var(--color-bg-light);
+      border-radius: var(--radius-md);
+    }
+
+    .review-rating {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-warning);
+      font-size: 14px;
+    }
+
+    .review-content {
+      font-size: 13px;
+      color: var(--color-text-primary);
+      line-height: 1.6;
+    }
+
+    .review-images {
+      display: flex;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+      margin-top: var(--spacing-sm);
+    }
+
+    .review-image-placeholder {
+      width: 80px;
+      height: 80px;
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted);
+    }
+
+    .record-list {
+      padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .record-card {
+      background: var(--color-white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .record-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .record-order-no {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+
+    .record-info {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .record-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
+    }
+
+    .toast {
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: var(--color-text-primary);
+      color: var(--color-white);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      z-index: 300;
+      opacity: 0;
+      transition: all 0.3s ease-out;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: var(--spacing-lg);
+    }
+
+    .modal.active,
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .modal-close {
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: var(--spacing-lg);
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: var(--spacing-md);
+      padding: var(--spacing-lg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .modal-footer .btn-secondary,
+    .modal-footer .btn-primary {
+      flex: 1;
+      height: 44px;
+    }
+
+    .star-rating {
+      display: flex;
+      gap: var(--spacing-xs);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .star-rating i {
+      cursor: pointer;
+      color: var(--color-border);
+      transition: color 0.2s;
+    }
+
+    .star-rating i.active,
+    .star-rating i:hover {
+      color: var(--color-warning);
+    }
+
+    .image-upload-area {
+      display: flex;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+      margin-top: var(--spacing-sm);
+    }
+
+    .image-upload-btn {
+      width: 80px;
+      height: 80px;
+      border: 1px dashed var(--color-border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      font-size: 12px;
+      gap: var(--spacing-xs);
+      transition: all 0.2s;
+    }
+
+    .image-upload-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .image-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-md);
+      background: var(--color-bg-light);
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted);
+      position: relative;
+    }
+
+    .image-preview .remove-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      background: var(--color-danger);
+      color: var(--color-white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .list-item-animate {
+      opacity: 0;
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+
+    .list-item-animate:nth-child(1) { animation-delay: 0ms; }
+    .list-item-animate:nth-child(2) { animation-delay: 50ms; }
+    .list-item-animate:nth-child(3) { animation-delay: 100ms; }
+    .list-item-animate:nth-child(4) { animation-delay: 150ms; }
+    .list-item-animate:nth-child(5) { animation-delay: 200ms; }
+    .list-item-animate:nth-child(6) { animation-delay: 250ms; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 列表页视图 -->
+    <div class="view view-list active" id="listView">
+      <nav class="navbar">
+        <div class="navbar-back" style="visibility: hidden;">
+          <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+        </div>
+        <div class="navbar-title">服务区 · 汽修服务</div>
+        <div class="navbar-right" id="recordsBtn">记录</div>
+      </nav>
+
+      <div class="search-section">
+        <div class="search-box">
+          <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+          <input type="text" class="search-input" id="searchInput" placeholder="搜索服务区名称...">
+          <button class="search-btn" id="searchBtn">搜索</button>
+        </div>
+        <div class="filter-bar">
+          <select id="statusFilter" class="filter-select">
+            <option value="all">全部营业状态</option>
+            <option value="open">正常营业</option>
+            <option value="closed">暂停营业</option>
+          </select>
+          <select id="sortSelect" class="filter-select">
+            <option value="default">默认排序</option>
+            <option value="distance">距离最近</option>
+            <option value="rating">评分最高</option>
+          </select>
+          <span class="reset-filter" id="resetFilterBtn">重置筛选</span>
+        </div>
+        <div class="service-type-group" id="serviceTypeGroup"></div>
+      </div>
+
+      <div class="list-container" id="listCard"></div>
+    </div>
+
+  <!-- 详情页视图 -->
+  <div class="view view-detail">
+    <nav class="navbar">
+      <div class="navbar-back" id="detailBackBtn">
+        <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+      </div>
+      <div class="navbar-title" id="detailNavbarTitle">机构详情</div>
+      <div style="width: 80px;"></div>
+    </nav>
+
+    <div class="detail-container" id="detailContainer"></div>
+
+    <div class="detail-footer" id="detailFooter">
+      <button class="action-btn btn-block" id="detailCallBtn">
+        <i data-lucide="phone" style="width: 16px; height: 16px;"></i> 打电话
+      </button>
+      <button class="action-btn primary btn-block" id="detailBookingBtn">
+        <i data-lucide="calendar" style="width: 16px; height: 16px;"></i> 预约维修
+      </button>
+    </div>
+  </div>
+
+  <!-- 预约记录页视图 -->
+  <div class="view view-records">
+    <nav class="navbar">
+      <div class="navbar-back" id="recordsBackBtn">
+        <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+      </div>
+      <div class="navbar-title">预约记录</div>
+      <div style="width: 20px;"></div>
+    </nav>
+
+    <div class="record-list" id="recordList"></div>
+  </div>
+
+  <!-- 预约表单页视图 -->
+  <div class="view view-booking">
+    <nav class="navbar">
+      <div class="navbar-back" id="bookingBackBtn">
+        <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+      </div>
+      <div class="navbar-title">预约维修</div>
+      <div style="width: 20px;"></div>
+    </nav>
+
+    <div class="form-container" id="bookingFormContainer"></div>
+
+    <div class="detail-footer" id="bookingFooter">
+      <button class="action-btn btn-block" id="bookingCancelBtn">取消</button>
+      <button class="action-btn primary btn-block" id="bookingSubmitBtn">提交预约</button>
+    </div>
+  </div>
+
+  <!-- 维修订单详情页视图 -->
+  <div class="view view-order-detail">
+    <nav class="navbar">
+      <div class="navbar-back" id="orderDetailBackBtn">
+        <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+      </div>
+      <div class="navbar-title" id="orderDetailNavbarTitle">订单详情</div>
+      <div style="width: 20px;"></div>
+    </nav>
+
+    <div class="detail-container" id="orderDetailContainer"></div>
+
+    <div class="detail-footer" id="orderDetailFooter"></div>
+  </div>
+
+  <!-- 评价弹窗 -->
+  <div class="modal" id="reviewModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="reviewModalTitle">提交评价</div>
+        <div class="modal-close" id="reviewModalClose">
+          <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+        </div>
+      </div>
+      <div class="modal-body" id="reviewModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="reviewCancelBtn">取消</button>
+        <button class="btn-primary" id="reviewSubmitBtn">提交评价</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="inputModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="inputModalTitle">输入</div>
+        <div class="modal-close" id="inputModalClose">
+          <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+        </div>
+      </div>
+      <div class="modal-body" id="inputModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="inputModalCancel">取消</button>
+        <button class="btn-primary" id="inputModalSubmit">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    var repairStations = [
+      {
+        id: 1,
+        name: '丰乐服务区（合肥方向）',
+        address: '京台高速 K656+500',
+        distance: 2.3,
+        queueCount: 3,
+        phone: '13812341234',
+        phoneDisplay: '138****1234',
+        rating: 4.8,
+        status: 'open',
+        services: ['发动机维修', '轮胎更换', '电路检修'],
+        qualifications: [
+          { name: '营业执照', icon: 'file-text' },
+          { name: '道路运输经营许可证', icon: 'award' },
+          { name: '高级技师 3 名', icon: 'users' }
+        ],
+        prices: [
+          { name: '发动机维修', price: '500-2000', desc: '根据故障程度定价' },
+          { name: '轮胎更换', price: '200-500', desc: '含人工费' },
+          { name: '电路检修', price: '100-300', desc: '检测费另计' },
+          { name: '钣金喷漆', price: '300-800', desc: '按面积计算' }
+        ],
+        reviews: [
+          { user: '张师傅', rating: 5, content: '技术很好，修车速度快，价格公道', time: '2026-05-20', images: ['img1.jpg', 'img2.jpg'] },
+          { user: '李司机', rating: 4, content: '服务态度不错，就是排队时间有点长', time: '2026-05-18', images: [] },
+          { user: '王师傅', rating: 5, content: '经常来这里修车，很靠谱', time: '2026-05-15', images: ['img3.jpg'] }
+        ]
+      },
+      {
+        id: 2,
+        name: '顺达服务区（上海方向）',
+        address: '沪陕高速 K320+100',
+        distance: 5.8,
+        queueCount: 1,
+        phone: '13956785678',
+        phoneDisplay: '139****5678',
+        rating: 4.5,
+        status: 'open',
+        services: ['钣金喷漆', '轮胎更换', '保养'],
+        qualifications: [
+          { name: '营业执照', icon: 'file-text' },
+          { name: '行业认证', icon: 'award' }
+        ],
+        prices: [
+          { name: '钣金喷漆', price: '400-1000', desc: '按面积计算' },
+          { name: '轮胎更换', price: '180-450', desc: '含人工费' },
+          { name: '常规保养', price: '200-400', desc: '含机油机滤' },
+          { name: '空调维修', price: '150-500', desc: '根据故障定价' }
+        ],
+        reviews: [
+          { user: '赵师傅', rating: 5, content: '喷漆技术一流，颜色很正', time: '2026-05-22', images: ['img4.jpg'] },
+          { user: '陈司机', rating: 4, content: '保养做得很仔细，推荐', time: '2026-05-19', images: [] }
+        ]
+      },
+      {
+        id: 3,
+        name: '安捷服务区（南京方向）',
+        address: '合宁高速 K180+200',
+        distance: 8.2,
+        queueCount: 5,
+        phone: '13790129012',
+        phoneDisplay: '137****9012',
+        rating: 4.9,
+        status: 'open',
+        services: ['发动机维修', '变速箱维修', '电路检修'],
+        qualifications: [
+          { name: '营业执照', icon: 'file-text' },
+          { name: '道路运输经营许可证', icon: 'award' },
+          { name: '高级技师 5 名', icon: 'users' },
+          { name: 'ISO9001 认证', icon: 'award' }
+        ],
+        prices: [
+          { name: '发动机维修', price: '800-3000', desc: '根据故障程度定价' },
+          { name: '变速箱维修', price: '1000-5000', desc: '大修价格另议' },
+          { name: '电路检修', price: '150-400', desc: '检测费另计' },
+          { name: '底盘维修', price: '500-2000', desc: '根据损坏程度' }
+        ],
+        reviews: [
+          { user: '刘师傅', rating: 5, content: '专业修大车，技术过硬', time: '2026-05-21', images: [] },
+          { user: '孙司机', rating: 5, content: '变速箱修得很好，跑起来很顺', time: '2026-05-17', images: ['img5.jpg', 'img6.jpg'] },
+          { user: '周师傅', rating: 4, content: '价格稍贵但质量有保障', time: '2026-05-14', images: [] }
+        ]
+      },
+      {
+        id: 4,
+        name: '快捷服务区（徐州方向）',
+        address: '京台高速 K720+50',
+        distance: 12.5,
+        queueCount: 0,
+        phone: '13634563456',
+        phoneDisplay: '136****3456',
+        rating: 4.2,
+        status: 'closed',
+        services: ['轮胎更换', '补胎', '保养'],
+        qualifications: [
+          { name: '营业执照', icon: 'file-text' }
+        ],
+        prices: [
+          { name: '轮胎更换', price: '150-400', desc: '含人工费' },
+          { name: '补胎', price: '30-80', desc: '根据破损程度' },
+          { name: '常规保养', price: '150-300', desc: '含机油机滤' },
+          { name: '刹车维修', price: '200-600', desc: '含配件费' }
+        ],
+        reviews: [
+          { user: '吴师傅', rating: 4, content: '补胎很快，价格实惠', time: '2026-05-23', images: [] },
+          { user: '郑司机', rating: 4, content: '服务态度好，就是规模小了点', time: '2026-05-16', images: [] }
+        ]
+      },
+      {
+        id: 5,
+        name: '专业服务区（成都方向）',
+        address: '沪蓉高速 K450+300',
+        distance: 15.3,
+        queueCount: 2,
+        phone: '13578907890',
+        phoneDisplay: '135****7890',
+        rating: 4.6,
+        status: 'open',
+        services: ['发动机维修', '底盘维修', '电路检修'],
+        qualifications: [
+          { name: '营业执照', icon: 'file-text' },
+          { name: '道路运输经营许可证', icon: 'award' },
+          { name: '高级技师 2 名', icon: 'users' }
+        ],
+        prices: [
+          { name: '发动机维修', price: '600-2500', desc: '根据故障程度定价' },
+          { name: '底盘维修', price: '400-1500', desc: '根据损坏程度' },
+          { name: '电路检修', price: '120-350', desc: '检测费另计' },
+          { name: '悬挂维修', price: '300-1000', desc: '含配件费' }
+        ],
+        reviews: [
+          { user: '黄师傅', rating: 5, content: '底盘修得很专业，跑高速很稳', time: '2026-05-20', images: ['img7.jpg'] },
+          { user: '林司机', rating: 4, content: '电路问题一次就修好了', time: '2026-05-18', images: [] }
+        ]
+      },
+      {
+        id: 6,
+        name: '诚信服务区（合肥方向）',
+        address: '合徐高速 K280+150',
+        distance: 18.7,
+        queueCount: 4,
+        phone: '13423452345',
+        phoneDisplay: '134****2345',
+        rating: 4.3,
+        status: 'open',
+        services: ['钣金喷漆', '轮胎更换', '保养'],
+        qualifications: [
+          { name: '营业执照', icon: 'file-text' },
+          { name: '行业认证', icon: 'award' }
+        ],
+        prices: [
+          { name: '钣金喷漆', price: '350-900', desc: '按面积计算' },
+          { name: '轮胎更换', price: '160-420', desc: '含人工费' },
+          { name: '常规保养', price: '180-350', desc: '含机油机滤' },
+          { name: '空调加氟', price: '100-200', desc: '含冷媒' }
+        ],
+        reviews: [
+          { user: '何师傅', rating: 4, content: '喷漆效果不错，价格适中', time: '2026-05-22', images: [] },
+          { user: '高司机', rating: 4, content: '保养做得挺仔细', time: '2026-05-19', images: ['img8.jpg'] }
+        ]
+      }
+    ];
+
+    var appointments = [
+      {
+        id: 'ORD20260525001',
+        stationId: 1,
+        stationName: '丰乐服务区（合肥方向）',
+        phone: '13812341234',
+        vehicle: { plate: '皖 A12345', type: '重型货车' },
+        faultType: '发动机问题',
+        faultDesc: '发动机异响，轮胎磨损严重',
+        needTow: false,
+        expectDate: '2026-05-26',
+        expectTime: '10:00',
+        waitTime: '1小时内',
+        services: ['发动机维修', '轮胎更换'],
+        status: 'pending',
+        desc: '发动机异响，轮胎磨损严重'
+      },
+      {
+        id: 'ORD20260524002',
+        stationId: 3,
+        stationName: '安捷服务区（南京方向）',
+        phone: '13790129012',
+        vehicle: { plate: '皖 B67890', type: '中型货车' },
+        faultType: '电路问题',
+        faultDesc: '车灯不亮',
+        needTow: false,
+        expectDate: '2026-05-25',
+        expectTime: '14:00',
+        waitTime: '30分钟内',
+        services: ['电路检修'],
+        status: 'confirmed',
+        desc: '车灯不亮'
+      },
+      {
+        id: 'ORD20260523003',
+        stationId: 2,
+        stationName: '顺达服务区（上海方向）',
+        phone: '13956785678',
+        vehicle: { plate: '皖 C11111', type: '轻型货车' },
+        faultType: '钣金喷漆',
+        faultDesc: '车身刮擦',
+        needTow: false,
+        expectDate: '2026-05-24',
+        expectTime: '09:00',
+        waitTime: '2小时内',
+        services: ['钣金喷漆'],
+        status: 'completed',
+        desc: '车身刮擦',
+        review: { rating: 5, content: '喷漆效果很好，颜色很正', images: ['review1.jpg'], followUp: '用了一周，质量没问题', followUpImages: ['follow1.jpg'] }
+      },
+      {
+        id: 'ORD20260522004',
+        stationId: 1,
+        stationName: '丰乐服务区（合肥方向）',
+        phone: '13812341234',
+        vehicle: { plate: '皖 D22222', type: '重型货车' },
+        faultType: '变速箱问题',
+        faultDesc: '变速箱异响',
+        needTow: true,
+        towAddress: '京台高速 K660+200',
+        expectDate: '2026-05-23',
+        expectTime: '08:00',
+        waitTime: '半天内',
+        services: ['变速箱维修'],
+        status: 'confirmed',
+        desc: '变速箱异响，需要拖车'
+      },
+      {
+        id: 'ORD20260521005',
+        stationId: 5,
+        stationName: '专业服务区（成都方向）',
+        phone: '13578907890',
+        vehicle: { plate: '皖 E33333', type: '中型货车' },
+        faultType: '底盘问题',
+        faultDesc: '底盘漏油',
+        needTow: false,
+        expectDate: '2026-05-22',
+        expectTime: '15:00',
+        waitTime: '1小时内',
+        services: ['底盘维修'],
+        status: 'completed',
+        desc: '底盘漏油'
+      },
+      {
+        id: 'ORD20260520006',
+        stationId: 3,
+        stationName: '安捷服务区（南京方向）',
+        phone: '13790129012',
+        vehicle: { plate: '皖 F44444', type: '重型货车' },
+        faultType: '发动机问题',
+        faultDesc: '发动机故障灯亮',
+        needTow: false,
+        expectDate: '2026-05-21',
+        expectTime: '10:00',
+        waitTime: '2小时内',
+        services: ['发动机维修'],
+        status: 'rejected',
+        rejectReason: '近期维修任务已满，无法安排',
+        desc: '发动机故障灯亮'
+      }
+    ];
+
+    var myVehicles = [
+      { plate: '皖 A12345', type: '重型货车' },
+      { plate: '皖 B67890', type: '中型货车' },
+      { plate: '皖 C11111', type: '轻型货车' }
+    ];
+
+    var faultTypes = ['发动机问题', '变速箱问题', '电路问题', '轮胎问题', '底盘问题', '钣金喷漆', '空调问题', '其他问题'];
+
+    var currentStation = null;
+    var selectedServices = [];
+
+    function renderStars(rating) {
+      var fullStars = Math.floor(rating);
+      var halfStar = rating - fullStars >= 0.5;
+      var stars = '';
+      for (var i = 0; i < fullStars; i++) {
+        stars += '<i data-lucide="star" style="width: 12px; height: 12px; fill: #FF9800; color: #FF9800;"></i>';
+      }
+      if (halfStar) {
+        stars += '<i data-lucide="star-half" style="width: 12px; height: 12px; fill: #FF9800; color: #FF9800;"></i>';
+      }
+      return stars;
+    }
+
+    function showView(viewName) {
+      var views = document.querySelectorAll('.view');
+      for (var i = 0; i < views.length; i++) {
+        views[i].classList.remove('active');
+      }
+      var target = document.querySelector('.view-' + viewName);
+      if (target) {
+        target.classList.add('active');
+      }
+      if (viewName === 'list') {
+        applyFilters();
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    var selectedServiceTypes = [];
+    var allServiceTypes = [];
+
+    (function() {
+      var set = {};
+      for (var i = 0; i < repairStations.length; i++) {
+        for (var j = 0; j < repairStations[i].services.length; j++) {
+          set[repairStations[i].services[j]] = true;
+        }
+      }
+      allServiceTypes = Object.keys(set).sort();
+    })();
+
+    function renderServiceChips() {
+      var container = document.getElementById('serviceTypeGroup');
+      if (!container) return;
+      container.innerHTML = '';
+      for (var i = 0; i < allServiceTypes.length; i++) {
+        var type = allServiceTypes[i];
+        var chip = document.createElement('div');
+        chip.className = 'service-chip' + (selectedServiceTypes.indexOf(type) !== -1 ? ' active' : '');
+        chip.setAttribute('data-type', type);
+        chip.textContent = type;
+        chip.addEventListener('click', function() {
+          var t = this.getAttribute('data-type');
+          var idx = selectedServiceTypes.indexOf(t);
+          if (idx !== -1) {
+            selectedServiceTypes.splice(idx, 1);
+          } else {
+            selectedServiceTypes.push(t);
+          }
+          renderServiceChips();
+          applyFilters();
+        });
+        container.appendChild(chip);
+      }
+    }
+
+    function applyFilters() {
+      var keyword = '';
+      var searchInput = document.getElementById('searchInput');
+      if (searchInput) keyword = searchInput.value.trim().toLowerCase();
+
+      var statusVal = 'all';
+      var statusFilter = document.getElementById('statusFilter');
+      if (statusFilter) statusVal = statusFilter.value;
+
+      var sortType = 'default';
+      var sortSelect = document.getElementById('sortSelect');
+      if (sortSelect) sortType = sortSelect.value;
+
+      var filtered = [];
+      for (var i = 0; i < repairStations.length; i++) {
+        var s = repairStations[i];
+        if (keyword && s.name.toLowerCase().indexOf(keyword) === -1 && s.address.toLowerCase().indexOf(keyword) === -1) continue;
+        if (statusVal !== 'all' && s.status !== statusVal) continue;
+        if (selectedServiceTypes.length > 0) {
+          var hasAny = false;
+          for (var j = 0; j < selectedServiceTypes.length; j++) {
+            if (s.services.indexOf(selectedServiceTypes[j]) !== -1) {
+              hasAny = true;
+              break;
+            }
+          }
+          if (!hasAny) continue;
+        }
+        filtered.push(s);
+      }
+
+      if (sortType === 'distance') {
+        filtered.sort(function(a, b) { return a.distance - b.distance; });
+      } else if (sortType === 'rating') {
+        filtered.sort(function(a, b) { return b.rating - a.rating; });
+      }
+
+      renderList(filtered);
+    }
+
+    function renderList(stations) {
+      var card = document.getElementById('listCard');
+      if (!card) return;
+      card.innerHTML = '';
+
+      if (stations.length === 0) {
+        card.innerHTML = '<div style="text-align:center;padding:40px;color:var(--color-text-muted);">暂无服务区信息</div>';
+        return;
+      }
+
+      for (var i = 0; i < stations.length; i++) {
+        var station = stations[i];
+        var item = document.createElement('div');
+        item.className = 'list-item list-item-animate';
+        item.setAttribute('data-id', station.id);
+        item.style.animationDelay = (i * 50) + 'ms';
+
+        var statusTag = station.status === 'open'
+          ? '<span class="tag tag-success">营业中</span>'
+          : '<span class="tag tag-danger">已关闭</span>';
+
+        var queueTag = station.queueCount > 0
+          ? '<span class="tag tag-warning">排队 ' + station.queueCount + ' 人</span>'
+          : '<span class="tag tag-success">无需排队</span>';
+
+        var serviceTags = '';
+        for (var j = 0; j < station.services.length; j++) {
+          serviceTags += '<span class="service-tag">' + station.services[j] + '</span>';
+        }
+
+        item.innerHTML =
+          '<div class="list-item-image"><i data-lucide="wrench" style="width: 32px; height: 32px;"></i></div>' +
+          '<div class="list-item-content">' +
+            '<div class="list-item-title">' + station.name + ' ' + statusTag + '</div>' +
+            '<div class="list-item-distance"><i data-lucide="navigation" style="width: 12px; height: 12px;"></i> 距您 ' + station.distance + 'km</div>' +
+            '<div class="list-item-rating">' + renderStars(station.rating) + ' ' + station.rating + ' ' + queueTag + '</div>' +
+            '<div class="list-item-address"><i data-lucide="map-pin" style="width: 12px; height: 12px;"></i> ' + station.address + '</div>' +
+            '<div class="list-item-services">' + serviceTags + '</div>' +
+            '<div class="list-item-actions">' +
+              '<button class="action-btn" onclick="event.stopPropagation(); callPhone(\'' + station.phone + '\')"><i data-lucide="phone" style="width: 12px; height: 12px;"></i> 电话</button>' +
+              '<button class="action-btn primary" onclick="event.stopPropagation(); openBookingForm(' + station.id + ')"><i data-lucide="calendar" style="width: 12px; height: 12px;"></i> 预约</button>' +
+              '<button class="action-btn" onclick="event.stopPropagation(); navigateTo(\'' + station.name + '\')"><i data-lucide="navigation" style="width: 12px; height: 12px;"></i> 导航</button>' +
+            '</div>' +
+          '</div>';
+
+        item.addEventListener('click', function() {
+          var id = parseInt(this.getAttribute('data-id'));
+          openDetail(id);
+        });
+        card.appendChild(item);
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function showToast(message) {
+      var toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    function callPhone(phone) {
+      showToast('将拨打电话：' + phone);
+    }
+
+    function navigateTo(name) {
+      showToast('将打开导航到：' + name);
+    }
+
+    function openDetail(id) {
+      var station = null;
+      for (var i = 0; i < repairStations.length; i++) {
+        if (repairStations[i].id === id) {
+          station = repairStations[i];
+          break;
+        }
+      }
+      if (!station) return;
+
+      currentStation = station;
+
+      var title = document.getElementById('detailNavbarTitle');
+      if (title) title.textContent = station.name;
+
+      var container = document.getElementById('detailContainer');
+      if (!container) return;
+
+      var statusTag = station.status === 'open'
+        ? '<span class="tag tag-success">营业中</span>'
+        : '<span class="tag tag-danger">已关闭</span>';
+
+      var queueCard = station.status === 'open'
+        ? '<div class="detail-section">' +
+            '<div class="detail-section-title"><i data-lucide="users" style="width: 14px; height: 14px;"></i> 实时排队信息</div>' +
+            '<div class="queue-info">' +
+              '<div class="queue-item">' +
+                '<div class="queue-label">当前排队人数</div>' +
+                '<div class="queue-value">' + station.queueCount + ' 人</div>' +
+              '</div>' +
+              '<div class="queue-item">' +
+                '<div class="queue-label">预计等待时间</div>' +
+                '<div class="queue-value">' + (station.queueCount > 0 ? '约 ' + (station.queueCount * 15) + ' 分钟' : '无需等待') + '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        : '';
+
+      var qualItems = '';
+      for (var i = 0; i < station.qualifications.length; i++) {
+        var q = station.qualifications[i];
+        qualItems +=
+          '<div class="qual-item">' +
+            '<i data-lucide="' + q.icon + '" style="width: 16px; height: 16px; color: var(--color-primary);"></i>' +
+            '<span>' + q.name + '</span>' +
+          '</div>';
+      }
+
+      var priceRows = '';
+      for (var i = 0; i < station.prices.length; i++) {
+        var p = station.prices[i];
+        priceRows += '<tr><td>' + p.name + '</td><td>¥' + p.price + '</td><td>' + p.desc + '</td></tr>';
+      }
+
+      var reviewItems = '';
+      for (var i = 0; i < station.reviews.length; i++) {
+        var r = station.reviews[i];
+        var imagesHtml = '';
+        if (r.images && r.images.length > 0) {
+          imagesHtml = '<div class="review-images">';
+          for (var j = 0; j < r.images.length; j++) {
+            imagesHtml += '<div class="review-image-placeholder"><i data-lucide="image" style="width: 16px; height: 16px;"></i></div>';
+          }
+          imagesHtml += '</div>';
+        }
+        reviewItems +=
+          '<div class="review-item">' +
+            '<div class="review-header"><span class="review-user">' + r.user + '</span><span class="review-time">' + r.time + '</span></div>' +
+            '<div class="review-rating">' + renderStars(r.rating) + ' ' + r.rating + '</div>' +
+            '<div class="review-content">' + r.content + '</div>' +
+            imagesHtml +
+          '</div>';
+      }
+
+      container.innerHTML =
+        '<div class="detail-info-card">' +
+          '<div class="detail-title">' + station.name + ' ' + statusTag + '</div>' +
+          '<div class="detail-rating">' + renderStars(station.rating) + ' ' + station.rating + '</div>' +
+          '<div class="detail-info-row"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 电话：<span>' + station.phone + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="map-pin" style="width: 14px; height: 14px;"></i> 地址：<span>' + station.address + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="navigation" style="width: 14px; height: 14px;"></i> 距离：<span>距您 ' + station.distance + 'km</span> <button class="btn-secondary" style="height: 28px; font-size: 12px; padding: 0 12px; margin-left: auto;" onclick="navigateTo(\'' + station.name + '\')"><i data-lucide="navigation" style="width: 12px; height: 12px;"></i> 导航到服务区</button></span></div>' +
+        '</div>' +
+        queueCard +
+        '<div class="detail-section">' +
+          '<div class="detail-section-title"><i data-lucide="award" style="width: 14px; height: 14px;"></i> 店铺资质</div>' +
+          '<div class="qual-list">' + qualItems + '</div>' +
+        '</div>' +
+        '<div class="detail-section">' +
+          '<div class="detail-section-title">维修项目及价格</div>' +
+          '<table class="price-table">' +
+            '<thead><tr><th>项目</th><th>价格</th><th>说明</th></tr></thead>' +
+            '<tbody>' + priceRows + '</tbody>' +
+          '</table>' +
+        '</div>' +
+        '<div class="detail-section">' +
+          '<div class="detail-section-title">用户评价</div>' +
+          reviewItems +
+        '</div>';
+
+      showView('detail');
+    }
+
+    function openBookingForm(stationId) {
+      var station = null;
+      for (var i = 0; i < repairStations.length; i++) {
+        if (repairStations[i].id === stationId) {
+          station = repairStations[i];
+          break;
+        }
+      }
+      if (!station) return;
+
+      currentStation = station;
+      selectedServices = [];
+
+      var container = document.getElementById('bookingFormContainer');
+      if (!container) return;
+
+      var serviceCheckboxes = '';
+      for (var i = 0; i < station.services.length; i++) {
+        serviceCheckboxes +=
+          '<label class="checkbox-item">' +
+            '<input type="checkbox" value="' + station.services[i] + '">' +
+            station.services[i] +
+          '</label>';
+      }
+
+      var vehicleOptions = '';
+      for (var i = 0; i < myVehicles.length; i++) {
+        var v = myVehicles[i];
+        vehicleOptions +=
+          '<label class="radio-item">' +
+            '<input type="radio" name="vehicle" value="' + v.plate + '">' +
+            '<span class="radio-label">' + v.plate + ' (' + v.type + ')</span>' +
+          '</label>';
+      }
+
+      var faultTypeOptions = '<option value="">请选择故障类型</option>';
+      for (var i = 0; i < faultTypes.length; i++) {
+        faultTypeOptions += '<option value="' + faultTypes[i] + '">' + faultTypes[i] + '</option>';
+      }
+
+      var now = new Date();
+      var todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+      var timeSlots = [];
+      var currentHour = now.getHours();
+      var startHour = currentHour;
+      for (var h = startHour; h < 24; h++) {
+        timeSlots.push(String(h).padStart(2, '0') + ':00');
+        timeSlots.push(String(h).padStart(2, '0') + ':30');
+      }
+      var timeSlotOptions = '';
+      for (var i = 0; i < timeSlots.length; i++) {
+        timeSlotOptions += '<option value="' + timeSlots[i] + '">' + timeSlots[i] + '</option>';
+      }
+
+      container.innerHTML =
+        '<div class="form-card">' +
+          '<div class="form-group">' +
+            '<label class="form-label">选择服务区维修站</label>' +
+            '<input type="text" class="form-input" value="' + station.name + '" readonly>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">我的车辆 <span class="required">*</span></label>' +
+            '<div class="radio-group" id="vehicleGroup">' + vehicleOptions + '</div>' +
+            '<button class="btn-text" id="addVehicleBtn" style="margin-top: var(--spacing-sm);">+ 添加新车辆</button>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">选择服务项目 <span class="required">*</span></label>' +
+            '<div class="checkbox-group" id="serviceCheckboxes">' + serviceCheckboxes + '</div>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">故障类型 <span class="required">*</span></label>' +
+            '<select class="form-select" id="faultType">' + faultTypeOptions + '</select>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">故障描述</label>' +
+            '<textarea class="form-textarea" id="bookingDesc" placeholder="请补充描述车辆故障情况（选填）..."></textarea>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">是否需要拖车 <span class="required">*</span></label>' +
+            '<div class="toggle-group" id="towGroup">' +
+              '<div class="toggle-item active" data-value="no">否</div>' +
+              '<div class="toggle-item" data-value="yes">是</div>' +
+            '</div>' +
+            '<div class="form-group" id="towAddressGroup" style="display: none; margin-top: var(--spacing-sm);">' +
+              '<label class="form-label">拖车地址</label>' +
+              '<input type="text" class="form-input" id="towAddress" placeholder="请输入您的当前位置（如：京台高速 K660+200）">' +
+            '</div>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">预约时间 <span class="required">*</span></label>' +
+            '<div class="datetime-row">' +
+              '<input type="date" class="form-input" id="expectDate" value="' + todayStr + '">' +
+              '<select class="form-select" id="expectTime">' + timeSlotOptions + '</select>' +
+            '</div>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">联系电话 <span class="required">*</span></label>' +
+            '<input type="tel" class="form-input" id="bookingPhone" value="13812341234">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">备注</label>' +
+            '<textarea class="form-textarea" id="bookingRemark" placeholder="其他补充信息（选填）..." style="min-height: 60px;"></textarea>' +
+          '</div>' +
+        '</div>';
+
+      var checkboxes = container.querySelectorAll('#serviceCheckboxes .checkbox-item');
+      for (var i = 0; i < checkboxes.length; i++) {
+        (function(item) {
+          item.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            item.classList.toggle('checked');
+            var cb = item.querySelector('input');
+            if (cb) cb.checked = item.classList.contains('checked');
+          });
+        })(checkboxes[i]);
+      }
+
+      var radioItems = container.querySelectorAll('.radio-item');
+      for (var i = 0; i < radioItems.length; i++) {
+        radioItems[i].addEventListener('click', function() {
+          var group = this.closest('.radio-group');
+          if (!group) return;
+          var items = group.querySelectorAll('.radio-item');
+          for (var j = 0; j < items.length; j++) {
+            items[j].classList.remove('checked');
+            var rb = items[j].querySelector('input');
+            if (rb) rb.checked = false;
+          }
+          this.classList.add('checked');
+          var rb = this.querySelector('input');
+          if (rb) rb.checked = true;
+        });
+      }
+
+      var toggleItems = container.querySelectorAll('#towGroup .toggle-item');
+      for (var i = 0; i < toggleItems.length; i++) {
+        toggleItems[i].addEventListener('click', function() {
+          var group = this.closest('.toggle-group');
+          if (!group) return;
+          var items = group.querySelectorAll('.toggle-item');
+          for (var j = 0; j < items.length; j++) {
+            items[j].classList.remove('active');
+          }
+          this.classList.add('active');
+          var towAddressGroup = document.getElementById('towAddressGroup');
+          if (towAddressGroup) {
+            towAddressGroup.style.display = this.getAttribute('data-value') === 'yes' ? 'block' : 'none';
+          }
+        });
+      }
+
+      var addVehicleBtn = document.getElementById('addVehicleBtn');
+      if (addVehicleBtn) {
+        addVehicleBtn.addEventListener('click', function() {
+          openInputModal('添加车辆', [
+            { id: 'addPlate', label: '车牌号', placeholder: '请输入车牌号' },
+            { id: 'addType', label: '车型', placeholder: '如：重型货车、中型货车、轻型货车' }
+          ], function(values) {
+            if (!values.addPlate || !values.addType) return;
+            myVehicles.push({ plate: values.addPlate, type: values.addType });
+            showToast('车辆已添加');
+            openBookingForm(station.id);
+          });
+        });
+      }
+
+      showView('booking');
+    }
+
+    function submitBooking() {
+      var vehicleGroup = document.getElementById('vehicleGroup');
+      var faultType = document.getElementById('faultType');
+      var desc = document.getElementById('bookingDesc');
+      var expectDate = document.getElementById('expectDate');
+      var expectTime = document.getElementById('expectTime');
+      var phone = document.getElementById('bookingPhone');
+
+      var selectedVehicle = vehicleGroup ? vehicleGroup.querySelector('.radio-item.checked input') : null;
+      var faultTypeVal = faultType ? faultType.value : '';
+      var descVal = desc ? desc.value.trim() : '';
+      var expectDateVal = expectDate ? expectDate.value : '';
+      var expectTimeVal = expectTime ? expectTime.value : '';
+      var phoneVal = phone ? phone.value.trim() : '';
+
+      var towToggle = document.querySelector('#towGroup .toggle-item.active');
+      var needTow = towToggle ? towToggle.getAttribute('data-value') === 'yes' : false;
+      var towAddressVal = '';
+      if (needTow) {
+        var towAddressInput = document.getElementById('towAddress');
+        towAddressVal = towAddressInput ? towAddressInput.value.trim() : '';
+        if (!towAddressVal) {
+          showToast('请填写拖车地址');
+          return;
+        }
+      }
+
+      if (!selectedVehicle) {
+        showToast('请选择或添加车辆');
+        return;
+      }
+      if (!faultTypeVal) {
+        showToast('请选择故障类型');
+        return;
+      }
+      if (!expectDateVal) {
+        showToast('请选择预约日期');
+        return;
+      }
+      if (!expectTimeVal) {
+        showToast('请选择预约时间段');
+        return;
+      }
+      if (!phoneVal) {
+        showToast('请填写联系电话');
+        return;
+      }
+
+      var checkboxes = document.querySelectorAll('#serviceCheckboxes .checkbox-item.checked');
+      selectedServices = [];
+      for (var i = 0; i < checkboxes.length; i++) {
+        var cb = checkboxes[i].querySelector('input');
+        if (cb) selectedServices.push(cb.value);
+      }
+
+      if (selectedServices.length === 0) {
+        showToast('请至少选择一个服务项目');
+        return;
+      }
+
+      var vehiclePlate = selectedVehicle.value;
+      var vehicleType = '';
+      for (var i = 0; i < myVehicles.length; i++) {
+        if (myVehicles[i].plate === vehiclePlate) {
+          vehicleType = myVehicles[i].type;
+          break;
+        }
+      }
+
+      var newAppointment = {
+        id: 'ORD' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + String(appointments.length + 1).padStart(3, '0'),
+        stationId: currentStation.id,
+        stationName: currentStation.name,
+        phone: currentStation.phone,
+        vehicle: { plate: vehiclePlate, type: vehicleType },
+        faultType: faultTypeVal,
+        faultDesc: descVal,
+        needTow: needTow,
+        towAddress: towAddressVal,
+        expectDate: expectDateVal,
+        expectTime: expectTimeVal,
+        services: selectedServices,
+        status: 'pending',
+        desc: descVal
+      };
+
+      appointments.unshift(newAppointment);
+      showToast('预约已提交，等待商家确认');
+      renderRecords();
+      showView('records');
+    }
+
+    function renderRecords() {
+      var list = document.getElementById('recordList');
+      if (!list) return;
+      list.innerHTML = '';
+
+      if (appointments.length === 0) {
+        list.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--color-text-muted);">暂无预约记录</div>';
+        return;
+      }
+
+      for (var i = 0; i < appointments.length; i++) {
+        var appt = appointments[i];
+        var card = document.createElement('div');
+        card.className = 'record-card list-item-animate';
+
+        var statusTag = '';
+        if (appt.status === 'pending') {
+          statusTag = '<span class="tag tag-warning">待确认</span>';
+        } else if (appt.status === 'confirmed') {
+          statusTag = '<span class="tag tag-success">已确认</span>';
+        } else if (appt.status === 'completed') {
+          statusTag = '<span class="tag tag-default">已完成</span>';
+        } else if (appt.status === 'cancelled') {
+          statusTag = '<span class="tag tag-default">已取消</span>';
+        } else if (appt.status === 'rejected') {
+          statusTag = '<span class="tag tag-danger">机构已拒绝</span>';
+        }
+
+        var servicesText = appt.services.join('、');
+        var vehicleInfo = appt.vehicle ? appt.vehicle.plate + ' (' + appt.vehicle.type + ')' : '';
+
+        var actions = '<button class="btn-secondary" onclick="viewOrderDetail(\'' + appt.id + '\')">查看详情</button>';
+        if (appt.status === 'pending') {
+          actions += '<button class="btn-secondary" onclick="event.stopPropagation(); cancelAppointment(\'' + appt.id + '\')">取消预约</button>';
+          actions += '<button class="btn-primary" onclick="event.stopPropagation(); showToast(\'将拨打电话\')"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 打电话</button>';
+        } else if (appt.status === 'completed') {
+          actions += '<button class="btn-primary" onclick="event.stopPropagation(); openReviewModal(\'' + appt.id + '\', false)">评价</button>';
+          actions += '<button class="btn-primary" onclick="event.stopPropagation(); showToast(\'将拨打电话\')"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 打电话</button>';
+        } else if (appt.status === 'confirmed') {
+          actions += '<button class="btn-primary" onclick="event.stopPropagation(); showToast(\'将拨打电话\')"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 打电话</button>';
+        }
+
+        card.innerHTML =
+          '<div class="record-header">' +
+            '<span class="record-order-no">' + appt.id + '</span>' +
+            statusTag +
+          '</div>' +
+          '<div class="record-info"><i data-lucide="map-pin" style="width: 12px; height: 12px;"></i> ' + appt.stationName + '</div>' +
+          '<div class="record-info"><i data-lucide="calendar" style="width: 12px; height: 12px;"></i> 到店时间：' + appt.expectDate + ' ' + appt.expectTime + '</div>' +
+          (vehicleInfo ? '<div class="record-info"><i data-lucide="truck" style="width: 12px; height: 12px;"></i> 车辆：' + vehicleInfo + '</div>' : '') +
+          '<div class="record-info"><i data-lucide="wrench" style="width: 12px; height: 12px;"></i> 服务项目：' + servicesText + '</div>' +
+          (appt.needTow ? '<div class="record-info"><i data-lucide="loader" style="width: 12px; height: 12px;"></i> 需要拖车</div>' : '') +
+          '<div class="record-actions">' + actions + '</div>';
+
+        (function(cardId) {
+          card.addEventListener('click', function(e) {
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+            viewOrderDetail(cardId);
+          });
+        })(appt.id);
+
+        list.appendChild(card);
+      }
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function cancelAppointment(id) {
+      for (var i = 0; i < appointments.length; i++) {
+        if (appointments[i].id === id) {
+          appointments[i].status = 'cancelled';
+          break;
+        }
+      }
+      showToast('预约已取消');
+      renderRecords();
+    }
+
+    function viewOrderDetail(id) {
+      var appt = null;
+      for (var i = 0; i < appointments.length; i++) {
+        if (appointments[i].id === id) {
+          appt = appointments[i];
+          break;
+        }
+      }
+      if (!appt) return;
+
+      var title = document.getElementById('orderDetailNavbarTitle');
+      if (title) title.textContent = '订单详情';
+
+      var container = document.getElementById('orderDetailContainer');
+      if (!container) return;
+
+      var statusTag = '';
+      if (appt.status === 'pending') {
+        statusTag = '<span class="tag tag-warning">待确认</span>';
+      } else if (appt.status === 'confirmed') {
+        statusTag = '<span class="tag tag-success">已确认</span>';
+      } else if (appt.status === 'completed') {
+        statusTag = '<span class="tag tag-default">已完成</span>';
+      } else if (appt.status === 'cancelled') {
+        statusTag = '<span class="tag tag-default">已取消</span>';
+      } else if (appt.status === 'rejected') {
+        statusTag = '<span class="tag tag-danger">机构已拒绝</span>';
+      }
+
+      var vehicleInfo = appt.vehicle ? appt.vehicle.plate + ' (' + appt.vehicle.type + ')' : '未填写';
+
+      var timelineItems = '';
+      if (appt.status !== 'pending' && appt.status !== 'rejected' && appt.status !== 'cancelled') {
+        timelineItems =
+          '<div class="detail-section">' +
+            '<div class="detail-section-title"><i data-lucide="clock" style="width: 14px; height: 14px;"></i> 维修过程记录</div>' +
+            '<div class="timeline">' +
+              '<div class="timeline-item">' +
+                '<div class="timeline-dot"></div>' +
+                '<div class="timeline-content">' +
+                  '<div class="timeline-title">预约提交</div>' +
+                  '<div class="timeline-time">' + appt.expectDate + ' ' + appt.expectTime + '</div>' +
+                '</div>' +
+              '</div>' +
+              (appt.status !== 'pending' ?
+                '<div class="timeline-item">' +
+                  '<div class="timeline-dot"></div>' +
+                  '<div class="timeline-content">' +
+                    '<div class="timeline-title">机构已接单</div>' +
+                    '<div class="timeline-time">' + appt.expectDate + ' 08:30</div>' +
+                  '</div>' +
+                '</div>' : '') +
+              (appt.status === 'completed' ?
+                '<div class="timeline-item">' +
+                  '<div class="timeline-dot"></div>' +
+                  '<div class="timeline-content">' +
+                    '<div class="timeline-title">开始维修</div>' +
+                    '<div class="timeline-time">' + appt.expectDate + ' 09:00</div>' +
+                    '<div class="timeline-desc">技师：张师傅</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="timeline-item">' +
+                  '<div class="timeline-dot"></div>' +
+                  '<div class="timeline-content">' +
+                    '<div class="timeline-title">维修完成</div>' +
+                    '<div class="timeline-time">' + appt.expectDate + ' 11:30</div>' +
+                  '</div>' +
+                '</div>' : '') +
+            '</div>' +
+          '</div>';
+      }
+
+      var partsTable = '';
+      if (appt.status === 'completed') {
+        partsTable =
+          '<div class="detail-section">' +
+            '<div class="detail-section-title"><i data-lucide="package" style="width: 14px; height: 14px;"></i> 零件使用清单</div>' +
+            '<table class="price-table">' +
+              '<thead><tr><th>零件名称</th><th>品牌</th><th>单价</th><th>数量</th><th>小计</th></tr></thead>' +
+              '<tbody>' +
+                '<tr><td>机油滤芯</td><td>博世</td><td>¥45</td><td>1</td><td>¥45</td></tr>' +
+                '<tr><td>空气滤芯</td><td>马勒</td><td>¥68</td><td>1</td><td>¥68</td></tr>' +
+                (appt.needTow ? '<tr><td>拖车服务</td><td>-</td><td>¥200</td><td>1</td><td>¥200</td></tr>' : '') +
+              '</tbody>' +
+            '</table>' +
+          '</div>';
+      }
+
+      var rejectSection = '';
+      if (appt.status === 'rejected' && appt.rejectReason) {
+        rejectSection =
+          '<div class="detail-section" style="border: 1px solid var(--color-danger);">' +
+            '<div class="detail-section-title" style="color: var(--color-danger);"><i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i> 拒绝原因</div>' +
+            '<div style="padding: var(--spacing-md); font-size: 13px; color: var(--color-text-secondary); line-height: 1.6;">' + appt.rejectReason + '</div>' +
+          '</div>';
+      }
+
+      var reviewSection = '';
+      if (appt.status === 'completed' && appt.review) {
+        var review = appt.review;
+        var reviewImagesHtml = '';
+        if (review.images && review.images.length > 0) {
+          reviewImagesHtml = '<div class="review-images">';
+          for (var i = 0; i < review.images.length; i++) {
+            reviewImagesHtml += '<div class="review-image-placeholder"><i data-lucide="image" style="width: 16px; height: 16px;"></i></div>';
+          }
+          reviewImagesHtml += '</div>';
+        }
+        reviewSection =
+          '<div class="detail-section">' +
+            '<div class="detail-section-title"><i data-lucide="message-square" style="width: 14px; height: 14px;"></i> 用户评价</div>' +
+            '<div class="review-item">' +
+              '<div class="review-rating">' + renderStars(review.rating) + ' ' + review.rating + '</div>' +
+              '<div class="review-content">' + review.content + '</div>' +
+              reviewImagesHtml +
+            '</div>' +
+          '</div>';
+      }
+
+      container.innerHTML =
+        '<div class="detail-info-card">' +
+          '<div class="detail-title">' + appt.stationName + ' ' + statusTag + '</div>' +
+          '<div class="detail-info-row"><i data-lucide="file-text" style="width: 14px; height: 14px;"></i> 订单号：<span>' + appt.id + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="calendar" style="width: 14px; height: 14px;"></i> 到店时间：<span>' + appt.expectDate + ' ' + appt.expectTime + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="truck" style="width: 14px; height: 14px;"></i> 车辆信息：<span>' + vehicleInfo + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="wrench" style="width: 14px; height: 14px;"></i> 服务项目：<span>' + appt.services.join('、') + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i> 故障类型：<span>' + appt.faultType + '</span></div>' +
+          (appt.faultDesc ? '<div class="detail-info-row"><i data-lucide="message-square" style="width: 14px; height: 14px;"></i> 故障描述：<span>' + appt.faultDesc + '</span></div>' : '') +
+          (appt.needTow ? '<div class="detail-info-row"><i data-lucide="loader" style="width: 14px; height: 14px;"></i> 拖车地址：<span>' + appt.towAddress + '</span></div>' : '') +
+        '</div>' +
+        timelineItems +
+        partsTable +
+        rejectSection +
+        reviewSection;
+
+      var footer = document.getElementById('orderDetailFooter');
+      if (footer) {
+        footer.style.display = 'none';
+      }
+
+      showView('order-detail');
+    }
+
+    function openInputModal(title, fields, callback) {
+      var modal = document.getElementById('inputModal');
+      if (!modal) return;
+      var modalTitle = document.getElementById('inputModalTitle');
+      if (modalTitle) modalTitle.textContent = title;
+      var modalBody = document.getElementById('inputModalBody');
+      if (modalBody) {
+        var html = '';
+        for (var i = 0; i < fields.length; i++) {
+          var f = fields[i];
+          html += '<div style="margin-bottom:12px;"><label style="display:block;font-size:13px;color:var(--color-text-secondary);margin-bottom:4px;">' + f.label + '</label><input type="text" id="' + f.id + '" placeholder="' + (f.placeholder || '') + '" style="width:100%;padding:10px 12px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-size:14px;outline:none;"></div>';
+        }
+        modalBody.innerHTML = html;
+      }
+      modal.classList.add('show');
+      var submitBtn = document.getElementById('inputModalSubmit');
+      var cancelBtn = document.getElementById('inputModalCancel');
+      var closeBtn = document.getElementById('inputModalClose');
+      var submitHandler = function() {
+        var values = {};
+        for (var i = 0; i < fields.length; i++) {
+          var input = document.getElementById(fields[i].id);
+          values[fields[i].id] = input ? input.value.trim() : '';
+        }
+        callback(values);
+        modal.classList.remove('show');
+        if (submitBtn) submitBtn.removeEventListener('click', submitHandler);
+      };
+      var cancelHandler = function() {
+        modal.classList.remove('show');
+        if (submitBtn) submitBtn.removeEventListener('click', submitHandler);
+      };
+      if (submitBtn) submitBtn.addEventListener('click', submitHandler);
+      if (cancelBtn) cancelBtn.addEventListener('click', cancelHandler);
+      if (closeBtn) closeBtn.addEventListener('click', cancelHandler);
+      modal.onclick = function(e) {
+        if (e.target === modal) cancelHandler();
+      };
+    }
+
+    function openReviewModal(orderId, isFollowUp) {
+      var modal = document.getElementById('reviewModal');
+      if (!modal) return;
+
+      var title = document.getElementById('reviewModalTitle');
+      if (title) title.textContent = isFollowUp ? '追加评价' : '提交评价';
+
+      var body = document.getElementById('reviewModalBody');
+      if (!body) return;
+
+      body.innerHTML =
+        '<div class="form-group">' +
+          '<label class="form-label">评分 <span class="required">*</span></label>' +
+          '<div class="star-rating" id="starRating">' +
+            '<i data-lucide="star" data-rating="1"></i>' +
+            '<i data-lucide="star" data-rating="2"></i>' +
+            '<i data-lucide="star" data-rating="3"></i>' +
+            '<i data-lucide="star" data-rating="4"></i>' +
+            '<i data-lucide="star" data-rating="5"></i>' +
+          '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+          '<label class="form-label">' + (isFollowUp ? '追评内容' : '评价内容') + ' <span class="required">*</span></label>' +
+          '<textarea class="form-textarea" id="reviewContent" placeholder="请输入您的评价..." style="min-height: 100px;"></textarea>' +
+        '</div>' +
+        '<div class="form-group">' +
+          '<label class="form-label">上传图片（选填）</label>' +
+          '<div class="image-upload-area" id="imageUploadArea">' +
+            '<div class="image-upload-btn" id="imageUploadBtn">' +
+              '<i data-lucide="image" style="width: 24px; height: 24px;"></i>' +
+              '<span>上传图片</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      modal.classList.add('active');
+
+      var stars = body.querySelectorAll('#starRating i');
+      var currentRating = 0;
+      for (var i = 0; i < stars.length; i++) {
+        stars[i].addEventListener('click', function() {
+          currentRating = parseInt(this.getAttribute('data-rating'));
+          for (var j = 0; j < stars.length; j++) {
+            if (j < currentRating) {
+              stars[j].classList.add('active');
+            } else {
+              stars[j].classList.remove('active');
+            }
+          }
+        });
+      }
+
+      var uploadBtn = document.getElementById('imageUploadBtn');
+      if (uploadBtn) {
+        uploadBtn.addEventListener('click', function() {
+          var area = document.getElementById('imageUploadArea');
+          if (!area) return;
+          var preview = document.createElement('div');
+          preview.className = 'image-preview';
+          preview.innerHTML =
+            '<i data-lucide="image" style="width: 20px; height: 20px;"></i>' +
+            '<div class="remove-btn" onclick="this.parentElement.remove()">×</div>';
+          area.insertBefore(preview, uploadBtn);
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+      }
+
+      var submitBtn = document.getElementById('reviewSubmitBtn');
+      if (submitBtn) {
+        submitBtn.onclick = function() {
+          var content = document.getElementById('reviewContent');
+          if (!content || !content.value.trim()) {
+            showToast('请填写评价内容');
+            return;
+          }
+
+          for (var i = 0; i < appointments.length; i++) {
+            if (appointments[i].id === orderId) {
+              if (isFollowUp) {
+                if (!appointments[i].review) {
+                  appointments[i].review = {};
+                }
+                appointments[i].review.followUp = content.value.trim();
+                appointments[i].review.followUpImages = [];
+              } else {
+                appointments[i].review = {
+                  rating: currentRating || 5,
+                  content: content.value.trim(),
+                  images: [],
+                  followUp: '',
+                  followUpImages: []
+                };
+              }
+              break;
+            }
+          }
+
+          modal.classList.remove('active');
+          showToast(isFollowUp ? '追评已提交' : '评价已提交');
+          viewOrderDetail(orderId);
+        };
+      }
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeReviewModal() {
+      var modal = document.getElementById('reviewModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    document.getElementById('searchBtn').addEventListener('click', applyFilters);
+
+    var searchInputEl = document.getElementById('searchInput');
+    if (searchInputEl) {
+      searchInputEl.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') applyFilters();
+      });
+      searchInputEl.addEventListener('input', applyFilters);
+    }
+
+    var statusFilterEl = document.getElementById('statusFilter');
+    if (statusFilterEl) {
+      statusFilterEl.addEventListener('change', applyFilters);
+    }
+
+    var sortSelectEl = document.getElementById('sortSelect');
+    if (sortSelectEl) {
+      sortSelectEl.addEventListener('change', applyFilters);
+    }
+
+    document.getElementById('resetFilterBtn').addEventListener('click', function() {
+      var si = document.getElementById('searchInput');
+      if (si) si.value = '';
+      var sf = document.getElementById('statusFilter');
+      if (sf) sf.value = 'all';
+      var ss = document.getElementById('sortSelect');
+      if (ss) ss.value = 'default';
+      selectedServiceTypes = [];
+      renderServiceChips();
+      applyFilters();
+    });
+
+    document.getElementById('recordsBtn').addEventListener('click', function() {
+      renderRecords();
+      showView('records');
+    });
+
+    document.getElementById('detailBackBtn').addEventListener('click', function() {
+      showView('list');
+    });
+
+    document.getElementById('recordsBackBtn').addEventListener('click', function() {
+      showView('list');
+    });
+
+    document.getElementById('bookingBackBtn').addEventListener('click', function() {
+      showView('list');
+    });
+
+    document.getElementById('bookingCancelBtn').addEventListener('click', function() {
+      showView('list');
+    });
+
+    document.getElementById('detailCallBtn').addEventListener('click', function() {
+      if (currentStation) {
+        callPhone(currentStation.phone);
+      }
+    });
+
+    document.getElementById('detailBookingBtn').addEventListener('click', function() {
+      if (currentStation) {
+        openBookingForm(currentStation.id);
+      }
+    });
+
+    document.getElementById('bookingSubmitBtn').addEventListener('click', submitBooking);
+
+    document.getElementById('orderDetailBackBtn').addEventListener('click', function() {
+      showView('records');
+    });
+
+    document.getElementById('reviewModalClose').addEventListener('click', closeReviewModal);
+
+    document.getElementById('reviewCancelBtn').addEventListener('click', closeReviewModal);
+
+    document.getElementById('reviewModal').addEventListener('click', function(e) {
+      if (e.target === this) closeReviewModal();
+    });
+
+    renderList(repairStations);
+    renderServiceChips();
+  </script>
+  </div>
+</body>
+</html>

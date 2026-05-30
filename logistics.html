@@ -1,0 +1,3034 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>皖美 E 行 - 物流匹配</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --color-primary: #4CAF50;
+      --color-primary-dark: #388E3C;
+      --color-primary-light: #66BB6A;
+      --color-primary-bg: #E8F5E9;
+      --color-white: #FFFFFF;
+      --color-bg-light: #F5F5F5;
+      --color-bg-lighter: #FAFAFA;
+      --color-text-primary: #333333;
+      --color-text-secondary: #666666;
+      --color-text-muted: #999999;
+      --color-text-disabled: #CCCCCC;
+      --color-success: #4CAF50;
+      --color-warning: #FF9800;
+      --color-danger: #F44336;
+      --color-info: #2196F3;
+      --color-neutral: #9E9E9E;
+      --color-border: #E0E0E0;
+      --color-border-focus: #BDBDBD;
+      --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 20px;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 12px;
+      --spacing-lg: 16px;
+      --spacing-xl: 24px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: var(--color-text-primary);
+      background: #E8E8E8;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      max-width: 450px;
+      margin: 0 auto;
+      background: var(--color-bg-light);
+      min-height: 100vh;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .view {
+      display: none;
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    }
+
+    .view.active {
+      display: block;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* 导航栏 */
+    .navbar {
+      height: 56px;
+      background: var(--color-primary);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--spacing-lg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar-back {
+      color: var(--color-white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+
+    .navbar-back:active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar-title {
+      color: var(--color-white);
+      font-size: 18px;
+      font-weight: bold;
+      flex: 1;
+      text-align: center;
+    }
+
+    .navbar-action {
+      color: var(--color-white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      gap: var(--spacing-xs);
+    }
+
+    .navbar-right {
+      min-width: 32px;
+      text-align: right;
+      cursor: pointer;
+      color: var(--color-white);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* 身份切换区 */
+    .role-section {
+      background: var(--color-white);
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-xs) var(--spacing-md);
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .role-badge.owner {
+      background: #E3F2FD;
+      color: var(--color-info);
+    }
+
+    .role-badge.driver {
+      background: var(--color-primary-bg);
+      color: var(--color-primary-dark);
+    }
+
+    .role-switch-btn {
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-full);
+      padding: var(--spacing-xs) var(--spacing-md);
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .role-switch-btn:active {
+      transform: scale(0.95);
+    }
+
+    .role-section-actions {
+      margin-left: auto;
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .role-publish-btn {
+      background: var(--color-primary);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--radius-full);
+      padding: var(--spacing-xs) var(--spacing-md);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      transition: background 0.2s;
+    }
+
+    .role-publish-btn:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .role-publish-btn:active {
+      transform: scale(0.95);
+    }
+
+    .role-orders-btn {
+      background: var(--color-white);
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-full);
+      padding: var(--spacing-xs) var(--spacing-md);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      transition: all 0.2s;
+    }
+
+    .role-orders-btn:hover {
+      background: var(--color-primary-bg);
+    }
+
+    .role-orders-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* 搜索区 */
+    .search-section {
+      background: var(--color-white);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--color-bg-light);
+      border-radius: 24px;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      gap: var(--spacing-sm);
+    }
+
+    .search-box i {
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: var(--color-text-disabled);
+    }
+
+    .search-btn {
+      background: none;
+      border: none;
+      color: var(--color-primary);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* 筛选区 */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-md);
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: 6px var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      background: var(--color-white);
+      font-size: 13px;
+      color: var(--color-text-primary);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+
+    .reset-filter {
+      font-size: 12px;
+      color: var(--color-primary);
+      margin-left: auto;
+      cursor: pointer;
+    }
+
+    /* 列表区 */
+    .list-container {
+      flex: 1;
+      padding-bottom: 20px;
+    }
+
+    /* 物流卡片 */
+    .logistics-card {
+      background: var(--color-white);
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid var(--color-border);
+      cursor: default;
+      transition: background 0.2s;
+    }
+
+    .logistics-card:active {
+      background: var(--color-bg-lighter);
+    }
+
+    .logistics-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .logistics-route {
+      font-size: 17px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .logistics-route i {
+      color: var(--color-primary);
+    }
+
+    .match-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .match-tag.high {
+      background: var(--color-primary-bg);
+      color: var(--color-success);
+    }
+
+    .match-tag.medium {
+      background: #FFF3E0;
+      color: var(--color-warning);
+    }
+
+    .match-tag.low {
+      background: var(--color-bg-light);
+      color: var(--color-neutral);
+    }
+
+    .logistics-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xs);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .logistics-info-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .logistics-info-row i {
+      width: 14px;
+      height: 14px;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    .logistics-info-row .price {
+      color: var(--color-danger);
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .logistics-info-row .time {
+      color: var(--color-text-muted);
+      font-size: 12px;
+    }
+
+    .logistics-card-footer {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
+      justify-content: flex-end;
+    }
+
+    /* 操作按钮 */
+    .action-btn {
+      font-size: 13px;
+      padding: 4px var(--spacing-sm);
+      border-radius: 16px;
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      transition: all 0.2s;
+      color: var(--color-text-primary);
+    }
+
+    .action-btn i {
+      font-size: 12px;
+    }
+
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+
+    .action-btn.primary {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    .action-btn.primary:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .btn-primary {
+      height: 32px;
+      padding: 0 var(--spacing-md);
+      background: var(--color-primary);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.95);
+    }
+
+    .btn-secondary {
+      height: 32px;
+      padding: 0 var(--spacing-md);
+      background: var(--color-white);
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: var(--color-primary-bg);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.95);
+    }
+
+    .btn-block {
+      flex: 1;
+      height: 44px;
+      border-radius: var(--radius-md);
+      font-weight: bold;
+      justify-content: center;
+    }
+
+    /* 标签 */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .tag-success {
+      background: var(--color-primary-bg);
+      color: var(--color-success);
+    }
+
+    .tag-danger {
+      background: #FFEBEE;
+      color: var(--color-danger);
+    }
+
+    .tag-warning {
+      background: #FFF3E0;
+      color: var(--color-warning);
+    }
+
+    .tag-default {
+      background: var(--color-bg-light);
+      color: var(--color-neutral);
+    }
+
+    .tag-info {
+      background: #E3F2FD;
+      color: var(--color-info);
+    }
+
+    .tag-purple {
+      background: #F3E5F5;
+      color: #9C27B0;
+      border: 1px solid #9C27B0;
+    }
+
+    /* 表单 */
+    .form-container {
+      padding: var(--spacing-lg);
+      padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    }
+
+    .form-card {
+      background: var(--color-white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-sm);
+      font-weight: 500;
+    }
+
+    .form-label .required {
+      color: var(--color-danger);
+      margin-left: 2px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--color-text-primary);
+      background: var(--color-white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--color-primary);
+    }
+
+    .form-input::placeholder {
+      color: var(--color-text-disabled);
+    }
+
+    .form-textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--color-text-primary);
+      background: var(--color-white);
+      outline: none;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    .form-textarea:focus {
+      border-color: var(--color-primary);
+    }
+
+    .form-textarea::placeholder {
+      color: var(--color-text-disabled);
+    }
+
+    .form-select {
+      width: 100%;
+      height: 40px;
+      padding: 0 var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--color-text-primary);
+      background: var(--color-white);
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .form-select:focus {
+      border-color: var(--color-primary);
+    }
+
+    .form-row {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .form-row .form-input,
+    .form-row .form-select {
+      flex: 1;
+    }
+
+    /* 车辆选择 */
+    .vehicle-radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .vehicle-radio-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      transition: all 0.2s;
+    }
+
+    .vehicle-radio-item.selected {
+      border-color: var(--color-primary);
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+    }
+
+    .vehicle-radio-item input {
+      display: none;
+    }
+
+    .vehicle-radio-item .vehicle-info {
+      flex: 1;
+    }
+
+    .vehicle-add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px dashed var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--color-primary);
+      transition: all 0.2s;
+    }
+
+    .vehicle-add-btn:hover {
+      border-color: var(--color-primary);
+      background: var(--color-primary-bg);
+    }
+
+    .form-input[readonly] {
+      background: var(--color-bg-light);
+      color: var(--color-text-muted);
+    }
+
+    /* 开关 */
+    .switch-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .switch {
+      width: 44px;
+      height: 24px;
+      background: var(--color-border);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .switch.active {
+      background: var(--color-primary);
+    }
+
+    .switch::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--color-white);
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+    .switch.active::after {
+      transform: translateX(20px);
+    }
+
+    /* 详情页 */
+    .detail-container {
+      padding-bottom: 80px;
+      background: var(--color-bg-light);
+    }
+
+    .detail-info-card {
+      background: var(--color-white);
+      margin: var(--spacing-md) var(--spacing-lg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-lg);
+    }
+
+    .detail-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+    }
+
+    .detail-info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-sm);
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .detail-info-row i {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .detail-info-row span {
+      color: var(--color-text-primary);
+      font-weight: 500;
+    }
+
+    /* 评价信息卡片 */
+    .evaluate-card {
+      margin: var(--spacing-md) var(--spacing-lg);
+      background: var(--color-white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-lg);
+    }
+
+    .evaluate-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .evaluate-header .evaluate-role {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+    }
+
+    .evaluate-overall {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .evaluate-stars {
+      display: flex;
+      gap: 2px;
+    }
+
+    .evaluate-stars i {
+      width: 16px;
+      height: 16px;
+      color: #FFD700;
+    }
+
+    .evaluate-stars i.empty-star {
+      color: var(--color-border);
+    }
+
+    .evaluate-score {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--color-warning);
+    }
+
+    .evaluate-dimensions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .evaluate-dim-item {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .evaluate-dim-label {
+      flex: 1;
+    }
+
+    .evaluate-dim-score {
+      font-weight: bold;
+      color: var(--color-warning);
+    }
+
+    .evaluate-content {
+      font-size: 13px;
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      margin-top: var(--spacing-sm);
+      padding-top: var(--spacing-sm);
+      border-top: 1px solid var(--color-bg-light);
+    }
+
+    .detail-section {
+      margin: var(--spacing-md) var(--spacing-lg);
+      background: var(--color-white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-lg);
+    }
+
+    .detail-section-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-md);
+      padding-bottom: var(--spacing-sm);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .detail-footer {
+      position: sticky;
+      bottom: 0;
+      background: var(--color-white);
+      padding: var(--spacing-md) var(--spacing-lg);
+      padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.02);
+      display: flex;
+      gap: var(--spacing-md);
+      z-index: 100;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .detail-footer .action-btn {
+      flex: 1;
+      height: 44px;
+      font-size: 15px;
+      border-radius: var(--radius-md);
+      font-weight: bold;
+      justify-content: center;
+      padding: 0 var(--spacing-md);
+    }
+
+    /* 订单卡片 */
+    .order-card {
+      background: var(--color-white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-lg);
+      margin: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .order-id {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+
+    .order-role-tag {
+      font-size: 11px;
+      padding: 2px var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      background: #E3F2FD;
+      color: var(--color-info);
+    }
+
+    .order-info-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .order-info-row i {
+      width: 14px;
+      height: 14px;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    .order-card-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-md);
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    /* 时间线 */
+    .timeline {
+      padding: var(--spacing-md) 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: var(--spacing-md);
+      padding-bottom: var(--spacing-lg);
+      position: relative;
+    }
+
+    .timeline-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 20px;
+      bottom: 0;
+      width: 2px;
+      background: var(--color-border);
+    }
+
+    .timeline-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      border: 2px solid var(--color-white);
+      box-shadow: 0 0 0 2px var(--color-primary);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .timeline-dot.pending {
+      background: var(--color-warning);
+      box-shadow: 0 0 0 2px var(--color-warning);
+    }
+
+    .timeline-dot.cancelled {
+      background: var(--color-danger);
+      box-shadow: 0 0 0 2px var(--color-danger);
+    }
+
+    .timeline-content {
+      flex: 1;
+    }
+
+    .timeline-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .timeline-time {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    /* 弹窗 */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: var(--spacing-lg);
+    }
+
+    .modal.active,
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .modal-close {
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: var(--spacing-lg);
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: var(--spacing-md);
+      padding: var(--spacing-lg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .modal-footer .btn-secondary,
+    .modal-footer .btn-primary {
+      flex: 1;
+      height: 44px;
+    }
+
+    /* 星级评分 */
+    .star-rating {
+      display: flex;
+      gap: var(--spacing-xs);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .star-rating i {
+      cursor: pointer;
+      color: var(--color-border);
+      transition: color 0.2s;
+    }
+
+    .star-rating svg {
+      cursor: pointer;
+      color: var(--color-border);
+      transition: color 0.2s;
+    }
+
+    .star-rating i.active,
+    .star-rating i:hover,
+    .star-rating svg.active {
+      color: var(--color-warning);
+    }
+
+    .rating-dimension {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .rating-dimension-label {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .rating-dimension-stars {
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+
+    .rating-dimension-stars i {
+      cursor: pointer;
+      color: var(--color-border);
+      transition: color 0.2s;
+    }
+
+    .rating-dimension-stars svg {
+      cursor: pointer;
+      color: var(--color-border);
+      transition: color 0.2s;
+    }
+
+    .rating-dimension-stars i.active,
+    .rating-dimension-stars svg.active {
+      color: var(--color-warning);
+    }
+
+    /* 取消原因 */
+    .cancel-reason-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .cancel-reason-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      transition: all 0.2s;
+    }
+
+    .cancel-reason-item.selected {
+      border-color: var(--color-primary);
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+    }
+
+    .cancel-reason-item input {
+      display: none;
+    }
+
+    /* 列表动画 */
+    .list-item-animate {
+      opacity: 0;
+      animation: fadeInUp 0.2s ease-out forwards;
+    }
+
+    .list-item-animate:nth-child(1) { animation-delay: 0ms; }
+    .list-item-animate:nth-child(2) { animation-delay: 50ms; }
+    .list-item-animate:nth-child(3) { animation-delay: 100ms; }
+    .list-item-animate:nth-child(4) { animation-delay: 150ms; }
+    .list-item-animate:nth-child(5) { animation-delay: 200ms; }
+    .list-item-animate:nth-child(6) { animation-delay: 250ms; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: var(--color-text-primary);
+      color: var(--color-white);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      z-index: 300;
+      opacity: 0;
+      transition: all 0.3s ease-out;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 40px var(--spacing-lg);
+      color: var(--color-text-muted);
+    }
+
+    .empty-state i {
+      margin-bottom: var(--spacing-md);
+    }
+
+    /* 身份下拉 */
+    .role-dropdown {
+      position: relative;
+    }
+
+    .role-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--color-white);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      min-width: 120px;
+      z-index: 150;
+      display: none;
+      overflow: hidden;
+    }
+
+    .role-dropdown-menu.show {
+      display: block;
+    }
+
+    .role-dropdown-item {
+      padding: var(--spacing-md) var(--spacing-lg);
+      font-size: 14px;
+      color: var(--color-text-primary);
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .role-dropdown-item:hover {
+      background: var(--color-bg-light);
+    }
+
+    .role-dropdown-item.active {
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+
+    /* 确认弹窗内容 */
+    .confirm-content {
+      text-align: center;
+      padding: var(--spacing-md) 0;
+    }
+
+    .confirm-icon {
+      margin-bottom: var(--spacing-md);
+      color: var(--color-warning);
+    }
+
+    .confirm-text {
+      font-size: 15px;
+      color: var(--color-text-primary);
+      line-height: 1.6;
+    }
+
+    .confirm-sub {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-top: var(--spacing-sm);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 视图1：主列表页 -->
+    <div class="view view-list active" id="viewList">
+      <nav class="navbar">
+        <div style="width: 32px;"></div>
+        <div class="navbar-title">皖美E行 · 物流匹配</div>
+        <div class="role-dropdown" id="roleDropdown">
+          <div class="navbar-action" id="roleDropdownBtn">
+            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+            <span id="roleDropdownLabel">司机</span>
+            <i data-lucide="chevron-down" style="width: 12px; height: 12px;"></i>
+          </div>
+          <div class="role-dropdown-menu" id="roleDropdownMenu">
+            <div class="role-dropdown-item active" data-role="driver">
+              <i data-lucide="truck" style="width: 16px; height: 16px;"></i> 司机
+            </div>
+            <div class="role-dropdown-item" data-role="owner">
+              <i data-lucide="package" style="width: 16px; height: 16px;"></i> 货主
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="role-section">
+        <div class="role-badge driver" id="roleBadge">
+          <i data-lucide="truck" style="width: 14px; height: 14px;"></i>
+          <span id="roleBadgeText">当前身份：司机</span>
+        </div>
+        <div class="role-section-actions">
+          <button class="role-publish-btn" id="publishBtn">
+            <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+            <span id="publishBtnText">发布运力</span>
+          </button>
+          <button class="role-orders-btn" id="ordersBtn">
+            <i data-lucide="clipboard-list" style="width: 14px; height: 14px;"></i>
+            我的订单
+          </button>
+        </div>
+      </div>
+
+      <div class="search-section">
+        <div class="search-box">
+          <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+          <input type="text" class="search-input" id="searchInput" placeholder="搜索路线、货物、车辆...">
+          <button class="search-btn" id="searchBtn">搜索</button>
+        </div>
+        <div class="filter-bar">
+          <select id="filterOrigin" class="filter-select">
+            <option value="">出发地</option>
+            <option value="合肥">合肥</option>
+            <option value="上海">上海</option>
+            <option value="南京">南京</option>
+            <option value="杭州">杭州</option>
+            <option value="芜湖">芜湖</option>
+          </select>
+          <select id="filterDest" class="filter-select">
+            <option value="">目的地</option>
+            <option value="合肥">合肥</option>
+            <option value="上海">上海</option>
+            <option value="南京">南京</option>
+            <option value="杭州">杭州</option>
+            <option value="芜湖">芜湖</option>
+          </select>
+          <select id="filterVehicle" class="filter-select">
+            <option value="">车型</option>
+            <option value="4.2米">4.2米车</option>
+            <option value="9.6米">9.6米车</option>
+            <option value="13米">13米车</option>
+            <option value="冷藏">冷藏车</option>
+            <option value="危险品">危险品车</option>
+          </select>
+          <select id="filterCargo" class="filter-select">
+            <option value="">货物类型</option>
+            <option value="电子">电子产品</option>
+            <option value="食品">食品</option>
+            <option value="建材">建材</option>
+            <option value="化工">化工品</option>
+            <option value="日用">日用品</option>
+            <option value="钢材">钢材</option>
+          </select>
+          <span class="reset-filter" id="resetFilterBtn">重置筛选</span>
+        </div>
+      </div>
+
+      <div class="list-container" id="listContainer"></div>
+    </div>
+
+    <!-- 视图2：发布表单页 -->
+    <div class="view view-publish" id="viewPublish">
+      <nav class="navbar">
+        <div class="navbar-back" id="publishBackBtn">
+          <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+        </div>
+        <div class="navbar-title" id="publishTitle">发布运力</div>
+        <div style="width: 32px;"></div>
+      </nav>
+      <div class="form-container" id="publishFormContainer"></div>
+      <div class="detail-footer" id="publishFooter">
+        <button class="action-btn btn-block" id="publishCancelBtn">取消</button>
+        <button class="action-btn primary btn-block" id="publishSubmitBtn">提交发布</button>
+      </div>
+    </div>
+
+    <!-- 视图3：订单列表页 -->
+    <div class="view view-orders" id="viewOrders">
+      <nav class="navbar">
+        <div class="navbar-back" id="ordersBackBtn">
+          <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+        </div>
+        <div class="navbar-title" id="ordersNavTitle">我的订单</div>
+        <div style="width: 32px;"></div>
+      </nav>
+      <div id="orderListContainer" style="padding-bottom: 20px;"></div>
+    </div>
+
+    <!-- 视图4：订单详情页 -->
+    <div class="view view-order-detail" id="viewOrderDetail">
+      <nav class="navbar">
+        <div class="navbar-back" id="orderDetailBackBtn">
+          <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+        </div>
+        <div class="navbar-title">订单详情</div>
+        <div style="width: 32px;"></div>
+      </nav>
+      <div class="detail-container" id="orderDetailContainer"></div>
+      <div class="detail-footer" id="orderDetailFooter"></div>
+    </div>
+
+    <!-- 弹窗1：评价弹窗 -->
+    <div class="modal" id="modalEvaluate">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title" id="evaluateModalTitle">评价</div>
+          <div class="modal-close" id="evaluateModalClose">
+            <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+          </div>
+        </div>
+        <div class="modal-body" id="evaluateModalBody"></div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="evaluateCancelBtn">取消</button>
+          <button class="btn-primary" id="evaluateSubmitBtn">提交评价</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 弹窗2：确认弹窗 -->
+    <div class="modal" id="modalConfirm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title" id="confirmModalTitle">确认操作</div>
+          <div class="modal-close" id="confirmModalClose">
+            <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+          </div>
+        </div>
+        <div class="modal-body" id="confirmModalBody"></div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="confirmCancelBtn">取消</button>
+          <button class="btn-primary" id="confirmSubmitBtn">确认</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 弹窗3：取消原因弹窗 -->
+    <div class="modal" id="modalCancel">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">取消订单</div>
+          <div class="modal-close" id="cancelModalClose">
+            <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+          </div>
+        </div>
+        <div class="modal-body" id="cancelModalBody"></div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="cancelBackBtn">返回</button>
+          <button class="btn-primary" id="cancelSubmitBtn" style="background: var(--color-danger);">确认取消</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+    // ===== 模拟数据 =====
+    var cargoList = [
+      { id: 1, route: '合肥 → 上海', origin: '合肥', dest: '上海', cargo: '10吨电子产品', cargoType: '电子', vehicleType: '9.6米车', price: '¥350/吨', matchRate: 95, time: '2小时前', owner: '张经理', phone: '138****1234' },
+      { id: 2, route: '上海 → 南京', origin: '上海', dest: '南京', cargo: '5吨食品（冷藏）', cargoType: '食品', vehicleType: '冷藏车', price: '¥360/吨', matchRate: 88, time: '3小时前', owner: '李总', phone: '139****5678' },
+      { id: 3, route: '杭州 → 合肥', origin: '杭州', dest: '合肥', cargo: '8吨建材', cargoType: '建材', vehicleType: '高栏车', price: '面议', matchRate: 92, time: '5小时前', owner: '王经理', phone: '137****9012' },
+      { id: 4, route: '南京 → 芜湖', origin: '南京', dest: '芜湖', cargo: '3吨日用品', cargoType: '日用', vehicleType: '4.2米车', price: '¥267/吨', matchRate: 75, time: '6小时前', owner: '赵总', phone: '136****3456' },
+      { id: 5, route: '合肥 → 杭州', origin: '合肥', dest: '杭州', cargo: '15吨钢材', cargoType: '钢材', vehicleType: '13米车', price: '¥300/吨', matchRate: 68, time: '8小时前', owner: '钱经理', phone: '135****7890' },
+      { id: 6, route: '上海 → 合肥', origin: '上海', dest: '合肥', cargo: '6吨化工品', cargoType: '化工', vehicleType: '危险品车', price: '¥867/吨', matchRate: 55, time: '1天前', owner: '孙总', phone: '134****2345' }
+    ];
+
+    var vehicleList = [
+      { id: 1, route: '上海 → 合肥', origin: '上海', dest: '合肥', vehicle: '9.6米高栏，空车', vehicleType: '9.6米', capacity: '10吨', price: '¥340/吨', matchRate: 90, time: '1小时前', driver: '刘师傅', phone: '158****1111' },
+      { id: 2, route: '南京 → 合肥', origin: '南京', dest: '合肥', vehicle: '4.2米平板', vehicleType: '4.2米', capacity: '5吨', price: '¥240/吨', matchRate: 85, time: '2小时前', driver: '陈师傅', phone: '159****2222' },
+      { id: 3, route: '合肥 → 上海', origin: '合肥', dest: '上海', vehicle: '13米高栏', vehicleType: '13米', capacity: '20吨', price: '¥250/吨', matchRate: 78, time: '4小时前', driver: '杨师傅', phone: '157****3333' },
+      { id: 4, route: '杭州 → 合肥', origin: '杭州', dest: '合肥', vehicle: '9.6米厢式', vehicleType: '9.6米', capacity: '8吨', price: '¥350/吨', matchRate: 82, time: '5小时前', driver: '黄师傅', phone: '156****4444' },
+      { id: 5, route: '上海 → 南京', origin: '上海', dest: '南京', vehicle: '冷藏车', vehicleType: '冷藏', capacity: '6吨', price: '¥367/吨', matchRate: 72, time: '7小时前', driver: '周师傅', phone: '155****5555' },
+      { id: 6, route: '合肥 → 芜湖', origin: '合肥', dest: '芜湖', vehicle: '4.2米厢式', vehicleType: '4.2米', capacity: '3吨', price: '¥200/吨', matchRate: 60, time: '1天前', driver: '吴师傅', phone: '153****6666' }
+    ];
+
+    var orders = [
+      { id: 'ORD20260520001', route: '合肥 → 上海', summary: '10吨电子产品', amount: '¥350/吨', status: 'completed', role: 'owner', date: '2026-05-20', phone: '158****1111', evaluated: true },
+      { id: 'ORD20260521002', route: '上海 → 合肥', summary: '9.6米高栏车', amount: '¥340/吨', status: 'completed', role: 'driver', date: '2026-05-21', phone: '138****1234', evaluated: true },
+      { id: 'ORD20260523003', route: '杭州 → 合肥', summary: '6吨食品', amount: '¥360/吨', status: 'completed', role: 'driver', date: '2026-05-23', phone: '155****5555', evaluated: false },
+      { id: 'ORD20260522003', route: '南京 → 合肥', summary: '5吨建材', amount: '¥240/吨', status: 'completed', role: 'owner', date: '2026-05-22', phone: '159****2222', evaluated: false },
+      { id: 'ORD20260522004', route: '南京 → 合肥', summary: '4.2米平板车', amount: '¥240/吨', status: 'transporting', role: 'driver', date: '2026-05-22', phone: '136****3456', evaluated: false },
+      { id: 'ORD20260524005', route: '上海 → 南京', summary: '5吨食品', amount: '¥360/吨', status: 'accepted', role: 'owner', date: '2026-05-24', phone: '155****5555', evaluated: false },
+      { id: 'ORD20260525006', route: '合肥 → 上海', summary: '15吨钢材', amount: '¥300/吨', status: 'accepted', role: 'driver', date: '2026-05-25', phone: '137****9012', evaluated: false },
+      { id: 'ORD20260525007', route: '合肥 → 芜湖', summary: '3吨日用品', amount: '¥267/吨', status: 'cancelled', role: 'owner', date: '2026-05-25', cancelReason: '货物已自行处理', cancelBy: '货主', phone: '153****6666', evaluated: false },
+      { id: 'ORD20260525008', route: '杭州 → 合肥', summary: '8吨化工品', amount: '面议', status: 'cancelled', role: 'driver', date: '2026-05-25', cancelReason: '车辆故障无法出行', cancelBy: '司机', phone: '156****4444', evaluated: false }
+    ];
+
+    var myVehicles = [
+      { plate: '皖 A12345', model: '东风天龙', type: '9.6米高栏', size: '9.6米', bodyType: '高栏', capacity: 10 },
+      { plate: '皖 B67890', model: '解放 J6', type: '13米平板', size: '13米', bodyType: '平板', capacity: 20 },
+      { plate: '皖 C11111', model: '陕汽德龙', type: '4.2米厢式', size: '4.2米', bodyType: '厢式', capacity: 3 }
+    ];
+
+    var cancelReasons = [
+      '临时有变，无法执行',
+      '找到更合适的合作方',
+      '货物/车辆信息有误',
+      '对方无法按时履约',
+      '其他原因'
+    ];
+
+    // ===== 状态 =====
+    var currentRole = 'driver'; // 'driver' 或 'owner'
+    var currentOrderId = null;
+    var confirmCallback = null;
+
+    // ===== 工具函数 =====
+    function showToast(message) {
+      var toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    function showView(viewName) {
+      var views = document.querySelectorAll('.view');
+      for (var i = 0; i < views.length; i++) {
+        views[i].classList.remove('active');
+      }
+      var target = document.querySelector('.view-' + viewName);
+      if (target) {
+        target.classList.add('active');
+      }
+      if (viewName === 'list') {
+        renderList();
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function getMatchTag(rate) {
+      if (rate >= 80) {
+        return '<span class="match-tag high">匹配度 ' + rate + '%</span>';
+      } else if (rate >= 60) {
+        return '<span class="match-tag medium">匹配度 ' + rate + '%</span>';
+      } else {
+        return '<span class="match-tag low">匹配度 ' + rate + '%</span>';
+      }
+    }
+
+    function getStatusTag(status) {
+      switch (status) {
+        case 'accepted': return '<span class="tag tag-info">已接单</span>';
+        case 'transporting': return '<span class="tag tag-success">运输中</span>';
+        case 'completed': return '<span class="tag tag-default">已完成</span>';
+        case 'cancelled': return '<span class="tag tag-danger">已取消</span>';
+        default: return '<span class="tag tag-default">' + status + '</span>';
+      }
+    }
+
+    function getStatusText(status) {
+      switch (status) {
+        case 'pending': return '待接单';
+        case 'accepted': return '已接单';
+        case 'transporting': return '运输中';
+        case 'completed': return '已完成';
+        case 'cancelled': return '已取消';
+        default: return status;
+      }
+    }
+
+    function getRoleText(role) {
+      return role === 'owner' ? '货主' : '司机';
+    }
+
+    // ===== 身份切换 =====
+    function switchRole(role) {
+      currentRole = role;
+      var label = document.getElementById('roleDropdownLabel');
+      if (label) label.textContent = getRoleText(role);
+
+      var badge = document.getElementById('roleBadge');
+      var badgeText = document.getElementById('roleBadgeText');
+      if (badge) {
+        badge.className = 'role-badge ' + role;
+      }
+      if (badgeText) {
+        badgeText.textContent = '当前身份：' + getRoleText(role);
+      }
+
+      var publishBtnText = document.getElementById('publishBtnText');
+      if (publishBtnText) {
+        publishBtnText.textContent = role === 'driver' ? '发布运力' : '发布货源';
+      }
+
+      // 更新下拉菜单选中状态
+      var items = document.querySelectorAll('#roleDropdownMenu .role-dropdown-item');
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].getAttribute('data-role') === role) {
+          items[i].classList.add('active');
+        } else {
+          items[i].classList.remove('active');
+        }
+      }
+
+      // 关闭下拉
+      var menu = document.getElementById('roleDropdownMenu');
+      if (menu) menu.classList.remove('show');
+
+      renderList();
+    }
+
+    // ===== 列表渲染 =====
+    function applyFilters() {
+      renderList();
+    }
+
+    function renderList() {
+      var container = document.getElementById('listContainer');
+      if (!container) return;
+
+      var keyword = '';
+      var searchInput = document.getElementById('searchInput');
+      if (searchInput) keyword = searchInput.value.trim().toLowerCase();
+
+      var filterOrigin = '';
+      var fo = document.getElementById('filterOrigin');
+      if (fo) filterOrigin = fo.value;
+
+      var filterDest = '';
+      var fd = document.getElementById('filterDest');
+      if (fd) filterDest = fd.value;
+
+      var filterVehicle = '';
+      var fv = document.getElementById('filterVehicle');
+      if (fv) filterVehicle = fv.value;
+
+      var filterCargo = '';
+      var fc = document.getElementById('filterCargo');
+      if (fc) filterCargo = fc.value;
+
+      if (currentRole === 'driver') {
+        renderCargoList(container, keyword, filterOrigin, filterDest, filterVehicle, filterCargo);
+      } else {
+        renderVehicleList(container, keyword, filterOrigin, filterDest, filterVehicle);
+      }
+    }
+
+    function renderCargoList(container, keyword, filterOrigin, filterDest, filterVehicle, filterCargo) {
+      var filtered = [];
+      for (var i = 0; i < cargoList.length; i++) {
+        var c = cargoList[i];
+        if (keyword && c.route.toLowerCase().indexOf(keyword) === -1 && c.cargo.toLowerCase().indexOf(keyword) === -1 && c.owner.toLowerCase().indexOf(keyword) === -1) continue;
+        if (filterOrigin && c.origin !== filterOrigin) continue;
+        if (filterDest && c.dest !== filterDest) continue;
+        if (filterVehicle && c.vehicleType.indexOf(filterVehicle) === -1) continue;
+        if (filterCargo && c.cargoType.indexOf(filterCargo) === -1) continue;
+        filtered.push(c);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state"><i data-lucide="package-x" style="width: 48px; height: 48px;"></i><div>暂无匹配的货源信息</div></div>';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < filtered.length; i++) {
+        var c = filtered[i];
+        html +=
+          '<div class="logistics-card list-item-animate" style="animation-delay: ' + (i * 50) + 'ms;">' +
+            '<div class="logistics-card-header">' +
+              '<div class="logistics-route"><i data-lucide="route" style="width: 18px; height: 18px;"></i> ' + c.route + '</div>' +
+              '<span class="tag tag-info">货源</span>' +
+            '</div>' +
+            '<div class="logistics-info">' +
+              '<div class="logistics-info-row"><i data-lucide="package"></i> ' + c.cargo + '</div>' +
+              '<div class="logistics-info-row"><i data-lucide="truck"></i> 需' + c.vehicleType + '</div>' +
+              '<div class="logistics-info-row"><i data-lucide="banknote"></i> <span class="price">' + c.price + '</span></div>' +
+              '<div class="logistics-info-row"><i data-lucide="clock"></i> <span class="time">' + c.time + '</span> · ' + c.owner + '</div>' +
+            '</div>' +
+            '<div class="logistics-card-footer">' +
+              '<button class="action-btn" onclick="event.stopPropagation(); contactPerson(\'' + c.phone + '\', \'' + c.owner + '\')"><i data-lucide="phone" style="width: 12px; height: 12px;"></i> 联系货主</button>' +
+              '<button class="action-btn primary" onclick="event.stopPropagation(); grabOrder(' + c.id + ')"><i data-lucide="hand-metal" style="width: 12px; height: 12px;"></i> 司机抢单</button>' +
+            '</div>' +
+          '</div>';
+      }
+      container.innerHTML = html;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function renderVehicleList(container, keyword, filterOrigin, filterDest, filterVehicle) {
+      var filtered = [];
+      for (var i = 0; i < vehicleList.length; i++) {
+        var v = vehicleList[i];
+        if (keyword && v.route.toLowerCase().indexOf(keyword) === -1 && v.vehicle.toLowerCase().indexOf(keyword) === -1 && v.driver.toLowerCase().indexOf(keyword) === -1) continue;
+        if (filterOrigin && v.origin !== filterOrigin) continue;
+        if (filterDest && v.dest !== filterDest) continue;
+        if (filterVehicle && v.vehicleType.indexOf(filterVehicle) === -1) continue;
+        filtered.push(v);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state"><i data-lucide="truck" style="width: 48px; height: 48px;"></i><div>暂无匹配的车源信息</div></div>';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < filtered.length; i++) {
+        var v = filtered[i];
+        html +=
+          '<div class="logistics-card list-item-animate" style="animation-delay: ' + (i * 50) + 'ms;">' +
+            '<div class="logistics-card-header">' +
+              '<div class="logistics-route"><i data-lucide="route" style="width: 18px; height: 18px;"></i> ' + v.route + '</div>' +
+              '<span class="tag tag-purple">车源</span>' +
+            '</div>' +
+            '<div class="logistics-info">' +
+              '<div class="logistics-info-row"><i data-lucide="truck"></i> ' + v.vehicle + '</div>' +
+              '<div class="logistics-info-row"><i data-lucide="weight"></i> 可载' + v.capacity + '</div>' +
+              '<div class="logistics-info-row"><i data-lucide="banknote"></i> <span class="price">' + v.price + '</span></div>' +
+              '<div class="logistics-info-row"><i data-lucide="clock"></i> <span class="time">' + v.time + '</span> · ' + v.driver + '</div>' +
+            '</div>' +
+            '<div class="logistics-card-footer">' +
+              '<button class="action-btn" onclick="event.stopPropagation(); contactPerson(\'' + v.phone + '\', \'' + v.driver + '\')"><i data-lucide="phone" style="width: 12px; height: 12px;"></i> 联系司机</button>' +
+              '<button class="action-btn primary" onclick="event.stopPropagation(); placeOrder(' + v.id + ')"><i data-lucide="shopping-cart" style="width: 12px; height: 12px;"></i> 货主下单</button>' +
+            '</div>' +
+          '</div>';
+      }
+      container.innerHTML = html;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    // ===== 联系对方 =====
+    function contactPerson(phone, name) {
+      showToast('将拨打电话：' + phone + '（' + name + '）');
+    }
+
+    // ===== 司机抢单 =====
+    function grabOrder(cargoId) {
+      var cargo = null;
+      for (var i = 0; i < cargoList.length; i++) {
+        if (cargoList[i].id === cargoId) { cargo = cargoList[i]; break; }
+      }
+      if (!cargo) return;
+
+      openConfirmModal(
+        '确认抢单',
+        '<div class="confirm-content">' +
+          '<div class="confirm-icon"><i data-lucide="hand-metal" style="width: 48px; height: 48px;"></i></div>' +
+          '<div class="confirm-text">确认要抢单吗？</div>' +
+          '<div class="confirm-sub">路线：' + cargo.route + '<br>货物：' + cargo.cargo + '<br>运费：' + cargo.price + '</div>' +
+        '</div>',
+        function() {
+          var newOrder = {
+            id: 'ORD' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + String(orders.length + 1).padStart(3, '0'),
+            route: cargo.route,
+            summary: cargo.cargo,
+            amount: cargo.price,
+            status: 'accepted',
+            role: 'driver',
+            date: new Date().toISOString().slice(0, 10),
+            phone: cargo.phone,
+            evaluated: false
+          };
+          orders.unshift(newOrder);
+          showToast('抢单成功，订单号：' + newOrder.id);
+          renderList();
+        }
+      );
+    }
+
+    // ===== 货主下单 =====
+    function placeOrder(vehicleId) {
+      var vehicle = null;
+      for (var i = 0; i < vehicleList.length; i++) {
+        if (vehicleList[i].id === vehicleId) { vehicle = vehicleList[i]; break; }
+      }
+      if (!vehicle) return;
+
+      openConfirmModal(
+        '确认下单',
+        '<div class="confirm-content">' +
+          '<div class="confirm-icon"><i data-lucide="shopping-cart" style="width: 48px; height: 48px;"></i></div>' +
+          '<div class="confirm-text">确认要下单吗？</div>' +
+          '<div class="confirm-sub">路线：' + vehicle.route + '<br>车辆：' + vehicle.vehicle + '<br>运费：' + vehicle.price + '</div>' +
+        '</div>',
+        function() {
+          var newOrder = {
+            id: 'ORD' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + String(orders.length + 1).padStart(3, '0'),
+            route: vehicle.route,
+            summary: vehicle.vehicle,
+            amount: vehicle.price,
+            status: 'accepted',
+            role: 'owner',
+            date: new Date().toISOString().slice(0, 10),
+            phone: vehicle.phone,
+            evaluated: false
+          };
+          orders.unshift(newOrder);
+          showToast('下单成功，订单号：' + newOrder.id);
+          renderList();
+        }
+      );
+    }
+
+    // ===== 确认弹窗 =====
+    function openConfirmModal(title, bodyHtml, callback) {
+      var modal = document.getElementById('modalConfirm');
+      if (!modal) return;
+      var titleEl = document.getElementById('confirmModalTitle');
+      if (titleEl) titleEl.textContent = title;
+      var bodyEl = document.getElementById('confirmModalBody');
+      if (bodyEl) bodyEl.innerHTML = bodyHtml;
+      confirmCallback = callback;
+      modal.classList.add('show');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeConfirmModal() {
+      var modal = document.getElementById('modalConfirm');
+      if (modal) modal.classList.remove('show');
+      confirmCallback = null;
+    }
+
+    // ===== 发布表单 =====
+    function openPublishForm() {
+      var title = document.getElementById('publishTitle');
+      if (title) title.textContent = currentRole === 'driver' ? '发布运力' : '发布货源';
+
+      var container = document.getElementById('publishFormContainer');
+      if (!container) return;
+
+      if (currentRole === 'driver') {
+        container.innerHTML = renderDriverForm();
+      } else {
+        container.innerHTML = renderOwnerForm();
+      }
+
+      bindFormEvents(container);
+      showView('publish');
+    }
+
+    function renderDriverForm() {
+      var vehicleOptionsHtml = '';
+      for (var i = 0; i < myVehicles.length; i++) {
+        var v = myVehicles[i];
+        vehicleOptionsHtml +=
+          '<div class="vehicle-radio-item" data-vehicle-index="' + i + '">' +
+            '<input type="radio" name="pubVehicle" value="' + i + '">' +
+            '<div class="vehicle-info">' + v.plate + ' · ' + v.model + ' · ' + v.type + ' · 可载' + v.capacity + '吨</div>' +
+          '</div>';
+      }
+      vehicleOptionsHtml +=
+        '<div class="vehicle-add-btn" id="addVehicleBtn">' +
+          '<i data-lucide="plus" style="width: 14px; height: 14px;"></i> 添加新车辆' +
+        '</div>';
+
+      return (
+        '<div class="form-card">' +
+          '<div class="form-group">' +
+            '<label class="form-label">出发地 <span class="required">*</span></label>' +
+            '<input type="text" class="form-input" id="pubOrigin" placeholder="请输入出发地">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">目的地 <span class="required">*</span></label>' +
+            '<input type="text" class="form-input" id="pubDest" placeholder="请输入目的地">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">我的车辆 <span class="required">*</span></label>' +
+            '<div class="vehicle-radio-group" id="pubVehicleGroup">' + vehicleOptionsHtml + '</div>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">车型 <span class="required">*</span></label>' +
+            '<select class="form-select" id="pubVehicleSize">' +
+              '<option value="">请选择车型</option>' +
+              '<option value="4.2米">4.2米</option>' +
+              '<option value="9.6米">9.6米</option>' +
+              '<option value="13米">13米</option>' +
+              '<option value="17.5米">17.5米</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">车辆类型 <span class="required">*</span></label>' +
+            '<select class="form-select" id="pubVehicleType">' +
+              '<option value="">请选择车辆类型</option>' +
+              '<option value="高栏">高栏</option>' +
+              '<option value="平板">平板</option>' +
+              '<option value="厢式">厢式</option>' +
+              '<option value="冷藏">冷藏</option>' +
+              '<option value="危险品">危险品</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">可载重量 <span class="required">*</span></label>' +
+            '<input type="number" class="form-input" id="pubCapacity" placeholder="请输入可载重量（吨）">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">可用时间 <span class="required">*</span></label>' +
+            '<input type="date" class="form-input" id="pubAvailableDate">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">运费报价</label>' +
+            '<input type="text" class="form-input" id="pubPrice" placeholder="请输入运费报价（元/吨）或"面议"">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<div class="switch-group">' +
+              '<label class="form-label" style="margin-bottom: 0;">是否接受议价</label>' +
+              '<div class="switch active" id="pubNegotiable"></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">备注</label>' +
+            '<textarea class="form-textarea" id="pubRemark" placeholder="其他补充信息（选填）..."></textarea>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function renderOwnerForm() {
+      return (
+        '<div class="form-card">' +
+          '<div class="form-group">' +
+            '<label class="form-label">出发地 <span class="required">*</span></label>' +
+            '<input type="text" class="form-input" id="pubOrigin" placeholder="请输入出发地">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">目的地 <span class="required">*</span></label>' +
+            '<input type="text" class="form-input" id="pubDest" placeholder="请输入目的地">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">货物类型 <span class="required">*</span></label>' +
+            '<select class="form-select" id="pubCargoType">' +
+              '<option value="">请选择货物类型</option>' +
+              '<option value="电子产品">电子产品</option>' +
+              '<option value="食品">食品</option>' +
+              '<option value="建材">建材</option>' +
+              '<option value="化工">化工品</option>' +
+              '<option value="日用品">日用品</option>' +
+              '<option value="钢材">钢材</option>' +
+              '<option value="其他">其他</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">货物重量 <span class="required">*</span></label>' +
+            '<input type="number" class="form-input" id="pubWeight" placeholder="请输入货物重量（吨）">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">车型要求 <span class="required">*</span></label>' +
+            '<select class="form-select" id="pubVehicleReq">' +
+              '<option value="">请选择车型要求</option>' +
+              '<option value="4.2米">4.2米</option>' +
+              '<option value="9.6米">9.6米</option>' +
+              '<option value="13米">13米</option>' +
+              '<option value="17.5米">17.5米</option>' +
+              '<option value="冷藏车">冷藏车</option>' +
+              '<option value="危险品车">危险品车</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">期望发车时间 <span class="required">*</span></label>' +
+            '<input type="date" class="form-input" id="pubExpectDate">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">运费预算</label>' +
+            '<input type="text" class="form-input" id="pubPrice" placeholder="请输入运费预算（元/吨）或"面议"">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<div class="switch-group">' +
+              '<label class="form-label" style="margin-bottom: 0;">是否允许议价</label>' +
+              '<div class="switch active" id="pubNegotiable"></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">备注</label>' +
+            '<textarea class="form-textarea" id="pubRemark" placeholder="其他补充信息（选填）..."></textarea>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function bindFormEvents(container) {
+      var switches = container.querySelectorAll('.switch');
+      for (var i = 0; i < switches.length; i++) {
+        switches[i].addEventListener('click', function() {
+          this.classList.toggle('active');
+        });
+      }
+
+      // 车辆选择事件（司机发布运力表单）
+      var vehicleItems = container.querySelectorAll('.vehicle-radio-item');
+      for (var i = 0; i < vehicleItems.length; i++) {
+        vehicleItems[i].addEventListener('click', function() {
+          // 取消所有选中
+          for (var j = 0; j < vehicleItems.length; j++) {
+            vehicleItems[j].classList.remove('selected');
+            var radio = vehicleItems[j].querySelector('input');
+            if (radio) radio.checked = false;
+          }
+          // 选中当前
+          this.classList.add('selected');
+          var radio = this.querySelector('input');
+          if (radio) radio.checked = true;
+
+          // 自动填充车型、车辆类型、可载重量
+          var idx = parseInt(this.getAttribute('data-vehicle-index'));
+          if (!isNaN(idx) && myVehicles[idx]) {
+            var v = myVehicles[idx];
+            var sizeEl = document.getElementById('pubVehicleSize');
+            var typeEl = document.getElementById('pubVehicleType');
+            var capEl = document.getElementById('pubCapacity');
+            if (sizeEl) { sizeEl.value = v.size; sizeEl.setAttribute('readonly', true); sizeEl.disabled = true; }
+            if (typeEl) { typeEl.value = v.bodyType; typeEl.setAttribute('readonly', true); typeEl.disabled = true; }
+            if (capEl) { capEl.value = v.capacity; capEl.readOnly = true; }
+          }
+        });
+      }
+
+      // 添加新车辆按钮
+      var addVehicleBtn = container.querySelector('#addVehicleBtn');
+      if (addVehicleBtn) {
+        addVehicleBtn.addEventListener('click', function() {
+          // 取消已绑定车辆的选中
+          for (var j = 0; j < vehicleItems.length; j++) {
+            vehicleItems[j].classList.remove('selected');
+            var radio = vehicleItems[j].querySelector('input');
+            if (radio) radio.checked = false;
+          }
+          // 恢复车型/车辆类型/可载重量为可编辑
+          var sizeEl = document.getElementById('pubVehicleSize');
+          var typeEl = document.getElementById('pubVehicleType');
+          var capEl = document.getElementById('pubCapacity');
+          if (sizeEl) { sizeEl.value = ''; sizeEl.removeAttribute('readonly'); sizeEl.disabled = false; }
+          if (typeEl) { typeEl.value = ''; typeEl.removeAttribute('readonly'); typeEl.disabled = false; }
+          if (capEl) { capEl.value = ''; capEl.readOnly = false; }
+          // 打开添加新车辆弹窗
+          openAddVehicleModal();
+        });
+      }
+    }
+
+    // ===== 添加新车辆弹窗 =====
+    function openAddVehicleModal() {
+      var modal = document.getElementById('modalConfirm');
+      if (!modal) return;
+
+      var titleEl = document.getElementById('confirmModalTitle');
+      if (titleEl) titleEl.textContent = '添加新车辆';
+
+      var bodyEl = document.getElementById('confirmModalBody');
+      if (!bodyEl) return;
+
+      bodyEl.innerHTML =
+        '<div class="form-group">' +
+          '<label class="form-label">车牌号 <span class="required">*</span></label>' +
+          '<input type="text" class="form-input" id="newVehiclePlate" placeholder="请输入车牌号">' +
+        '</div>' +
+        '<div class="form-group">' +
+          '<label class="form-label">车型 <span class="required">*</span></label>' +
+          '<input type="text" class="form-input" id="newVehicleModel" placeholder="请输入车型（如 东风天龙）">' +
+        '</div>' +
+        '<div class="form-group">' +
+          '<label class="form-label">车辆类型 <span class="required">*</span></label>' +
+          '<input type="text" class="form-input" id="newVehicleType" placeholder="如 9.6米高栏">' +
+        '</div>' +
+        '<div class="form-group">' +
+          '<label class="form-label">可载重量（吨）<span class="required">*</span></label>' +
+          '<input type="number" class="form-input" id="newVehicleCapacity" placeholder="请输入可载重量">' +
+        '</div>';
+
+      confirmCallback = function() {
+        var plateEl = document.getElementById('newVehiclePlate');
+        var modelEl = document.getElementById('newVehicleModel');
+        var typeEl = document.getElementById('newVehicleType');
+        var capEl = document.getElementById('newVehicleCapacity');
+
+        if (!plateEl || !plateEl.value.trim()) { showToast('请输入车牌号'); return; }
+        if (!modelEl || !modelEl.value.trim()) { showToast('请输入车型'); return; }
+        if (!typeEl || !typeEl.value.trim()) { showToast('请输入车辆类型'); return; }
+        if (!capEl || !capEl.value.trim()) { showToast('请输入可载重量'); return; }
+
+        // 解析车辆类型中的尺寸和车身类型
+        var typeStr = typeEl.value.trim();
+        var size = '';
+        var bodyType = '';
+        var sizeMatch = typeStr.match(/(\d+\.?\d*)米/);
+        if (sizeMatch) size = sizeMatch[1] + '米';
+        if (typeStr.indexOf('高栏') !== -1) bodyType = '高栏';
+        else if (typeStr.indexOf('平板') !== -1) bodyType = '平板';
+        else if (typeStr.indexOf('厢式') !== -1) bodyType = '厢式';
+        else if (typeStr.indexOf('冷藏') !== -1) bodyType = '冷藏';
+        else if (typeStr.indexOf('危险品') !== -1) bodyType = '危险品';
+        else bodyType = typeStr;
+
+        var newVehicle = {
+          plate: plateEl.value.trim(),
+          model: modelEl.value.trim(),
+          type: typeStr,
+          size: size,
+          bodyType: bodyType,
+          capacity: parseInt(capEl.value.trim()) || 0
+        };
+
+        myVehicles.push(newVehicle);
+        var newIndex = myVehicles.length - 1;
+
+        // 自动填充表单
+        var sizeSelect = document.getElementById('pubVehicleSize');
+        var typeSelect = document.getElementById('pubVehicleType');
+        var capInput = document.getElementById('pubCapacity');
+        if (sizeSelect && size) { sizeSelect.value = size; sizeSelect.disabled = true; }
+        if (typeSelect && bodyType) { typeSelect.value = bodyType; typeSelect.disabled = true; }
+        if (capInput) { capInput.value = newVehicle.capacity; capInput.readOnly = true; }
+
+        // 重新渲染车辆选择列表
+        var group = document.getElementById('pubVehicleGroup');
+        if (group) {
+          var vehicleOptionsHtml = '';
+          for (var i = 0; i < myVehicles.length; i++) {
+            var v = myVehicles[i];
+            var isSelected = (i === newIndex);
+            vehicleOptionsHtml +=
+              '<div class="vehicle-radio-item' + (isSelected ? ' selected' : '') + '" data-vehicle-index="' + i + '">' +
+                '<input type="radio" name="pubVehicle" value="' + i + '"' + (isSelected ? ' checked' : '') + '>' +
+                '<div class="vehicle-info">' + v.plate + ' · ' + v.model + ' · ' + v.type + ' · 可载' + v.capacity + '吨</div>' +
+              '</div>';
+          }
+          vehicleOptionsHtml +=
+            '<div class="vehicle-add-btn" id="addVehicleBtn">' +
+              '<i data-lucide="plus" style="width: 14px; height: 14px;"></i> 添加新车辆' +
+            '</div>';
+          group.innerHTML = vehicleOptionsHtml;
+
+          // 重新绑定事件
+          var newVehicleItems = group.querySelectorAll('.vehicle-radio-item');
+          for (var i = 0; i < newVehicleItems.length; i++) {
+            newVehicleItems[i].addEventListener('click', function() {
+              for (var j = 0; j < newVehicleItems.length; j++) {
+                newVehicleItems[j].classList.remove('selected');
+                var r = newVehicleItems[j].querySelector('input');
+                if (r) r.checked = false;
+              }
+              this.classList.add('selected');
+              var r = this.querySelector('input');
+              if (r) r.checked = true;
+
+              var idx = parseInt(this.getAttribute('data-vehicle-index'));
+              if (!isNaN(idx) && myVehicles[idx]) {
+                var vv = myVehicles[idx];
+                var sEl = document.getElementById('pubVehicleSize');
+                var tEl = document.getElementById('pubVehicleType');
+                var cEl = document.getElementById('pubCapacity');
+                if (sEl) { sEl.value = vv.size; sEl.disabled = true; }
+                if (tEl) { tEl.value = vv.bodyType; tEl.disabled = true; }
+                if (cEl) { cEl.value = vv.capacity; cEl.readOnly = true; }
+              }
+            });
+          }
+
+          var newAddBtn = group.querySelector('#addVehicleBtn');
+          if (newAddBtn) {
+            newAddBtn.addEventListener('click', function() {
+              for (var j = 0; j < newVehicleItems.length; j++) {
+                newVehicleItems[j].classList.remove('selected');
+                var r = newVehicleItems[j].querySelector('input');
+                if (r) r.checked = false;
+              }
+              var sEl = document.getElementById('pubVehicleSize');
+              var tEl = document.getElementById('pubVehicleType');
+              var cEl = document.getElementById('pubCapacity');
+              if (sEl) { sEl.value = ''; sEl.disabled = false; }
+              if (tEl) { tEl.value = ''; tEl.disabled = false; }
+              if (cEl) { cEl.value = ''; cEl.readOnly = false; }
+              openAddVehicleModal();
+            });
+          }
+        }
+
+        closeConfirmModal();
+        showToast('新车辆已添加');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      };
+
+      modal.classList.add('show');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function submitPublish() {
+      var origin = document.getElementById('pubOrigin');
+      var dest = document.getElementById('pubDest');
+
+      if (!origin || !origin.value.trim()) {
+        showToast('请输入出发地');
+        return;
+      }
+      if (!dest || !dest.value.trim()) {
+        showToast('请输入目的地');
+        return;
+      }
+
+      if (currentRole === 'driver') {
+        var selectedVehicle = document.querySelector('#pubVehicleGroup .vehicle-radio-item.selected');
+        if (!selectedVehicle) { showToast('请选择车辆'); return; }
+        var vehicleSize = document.getElementById('pubVehicleSize');
+        var vehicleType = document.getElementById('pubVehicleType');
+        var capacity = document.getElementById('pubCapacity');
+        var availableDate = document.getElementById('pubAvailableDate');
+        if (!vehicleSize || !vehicleSize.value) { showToast('请选择车型'); return; }
+        if (!vehicleType || !vehicleType.value) { showToast('请选择车辆类型'); return; }
+        if (!capacity || !capacity.value.trim()) { showToast('请输入可载重量'); return; }
+        if (!availableDate || !availableDate.value) { showToast('请选择可用时间'); return; }
+
+        var price = document.getElementById('pubPrice');
+        var priceVal = price && price.value.trim() ? price.value.trim() : '面议';
+
+        vehicleList.unshift({
+          id: vehicleList.length + 10,
+          route: origin.value.trim() + ' → ' + dest.value.trim(),
+          origin: origin.value.trim(),
+          dest: dest.value.trim(),
+          vehicle: vehicleSize.value + vehicleType.value + '，空车',
+          vehicleType: vehicleSize.value,
+          capacity: capacity.value.trim() + '吨',
+          price: priceVal.indexOf('面议') !== -1 ? '面议' : ('¥' + priceVal.replace('¥', '').replace('/吨', '') + '/吨'),
+          matchRate: Math.floor(Math.random() * 20) + 75,
+          time: '刚刚',
+          driver: '我',
+          phone: '138****0000'
+        });
+        showToast('运力发布成功');
+      } else {
+        var cargoType = document.getElementById('pubCargoType');
+        var weight = document.getElementById('pubWeight');
+        var vehicleReq = document.getElementById('pubVehicleReq');
+        var expectDate = document.getElementById('pubExpectDate');
+        if (!cargoType || !cargoType.value) { showToast('请选择货物类型'); return; }
+        if (!weight || !weight.value.trim()) { showToast('请输入货物重量'); return; }
+        if (!vehicleReq || !vehicleReq.value) { showToast('请选择车型要求'); return; }
+        if (!expectDate || !expectDate.value) { showToast('请选择期望发车时间'); return; }
+
+        var price = document.getElementById('pubPrice');
+        var priceVal = price && price.value.trim() ? price.value.trim() : '面议';
+
+        cargoList.unshift({
+          id: cargoList.length + 10,
+          route: origin.value.trim() + ' → ' + dest.value.trim(),
+          origin: origin.value.trim(),
+          dest: dest.value.trim(),
+          cargo: weight.value.trim() + '吨' + cargoType.value,
+          cargoType: cargoType.value,
+          vehicleType: vehicleReq.value,
+          price: priceVal.indexOf('面议') !== -1 ? '面议' : ('¥' + priceVal.replace('¥', '').replace('/吨', '') + '/吨'),
+          matchRate: Math.floor(Math.random() * 20) + 75,
+          time: '刚刚',
+          owner: '我',
+          phone: '138****0000'
+        });
+        showToast('货源发布成功');
+      }
+
+      showView('list');
+    }
+
+    // ===== 订单列表 =====
+    function renderOrderList() {
+      var container = document.getElementById('orderListContainer');
+      if (!container) return;
+
+      // 更新订单导航标题
+      var ordersNavTitle = document.getElementById('ordersNavTitle');
+      if (ordersNavTitle) {
+        ordersNavTitle.textContent = '我的订单 - ' + getRoleText(currentRole);
+      }
+
+      var filtered = [];
+      for (var i = 0; i < orders.length; i++) {
+        if (orders[i].status === 'pending') continue;
+        if (orders[i].role === currentRole) {
+          filtered.push(orders[i]);
+        }
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state"><i data-lucide="clipboard-list" style="width: 48px; height: 48px;"></i><div>暂无订单记录</div></div>';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < filtered.length; i++) {
+        var o = filtered[i];
+        html +=
+          '<div class="order-card list-item-animate" style="animation-delay: ' + (i * 50) + 'ms;" data-order-id="' + o.id + '">' +
+            '<div class="order-card-header">' +
+              '<span class="order-id">' + o.id + '</span>' +
+              '<span class="order-role-tag">我的角色：' + getRoleText(o.role) + '</span>' +
+            '</div>' +
+            '<div class="order-info-row"><i data-lucide="route"></i> ' + o.route + '</div>' +
+            '<div class="order-info-row"><i data-lucide="package"></i> ' + o.summary + '</div>' +
+            '<div class="order-info-row"><i data-lucide="banknote"></i> ' + o.amount + '</div>' +
+            '<div class="order-info-row"><i data-lucide="calendar"></i> ' + o.date + '</div>' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--spacing-sm);">' +
+              getStatusTag(o.status) +
+              (o.evaluated ? '<span class="tag tag-success">已评价</span>' : '') +
+            '</div>' +
+          '</div>';
+      }
+      container.innerHTML = html;
+
+      // 事件委托
+      var cards = container.querySelectorAll('.order-card');
+      for (var i = 0; i < cards.length; i++) {
+        cards[i].addEventListener('click', function() {
+          var orderId = this.getAttribute('data-order-id');
+          openOrderDetail(orderId);
+        });
+      }
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    // ===== 订单详情 =====
+    function openOrderDetail(orderId) {
+      currentOrderId = orderId;
+      var order = null;
+      for (var i = 0; i < orders.length; i++) {
+        if (orders[i].id === orderId) { order = orders[i]; break; }
+      }
+      if (!order) return;
+
+      var container = document.getElementById('orderDetailContainer');
+      if (!container) return;
+
+      var cancelInfo = '';
+      if (order.status === 'cancelled' && order.cancelReason) {
+        cancelInfo =
+          '<div class="detail-section" style="border: 1px solid var(--color-danger);">' +
+            '<div class="detail-section-title" style="color: var(--color-danger);"><i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i> 取消原因</div>' +
+            '<div style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.6;">' +
+              (order.cancelBy ? '取消方：' + order.cancelBy + '<br>' : '') +
+              '原因：' + order.cancelReason +
+            '</div>' +
+          '</div>';
+      }
+
+      var timelineHtml = '';
+      if (order.status !== 'cancelled') {
+        var timelineItems = '';
+        timelineItems +=
+          '<div class="timeline-item">' +
+            '<div class="timeline-dot' + (order.status === 'pending' ? ' pending' : '') + '"></div>' +
+            '<div class="timeline-content">' +
+              '<div class="timeline-title">发布订单</div>' +
+              '<div class="timeline-time">' + order.date + '</div>' +
+            '</div>' +
+          '</div>';
+
+        if (order.status !== 'pending') {
+          timelineItems +=
+            '<div class="timeline-item">' +
+              '<div class="timeline-dot"></div>' +
+              '<div class="timeline-content">' +
+                '<div class="timeline-title">已接单</div>' +
+                '<div class="timeline-time">' + order.date + ' 10:30</div>' +
+              '</div>' +
+            '</div>';
+        }
+
+        if (order.status === 'transporting' || order.status === 'completed') {
+          timelineItems +=
+            '<div class="timeline-item">' +
+              '<div class="timeline-dot"></div>' +
+              '<div class="timeline-content">' +
+                '<div class="timeline-title">已装车，运输中</div>' +
+                '<div class="timeline-time">' + order.date + ' 14:00</div>' +
+              '</div>' +
+            '</div>';
+        }
+
+        if (order.status === 'completed') {
+          timelineItems +=
+            '<div class="timeline-item">' +
+              '<div class="timeline-dot"></div>' +
+              '<div class="timeline-content">' +
+                '<div class="timeline-title">已送达，订单完成</div>' +
+                '<div class="timeline-time">' + order.date + ' 18:00</div>' +
+              '</div>' +
+            '</div>';
+        }
+
+        timelineHtml =
+          '<div class="detail-section">' +
+            '<div class="detail-section-title"><i data-lucide="clock" style="width: 14px; height: 14px;"></i> 订单进度</div>' +
+            '<div class="timeline">' + timelineItems + '</div>' +
+          '</div>';
+      }
+
+      container.innerHTML =
+        '<div class="detail-info-card">' +
+          '<div class="detail-title">' + order.route + ' ' + getStatusTag(order.status) + '</div>' +
+          '<div class="detail-info-row"><i data-lucide="file-text"></i> 订单号：<span>' + order.id + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="user"></i> 我的角色：<span>' + getRoleText(order.role) + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="package"></i> ' + (order.role === 'owner' ? '货物' : '车辆') + '：<span>' + order.summary + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="banknote"></i> 运费：<span>' + order.amount + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="calendar"></i> 日期：<span>' + order.date + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="phone"></i> 对方电话：<span>' + order.phone + '</span></div>' +
+        '</div>' +
+        timelineHtml +
+        cancelInfo +
+        renderEvaluateInfo(order);
+
+      // 渲染底部操作按钮
+      renderOrderDetailFooter(order);
+      showView('order-detail');
+    }
+
+    function renderEvaluateInfo(order) {
+      if (!order.evaluated) return '';
+
+      var targetName = order.role === 'owner' ? '司机' : '货主';
+      var evaluatorName = order.role === 'owner' ? '货主' : '司机';
+
+      // 模拟评价数据
+      var evaluateData = order.evaluateData || {
+        overall: 4,
+        attitude: 5,
+        efficiency: 4,
+        price: 4,
+        integrity: 5,
+        content: '合作很愉快，非常专业。'
+      };
+
+      // 渲染星星
+      var overallStarsHtml = '';
+      for (var i = 1; i <= 5; i++) {
+        overallStarsHtml += '<i data-lucide="star"' + (i > evaluateData.overall ? ' class="empty-star"' : '') + '></i>';
+      }
+
+      return (
+        '<div class="evaluate-card">' +
+          '<div class="evaluate-header">' +
+            '<span class="evaluate-role">评价信息</span>' +
+            '<span style="font-size: 13px; color: var(--color-text-secondary);">' + evaluatorName + '评价' + targetName + '</span>' +
+          '</div>' +
+          '<div class="evaluate-overall">' +
+            '<div class="evaluate-stars">' + overallStarsHtml + '</div>' +
+            '<span class="evaluate-score">' + evaluateData.overall + '.0</span>' +
+          '</div>' +
+          '<div class="evaluate-dimensions">' +
+            '<div class="evaluate-dim-item"><span class="evaluate-dim-label">沟通态度</span><span class="evaluate-dim-score">' + evaluateData.attitude + '.0</span></div>' +
+            '<div class="evaluate-dim-item"><span class="evaluate-dim-label">装卸效率</span><span class="evaluate-dim-score">' + evaluateData.efficiency + '.0</span></div>' +
+            '<div class="evaluate-dim-item"><span class="evaluate-dim-label">运费合理</span><span class="evaluate-dim-score">' + evaluateData.price + '.0</span></div>' +
+            '<div class="evaluate-dim-item"><span class="evaluate-dim-label">货物完好</span><span class="evaluate-dim-score">' + evaluateData.integrity + '.0</span></div>' +
+          '</div>' +
+          '<div class="evaluate-content">' + evaluateData.content + '</div>' +
+        '</div>'
+      );
+    }
+
+    function renderOrderDetailFooter(order) {
+      var footer = document.getElementById('orderDetailFooter');
+      if (!footer) return;
+      footer.innerHTML = '';
+
+      var buttons = [];
+
+      if (order.status === 'pending') {
+        if (order.role === 'owner') {
+          buttons.push('<button class="action-btn btn-block" onclick="showToast(\'修改货源功能开发中\')"><i data-lucide="edit" style="width: 16px; height: 16px;"></i> 修改货源</button>');
+          buttons.push('<button class="action-btn btn-block" style="color: var(--color-danger); border-color: var(--color-danger);" onclick="openCancelModal(\'' + order.id + '\')"><i data-lucide="x-circle" style="width: 16px; height: 16px;"></i> 撤销发布</button>');
+        } else {
+          buttons.push('<button class="action-btn primary btn-block" onclick="grabFromOrder(\'' + order.id + '\')"><i data-lucide="hand-metal" style="width: 16px; height: 16px;"></i> 司机抢单</button>');
+        }
+      } else if (order.status === 'accepted') {
+        if (order.role === 'owner') {
+          buttons.push('<button class="action-btn primary btn-block" onclick="confirmLoad(\'' + order.id + '\')"><i data-lucide="check-circle" style="width: 16px; height: 16px;"></i> 货主确认装车</button>');
+          buttons.push('<button class="action-btn btn-block" style="color: var(--color-danger); border-color: var(--color-danger);" onclick="openCancelModal(\'' + order.id + '\')"><i data-lucide="x-circle" style="width: 16px; height: 16px;"></i> 货主取消订单</button>');
+        } else {
+          buttons.push('<button class="action-btn btn-block" style="color: var(--color-danger); border-color: var(--color-danger);" onclick="openCancelModal(\'' + order.id + '\')"><i data-lucide="x-circle" style="width: 16px; height: 16px;"></i> 司机取消订单</button>');
+        }
+      } else if (order.status === 'transporting') {
+        if (order.role === 'owner') {
+          buttons.push('<button class="action-btn btn-block" onclick="contactPerson(\'' + order.phone + '\', \'司机\')"><i data-lucide="phone" style="width: 16px; height: 16px;"></i> 联系司机</button>');
+          buttons.push('<button class="action-btn btn-block" onclick="showToast(\'查看位置功能开发中\')"><i data-lucide="map-pin" style="width: 16px; height: 16px;"></i> 查看位置</button>');
+        } else {
+          buttons.push('<button class="action-btn primary btn-block" onclick="confirmDeliver(\'' + order.id + '\')"><i data-lucide="check-circle" style="width: 16px; height: 16px;"></i> 司机确认送达</button>');
+          buttons.push('<button class="action-btn btn-block" onclick="contactPerson(\'' + order.phone + '\', \'货主\')"><i data-lucide="phone" style="width: 16px; height: 16px;"></i> 联系货主</button>');
+        }
+      } else if (order.status === 'completed') {
+        if (!order.evaluated) {
+          var evaluateLabel = order.role === 'owner' ? '货主评价司机' : '司机评价货主';
+          buttons.push('<button class="action-btn primary btn-block" onclick="openEvaluateModal(\'' + order.id + '\')"><i data-lucide="star" style="width: 16px; height: 16px;"></i> ' + evaluateLabel + '</button>');
+        }
+      } else if (order.status === 'cancelled') {
+        if (order.cancelReason) {
+          // 已在详情中显示
+        }
+      }
+
+      if (buttons.length === 0) {
+        footer.style.display = 'none';
+      } else {
+        footer.style.display = 'flex';
+        footer.innerHTML = buttons.join('');
+      }
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    // ===== 订单操作 =====
+    function grabFromOrder(orderId) {
+      openConfirmModal('确认抢单',
+        '<div class="confirm-content">' +
+          '<div class="confirm-icon"><i data-lucide="hand-metal" style="width: 48px; height: 48px;"></i></div>' +
+          '<div class="confirm-text">确认要抢单吗？</div>' +
+        '</div>',
+        function() {
+          updateOrderStatus(orderId, 'accepted');
+          showToast('抢单成功');
+          openOrderDetail(orderId);
+        }
+      );
+    }
+
+    function confirmLoad(orderId) {
+      openConfirmModal('确认装车',
+        '<div class="confirm-content">' +
+          '<div class="confirm-icon"><i data-lucide="check-circle" style="width: 48px; height: 48px;"></i></div>' +
+          '<div class="confirm-text">确认货物已装车？</div>' +
+          '<div class="confirm-sub">确认后订单状态将变更为"运输中"</div>' +
+        '</div>',
+        function() {
+          updateOrderStatus(orderId, 'transporting');
+          showToast('已确认装车，订单运输中');
+          openOrderDetail(orderId);
+        }
+      );
+    }
+
+    function confirmDeliver(orderId) {
+      openConfirmModal('确认送达',
+        '<div class="confirm-content">' +
+          '<div class="confirm-icon"><i data-lucide="check-circle" style="width: 48px; height: 48px;"></i></div>' +
+          '<div class="confirm-text">确认货物已送达？</div>' +
+          '<div class="confirm-sub">确认后订单状态将变更为"已完成"</div>' +
+        '</div>',
+        function() {
+          updateOrderStatus(orderId, 'completed');
+          showToast('已确认送达，订单完成');
+          openOrderDetail(orderId);
+        }
+      );
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      for (var i = 0; i < orders.length; i++) {
+        if (orders[i].id === orderId) {
+          orders[i].status = newStatus;
+          break;
+        }
+      }
+    }
+
+    // ===== 取消订单弹窗 =====
+    function openCancelModal(orderId) {
+      var modal = document.getElementById('modalCancel');
+      if (!modal) return;
+
+      var body = document.getElementById('cancelModalBody');
+      if (!body) return;
+
+      var reasonHtml = '';
+      for (var i = 0; i < cancelReasons.length; i++) {
+        reasonHtml +=
+          '<div class="cancel-reason-item" data-reason="' + cancelReasons[i] + '">' +
+            cancelReasons[i] +
+          '</div>';
+      }
+
+      body.innerHTML =
+        '<div class="cancel-reason-list" id="cancelReasonList">' + reasonHtml + '</div>' +
+        '<div class="form-group">' +
+          '<label class="form-label">补充说明</label>' +
+          '<textarea class="form-textarea" id="cancelSupplement" placeholder="请补充说明取消原因（选填）..." style="min-height: 60px;"></textarea>' +
+        '</div>';
+
+      // 绑定选择事件
+      var reasonItems = body.querySelectorAll('.cancel-reason-item');
+      for (var i = 0; i < reasonItems.length; i++) {
+        reasonItems[i].addEventListener('click', function() {
+          for (var j = 0; j < reasonItems.length; j++) {
+            reasonItems[j].classList.remove('selected');
+          }
+          this.classList.add('selected');
+        });
+      }
+
+      modal.classList.add('show');
+      modal.setAttribute('data-order-id', orderId);
+    }
+
+    function closeCancelModal() {
+      var modal = document.getElementById('modalCancel');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function submitCancel() {
+      var modal = document.getElementById('modalCancel');
+      if (!modal) return;
+
+      var orderId = modal.getAttribute('data-order-id');
+      var selectedReason = modal.querySelector('.cancel-reason-item.selected');
+      var supplement = document.getElementById('cancelSupplement');
+
+      if (!selectedReason) {
+        showToast('请选择取消原因');
+        return;
+      }
+
+      var reason = selectedReason.getAttribute('data-reason');
+      if (supplement && supplement.value.trim()) {
+        reason += '；' + supplement.value.trim();
+      }
+
+      for (var i = 0; i < orders.length; i++) {
+        if (orders[i].id === orderId) {
+          orders[i].status = 'cancelled';
+          orders[i].cancelReason = reason;
+          orders[i].cancelBy = getRoleText(orders[i].role);
+          break;
+        }
+      }
+
+      closeCancelModal();
+      showToast('订单已取消');
+      openOrderDetail(orderId);
+    }
+
+    // ===== 评价弹窗 =====
+    function openEvaluateModal(orderId) {
+      var modal = document.getElementById('modalEvaluate');
+      if (!modal) return;
+
+      var order = null;
+      for (var i = 0; i < orders.length; i++) {
+        if (orders[i].id === orderId) { order = orders[i]; break; }
+      }
+      if (!order) return;
+
+      var targetName = order.role === 'owner' ? '司机' : '货主';
+
+      var titleEl = document.getElementById('evaluateModalTitle');
+      if (titleEl) titleEl.textContent = '评价' + targetName;
+
+      var body = document.getElementById('evaluateModalBody');
+      if (!body) return;
+
+      body.innerHTML =
+        '<div class="form-group">' +
+          '<label class="form-label">总体评分 <span class="required">*</span></label>' +
+          '<div class="star-rating" id="overallRating">' +
+            '<i data-lucide="star" data-rating="1"></i>' +
+            '<i data-lucide="star" data-rating="2"></i>' +
+            '<i data-lucide="star" data-rating="3"></i>' +
+            '<i data-lucide="star" data-rating="4"></i>' +
+            '<i data-lucide="star" data-rating="5"></i>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rating-dimension">' +
+          '<div class="rating-dimension-label">沟通态度</div>' +
+          '<div class="rating-dimension-stars" data-dim="attitude">' +
+            '<i data-lucide="star" data-rating="1"></i>' +
+            '<i data-lucide="star" data-rating="2"></i>' +
+            '<i data-lucide="star" data-rating="3"></i>' +
+            '<i data-lucide="star" data-rating="4"></i>' +
+            '<i data-lucide="star" data-rating="5"></i>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rating-dimension">' +
+          '<div class="rating-dimension-label">装卸效率</div>' +
+          '<div class="rating-dimension-stars" data-dim="efficiency">' +
+            '<i data-lucide="star" data-rating="1"></i>' +
+            '<i data-lucide="star" data-rating="2"></i>' +
+            '<i data-lucide="star" data-rating="3"></i>' +
+            '<i data-lucide="star" data-rating="4"></i>' +
+            '<i data-lucide="star" data-rating="5"></i>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rating-dimension">' +
+          '<div class="rating-dimension-label">运费合理</div>' +
+          '<div class="rating-dimension-stars" data-dim="price">' +
+            '<i data-lucide="star" data-rating="1"></i>' +
+            '<i data-lucide="star" data-rating="2"></i>' +
+            '<i data-lucide="star" data-rating="3"></i>' +
+            '<i data-lucide="star" data-rating="4"></i>' +
+            '<i data-lucide="star" data-rating="5"></i>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rating-dimension">' +
+          '<div class="rating-dimension-label">货物完好</div>' +
+          '<div class="rating-dimension-stars" data-dim="integrity">' +
+            '<i data-lucide="star" data-rating="1"></i>' +
+            '<i data-lucide="star" data-rating="2"></i>' +
+            '<i data-lucide="star" data-rating="3"></i>' +
+            '<i data-lucide="star" data-rating="4"></i>' +
+            '<i data-lucide="star" data-rating="5"></i>' +
+          '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+          '<label class="form-label">文字评价</label>' +
+          '<textarea class="form-textarea" id="evaluateContent" placeholder="请输入您的评价..." style="min-height: 80px;"></textarea>' +
+        '</div>';
+
+      modal.classList.add('show');
+      modal.setAttribute('data-order-id', orderId);
+
+      // 先渲染 Lucide 图标，再绑定事件委托
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      // 总体评分 - 事件委托
+      var overallContainer = document.getElementById('overallRating');
+      if (overallContainer) {
+        overallContainer.addEventListener('click', function(e) {
+          var starEl = e.target.closest('svg');
+          if (!starEl) return;
+          var parent = starEl.closest('.star-rating');
+          if (!parent) return;
+          var rating = parseInt(parent.getAttribute('data-click-rating') || '0');
+          // 查找是第几个 SVG
+          var svgSiblings = parent.querySelectorAll('svg');
+          for (var i = 0; i < svgSiblings.length; i++) {
+            if (svgSiblings[i] === starEl) { rating = i + 1; break; }
+          }
+          for (var j = 0; j < svgSiblings.length; j++) {
+            svgSiblings[j].classList.toggle('active', j < rating);
+          }
+        });
+      }
+
+      // 维度评分 - 事件委托
+      var dimGroups = body.querySelectorAll('.rating-dimension-stars');
+      for (var g = 0; g < dimGroups.length; g++) {
+        (function(group) {
+          group.addEventListener('click', function(e) {
+            var starEl = e.target.closest('svg');
+            if (!starEl) return;
+            var svgSiblings = group.querySelectorAll('svg');
+            for (var i = 0; i < svgSiblings.length; i++) {
+              if (svgSiblings[i] === starEl) {
+                var rating = i + 1;
+                for (var j = 0; j < svgSiblings.length; j++) {
+                  svgSiblings[j].classList.toggle('active', j < rating);
+                }
+                break;
+              }
+            }
+          });
+        })(dimGroups[g]);
+      }
+    }
+
+    function closeEvaluateModal() {
+      var modal = document.getElementById('modalEvaluate');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function submitEvaluate() {
+      var modal = document.getElementById('modalEvaluate');
+      if (!modal) return;
+
+      var orderId = modal.getAttribute('data-order-id');
+      var overallStars = modal.querySelectorAll('#overallRating i.active');
+      var content = document.getElementById('evaluateContent');
+
+      if (overallStars.length === 0) {
+        showToast('请选择总体评分');
+        return;
+      }
+
+      for (var i = 0; i < orders.length; i++) {
+        if (orders[i].id === orderId) {
+          orders[i].evaluated = true;
+          orders[i].evaluation = {
+            rating: overallStars.length,
+            content: content ? content.value.trim() : '',
+            dimensions: {}
+          };
+          // 收集维度评分
+          var dimGroups = modal.querySelectorAll('.rating-dimension-stars');
+          for (var g = 0; g < dimGroups.length; g++) {
+            var dimName = dimGroups[g].getAttribute('data-dim');
+            var activeStars = dimGroups[g].querySelectorAll('i.active');
+            orders[i].evaluation.dimensions[dimName] = activeStars.length;
+          }
+          break;
+        }
+      }
+
+      closeEvaluateModal();
+      showToast('评价已提交');
+      openOrderDetail(orderId);
+    }
+
+    // ===== 事件绑定 =====
+    document.addEventListener('DOMContentLoaded', function() {
+      // 身份下拉
+      var dropdownBtn = document.getElementById('roleDropdownBtn');
+      var dropdownMenu = document.getElementById('roleDropdownMenu');
+      if (dropdownBtn && dropdownMenu) {
+        dropdownBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('show');
+        });
+        document.addEventListener('click', function() {
+          dropdownMenu.classList.remove('show');
+        });
+      }
+
+      var dropdownItems = document.querySelectorAll('#roleDropdownMenu .role-dropdown-item');
+      for (var i = 0; i < dropdownItems.length; i++) {
+        dropdownItems[i].addEventListener('click', function(e) {
+          e.stopPropagation();
+          var role = this.getAttribute('data-role');
+          switchRole(role);
+        });
+      }
+
+      // 发布按钮
+      var publishBtn = document.getElementById('publishBtn');
+      if (publishBtn) {
+        publishBtn.addEventListener('click', function() {
+          openPublishForm();
+        });
+      }
+
+      // 我的订单
+      var ordersBtn = document.getElementById('ordersBtn');
+      if (ordersBtn) {
+        ordersBtn.addEventListener('click', function() {
+          renderOrderList();
+          showView('orders');
+        });
+      }
+
+      // 搜索
+      var searchBtn = document.getElementById('searchBtn');
+      if (searchBtn) {
+        searchBtn.addEventListener('click', applyFilters);
+      }
+
+      var searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('keyup', function(e) {
+          if (e.key === 'Enter') applyFilters();
+        });
+        searchInput.addEventListener('input', applyFilters);
+      }
+
+      // 筛选
+      var filterOrigin = document.getElementById('filterOrigin');
+      var filterDest = document.getElementById('filterDest');
+      var filterVehicle = document.getElementById('filterVehicle');
+      var filterCargo = document.getElementById('filterCargo');
+      if (filterOrigin) filterOrigin.addEventListener('change', applyFilters);
+      if (filterDest) filterDest.addEventListener('change', applyFilters);
+      if (filterVehicle) filterVehicle.addEventListener('change', applyFilters);
+      if (filterCargo) filterCargo.addEventListener('change', applyFilters);
+
+      // 重置筛选
+      var resetBtn = document.getElementById('resetFilterBtn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+          var si = document.getElementById('searchInput');
+          if (si) si.value = '';
+          if (filterOrigin) filterOrigin.value = '';
+          if (filterDest) filterDest.value = '';
+          if (filterVehicle) filterVehicle.value = '';
+          if (filterCargo) filterCargo.value = '';
+          applyFilters();
+        });
+      }
+
+      // 发布页返回
+      var publishBackBtn = document.getElementById('publishBackBtn');
+      if (publishBackBtn) {
+        publishBackBtn.addEventListener('click', function() {
+          showView('list');
+        });
+      }
+
+      var publishCancelBtn = document.getElementById('publishCancelBtn');
+      if (publishCancelBtn) {
+        publishCancelBtn.addEventListener('click', function() {
+          showView('list');
+        });
+      }
+
+      var publishSubmitBtn = document.getElementById('publishSubmitBtn');
+      if (publishSubmitBtn) {
+        publishSubmitBtn.addEventListener('click', submitPublish);
+      }
+
+      // 订单列表返回
+      var ordersBackBtn = document.getElementById('ordersBackBtn');
+      if (ordersBackBtn) {
+        ordersBackBtn.addEventListener('click', function() {
+          showView('list');
+        });
+      }
+
+      // 订单详情返回
+      var orderDetailBackBtn = document.getElementById('orderDetailBackBtn');
+      if (orderDetailBackBtn) {
+        orderDetailBackBtn.addEventListener('click', function() {
+          renderOrderList();
+          showView('orders');
+        });
+      }
+
+      // 确认弹窗
+      var confirmSubmitBtn = document.getElementById('confirmSubmitBtn');
+      if (confirmSubmitBtn) {
+        confirmSubmitBtn.addEventListener('click', function() {
+          if (typeof confirmCallback === 'function') {
+            confirmCallback();
+          }
+          closeConfirmModal();
+        });
+      }
+
+      var confirmCancelBtn = document.getElementById('confirmCancelBtn');
+      if (confirmCancelBtn) {
+        confirmCancelBtn.addEventListener('click', closeConfirmModal);
+      }
+
+      var confirmModalClose = document.getElementById('confirmModalClose');
+      if (confirmModalClose) {
+        confirmModalClose.addEventListener('click', closeConfirmModal);
+      }
+
+      var modalConfirm = document.getElementById('modalConfirm');
+      if (modalConfirm) {
+        modalConfirm.addEventListener('click', function(e) {
+          if (e.target === this) closeConfirmModal();
+        });
+      }
+
+      // 取消弹窗
+      var cancelSubmitBtn = document.getElementById('cancelSubmitBtn');
+      if (cancelSubmitBtn) {
+        cancelSubmitBtn.addEventListener('click', submitCancel);
+      }
+
+      var cancelBackBtn = document.getElementById('cancelBackBtn');
+      if (cancelBackBtn) {
+        cancelBackBtn.addEventListener('click', closeCancelModal);
+      }
+
+      var cancelModalClose = document.getElementById('cancelModalClose');
+      if (cancelModalClose) {
+        cancelModalClose.addEventListener('click', closeCancelModal);
+      }
+
+      var modalCancel = document.getElementById('modalCancel');
+      if (modalCancel) {
+        modalCancel.addEventListener('click', function(e) {
+          if (e.target === this) closeCancelModal();
+        });
+      }
+
+      // 评价弹窗
+      var evaluateSubmitBtn = document.getElementById('evaluateSubmitBtn');
+      if (evaluateSubmitBtn) {
+        evaluateSubmitBtn.addEventListener('click', submitEvaluate);
+      }
+
+      var evaluateCancelBtn = document.getElementById('evaluateCancelBtn');
+      if (evaluateCancelBtn) {
+        evaluateCancelBtn.addEventListener('click', closeEvaluateModal);
+      }
+
+      var evaluateModalClose = document.getElementById('evaluateModalClose');
+      if (evaluateModalClose) {
+        evaluateModalClose.addEventListener('click', closeEvaluateModal);
+      }
+
+      var modalEvaluate = document.getElementById('modalEvaluate');
+      if (modalEvaluate) {
+        modalEvaluate.addEventListener('click', function(e) {
+          if (e.target === this) closeEvaluateModal();
+        });
+      }
+
+      // 初始渲染
+      renderList();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

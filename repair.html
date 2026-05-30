@@ -1593,13 +1593,9 @@
         stationId: 1,
         stationName: '丰乐服务区（合肥方向）',
         phone: '13812341234',
-        vehicle: { plate: '皖 A12345', type: '重型货车' },
-        faultType: '发动机问题',
         faultDesc: '发动机异响，轮胎磨损严重',
-        needTow: false,
         expectDate: '2026-05-26',
         expectTime: '10:00',
-        waitTime: '1小时内',
         services: ['发动机维修', '轮胎更换'],
         status: 'pending',
         desc: '发动机异响，轮胎磨损严重'
@@ -1609,15 +1605,11 @@
         stationId: 3,
         stationName: '安捷服务区（南京方向）',
         phone: '13790129012',
-        vehicle: { plate: '皖 B67890', type: '中型货车' },
-        faultType: '电路问题',
         faultDesc: '车灯不亮',
-        needTow: false,
         expectDate: '2026-05-25',
         expectTime: '14:00',
-        waitTime: '30分钟内',
         services: ['电路检修'],
-        status: 'confirmed',
+        status: 'pending',
         desc: '车灯不亮'
       },
       {
@@ -1625,13 +1617,9 @@
         stationId: 2,
         stationName: '顺达服务区（上海方向）',
         phone: '13956785678',
-        vehicle: { plate: '皖 C11111', type: '轻型货车' },
-        faultType: '钣金喷漆',
         faultDesc: '车身刮擦',
-        needTow: false,
         expectDate: '2026-05-24',
         expectTime: '09:00',
-        waitTime: '2小时内',
         services: ['钣金喷漆'],
         status: 'completed',
         desc: '车身刮擦',
@@ -1642,30 +1630,21 @@
         stationId: 1,
         stationName: '丰乐服务区（合肥方向）',
         phone: '13812341234',
-        vehicle: { plate: '皖 D22222', type: '重型货车' },
-        faultType: '变速箱问题',
-        faultDesc: '变速箱异响',
-        needTow: true,
-        towAddress: '京台高速 K660+200',
+        faultDesc: '刹车片磨损严重',
         expectDate: '2026-05-23',
         expectTime: '08:00',
-        waitTime: '半天内',
-        services: ['变速箱维修'],
-        status: 'confirmed',
-        desc: '变速箱异响，需要拖车'
+        services: ['刹车维修'],
+        status: 'pending',
+        desc: '刹车片磨损严重'
       },
       {
         id: 'ORD20260521005',
         stationId: 5,
         stationName: '专业服务区（成都方向）',
         phone: '13578907890',
-        vehicle: { plate: '皖 E33333', type: '中型货车' },
-        faultType: '底盘问题',
         faultDesc: '底盘漏油',
-        needTow: false,
         expectDate: '2026-05-22',
         expectTime: '15:00',
-        waitTime: '1小时内',
         services: ['底盘维修'],
         status: 'completed',
         desc: '底盘漏油'
@@ -1675,27 +1654,14 @@
         stationId: 3,
         stationName: '安捷服务区（南京方向）',
         phone: '13790129012',
-        vehicle: { plate: '皖 F44444', type: '重型货车' },
-        faultType: '发动机问题',
         faultDesc: '发动机故障灯亮',
-        needTow: false,
         expectDate: '2026-05-21',
         expectTime: '10:00',
-        waitTime: '2小时内',
         services: ['发动机维修'],
-        status: 'rejected',
-        rejectReason: '近期维修任务已满，无法安排',
+        status: 'cancelled',
         desc: '发动机故障灯亮'
       }
     ];
-
-    var myVehicles = [
-      { plate: '皖 A12345', type: '重型货车' },
-      { plate: '皖 B67890', type: '中型货车' },
-      { plate: '皖 C11111', type: '轻型货车' }
-    ];
-
-    var faultTypes = ['发动机问题', '变速箱问题', '电路问题', '轮胎问题', '底盘问题', '钣金喷漆', '空调问题', '其他问题'];
 
     var currentStation = null;
     var selectedServices = [];
@@ -1996,28 +1962,15 @@
       var container = document.getElementById('bookingFormContainer');
       if (!container) return;
 
+      var allRepairItems = ['发动机维修', '变速箱维修', '底盘维修', '电路检修', '轮胎更换', '补胎', '钣金喷漆', '刹车维修', '常规保养', '空调维修', '悬挂维修', '其他维修'];
+
       var serviceCheckboxes = '';
-      for (var i = 0; i < station.services.length; i++) {
+      for (var i = 0; i < allRepairItems.length; i++) {
         serviceCheckboxes +=
           '<label class="checkbox-item">' +
-            '<input type="checkbox" value="' + station.services[i] + '">' +
-            station.services[i] +
+            '<input type="checkbox" value="' + allRepairItems[i] + '">' +
+            allRepairItems[i] +
           '</label>';
-      }
-
-      var vehicleOptions = '';
-      for (var i = 0; i < myVehicles.length; i++) {
-        var v = myVehicles[i];
-        vehicleOptions +=
-          '<label class="radio-item">' +
-            '<input type="radio" name="vehicle" value="' + v.plate + '">' +
-            '<span class="radio-label">' + v.plate + ' (' + v.type + ')</span>' +
-          '</label>';
-      }
-
-      var faultTypeOptions = '<option value="">请选择故障类型</option>';
-      for (var i = 0; i < faultTypes.length; i++) {
-        faultTypeOptions += '<option value="' + faultTypes[i] + '">' + faultTypes[i] + '</option>';
       }
 
       var now = new Date();
@@ -2041,32 +1994,12 @@
             '<input type="text" class="form-input" value="' + station.name + '" readonly>' +
           '</div>' +
           '<div class="form-group">' +
-            '<label class="form-label">我的车辆 <span class="required">*</span></label>' +
-            '<div class="radio-group" id="vehicleGroup">' + vehicleOptions + '</div>' +
-            '<button class="btn-text" id="addVehicleBtn" style="margin-top: var(--spacing-sm);">+ 添加新车辆</button>' +
-          '</div>' +
-          '<div class="form-group">' +
-            '<label class="form-label">选择服务项目 <span class="required">*</span></label>' +
+            '<label class="form-label">选择维修项目 <span class="required">*</span></label>' +
             '<div class="checkbox-group" id="serviceCheckboxes">' + serviceCheckboxes + '</div>' +
-          '</div>' +
-          '<div class="form-group">' +
-            '<label class="form-label">故障类型 <span class="required">*</span></label>' +
-            '<select class="form-select" id="faultType">' + faultTypeOptions + '</select>' +
           '</div>' +
           '<div class="form-group">' +
             '<label class="form-label">故障描述</label>' +
             '<textarea class="form-textarea" id="bookingDesc" placeholder="请补充描述车辆故障情况（选填）..."></textarea>' +
-          '</div>' +
-          '<div class="form-group">' +
-            '<label class="form-label">是否需要拖车 <span class="required">*</span></label>' +
-            '<div class="toggle-group" id="towGroup">' +
-              '<div class="toggle-item active" data-value="no">否</div>' +
-              '<div class="toggle-item" data-value="yes">是</div>' +
-            '</div>' +
-            '<div class="form-group" id="towAddressGroup" style="display: none; margin-top: var(--spacing-sm);">' +
-              '<label class="form-label">拖车地址</label>' +
-              '<input type="text" class="form-input" id="towAddress" placeholder="请输入您的当前位置（如：京台高速 K660+200）">' +
-            '</div>' +
           '</div>' +
           '<div class="form-group">' +
             '<label class="form-label">预约时间 <span class="required">*</span></label>' +
@@ -2098,93 +2031,20 @@
         })(checkboxes[i]);
       }
 
-      var radioItems = container.querySelectorAll('.radio-item');
-      for (var i = 0; i < radioItems.length; i++) {
-        radioItems[i].addEventListener('click', function() {
-          var group = this.closest('.radio-group');
-          if (!group) return;
-          var items = group.querySelectorAll('.radio-item');
-          for (var j = 0; j < items.length; j++) {
-            items[j].classList.remove('checked');
-            var rb = items[j].querySelector('input');
-            if (rb) rb.checked = false;
-          }
-          this.classList.add('checked');
-          var rb = this.querySelector('input');
-          if (rb) rb.checked = true;
-        });
-      }
-
-      var toggleItems = container.querySelectorAll('#towGroup .toggle-item');
-      for (var i = 0; i < toggleItems.length; i++) {
-        toggleItems[i].addEventListener('click', function() {
-          var group = this.closest('.toggle-group');
-          if (!group) return;
-          var items = group.querySelectorAll('.toggle-item');
-          for (var j = 0; j < items.length; j++) {
-            items[j].classList.remove('active');
-          }
-          this.classList.add('active');
-          var towAddressGroup = document.getElementById('towAddressGroup');
-          if (towAddressGroup) {
-            towAddressGroup.style.display = this.getAttribute('data-value') === 'yes' ? 'block' : 'none';
-          }
-        });
-      }
-
-      var addVehicleBtn = document.getElementById('addVehicleBtn');
-      if (addVehicleBtn) {
-        addVehicleBtn.addEventListener('click', function() {
-          openInputModal('添加车辆', [
-            { id: 'addPlate', label: '车牌号', placeholder: '请输入车牌号' },
-            { id: 'addType', label: '车型', placeholder: '如：重型货车、中型货车、轻型货车' }
-          ], function(values) {
-            if (!values.addPlate || !values.addType) return;
-            myVehicles.push({ plate: values.addPlate, type: values.addType });
-            showToast('车辆已添加');
-            openBookingForm(station.id);
-          });
-        });
-      }
-
       showView('booking');
     }
 
     function submitBooking() {
-      var vehicleGroup = document.getElementById('vehicleGroup');
-      var faultType = document.getElementById('faultType');
       var desc = document.getElementById('bookingDesc');
       var expectDate = document.getElementById('expectDate');
       var expectTime = document.getElementById('expectTime');
       var phone = document.getElementById('bookingPhone');
 
-      var selectedVehicle = vehicleGroup ? vehicleGroup.querySelector('.radio-item.checked input') : null;
-      var faultTypeVal = faultType ? faultType.value : '';
       var descVal = desc ? desc.value.trim() : '';
       var expectDateVal = expectDate ? expectDate.value : '';
       var expectTimeVal = expectTime ? expectTime.value : '';
       var phoneVal = phone ? phone.value.trim() : '';
 
-      var towToggle = document.querySelector('#towGroup .toggle-item.active');
-      var needTow = towToggle ? towToggle.getAttribute('data-value') === 'yes' : false;
-      var towAddressVal = '';
-      if (needTow) {
-        var towAddressInput = document.getElementById('towAddress');
-        towAddressVal = towAddressInput ? towAddressInput.value.trim() : '';
-        if (!towAddressVal) {
-          showToast('请填写拖车地址');
-          return;
-        }
-      }
-
-      if (!selectedVehicle) {
-        showToast('请选择或添加车辆');
-        return;
-      }
-      if (!faultTypeVal) {
-        showToast('请选择故障类型');
-        return;
-      }
       if (!expectDateVal) {
         showToast('请选择预约日期');
         return;
@@ -2206,17 +2066,8 @@
       }
 
       if (selectedServices.length === 0) {
-        showToast('请至少选择一个服务项目');
+        showToast('请至少选择一个维修项目');
         return;
-      }
-
-      var vehiclePlate = selectedVehicle.value;
-      var vehicleType = '';
-      for (var i = 0; i < myVehicles.length; i++) {
-        if (myVehicles[i].plate === vehiclePlate) {
-          vehicleType = myVehicles[i].type;
-          break;
-        }
       }
 
       var newAppointment = {
@@ -2224,11 +2075,7 @@
         stationId: currentStation.id,
         stationName: currentStation.name,
         phone: currentStation.phone,
-        vehicle: { plate: vehiclePlate, type: vehicleType },
-        faultType: faultTypeVal,
         faultDesc: descVal,
-        needTow: needTow,
-        towAddress: towAddressVal,
         expectDate: expectDateVal,
         expectTime: expectTimeVal,
         services: selectedServices,
@@ -2237,7 +2084,7 @@
       };
 
       appointments.unshift(newAppointment);
-      showToast('预约已提交，等待商家确认');
+      showToast('预约已提交');
       renderRecords();
       showView('records');
     }
@@ -2259,28 +2106,25 @@
 
         var statusTag = '';
         if (appt.status === 'pending') {
-          statusTag = '<span class="tag tag-warning">待确认</span>';
-        } else if (appt.status === 'confirmed') {
-          statusTag = '<span class="tag tag-success">已确认</span>';
+          statusTag = '<span class="tag tag-warning">待完成</span>';
         } else if (appt.status === 'completed') {
           statusTag = '<span class="tag tag-default">已完成</span>';
         } else if (appt.status === 'cancelled') {
           statusTag = '<span class="tag tag-default">已取消</span>';
-        } else if (appt.status === 'rejected') {
-          statusTag = '<span class="tag tag-danger">机构已拒绝</span>';
         }
 
         var servicesText = appt.services.join('、');
-        var vehicleInfo = appt.vehicle ? appt.vehicle.plate + ' (' + appt.vehicle.type + ')' : '';
 
-        var actions = '<button class="btn-secondary" onclick="viewOrderDetail(\'' + appt.id + '\')">查看详情</button>';
+        var actions = '';
         if (appt.status === 'pending') {
           actions += '<button class="btn-secondary" onclick="event.stopPropagation(); cancelAppointment(\'' + appt.id + '\')">取消预约</button>';
           actions += '<button class="btn-primary" onclick="event.stopPropagation(); showToast(\'将拨打电话\')"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 打电话</button>';
         } else if (appt.status === 'completed') {
+          actions += '<button class="btn-secondary" onclick="viewOrderDetail(\'' + appt.id + '\')">查看详情</button>';
           actions += '<button class="btn-primary" onclick="event.stopPropagation(); openReviewModal(\'' + appt.id + '\', false)">评价</button>';
           actions += '<button class="btn-primary" onclick="event.stopPropagation(); showToast(\'将拨打电话\')"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 打电话</button>';
-        } else if (appt.status === 'confirmed') {
+        } else if (appt.status === 'cancelled') {
+          actions += '<button class="btn-secondary" onclick="viewOrderDetail(\'' + appt.id + '\')">查看详情</button>';
           actions += '<button class="btn-primary" onclick="event.stopPropagation(); showToast(\'将拨打电话\')"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 打电话</button>';
         }
 
@@ -2291,9 +2135,7 @@
           '</div>' +
           '<div class="record-info"><i data-lucide="map-pin" style="width: 12px; height: 12px;"></i> ' + appt.stationName + '</div>' +
           '<div class="record-info"><i data-lucide="calendar" style="width: 12px; height: 12px;"></i> 到店时间：' + appt.expectDate + ' ' + appt.expectTime + '</div>' +
-          (vehicleInfo ? '<div class="record-info"><i data-lucide="truck" style="width: 12px; height: 12px;"></i> 车辆：' + vehicleInfo + '</div>' : '') +
           '<div class="record-info"><i data-lucide="wrench" style="width: 12px; height: 12px;"></i> 服务项目：' + servicesText + '</div>' +
-          (appt.needTow ? '<div class="record-info"><i data-lucide="loader" style="width: 12px; height: 12px;"></i> 需要拖车</div>' : '') +
           '<div class="record-actions">' + actions + '</div>';
 
         (function(cardId) {
@@ -2338,21 +2180,15 @@
 
       var statusTag = '';
       if (appt.status === 'pending') {
-        statusTag = '<span class="tag tag-warning">待确认</span>';
-      } else if (appt.status === 'confirmed') {
-        statusTag = '<span class="tag tag-success">已确认</span>';
+        statusTag = '<span class="tag tag-warning">待完成</span>';
       } else if (appt.status === 'completed') {
         statusTag = '<span class="tag tag-default">已完成</span>';
       } else if (appt.status === 'cancelled') {
         statusTag = '<span class="tag tag-default">已取消</span>';
-      } else if (appt.status === 'rejected') {
-        statusTag = '<span class="tag tag-danger">机构已拒绝</span>';
       }
 
-      var vehicleInfo = appt.vehicle ? appt.vehicle.plate + ' (' + appt.vehicle.type + ')' : '未填写';
-
       var timelineItems = '';
-      if (appt.status !== 'pending' && appt.status !== 'rejected' && appt.status !== 'cancelled') {
+      if (appt.status === 'completed') {
         timelineItems =
           '<div class="detail-section">' +
             '<div class="detail-section-title"><i data-lucide="clock" style="width: 14px; height: 14px;"></i> 维修过程记录</div>' +
@@ -2364,30 +2200,21 @@
                   '<div class="timeline-time">' + appt.expectDate + ' ' + appt.expectTime + '</div>' +
                 '</div>' +
               '</div>' +
-              (appt.status !== 'pending' ?
-                '<div class="timeline-item">' +
-                  '<div class="timeline-dot"></div>' +
-                  '<div class="timeline-content">' +
-                    '<div class="timeline-title">机构已接单</div>' +
-                    '<div class="timeline-time">' + appt.expectDate + ' 08:30</div>' +
-                  '</div>' +
-                '</div>' : '') +
-              (appt.status === 'completed' ?
-                '<div class="timeline-item">' +
-                  '<div class="timeline-dot"></div>' +
-                  '<div class="timeline-content">' +
-                    '<div class="timeline-title">开始维修</div>' +
-                    '<div class="timeline-time">' + appt.expectDate + ' 09:00</div>' +
-                    '<div class="timeline-desc">技师：张师傅</div>' +
-                  '</div>' +
+              '<div class="timeline-item">' +
+                '<div class="timeline-dot"></div>' +
+                '<div class="timeline-content">' +
+                  '<div class="timeline-title">开始维修</div>' +
+                  '<div class="timeline-time">' + appt.expectDate + ' 09:00</div>' +
+                  '<div class="timeline-desc">技师：张师傅</div>' +
                 '</div>' +
-                '<div class="timeline-item">' +
-                  '<div class="timeline-dot"></div>' +
-                  '<div class="timeline-content">' +
-                    '<div class="timeline-title">维修完成</div>' +
-                    '<div class="timeline-time">' + appt.expectDate + ' 11:30</div>' +
-                  '</div>' +
-                '</div>' : '') +
+              '</div>' +
+              '<div class="timeline-item">' +
+                '<div class="timeline-dot"></div>' +
+                '<div class="timeline-content">' +
+                  '<div class="timeline-title">维修完成</div>' +
+                  '<div class="timeline-time">' + appt.expectDate + ' 11:30</div>' +
+                '</div>' +
+              '</div>' +
             '</div>' +
           '</div>';
       }
@@ -2402,18 +2229,8 @@
               '<tbody>' +
                 '<tr><td>机油滤芯</td><td>博世</td><td>¥45</td><td>1</td><td>¥45</td></tr>' +
                 '<tr><td>空气滤芯</td><td>马勒</td><td>¥68</td><td>1</td><td>¥68</td></tr>' +
-                (appt.needTow ? '<tr><td>拖车服务</td><td>-</td><td>¥200</td><td>1</td><td>¥200</td></tr>' : '') +
               '</tbody>' +
             '</table>' +
-          '</div>';
-      }
-
-      var rejectSection = '';
-      if (appt.status === 'rejected' && appt.rejectReason) {
-        rejectSection =
-          '<div class="detail-section" style="border: 1px solid var(--color-danger);">' +
-            '<div class="detail-section-title" style="color: var(--color-danger);"><i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i> 拒绝原因</div>' +
-            '<div style="padding: var(--spacing-md); font-size: 13px; color: var(--color-text-secondary); line-height: 1.6;">' + appt.rejectReason + '</div>' +
           '</div>';
       }
 
@@ -2444,15 +2261,11 @@
           '<div class="detail-title">' + appt.stationName + ' ' + statusTag + '</div>' +
           '<div class="detail-info-row"><i data-lucide="file-text" style="width: 14px; height: 14px;"></i> 订单号：<span>' + appt.id + '</span></div>' +
           '<div class="detail-info-row"><i data-lucide="calendar" style="width: 14px; height: 14px;"></i> 到店时间：<span>' + appt.expectDate + ' ' + appt.expectTime + '</span></div>' +
-          '<div class="detail-info-row"><i data-lucide="truck" style="width: 14px; height: 14px;"></i> 车辆信息：<span>' + vehicleInfo + '</span></div>' +
           '<div class="detail-info-row"><i data-lucide="wrench" style="width: 14px; height: 14px;"></i> 服务项目：<span>' + appt.services.join('、') + '</span></div>' +
-          '<div class="detail-info-row"><i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i> 故障类型：<span>' + appt.faultType + '</span></div>' +
           (appt.faultDesc ? '<div class="detail-info-row"><i data-lucide="message-square" style="width: 14px; height: 14px;"></i> 故障描述：<span>' + appt.faultDesc + '</span></div>' : '') +
-          (appt.needTow ? '<div class="detail-info-row"><i data-lucide="loader" style="width: 14px; height: 14px;"></i> 拖车地址：<span>' + appt.towAddress + '</span></div>' : '') +
         '</div>' +
         timelineItems +
         partsTable +
-        rejectSection +
         reviewSection;
 
       var footer = document.getElementById('orderDetailFooter');

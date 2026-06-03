@@ -350,7 +350,7 @@
                                         <div>
                                             <div class="text-xs text-neutral-500 mb-1">会员名称</div>
                                             <div class="member-field text-sm">zhangsan01</div>
-                                            <div class="member-field-edit hidden"><input type="text" value="zhangsan01" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" readonly></div>
+                                            <div class="member-field-edit hidden"><input type="text" value="zhangsan01" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full bg-neutral-50" readonly></div>
                                         </div>
                                         <div>
                                             <div class="text-xs text-neutral-500 mb-1">真实姓名</div>
@@ -1421,17 +1421,6 @@
             showPage('member-detail');
             var isEdit = mode === 'edit';
 
-            // 重置所有编辑态输入框的值
-            document.querySelectorAll('.member-field-edit input, .member-field-edit select, .member-field-edit textarea').forEach(function(el) {
-                if (el.type === 'checkbox' || el.type === 'radio') {
-                    el.checked = false;
-                } else if (el.tagName === 'SELECT') {
-                    el.selectedIndex = 0;
-                } else {
-                    el.value = '';
-                }
-            });
-
             // 重置手动标签区域：移除所有动态新增的标签胶囊
             var manualTagContainer = document.querySelector('#page-member-detail .flex-wrap');
             if (manualTagContainer) {
@@ -1457,6 +1446,44 @@
             document.querySelectorAll('.view-only').forEach(function(el) {
                 el.classList.toggle('hidden', isEdit);
             });
+
+            // 编辑模式：将查看态的当前值填充到编辑态输入框
+            if (isEdit) {
+                var allGroups = document.querySelectorAll('#page-member-detail .grid.grid-cols-3 > div');
+                allGroups.forEach(function(group) {
+                    var viewEl = group.querySelector('.member-field');
+                    var editEl = group.querySelector('.member-field-edit');
+                    if (viewEl && editEl) {
+                        var input = editEl.querySelector('input, select, textarea');
+                        if (input) {
+                            var viewValue = viewEl.textContent.trim();
+                            if (input.tagName === 'SELECT') {
+                                // select：根据查看态文本匹配选项
+                                for (var i = 0; i < input.options.length; i++) {
+                                    if (input.options[i].textContent.trim() === viewValue) {
+                                        input.selectedIndex = i;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                input.value = viewValue;
+                            }
+                        }
+                    }
+                });
+            } else {
+                // 查看模式：清空所有编辑态输入框的值（为下次编辑做准备）
+                document.querySelectorAll('.member-field-edit input, .member-field-edit select, .member-field-edit textarea').forEach(function(el) {
+                    if (el.type === 'checkbox' || el.type === 'radio') {
+                        el.checked = false;
+                    } else if (el.tagName === 'SELECT') {
+                        el.selectedIndex = 0;
+                    } else {
+                        el.value = '';
+                    }
+                });
+            }
+
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 

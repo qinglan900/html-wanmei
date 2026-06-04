@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>皖美e行 - 运营推广 - 积分商城</title>
+    <title>皖美e行 - 积分管理 - 积分商城</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
@@ -78,11 +78,6 @@
         .stat-card { background: white; border: 1px solid #E5E7EB; border-radius: 3px; padding: 12px 16px; }
         .stat-card .stat-value { font-size: 20px; font-weight: 700; color: #1F2937; }
         .stat-card .stat-label { font-size: 12px; color: #6B7280; margin-top: 2px; }
-        .tab-btn { padding: 8px 20px; font-size: 14px; font-weight: 500; border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.2s; color: #6B7280; background: none; border-top: none; border-left: none; border-right: none; }
-        .tab-btn.active { color: #FF6B35; border-bottom-color: #FF6B35; }
-        .tab-btn:hover { color: #FF6B35; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
     </style>
 </head>
@@ -170,34 +165,20 @@
                                 <tbody>
                                     <tr class="border-b border-neutral-200 table-row">
                                         <td class="text-center text-neutral-600">1</td>
-                                        <td class="text-center">2026-06-01 08:23:45</td>
+                                        <td class="text-center">2026-06-03 10:15:30</td>
                                         <td class="text-left">皖通春日活动</td>
                                         <td class="text-center">181****9032</td>
                                         <td class="text-center">皖A·12345</td>
-                                        <td class="text-left">合安高速</td>
-                                        <td class="text-left">消费满100送10</td>
-                                        <td class="text-right font-semibold tabular-nums">10</td>
-                                        <td class="text-right"><button class="btn btn-text btn-sm tabular-nums" onclick="navigateToDetail('181****9032','FF20260601001')">8</button></td>
-                                        <td class="text-right tabular-nums">2</td>
-                                        <td class="text-left">112233445</td>
-                                        <td class="text-left text-neutral-500">FF20260601001</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-left">人工补发</td>
+                                        <td class="text-right font-semibold tabular-nums">50</td>
+                                        <td class="text-right tabular-nums text-neutral-400">0</td>
+                                        <td class="text-right tabular-nums">50</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-left text-neutral-500">BF20260603001</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 table-row">
                                         <td class="text-center text-neutral-600">2</td>
-                                        <td class="text-center">2026-06-01 09:15:22</td>
-                                        <td class="text-left">数科加油活动</td>
-                                        <td class="text-center">139****5678</td>
-                                        <td class="text-center">皖B·67890</td>
-                                        <td class="text-left">芜合高速</td>
-                                        <td class="text-left">ETC通行送5</td>
-                                        <td class="text-right font-semibold tabular-nums">5</td>
-                                        <td class="text-right tabular-nums text-neutral-400">0</td>
-                                        <td class="text-right tabular-nums">5</td>
-                                        <td class="text-left">123456789</td>
-                                        <td class="text-left text-neutral-500">FF20260601002</td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 table-row">
-                                        <td class="text-center text-neutral-600">3</td>
                                         <td class="text-center">2026-06-01 10:30:18</td>
                                         <td class="text-left">皖通春日活动</td>
                                         <td class="text-center">150****1234</td>
@@ -211,18 +192,32 @@
                                         <td class="text-left text-neutral-500">FF20260601003</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">3</td>
+                                        <td class="text-center">2026-06-01 09:15:22</td>
+                                        <td class="text-left">数科加油活动</td>
+                                        <td class="text-center">139****5678</td>
+                                        <td class="text-center">皖B·67890</td>
+                                        <td class="text-left">芜合高速</td>
+                                        <td class="text-left">ETC通行送5</td>
+                                        <td class="text-right font-semibold tabular-nums">5</td>
+                                        <td class="text-right tabular-nums text-neutral-400">0</td>
+                                        <td class="text-right tabular-nums">5</td>
+                                        <td class="text-left">123456789</td>
+                                        <td class="text-left text-neutral-500">FF20260601002</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
                                         <td class="text-center text-neutral-600">4</td>
-                                        <td class="text-center">2026-05-31 14:20:33</td>
-                                        <td class="text-left">联网高速活动</td>
-                                        <td class="text-center">177****3456</td>
-                                        <td class="text-center">皖D·88888</td>
+                                        <td class="text-center">2026-06-01 08:23:45</td>
+                                        <td class="text-left">皖通春日活动</td>
+                                        <td class="text-center">181****9032</td>
+                                        <td class="text-center">皖A·12345</td>
                                         <td class="text-left">合安高速</td>
-                                        <td class="text-left">新用户注册送50</td>
-                                        <td class="text-right font-semibold tabular-nums">50</td>
-                                        <td class="text-right"><button class="btn btn-text btn-sm tabular-nums" onclick="navigateToDetail('177****3456','FF20260531001')">50</button></td>
-                                        <td class="text-right tabular-nums">0</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-left text-neutral-500">FF20260531001</td>
+                                        <td class="text-left">消费满100送10</td>
+                                        <td class="text-right font-semibold tabular-nums">10</td>
+                                        <td class="text-right"><button class="btn btn-text btn-sm tabular-nums" onclick="navigateToDetail('181****9032','FF20260601001')">8</button></td>
+                                        <td class="text-right tabular-nums">2</td>
+                                        <td class="text-left">112233445</td>
+                                        <td class="text-left text-neutral-500">FF20260601001</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 table-row">
                                         <td class="text-center text-neutral-600">5</td>
@@ -237,6 +232,20 @@
                                         <td class="text-right tabular-nums">5</td>
                                         <td class="text-left">200345678</td>
                                         <td class="text-left text-neutral-500">FF20260531002</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">6</td>
+                                        <td class="text-center">2026-05-31 14:20:33</td>
+                                        <td class="text-left">联网高速活动</td>
+                                        <td class="text-center">177****3456</td>
+                                        <td class="text-center">皖D·88888</td>
+                                        <td class="text-left">合安高速</td>
+                                        <td class="text-left">新用户注册送50</td>
+                                        <td class="text-right font-semibold tabular-nums">50</td>
+                                        <td class="text-right"><button class="btn btn-text btn-sm tabular-nums" onclick="navigateToDetail('177****3456','FF20260531001')">50</button></td>
+                                        <td class="text-right tabular-nums">0</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-left text-neutral-500">FF20260531001</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -275,294 +284,155 @@
                                 <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
                             </div>
                         </div>
-                        <!-- Tab 切换 -->
-                        <div class="px-2 border-b border-neutral-200">
-                            <div class="flex gap-0">
-                                <button class="tab-btn active" onclick="switchPointsTab('vehicle')">按车辆查询</button>
-                                <button class="tab-btn" onclick="switchPointsTab('user')">按用户查询</button>
-                            </div>
-                        </div>
 
-                        <!-- 按车辆查询 -->
-                        <div id="tab-vehicle" class="tab-content active">
-                            <!-- 汇总卡片 -->
-                            <div class="px-2 pt-3 pb-2">
-                                <div class="grid grid-cols-6 gap-3">
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums">1,256</div>
-                                        <div class="stat-label">全部车</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums text-success">52,380</div>
-                                        <div class="stat-label">收入积分数量</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums text-info">1,200</div>
-                                        <div class="stat-label">补发积分数量</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums text-error">18,450</div>
-                                        <div class="stat-label">支出积分数量</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums text-warning">3,600</div>
-                                        <div class="stat-label">过期积分数量</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums text-primary">31,530</div>
-                                        <div class="stat-label">当前积分数量</div>
-                                    </div>
+                        <!-- 汇总卡片 -->
+                        <div class="px-2 pt-3 pb-2">
+                            <div class="grid grid-cols-6 gap-3">
+                                <div class="stat-card">
+                                    <div class="stat-value tabular-nums">2,890</div>
+                                    <div class="stat-label">全部用户</div>
                                 </div>
-                            </div>
-                            <!-- 筛选区 -->
-                            <div class="px-2 pb-2">
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
-                                    <div class="inline-label-input">
-                                        <span class="label">车牌号</span>
-                                        <input type="text" placeholder="请输入">
-                                    </div>
-                                    <div class="inline-label-input">
-                                        <span class="label">ETC卡号</span>
-                                        <input type="text" placeholder="请输入">
-                                    </div>
+                                <div class="stat-card">
+                                    <div class="stat-value tabular-nums text-success">128,500</div>
+                                    <div class="stat-label">收入积分数量</div>
                                 </div>
-                                <div class="flex justify-end gap-3 mt-3">
-                                    <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
-                                    <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                                <div class="stat-card">
+                                    <div class="stat-value tabular-nums text-info">3,200</div>
+                                    <div class="stat-label">补发积分数量</div>
                                 </div>
-                            </div>
-                            <!-- 批量操作区 -->
-                            <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
-                                <button class="btn btn-batch-action btn-md" onclick="openAddPointsModal()"><i data-lucide="plus" class="w-4 h-4"></i>新 增</button>
-                                <span class="text-xs text-neutral-500">补发积分</span>
-                            </div>
-                            <!-- 表格 -->
-                            <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
-                                <table class="data-table w-full">
-                                    <thead>
-                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                            <th class="w-12 text-center">序号</th>
-                                            <th class="text-center">车牌号</th>
-                                            <th class="text-center">车牌颜色</th>
-                                            <th class="text-center">ETC卡号</th>
-                                            <th class="text-right">当前积分数量</th>
-                                            <th class="text-right">收入积分数量</th>
-                                            <th class="text-right">支出积分数量</th>
-                                            <th class="text-right">过期积分数量</th>
-                                            <th class="text-right w-24">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="border-b border-neutral-200 table-row">
-                                            <td class="text-center text-neutral-600">1</td>
-                                            <td class="text-center">皖A·12345</td>
-                                            <td class="text-center">蓝色</td>
-                                            <td class="text-center">ETC20260001</td>
-                                            <td class="text-right font-semibold tabular-nums">5,200</td>
-                                            <td class="text-right tabular-nums">8,600</td>
-                                            <td class="text-right tabular-nums">2,800</td>
-                                            <td class="text-right tabular-nums">600</td>
-                                            <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('vehicle')">积分明细</button></td>
-                                        </tr>
-                                        <tr class="border-b border-neutral-200 table-row">
-                                            <td class="text-center text-neutral-600">2</td>
-                                            <td class="text-center">皖B·67890</td>
-                                            <td class="text-center">蓝色</td>
-                                            <td class="text-center">ETC20260002</td>
-                                            <td class="text-right font-semibold tabular-nums">3,150</td>
-                                            <td class="text-right tabular-nums">5,400</td>
-                                            <td class="text-right tabular-nums">1,800</td>
-                                            <td class="text-right tabular-nums">450</td>
-                                            <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('vehicle')">积分明细</button></td>
-                                        </tr>
-                                        <tr class="border-b border-neutral-200 table-row">
-                                            <td class="text-center text-neutral-600">3</td>
-                                            <td class="text-center">皖C·55555</td>
-                                            <td class="text-center">黄色</td>
-                                            <td class="text-center">ETC20260003</td>
-                                            <td class="text-right font-semibold tabular-nums">12,800</td>
-                                            <td class="text-right tabular-nums">18,200</td>
-                                            <td class="text-right tabular-nums">4,600</td>
-                                            <td class="text-right tabular-nums">800</td>
-                                            <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('vehicle')">积分明细</button></td>
-                                        </tr>
-                                        <tr class="border-b border-neutral-200 table-row">
-                                            <td class="text-center text-neutral-600">4</td>
-                                            <td class="text-center">皖D·88888</td>
-                                            <td class="text-center">蓝色</td>
-                                            <td class="text-center">ETC20260004</td>
-                                            <td class="text-right font-semibold tabular-nums">680</td>
-                                            <td class="text-right tabular-nums">2,100</td>
-                                            <td class="text-right tabular-nums">1,200</td>
-                                            <td class="text-right tabular-nums">220</td>
-                                            <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('vehicle')">积分明细</button></td>
-                                        </tr>
-                                        <tr class="border-b border-neutral-200 table-row">
-                                            <td class="text-center text-neutral-600">5</td>
-                                            <td class="text-center">皖A·99999</td>
-                                            <td class="text-center">蓝色</td>
-                                            <td class="text-center">ETC20260005</td>
-                                            <td class="text-right font-semibold tabular-nums">9,700</td>
-                                            <td class="text-right tabular-nums">14,080</td>
-                                            <td class="text-right tabular-nums">3,580</td>
-                                            <td class="text-right tabular-nums">800</td>
-                                            <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('vehicle')">积分明细</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- 分页 -->
-                            <div class="mx-2 mb-2">
-                                <div class="flex justify-between items-center py-2">
-                                    <span class="text-sm text-neutral-600">共 <span class="font-semibold">86</span> 条记录</span>
-                                    <div class="flex items-center gap-2">
-                                        <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
-                                        <div class="flex items-center gap-1">
-                                            <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                                            <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                            <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">2</button>
-                                            <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                                        </div>
-                                    </div>
+                                <div class="stat-card">
+                                    <div class="stat-value tabular-nums text-error">45,600</div>
+                                    <div class="stat-label">支出积分数量</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value tabular-nums text-warning">8,900</div>
+                                    <div class="stat-label">过期积分数量</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value tabular-nums text-primary">77,200</div>
+                                    <div class="stat-label">当前积分数量</div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- 按用户查询 -->
-                        <div id="tab-user" class="tab-content">
-                            <!-- 汇总卡片 -->
-                            <div class="px-2 pt-3 pb-2">
-                                <div class="grid grid-cols-6 gap-3">
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums">2,890</div>
-                                        <div class="stat-label">全部用户</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums text-success">128,500</div>
-                                        <div class="stat-label">收入积分数量</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums text-info">3,200</div>
-                                        <div class="stat-label">补发积分数量</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums text-error">45,600</div>
-                                        <div class="stat-label">支出积分数量</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums text-warning">8,900</div>
-                                        <div class="stat-label">过期积分数量</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-value tabular-nums text-primary">77,200</div>
-                                        <div class="stat-label">当前积分数量</div>
-                                    </div>
+                        <!-- 筛选区 -->
+                        <div class="px-2 pb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="inline-label-input">
+                                    <span class="label">用户姓名</span>
+                                    <input type="text" placeholder="请输入">
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">手机号码</span>
+                                    <input type="text" placeholder="请输入">
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">车牌号</span>
+                                    <input type="text" placeholder="请输入">
                                 </div>
                             </div>
-                            <!-- 筛选区 -->
-                            <div class="px-2 pb-2">
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
-                                    <div class="inline-label-input">
-                                        <span class="label">用户姓名</span>
-                                        <input type="text" placeholder="请输入">
-                                    </div>
-                                    <div class="inline-label-input">
-                                        <span class="label">手机号码</span>
-                                        <input type="text" placeholder="请输入">
-                                    </div>
-                                </div>
-                                <div class="flex justify-end gap-3 mt-3">
-                                    <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
-                                    <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
-                                </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
                             </div>
-                            <!-- 批量操作区 -->
-                            <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
-                                <button class="btn btn-batch-action btn-md" onclick="openAddPointsModal()"><i data-lucide="plus" class="w-4 h-4"></i>新 增</button>
-                                <span class="text-xs text-neutral-500">补发积分</span>
-                            </div>
-                            <!-- 表格 -->
-                            <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
-                                <table class="data-table w-full">
-                                    <thead>
-                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                            <th class="w-12 text-center">序号</th>
-                                            <th class="text-left">用户姓名</th>
-                                            <th class="text-center">手机号码</th>
-                                            <th class="text-right">当前积分数量</th>
-                                            <th class="text-right">收入积分数量</th>
-                                            <th class="text-right">支出积分数量</th>
-                                            <th class="text-right">过期积分数量</th>
-                                            <th class="text-right w-24">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="border-b border-neutral-200 table-row">
-                                            <td class="text-center text-neutral-600">1</td>
-                                            <td class="text-left">张三</td>
-                                            <td class="text-center">181****9032</td>
-                                            <td class="text-right font-semibold tabular-nums">15,200</td>
-                                            <td class="text-right tabular-nums">22,600</td>
-                                            <td class="text-right tabular-nums">6,200</td>
-                                            <td class="text-right tabular-nums">1,200</td>
-                                            <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('user')">积分明细</button></td>
-                                        </tr>
-                                        <tr class="border-b border-neutral-200 table-row">
-                                            <td class="text-center text-neutral-600">2</td>
-                                            <td class="text-left">李四</td>
-                                            <td class="text-center">139****5678</td>
-                                            <td class="text-right font-semibold tabular-nums">8,650</td>
-                                            <td class="text-right tabular-nums">14,300</td>
-                                            <td class="text-right tabular-nums">4,800</td>
-                                            <td class="text-right tabular-nums">850</td>
-                                            <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('user')">积分明细</button></td>
-                                        </tr>
-                                        <tr class="border-b border-neutral-200 table-row">
-                                            <td class="text-center text-neutral-600">3</td>
-                                            <td class="text-left">王五</td>
-                                            <td class="text-center">150****1234</td>
-                                            <td class="text-right font-semibold tabular-nums">32,800</td>
-                                            <td class="text-right tabular-nums">48,200</td>
-                                            <td class="text-right tabular-nums">12,600</td>
-                                            <td class="text-right tabular-nums">2,800</td>
-                                            <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('user')">积分明细</button></td>
-                                        </tr>
-                                        <tr class="border-b border-neutral-200 table-row">
-                                            <td class="text-center text-neutral-600">4</td>
-                                            <td class="text-left">赵六</td>
-                                            <td class="text-center">177****3456</td>
-                                            <td class="text-right font-semibold tabular-nums">2,100</td>
-                                            <td class="text-right tabular-nums">5,800</td>
-                                            <td class="text-right tabular-nums">3,200</td>
-                                            <td class="text-right tabular-nums">500</td>
-                                            <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('user')">积分明细</button></td>
-                                        </tr>
-                                        <tr class="border-b border-neutral-200 table-row">
-                                            <td class="text-center text-neutral-600">5</td>
-                                            <td class="text-left">钱七</td>
-                                            <td class="text-center">133****7890</td>
-                                            <td class="text-right font-semibold tabular-nums">18,450</td>
-                                            <td class="text-right tabular-nums">37,600</td>
-                                            <td class="text-right tabular-nums">18,800</td>
-                                            <td class="text-right tabular-nums">350</td>
-                                            <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('user')">积分明细</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- 分页 -->
-                            <div class="mx-2 mb-2">
-                                <div class="flex justify-between items-center py-2">
-                                    <span class="text-sm text-neutral-600">共 <span class="font-semibold">2,890</span> 条记录</span>
-                                    <div class="flex items-center gap-2">
-                                        <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
-                                        <div class="flex items-center gap-1">
-                                            <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                                            <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                            <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">2</button>
-                                            <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">3</button>
-                                            <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                                        </div>
+                        </div>
+                        <!-- 批量操作区 -->
+                        <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
+                            <button class="btn btn-batch-action btn-md" onclick="openAddPointsModal()"><i data-lucide="plus" class="w-4 h-4"></i>新 增</button>
+                            <span class="text-xs text-neutral-500">补发积分</span>
+                        </div>
+                        <!-- 表格 -->
+                        <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                        <th class="w-12 text-center">序号</th>
+                                        <th class="text-left">用户姓名</th>
+                                        <th class="text-center">手机号码</th>
+                                        <th class="text-left">车牌号</th>
+                                        <th class="text-right">当前积分数量</th>
+                                        <th class="text-right">收入积分数量</th>
+                                        <th class="text-right">补发积分数量</th>
+                                        <th class="text-right">支出积分数量</th>
+                                        <th class="text-right">过期积分数量</th>
+                                        <th class="text-right w-24">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">1</td>
+                                        <td class="text-left">张三</td>
+                                        <td class="text-center">181****9032</td>
+                                        <td class="text-left">皖A·12345; 皖A·66666</td>
+                                        <td class="text-right font-semibold tabular-nums">15,200</td>
+                                        <td class="text-right tabular-nums">22,600</td>
+                                        <td class="text-right tabular-nums">500</td>
+                                        <td class="text-right tabular-nums">6,200</td>
+                                        <td class="text-right tabular-nums">1,200</td>
+                                        <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('张三','181****9032','15,200')">积分明细</button></td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">2</td>
+                                        <td class="text-left">李四</td>
+                                        <td class="text-center">139****5678</td>
+                                        <td class="text-left">皖B·67890</td>
+                                        <td class="text-right font-semibold tabular-nums">8,650</td>
+                                        <td class="text-right tabular-nums">14,300</td>
+                                        <td class="text-right tabular-nums">200</td>
+                                        <td class="text-right tabular-nums">4,800</td>
+                                        <td class="text-right tabular-nums">850</td>
+                                        <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('李四','139****5678','8,650')">积分明细</button></td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">3</td>
+                                        <td class="text-left">王五</td>
+                                        <td class="text-center">150****1234</td>
+                                        <td class="text-left">皖C·55555; 皖C·77777; 皖C·88888</td>
+                                        <td class="text-right font-semibold tabular-nums">32,800</td>
+                                        <td class="text-right tabular-nums">48,200</td>
+                                        <td class="text-right tabular-nums">1,000</td>
+                                        <td class="text-right tabular-nums">12,600</td>
+                                        <td class="text-right tabular-nums">2,800</td>
+                                        <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('王五','150****1234','32,800')">积分明细</button></td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">4</td>
+                                        <td class="text-left">赵六</td>
+                                        <td class="text-center">177****3456</td>
+                                        <td class="text-left">皖D·88888</td>
+                                        <td class="text-right font-semibold tabular-nums">2,100</td>
+                                        <td class="text-right tabular-nums">5,800</td>
+                                        <td class="text-right tabular-nums">0</td>
+                                        <td class="text-right tabular-nums">3,200</td>
+                                        <td class="text-right tabular-nums">500</td>
+                                        <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('赵六','177****3456','2,100')">积分明细</button></td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">5</td>
+                                        <td class="text-left">钱七</td>
+                                        <td class="text-center">133****7890</td>
+                                        <td class="text-left">皖A·99999; 皖A·11111</td>
+                                        <td class="text-right font-semibold tabular-nums">18,450</td>
+                                        <td class="text-right tabular-nums">37,600</td>
+                                        <td class="text-right tabular-nums">1,500</td>
+                                        <td class="text-right tabular-nums">18,800</td>
+                                        <td class="text-right tabular-nums">350</td>
+                                        <td class="text-right"><button class="btn btn-text btn-sm" onclick="showPointsDetail('钱七','133****7890','18,450')">积分明细</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- 分页 -->
+                        <div class="mx-2 mb-2">
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-sm text-neutral-600">共 <span class="font-semibold">2,890</span> 条记录</span>
+                                <div class="flex items-center gap-2">
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                    <div class="flex items-center gap-1">
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">2</button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">3</button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -582,27 +452,27 @@
                                 <h1 class="text-base font-bold">积分明细</h1>
                             </div>
                             <div class="flex gap-3">
-                                <button class="btn btn-secondary btn-md" onclick="showPage('points-query');switchSubnav('points-query')"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
+                                <button class="btn btn-secondary btn-md" onclick="backFromDetail()"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
                             </div>
                         </div>
                         <!-- 用户信息概览 -->
                         <div class="px-5 py-4">
                             <div class="grid grid-cols-4 gap-4">
                                 <div class="stat-card">
-                                    <div class="stat-label">车牌号</div>
-                                    <div class="stat-value text-base">皖A·12345</div>
+                                    <div class="stat-label">用户姓名</div>
+                                    <div class="stat-value text-base">张三</div>
                                 </div>
                                 <div class="stat-card">
-                                    <div class="stat-label">车牌颜色</div>
-                                    <div class="stat-value text-base">蓝色</div>
+                                    <div class="stat-label">手机号码</div>
+                                    <div class="stat-value text-base">181****9032</div>
                                 </div>
                                 <div class="stat-card">
-                                    <div class="stat-label">ETC卡号</div>
-                                    <div class="stat-value text-base">ETC20260001</div>
+                                    <div class="stat-label">会员等级</div>
+                                    <div class="stat-value text-base">黄金会员</div>
                                 </div>
                                 <div class="stat-card">
                                     <div class="stat-label">当前积分</div>
-                                    <div class="stat-value text-base text-primary tabular-nums">5,200</div>
+                                    <div class="stat-value text-base text-primary tabular-nums">15,200</div>
                                 </div>
                             </div>
                         </div>
@@ -629,6 +499,10 @@
                                     <span class="separator">→</span>
                                     <input type="date" placeholder="结束日期">
                                 </div>
+                                <div class="inline-label-input">
+                                    <span class="label">车牌号</span>
+                                    <input id="detail-plate-filter" type="text" placeholder="请输入">
+                                </div>
                             </div>
                             <div class="flex justify-end gap-3 mt-3">
                                 <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
@@ -648,26 +522,54 @@
                                         <th class="text-left">积分发放规则</th>
                                         <th class="text-right">积分数量</th>
                                         <th class="text-left">积分发放ID</th>
-                                        <th class="text-left">扣除订单ID</th>
                                         <th class="text-left">关联订单</th>
+                                        <th class="text-center">车牌号</th>
                                     </tr>
                                 </thead>
                                 <tbody id="detail-tbody">
-                                    <!-- ===== FF20260601001 相关记录（用户181****9032，发放10，已消耗8=支出5+过期3，剩余2） ===== -->
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="FF20260601001">
+                                    <!-- 按产生时间倒序排列（全局排序，不分组） -->
+                                    <!-- 0. 2026-06-03 10:15:30 - 收入(人工补发 BF20260603001) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="BF20260603001" data-plate="皖A·12345">
                                         <td class="text-center text-neutral-600">1</td>
                                         <td class="text-center"><span class="status-badge status-success">收入</span></td>
-                                        <td class="text-center">2026-06-01 08:23:45</td>
+                                        <td class="text-center">2026-06-03 10:15:30</td>
                                         <td class="text-left">皖通春日活动</td>
-                                        <td class="text-left">合安高速</td>
-                                        <td class="text-left">消费满100送10</td>
-                                        <td class="text-right font-semibold tabular-nums text-success">+10</td>
-                                        <td class="text-left text-neutral-500">FF20260601001</td>
                                         <td class="text-left">--</td>
+                                        <td class="text-left">人工补发</td>
+                                        <td class="text-right font-semibold tabular-nums text-success">+50</td>
+                                        <td class="text-left text-neutral-500">BF20260603001</td>
                                         <td class="text-left">--</td>
+                                        <td class="text-center">皖A·12345</td>
                                     </tr>
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expense" data-issue-id="FF20260601001">
+                                    <!-- 1. 2026-06-02 16:20:33 - 支出(FF20260601003) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expense" data-issue-id="FF20260601003" data-plate="皖A·12345">
+                                        <td class="text-center text-neutral-600">1</td>
+                                        <td class="text-center"><span class="status-badge status-error">支出</span></td>
+                                        <td class="text-center">2026-06-02 16:20:33</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-right font-semibold tabular-nums text-error">-5</td>
+                                        <td class="text-left text-neutral-500">FF20260601003</td>
+                                        <td class="text-left"><button class="btn btn-text btn-sm" onclick="showOrderDetail()">ORD20260602003</button></td>
+                                        <td class="text-center">皖A·12345</td>
+                                    </tr>
+                                    <!-- 2. 2026-06-02 15:10:45 - 支出(FF20260531001) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expense" data-issue-id="FF20260531001" data-plate="皖A·12345">
                                         <td class="text-center text-neutral-600">2</td>
+                                        <td class="text-center"><span class="status-badge status-error">支出</span></td>
+                                        <td class="text-center">2026-06-02 15:10:45</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-right font-semibold tabular-nums text-error">-20</td>
+                                        <td class="text-left text-neutral-500">FF20260531001</td>
+                                        <td class="text-left"><button class="btn btn-text btn-sm" onclick="showOrderDetail()">ORD20260602004</button></td>
+                                        <td class="text-center">皖A·12345</td>
+                                    </tr>
+                                    <!-- 3. 2026-06-02 14:30:18 - 支出(FF20260601001) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expense" data-issue-id="FF20260601001" data-plate="皖A·66666">
+                                        <td class="text-center text-neutral-600">3</td>
                                         <td class="text-center"><span class="status-badge status-error">支出</span></td>
                                         <td class="text-center">2026-06-02 14:30:18</td>
                                         <td class="text-left">--</td>
@@ -675,73 +577,51 @@
                                         <td class="text-left">--</td>
                                         <td class="text-right font-semibold tabular-nums text-error">-5</td>
                                         <td class="text-left text-neutral-500">FF20260601001</td>
-                                        <td class="text-left text-neutral-500">DD20260602001</td>
                                         <td class="text-left"><button class="btn btn-text btn-sm" onclick="showOrderDetail()">ORD20260602001</button></td>
+                                        <td class="text-center">皖A·66666</td>
                                     </tr>
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expired" data-issue-id="FF20260601001">
-                                        <td class="text-center text-neutral-600">3</td>
-                                        <td class="text-center"><span class="status-badge status-warning">积分过期</span></td>
-                                        <td class="text-center">2027-06-01 00:00:00</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-right font-semibold tabular-nums text-warning">-3</td>
-                                        <td class="text-left text-neutral-500">FF20260601001</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
-                                    </tr>
-                                    <!-- ===== FF20260601003 相关记录（用户150****1234，发放20，已消耗15=支出10+过期5，剩余5） ===== -->
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="FF20260601003">
+                                    <!-- 3b. 2026-06-02 12:00:00 - 支出(FF20260601001) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expense" data-issue-id="FF20260601001" data-plate="皖A·12345">
                                         <td class="text-center text-neutral-600">4</td>
-                                        <td class="text-center"><span class="status-badge status-success">收入</span></td>
-                                        <td class="text-center">2026-06-01 10:30:18</td>
-                                        <td class="text-left">皖通春日活动</td>
-                                        <td class="text-left">连霍高速</td>
-                                        <td class="text-left">消费满100送10</td>
-                                        <td class="text-right font-semibold tabular-nums text-success">+20</td>
-                                        <td class="text-left text-neutral-500">FF20260601003</td>
+                                        <td class="text-center"><span class="status-badge status-error">支出</span></td>
+                                        <td class="text-center">2026-06-02 12:00:00</td>
                                         <td class="text-left">--</td>
                                         <td class="text-left">--</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-right font-semibold tabular-nums text-error">-3</td>
+                                        <td class="text-left text-neutral-500">FF20260601001</td>
+                                        <td class="text-left"><button class="btn btn-text btn-sm" onclick="showOrderDetail()">ORD20260602005</button></td>
+                                        <td class="text-center">皖A·12345</td>
                                     </tr>
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expense" data-issue-id="FF20260601003">
+                                    <!-- 4. 2026-06-02 10:00:00 - 支出(FF20260601003) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expense" data-issue-id="FF20260601003" data-plate="皖A·12345">
                                         <td class="text-center text-neutral-600">5</td>
                                         <td class="text-center"><span class="status-badge status-error">支出</span></td>
-                                        <td class="text-center">2026-06-02 16:20:33</td>
+                                        <td class="text-center">2026-06-02 10:00:00</td>
                                         <td class="text-left">--</td>
                                         <td class="text-left">--</td>
                                         <td class="text-left">--</td>
                                         <td class="text-right font-semibold tabular-nums text-error">-10</td>
                                         <td class="text-left text-neutral-500">FF20260601003</td>
-                                        <td class="text-left text-neutral-500">DD20260602002</td>
                                         <td class="text-left"><button class="btn btn-text btn-sm" onclick="showOrderDetail()">ORD20260602002</button></td>
+                                        <td class="text-center">皖A·12345</td>
                                     </tr>
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expired" data-issue-id="FF20260601003">
+                                    <!-- 5. 2026-06-01 10:30:18 - 收入(FF20260601003) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="FF20260601003" data-plate="皖C·55555">
                                         <td class="text-center text-neutral-600">6</td>
-                                        <td class="text-center"><span class="status-badge status-warning">积分过期</span></td>
-                                        <td class="text-center">2027-06-01 00:00:00</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-right font-semibold tabular-nums text-warning">-5</td>
+                                        <td class="text-center"><span class="status-badge status-success">收入</span></td>
+                                        <td class="text-center">2026-06-01 10:30:18</td>
+                                        <td class="text-left">皖通春日活动</td>
+                                        <td class="text-left">100234567</td>
+                                        <td class="text-left">消费满100送10</td>
+                                        <td class="text-right font-semibold tabular-nums text-success">+20</td>
                                         <td class="text-left text-neutral-500">FF20260601003</td>
                                         <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
+                                        <td class="text-center">皖C·55555</td>
                                     </tr>
-                                    <!-- ===== FF20260531001 相关记录（用户177****3456，发放50，已消耗50=支出30+过期20，剩余0） ===== -->
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="FF20260531001">
+                                    <!-- 6. 2026-06-01 09:15:22 - 支出(FF20260531001) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expense" data-issue-id="FF20260531001" data-plate="皖A·12345">
                                         <td class="text-center text-neutral-600">7</td>
-                                        <td class="text-center"><span class="status-badge status-success">收入</span></td>
-                                        <td class="text-center">2026-05-31 14:20:33</td>
-                                        <td class="text-left">联网高速活动</td>
-                                        <td class="text-left">合安高速</td>
-                                        <td class="text-left">新用户注册送50</td>
-                                        <td class="text-right font-semibold tabular-nums text-success">+50</td>
-                                        <td class="text-left text-neutral-500">FF20260531001</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expense" data-issue-id="FF20260531001">
-                                        <td class="text-center text-neutral-600">8</td>
                                         <td class="text-center"><span class="status-badge status-error">支出</span></td>
                                         <td class="text-center">2026-06-01 09:15:22</td>
                                         <td class="text-left">--</td>
@@ -749,46 +629,60 @@
                                         <td class="text-left">--</td>
                                         <td class="text-right font-semibold tabular-nums text-error">-30</td>
                                         <td class="text-left text-neutral-500">FF20260531001</td>
-                                        <td class="text-left text-neutral-500">DD20260601001</td>
                                         <td class="text-left"><button class="btn btn-text btn-sm" onclick="showOrderDetail()">ORD20260601001</button></td>
+                                        <td class="text-center">皖A·12345</td>
                                     </tr>
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="expired" data-issue-id="FF20260531001">
-                                        <td class="text-center text-neutral-600">9</td>
-                                        <td class="text-center"><span class="status-badge status-warning">积分过期</span></td>
-                                        <td class="text-center">2027-05-31 00:00:00</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-right font-semibold tabular-nums text-warning">-20</td>
-                                        <td class="text-left text-neutral-500">FF20260531001</td>
-                                        <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
-                                    </tr>
-                                    <!-- ===== FF20260601002 相关记录（用户139****5678，发放5，已消耗0，剩余5） ===== -->
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="FF20260601002">
-                                        <td class="text-center text-neutral-600">10</td>
+                                    <!-- 7. 2026-06-01 09:15:22 - 收入(FF20260601002) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="FF20260601002" data-plate="皖A·99999">
+                                        <td class="text-center text-neutral-600">8</td>
                                         <td class="text-center"><span class="status-badge status-success">收入</span></td>
                                         <td class="text-center">2026-06-01 09:15:22</td>
                                         <td class="text-left">数科加油活动</td>
-                                        <td class="text-left">芜合高速</td>
+                                        <td class="text-left">200345678</td>
                                         <td class="text-left">ETC通行送5</td>
                                         <td class="text-right font-semibold tabular-nums text-success">+5</td>
                                         <td class="text-left text-neutral-500">FF20260601002</td>
                                         <td class="text-left">--</td>
-                                        <td class="text-left">--</td>
+                                        <td class="text-center">皖A·99999</td>
                                     </tr>
-                                    <!-- ===== FF20260531002 相关记录（用户133****7890，发放5，已消耗0，剩余5） ===== -->
-                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="FF20260531002">
-                                        <td class="text-center text-neutral-600">11</td>
+                                    <!-- 8. 2026-06-01 08:23:45 - 收入(FF20260601001) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="FF20260601001" data-plate="皖A·12345">
+                                        <td class="text-center text-neutral-600">9</td>
+                                        <td class="text-center"><span class="status-badge status-success">收入</span></td>
+                                        <td class="text-center">2026-06-01 08:23:45</td>
+                                        <td class="text-left">皖通春日活动</td>
+                                        <td class="text-left">112233445</td>
+                                        <td class="text-left">消费满100送10</td>
+                                        <td class="text-right font-semibold tabular-nums text-success">+10</td>
+                                        <td class="text-left text-neutral-500">FF20260601001</td>
+                                        <td class="text-left">--</td>
+                                        <td class="text-center">皖A·12345</td>
+                                    </tr>
+                                    <!-- 9. 2026-05-31 16:45:10 - 收入(FF20260531002) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="FF20260531002" data-plate="皖A·99999">
+                                        <td class="text-center text-neutral-600">10</td>
                                         <td class="text-center"><span class="status-badge status-success">收入</span></td>
                                         <td class="text-center">2026-05-31 16:45:10</td>
                                         <td class="text-left">数科加油活动</td>
-                                        <td class="text-left">芜合高速</td>
+                                        <td class="text-left">123456789</td>
                                         <td class="text-left">ETC通行送5</td>
                                         <td class="text-right font-semibold tabular-nums text-success">+5</td>
                                         <td class="text-left text-neutral-500">FF20260531002</td>
                                         <td class="text-left">--</td>
+                                        <td class="text-center">皖A·99999</td>
+                                    </tr>
+                                    <!-- 10. 2026-05-31 14:20:33 - 收入(FF20260531001) -->
+                                    <tr class="border-b border-neutral-200 table-row detail-row" data-type="income" data-issue-id="FF20260531001" data-plate="皖D·88888">
+                                        <td class="text-center text-neutral-600">11</td>
+                                        <td class="text-center"><span class="status-badge status-success">收入</span></td>
+                                        <td class="text-center">2026-05-31 14:20:33</td>
+                                        <td class="text-left">联网高速活动</td>
+                                        <td class="text-left">112233445</td>
+                                        <td class="text-left">新用户注册送50</td>
+                                        <td class="text-right font-semibold tabular-nums text-success">+50</td>
+                                        <td class="text-left text-neutral-500">FF20260531001</td>
                                         <td class="text-left">--</td>
+                                        <td class="text-center">皖D·88888</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -817,64 +711,169 @@
 
     <!-- 新增补发积分弹窗 -->
     <div id="modal-add-points" class="modal-overlay hidden" onclick="if(event.target===this)closeAddPointsModal()">
-        <div class="modal-container max-w-xl w-full my-8">
-            <div class="flex justify-between items-center px-4 py-4 border-b border-neutral-200">
+        <div class="modal-container max-w-3xl w-full my-8" style="max-height: calc(100vh - 4rem); display: flex; flex-direction: column;">
+            <div class="flex justify-between items-center px-4 py-4 border-b border-neutral-200 flex-shrink-0">
                 <h3 class="text-base font-bold">新增补发积分</h3>
                 <button class="close-modal" onclick="closeAddPointsModal()"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <div class="p-5 space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-neutral-700 mb-1">车牌号 <span class="text-error">*</span></label>
-                    <input id="add-points-plate" type="text" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm" placeholder="请输入车牌号" oninput="autoFillAddPoints()">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-neutral-700 mb-1">关联活动名称 <span class="text-error">*</span></label>
-                    <select id="add-points-activity" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm bg-white">
-                        <option value="">请选择活动名称</option>
-                        <option value="皖通春日活动">皖通春日活动</option>
-                        <option value="数科加油活动">数科加油活动</option>
-                        <option value="联网高速活动">联网高速活动</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-neutral-700 mb-1">关联订单</label>
-                    <select id="add-points-order" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm bg-white">
-                        <option value="">请选择</option>
-                        <option value="ORD20260528001">ORD20260528001 - 中石油满200减30代金券</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-neutral-700 mb-1">车牌颜色</label>
-                        <input id="add-points-color" type="text" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm bg-neutral-50" value="蓝色" readonly>
+            <div class="p-5 space-y-5 overflow-y-auto flex-1">
+                <!-- 第一步：订单搜索区 -->
+                <div id="add-points-search-area">
+                    <div class="text-sm font-semibold text-neutral-800 mb-3">第一步：搜索已核销订单</div>
+                    <div class="flex items-center gap-3">
+                        <div class="inline-label-input flex-1">
+                            <span class="label">手机号/订单号</span>
+                            <input id="add-points-search" type="text" placeholder="请输入">
+                        </div>
+                        <button id="add-points-search-btn" class="btn btn-primary btn-md" onclick="searchOrders()">搜 索</button>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-neutral-700 mb-1">优惠券名称</label>
-                        <input id="add-points-coupon" type="text" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm bg-neutral-50" value="" readonly placeholder="选择订单后自动带出">
+                    <!-- 搜索结果表格（初始隐藏） -->
+                    <div id="add-points-search-result" class="hidden mt-3 overflow-x-auto border border-neutral-200 rounded">
+                        <table class="data-table w-full">
+                            <thead>
+                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                    <th class="w-12 text-center">选择</th>
+                                    <th class="text-left">订单号</th>
+                                    <th class="text-left">下单人</th>
+                                    <th class="text-center">手机号</th>
+                                    <th class="text-left">优惠券名称</th>
+                                    <th class="text-right">扣除积分</th>
+                                    <th class="text-center">兑换时间</th>
+                                    <th class="text-center">核销时间</th>
+                                    <th class="text-right">核销金额</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-neutral-200 table-row">
+                                    <td class="text-center"><input type="radio" name="order-select" value="ORD20260602001" onchange="selectOrder(this)"></td>
+                                    <td class="text-left">ORD20260602001</td>
+                                    <td class="text-left">张三</td>
+                                    <td class="text-center">181****9032</td>
+                                    <td class="text-left">中石油满200减30代金券</td>
+                                    <td class="text-right tabular-nums">100</td>
+                                    <td class="text-center">2026-06-01 14:30</td>
+                                    <td class="text-center">2026-06-02 10:00</td>
+                                    <td class="text-right tabular-nums">¥30.00</td>
+                                </tr>
+                                <tr class="border-b border-neutral-200 table-row">
+                                    <td class="text-center"><input type="radio" name="order-select" value="ORD20260602003" onchange="selectOrder(this)"></td>
+                                    <td class="text-left">ORD20260602003</td>
+                                    <td class="text-left">张三</td>
+                                    <td class="text-center">181****9032</td>
+                                    <td class="text-left">中石化满100减20抵扣券</td>
+                                    <td class="text-right tabular-nums">50</td>
+                                    <td class="text-center">2026-05-28 09:15</td>
+                                    <td class="text-center">2026-06-01 16:20</td>
+                                    <td class="text-right tabular-nums">¥20.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-neutral-700 mb-1">扣除积分</label>
-                        <input id="add-points-deduct" type="text" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm bg-neutral-50" value="" readonly placeholder="选择订单后自动带出">
+
+                <!-- 已选订单信息（选择订单后显示，不可更改） -->
+                <div id="add-points-selected-order" class="hidden">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="text-sm font-semibold text-neutral-800">已选订单</div>
+                        <button class="btn btn-text btn-sm" onclick="reSelectOrder()">重新选择</button>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-neutral-700 mb-1">核销金额</label>
-                        <input id="add-points-verify" type="text" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm bg-neutral-50" value="" readonly placeholder="选择订单后自动带出">
+                    <div class="grid grid-cols-3 gap-4 bg-neutral-50 p-3 rounded border border-neutral-200">
+                        <div>
+                            <div class="text-xs text-neutral-500 mb-1">订单号</div>
+                            <div class="text-sm text-neutral-800" id="selected-order-id">ORD20260602001</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-neutral-500 mb-1">下单人</div>
+                            <div class="text-sm text-neutral-800" id="selected-order-name">张三</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-neutral-500 mb-1">手机号</div>
+                            <div class="text-sm text-neutral-800" id="selected-order-phone">181****9032</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-neutral-500 mb-1">优惠券名称</div>
+                            <div class="text-sm text-neutral-800" id="selected-order-coupon">中石油满200减30代金券</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-neutral-500 mb-1">扣除积分总量</div>
+                            <div class="text-sm text-neutral-800" id="selected-order-points">100</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-neutral-500 mb-1">核销金额</div>
+                            <div class="text-sm text-neutral-800" id="selected-order-amount">¥30.00</div>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-neutral-700 mb-1">补送积分数量 <span class="text-error">*</span></label>
-                    <input id="add-points-amount" type="number" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm" placeholder="请输入正整数" min="1" step="1">
+
+                <!-- 第二步：FIFO扣减明细区（初始隐藏） -->
+                <div id="add-points-fifo-detail" class="hidden">
+                    <div class="text-sm font-semibold text-neutral-800 mb-1">第二步：积分扣减明细（可编辑）</div>
+                    <div class="text-xs text-warning mb-3">补发积分可修改，修改后总和不可超过原扣除积分总量</div>
+                    <div class="overflow-x-auto border border-neutral-200 rounded">
+                        <table class="data-table w-full">
+                            <thead>
+                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                    <th class="w-12 text-center">序号</th>
+                                    <th class="text-center">扣除积分车牌</th>
+                                    <th class="text-center">扣除积分</th>
+                                    <th class="text-center">关联活动</th>
+                                    <th class="text-center">发放时间</th>
+                                    <th class="text-center">补发积分</th>
+                                    <th class="text-left">补发积分发放ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-neutral-200">
+                                    <td class="text-center text-neutral-600">1</td>
+                                    <td class="text-center">皖A·12345</td>
+                                    <td class="text-center tabular-nums">50</td>
+                                    <td class="text-center">皖通春日活动</td>
+                                    <td class="text-center">2026-05-31 08:23:45</td>
+                                    <td class="text-center"><input type="number" class="fifo-amount-input w-16 h-7 px-2 border border-neutral-200 rounded text-sm text-center" value="50" min="0" oninput="updateSupplementTotal()"></td>
+                                    <td class="text-left text-neutral-500">BF20260603001</td>
+                                </tr>
+                                <tr class="border-b border-neutral-200">
+                                    <td class="text-center text-neutral-600">2</td>
+                                    <td class="text-center">皖A·66666</td>
+                                    <td class="text-center tabular-nums">30</td>
+                                    <td class="text-center">数科加油活动</td>
+                                    <td class="text-center">2026-05-30 14:20:33</td>
+                                    <td class="text-center"><input type="number" class="fifo-amount-input w-16 h-7 px-2 border border-neutral-200 rounded text-sm text-center" value="30" min="0" oninput="updateSupplementTotal()"></td>
+                                    <td class="text-left text-neutral-500">BF20260603002</td>
+                                </tr>
+                                <tr class="border-b border-neutral-200">
+                                    <td class="text-center text-neutral-600">3</td>
+                                    <td class="text-center">皖A·12345</td>
+                                    <td class="text-center tabular-nums">20</td>
+                                    <td class="text-center">联网高速活动</td>
+                                    <td class="text-center">2026-05-29 09:15:22</td>
+                                    <td class="text-center"><input type="number" class="fifo-amount-input w-16 h-7 px-2 border border-neutral-200 rounded text-sm text-center" value="20" min="0" oninput="updateSupplementTotal()"></td>
+                                    <td class="text-left text-neutral-500">BF20260603003</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-neutral-700 mb-1">补送积分原因 <span class="text-error">*</span></label>
-                    <input id="add-points-reason" type="text" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm" placeholder="请输入补发原因">
+
+                <!-- 第三步：补发信息区（初始隐藏） -->
+                <div id="add-points-supplement-info" class="hidden">
+                    <div class="text-sm font-semibold text-neutral-800 mb-3">第三步：补发信息</div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <label class="text-sm font-medium text-neutral-700 w-28 flex-shrink-0">补送积分总量</label>
+                            <input id="add-points-total-display" type="text" class="w-24 h-8 px-3 border border-neutral-200 rounded text-sm bg-neutral-50 text-right tabular-nums" value="100" readonly>
+                            <span class="text-sm text-neutral-500">/ 100（原扣除总量）</span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-700 mb-1">补送积分原因 <span class="text-error">*</span></label>
+                            <textarea id="add-points-reason" class="w-full h-20 px-3 py-2 border border-neutral-200 rounded text-sm resize-none" placeholder="请输入补发原因（必填，最多200字）" maxlength="200"></textarea>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="flex justify-end gap-3 px-4 py-4 bg-neutral-50 border-t border-neutral-200">
+            <div class="flex justify-end gap-3 px-4 py-4 bg-neutral-50 border-t border-neutral-200 flex-shrink-0">
                 <button class="btn btn-secondary btn-md" onclick="closeAddPointsModal()">取 消</button>
-                <button class="btn btn-primary btn-md" onclick="handleAddPointsSubmit()">确 认</button>
+                <button id="add-points-submit" class="btn btn-primary btn-md" onclick="handleAddPointsSubmit()" disabled>确 认</button>
             </div>
         </div>
     </div>
@@ -919,55 +918,34 @@
             }, 2500);
         }
 
-        // Tab 切换（积分查询）
-        function switchPointsTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
-            document.querySelectorAll('.tab-content').forEach(function(content) { content.classList.remove('active'); });
-            var tabEl = document.getElementById('tab-' + tab);
-            if (tabEl) tabEl.classList.add('active');
-            // 找到对应的按钮
-            var btns = document.querySelectorAll('.tab-btn');
-            btns.forEach(function(btn) {
-                if (btn.textContent.indexOf(tab === 'vehicle' ? '车辆' : '用户') !== -1) {
-                    btn.classList.add('active');
-                }
-            });
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-
-        // 积分明细页跳转（从积分查询列表点击）
-        function showPointsDetail(source) {
-            showPage('points-detail');
-            // 根据来源设置概览卡片信息
+        // 积分明细页跳转（从积分查询列表点击，用户维度）
+        function showPointsDetail(userName, phone, currentPoints) {
+            resetDetailFields();
             var overviewCards = document.querySelector('#page-points-detail .grid.grid-cols-4');
-            if (overviewCards && source === 'user') {
+            if (overviewCards) {
                 var cards = overviewCards.querySelectorAll('.stat-card');
                 if (cards.length >= 4) {
-                    cards[0].querySelector('.stat-value').textContent = '张三';
+                    cards[0].querySelector('.stat-value').textContent = userName || '张三';
                     cards[0].querySelector('.stat-label').textContent = '用户姓名';
-                    cards[1].querySelector('.stat-value').textContent = '181****9032';
+                    cards[1].querySelector('.stat-value').textContent = phone || '181****9032';
                     cards[1].querySelector('.stat-label').textContent = '手机号码';
                     cards[2].querySelector('.stat-value').textContent = '黄金会员';
                     cards[2].querySelector('.stat-label').textContent = '会员等级';
-                    cards[3].querySelector('.stat-value').textContent = '15,200';
+                    cards[3].querySelector('.stat-value').textContent = currentPoints || '15,200';
                     cards[3].querySelector('.stat-label').textContent = '当前积分';
                 }
             }
+            showPage('points-detail');
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         // 从积分发放页跳转到积分明细页（按用户，带预设筛选条件）
         function navigateToDetail(phone, issueId) {
-            // 切换到积分查询导航，并激活按用户Tab
+            resetDetailFields();
             switchSubnav('points-query');
-            // 切换到积分查询页
             showPage('points-query');
-            // 激活按用户查询Tab
-            switchPointsTab('user');
-            // 延迟跳转到明细页，确保Tab切换完成
             setTimeout(function() {
                 showPage('points-detail');
-                // 设置概览卡片为用户信息
                 var overviewCards = document.querySelector('#page-points-detail .grid.grid-cols-4');
                 if (overviewCards) {
                     var cards = overviewCards.querySelectorAll('.stat-card');
@@ -982,33 +960,68 @@
                         cards[3].querySelector('.stat-label').textContent = '当前积分';
                     }
                 }
-                // 预设筛选条件：类型=全部，发放ID=当前发放ID
                 var typeFilter = document.getElementById('detail-type-filter');
-                if (typeFilter) {
-                    typeFilter.value = 'all';
-                }
-                // 预设发放ID筛选
+                if (typeFilter) typeFilter.value = 'all';
                 var issueIdFilter = document.getElementById('detail-issue-id-filter');
-                if (issueIdFilter) {
-                    issueIdFilter.value = issueId;
-                }
-                // 触发筛选，按发放ID过滤明细
+                if (issueIdFilter) issueIdFilter.value = issueId;
                 filterDetailRows();
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }, 100);
         }
 
-        // 积分明细综合筛选（类型 + 发放ID）
+        // 返回上级页面（重置明细页状态）
+        function backFromDetail() {
+            resetDetailFields();
+            resetOverviewCards();
+            showPage('points-query');
+            switchSubnav('points-query');
+        }
+
+        // 重置明细筛选字段
+        function resetDetailFields() {
+            var typeFilter = document.getElementById('detail-type-filter');
+            var issueIdFilter = document.getElementById('detail-issue-id-filter');
+            var plateFilter = document.getElementById('detail-plate-filter');
+            if (typeFilter) typeFilter.value = 'all';
+            if (issueIdFilter) issueIdFilter.value = '';
+            if (plateFilter) plateFilter.value = '';
+            document.querySelectorAll('.detail-row').forEach(function(row) {
+                row.style.display = '';
+            });
+        }
+
+        // 重置概览卡片（用户维度默认值）
+        function resetOverviewCards() {
+            var overviewCards = document.querySelector('#page-points-detail .grid.grid-cols-4');
+            if (overviewCards) {
+                var cards = overviewCards.querySelectorAll('.stat-card');
+                if (cards.length >= 4) {
+                    cards[0].querySelector('.stat-value').textContent = '张三';
+                    cards[0].querySelector('.stat-label').textContent = '用户姓名';
+                    cards[1].querySelector('.stat-value').textContent = '181****9032';
+                    cards[1].querySelector('.stat-label').textContent = '手机号码';
+                    cards[2].querySelector('.stat-value').textContent = '黄金会员';
+                    cards[2].querySelector('.stat-label').textContent = '会员等级';
+                    cards[3].querySelector('.stat-value').textContent = '15,200';
+                    cards[3].querySelector('.stat-label').textContent = '当前积分';
+                }
+            }
+        }
+
+        // 积分明细综合筛选（类型 + 发放ID + 车牌号）
         function filterDetailRows() {
             var typeFilter = document.getElementById('detail-type-filter');
             var issueIdFilter = document.getElementById('detail-issue-id-filter');
+            var plateFilter = document.getElementById('detail-plate-filter');
             var typeValue = typeFilter ? typeFilter.value : 'all';
             var issueIdValue = issueIdFilter ? issueIdFilter.value.trim() : '';
+            var plateValue = plateFilter ? plateFilter.value.trim() : '';
             var rows = document.querySelectorAll('.detail-row');
             rows.forEach(function(row) {
                 var typeMatch = (typeValue === 'all') || (row.getAttribute('data-type') === typeValue);
                 var issueIdMatch = (!issueIdValue) || (row.getAttribute('data-issue-id') === issueIdValue);
-                row.style.display = (typeMatch && issueIdMatch) ? '' : 'none';
+                var plateMatch = (!plateValue) || (row.getAttribute('data-plate') && row.getAttribute('data-plate').indexOf(plateValue) !== -1);
+                row.style.display = (typeMatch && issueIdMatch && plateMatch) ? '' : 'none';
             });
         }
 
@@ -1021,48 +1034,144 @@
         function resetDetailFilter() {
             var typeFilter = document.getElementById('detail-type-filter');
             var issueIdFilter = document.getElementById('detail-issue-id-filter');
+            var plateFilter = document.getElementById('detail-plate-filter');
             if (typeFilter) typeFilter.value = 'all';
             if (issueIdFilter) issueIdFilter.value = '';
+            if (plateFilter) plateFilter.value = '';
             filterDetailRows();
             showToast('筛选条件已重置', 'success');
         }
 
-        // 新增补发积分弹窗
+        // 新增补发积分弹窗 - 打开并重置状态
         function openAddPointsModal() {
             var modal = document.getElementById('modal-add-points');
             if (modal) modal.classList.remove('hidden');
+            // 重置搜索区
+            var searchInput = document.getElementById('add-points-search');
+            if (searchInput) searchInput.value = '';
+            var searchArea = document.getElementById('add-points-search-area');
+            if (searchArea) searchArea.classList.remove('hidden');
+            var searchResult = document.getElementById('add-points-search-result');
+            if (searchResult) searchResult.classList.add('hidden');
+            // 重置已选订单信息
+            var selectedOrder = document.getElementById('add-points-selected-order');
+            if (selectedOrder) selectedOrder.classList.add('hidden');
+            // 重置FIFO明细和补发信息
+            var fifoDetail = document.getElementById('add-points-fifo-detail');
+            if (fifoDetail) fifoDetail.classList.add('hidden');
+            var supplementInfo = document.getElementById('add-points-supplement-info');
+            if (supplementInfo) supplementInfo.classList.add('hidden');
+            var submitBtn = document.getElementById('add-points-submit');
+            if (submitBtn) submitBtn.disabled = true;
+            // 重置单选按钮
+            var radios = document.querySelectorAll('input[name="order-select"]');
+            radios.forEach(function(r) { r.checked = false; });
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
+        // 关闭补发积分弹窗
         function closeAddPointsModal() {
             var modal = document.getElementById('modal-add-points');
             if (modal) modal.classList.add('hidden');
         }
 
-        // 自动带出补发信息
-        function autoFillAddPoints() {
-            var plateInput = document.getElementById('add-points-plate');
-            var colorInput = document.getElementById('add-points-color');
-            if (plateInput && plateInput.value && colorInput) {
-                colorInput.value = '蓝色';
+        // 搜索已核销订单
+        function searchOrders() {
+            var searchInput = document.getElementById('add-points-search');
+            var searchResult = document.getElementById('add-points-search-result');
+            if (searchInput && searchInput.value.trim() && searchResult) {
+                searchResult.classList.remove('hidden');
             }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // 选择订单后：隐藏搜索区，显示已选订单信息+FIFO明细+补发信息
+        function selectOrder(radio) {
+            var searchArea = document.getElementById('add-points-search-area');
+            var selectedOrder = document.getElementById('add-points-selected-order');
+            var fifoDetail = document.getElementById('add-points-fifo-detail');
+            var supplementInfo = document.getElementById('add-points-supplement-info');
+            var submitBtn = document.getElementById('add-points-submit');
+            // 隐藏搜索区，显示已选订单信息
+            if (searchArea) searchArea.classList.add('hidden');
+            if (selectedOrder) selectedOrder.classList.remove('hidden');
+            if (fifoDetail) fifoDetail.classList.remove('hidden');
+            if (supplementInfo) supplementInfo.classList.remove('hidden');
+            if (submitBtn) submitBtn.disabled = false;
+            // 根据选中的订单填充已选订单信息
+            var row = radio.closest('tr');
+            if (row) {
+                var cells = row.querySelectorAll('td');
+                var orderIdEl = document.getElementById('selected-order-id');
+                var orderNameEl = document.getElementById('selected-order-name');
+                var orderPhoneEl = document.getElementById('selected-order-phone');
+                var orderCouponEl = document.getElementById('selected-order-coupon');
+                var orderPointsEl = document.getElementById('selected-order-points');
+                var orderAmountEl = document.getElementById('selected-order-amount');
+                if (orderIdEl && cells[1]) orderIdEl.textContent = cells[1].textContent.trim();
+                if (orderNameEl && cells[2]) orderNameEl.textContent = cells[2].textContent.trim();
+                if (orderPhoneEl && cells[3]) orderPhoneEl.textContent = cells[3].textContent.trim();
+                if (orderCouponEl && cells[4]) orderCouponEl.textContent = cells[4].textContent.trim();
+                if (orderPointsEl && cells[5]) orderPointsEl.textContent = cells[5].textContent.trim();
+                if (orderAmountEl && cells[8]) orderAmountEl.textContent = cells[8].textContent.trim();
+            }
+            // 计算补送积分总量
+            updateSupplementTotal();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // 重新选择订单
+        function reSelectOrder() {
+            var searchArea = document.getElementById('add-points-search-area');
+            var selectedOrder = document.getElementById('add-points-selected-order');
+            var fifoDetail = document.getElementById('add-points-fifo-detail');
+            var supplementInfo = document.getElementById('add-points-supplement-info');
+            var submitBtn = document.getElementById('add-points-submit');
+            // 显示搜索区，隐藏已选订单信息和后续步骤
+            if (searchArea) searchArea.classList.remove('hidden');
+            if (selectedOrder) selectedOrder.classList.add('hidden');
+            if (fifoDetail) fifoDetail.classList.add('hidden');
+            if (supplementInfo) supplementInfo.classList.add('hidden');
+            if (submitBtn) submitBtn.disabled = true;
+            // 重置单选按钮
+            var radios = document.querySelectorAll('input[name="order-select"]');
+            radios.forEach(function(r) { r.checked = false; });
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // 实时计算补送积分总量
+        function updateSupplementTotal() {
+            var inputs = document.querySelectorAll('.fifo-amount-input');
+            var total = 0;
+            inputs.forEach(function(input) {
+                var val = parseInt(input.value);
+                if (!isNaN(val) && val > 0) total += val;
+            });
+            var totalDisplay = document.getElementById('add-points-total-display');
+            if (totalDisplay) totalDisplay.value = total;
         }
 
         // 补发积分提交
         function handleAddPointsSubmit() {
-            var activity = document.getElementById('add-points-activity');
-            var amount = document.getElementById('add-points-amount');
             var reason = document.getElementById('add-points-reason');
-            if (!activity || !activity.value) {
-                showToast('请选择关联活动名称', 'error');
-                return;
-            }
-            if (!amount || !amount.value || parseInt(amount.value) <= 0) {
-                showToast('请输入有效的补送积分数量', 'error');
-                return;
-            }
             if (!reason || !reason.value.trim()) {
                 showToast('请输入补送积分原因', 'error');
+                return;
+            }
+            // 校验各批次扣除积分之和不超过原扣除总量
+            var inputs = document.querySelectorAll('.fifo-amount-input');
+            var total = 0;
+            inputs.forEach(function(input) {
+                var val = parseInt(input.value);
+                if (!isNaN(val) && val > 0) total += val;
+            });
+            var originalTotal = 100; // 原扣除总量
+            if (total > originalTotal) {
+                showToast('补送积分总量不可超过原扣除积分总量', 'error');
+                return;
+            }
+            if (total <= 0) {
+                showToast('补送积分总量必须大于0', 'error');
                 return;
             }
             closeAddPointsModal();

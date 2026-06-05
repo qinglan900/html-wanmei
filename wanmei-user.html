@@ -83,9 +83,21 @@
         .add-tag-dropdown { position: absolute; top: 100%; left: 0; z-index: 10; margin-top: 4px; background: white; border: 1px solid #E5E7EB; border-radius: 3px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 160px; padding: 4px 0; }
         .add-tag-item { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; transition: background 0.1s; }
         .add-tag-item:hover { background-color: #FFF7E6; }
-        .condition-item { padding: 8px 12px; cursor: pointer; border-radius: 3px; font-size: 13px; transition: all 0.15s; }
-        .condition-item:hover { background-color: #FFF7E6; color: #FF6B35; }
-        .condition-item.selected { background-color: #FF6B35; color: white; }
+        .condition-item { padding: 10px 12px; cursor: pointer; border: 1px solid #E5E7EB; border-radius: 3px; font-size: 13px; text-align: center; margin-bottom: 8px; transition: all 0.15s; position: relative; background: white; }
+        .condition-item:hover { border-color: #FF6B35; color: #FF6B35; }
+        .condition-item.selected { border-color: #FF6B35; color: #FF6B35; }
+        .condition-item.selected::after { content: '\2713'; position: absolute; bottom: 4px; right: 6px; font-size: 10px; color: #FF6B35; }
+        .condition-item.disabled { opacity: 0.5; pointer-events: none; }
+        .condition-form-block { display: flex; align-items: center; gap: 12px; padding: 6px 0; }
+        .condition-form-block .form-label { font-size: 13px; font-weight: 600; color: #333; white-space: nowrap; width: 80px; text-align: right; display: flex; align-items: center; justify-content: flex-end; flex-shrink: 0; }
+        .condition-form-block .form-label .required { color: #EF4444; margin-right: 3px; }
+        .condition-form-block .form-content { flex: 1; display: flex; align-items: center; gap: 6px; }
+        .condition-form-block .remove-condition { cursor: pointer; color: #9CA3AF; font-size: 18px; line-height: 1; flex-shrink: 0; padding: 0 4px; }
+        .condition-form-block .remove-condition:hover { color: #EF4444; }
+        .form-separator { color: #9CA3AF; font-size: 13px; padding: 0 2px; }
+        .input-prefix-text { font-size: 13px; color: #6B7280; white-space: nowrap; }
+        .input-suffix-text { font-size: 13px; color: #9CA3AF; white-space: nowrap; }
+        .select-sm { width: 180px; }
         .date-range-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; min-width: 280px; }
         .date-range-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
         .date-range-input input { flex: 1; height: 100%; padding: 0 8px; border: none; outline: none; font-size: 13px; background: transparent; min-width: 0; }
@@ -1028,7 +1040,7 @@
                                         <th class="text-right w-32">操作</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="tag-list-tbody">
                                     <tr class="border-b border-neutral-200 table-row">
                                         <td class="text-center text-neutral-600">1</td>
                                         <td class="text-left">VIP客户</td>
@@ -1041,8 +1053,8 @@
                                             <button class="btn btn-text btn-sm ml-1" onclick="showToast('刷新成功','success')"><i data-lucide="refresh-cw" class="w-3 h-3"></i></button>
                                         </td>
                                         <td class="text-right">
-                                            <button class="btn btn-text btn-sm" onclick="showPage('tag-edit')">编 辑</button>
-                                            <button class="btn btn-text btn-sm" onclick="confirmDelete('VIP客户')">删 除</button>
+                                            <button class="btn btn-text btn-sm" onclick="openTagEdit(1)">编 辑</button>
+                                            <button class="btn btn-text btn-sm" onclick="deleteTag(1)">删 除</button>
                                         </td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 table-row">
@@ -1057,8 +1069,8 @@
                                             <button class="btn btn-text btn-sm ml-1" onclick="showToast('刷新成功','success')"><i data-lucide="refresh-cw" class="w-3 h-3"></i></button>
                                         </td>
                                         <td class="text-right">
-                                            <button class="btn btn-text btn-sm" onclick="showPage('tag-edit')">编 辑</button>
-                                            <button class="btn btn-text btn-sm" onclick="confirmDelete('高价值用户')">删 除</button>
+                                            <button class="btn btn-text btn-sm" onclick="openTagEdit(2)">编 辑</button>
+                                            <button class="btn btn-text btn-sm" onclick="deleteTag(2)">删 除</button>
                                         </td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 table-row">
@@ -1073,8 +1085,8 @@
                                             <button class="btn btn-text btn-sm ml-1" onclick="showToast('刷新成功','success')"><i data-lucide="refresh-cw" class="w-3 h-3"></i></button>
                                         </td>
                                         <td class="text-right">
-                                            <button class="btn btn-text btn-sm" onclick="showPage('tag-edit')">编 辑</button>
-                                            <button class="btn btn-text btn-sm" onclick="confirmDelete('活跃用户')">删 除</button>
+                                            <button class="btn btn-text btn-sm" onclick="openTagEdit(3)">编 辑</button>
+                                            <button class="btn btn-text btn-sm" onclick="deleteTag(3)">删 除</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1129,27 +1141,66 @@
                                 </div>
                             </div>
                         </div>
+                        <div id="tag-add-manual-section">
+                            <hr class="mx-6 border-t border-neutral-200">
+                            <div class="px-5 py-4">
+                                <h3 class="text-sm font-bold text-neutral-800 mb-4">关联会员</h3>
+                                <div class="flex items-center gap-4 mb-3">
+                                    <span class="text-sm text-neutral-600">已选中 <span id="tag-add-selected-count" class="font-semibold text-primary">0</span> 人</span>
+                                    <button class="btn btn-primary btn-sm" onclick="openSelectMemberModal('add')">选择会员</button>
+                                </div>
+                                <div class="overflow-x-auto border border-neutral-200 rounded mb-4">
+                                    <table class="data-table w-full">
+                                        <thead>
+                                            <tr class="bg-neutral-50 border-b border-neutral-200">
+                                                <th class="w-12 text-center">序号</th>
+                                                <th class="text-left">会员名</th>
+                                                <th class="text-left">昵称</th>
+                                                <th class="text-left">手机号</th>
+                                                <th class="text-center">等级</th>
+                                                <th class="text-center">成长值</th>
+                                                <th class="text-center">性别</th>
+                                                <th class="text-center">注册时间</th>
+                                                <th class="text-center">最近支付时间</th>
+                                                <th class="text-right w-20">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tag-add-selected-tbody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                         <div id="tag-add-config" class="hidden">
                             <hr class="mx-6 border-t border-neutral-200">
                             <div class="px-5 py-4">
                                 <h3 class="text-sm font-bold text-neutral-800 mb-4">规则配置</h3>
                                 <div class="flex gap-4">
-                                    <div class="w-48 border border-neutral-200 rounded p-2 flex-shrink-0">
+                                    <div class="w-48 border border-neutral-200 rounded p-2 flex-shrink-0 overflow-y-auto" style="max-height:480px">
                                         <div class="text-xs text-neutral-500 mb-2 font-semibold px-2">会员属性</div>
                                         <div class="condition-item" data-type="add" data-key="region" onclick="selectCondition('add','region')">区域</div>
                                         <div class="condition-item" data-type="add" data-key="register_date" onclick="selectCondition('add','register_date')">注册时间</div>
                                         <div class="condition-item" data-type="add" data-key="points" onclick="selectCondition('add','points')">积分</div>
+                                        <div class="condition-item" data-type="add" data-key="account_balance" onclick="selectCondition('add','account_balance')">账户余额</div>
+                                        <div class="condition-item" data-type="add" data-key="gender" onclick="selectCondition('add','gender')">会员性别</div>
                                         <div class="condition-item" data-type="add" data-key="birthday" onclick="selectCondition('add','birthday')">会员生日</div>
                                         <div class="text-xs text-neutral-500 mb-2 mt-3 font-semibold px-2">会员行为</div>
-                                        <div class="condition-item" data-type="add" data-key="consumption_amount" onclick="selectCondition('add','consumption_amount')">累计消费金额</div>
-                                        <div class="condition-item" data-type="add" data-key="consumption_count" onclick="selectCondition('add','consumption_count')">累计消费次数</div>
                                         <div class="condition-item" data-type="add" data-key="last_visit_date" onclick="selectCondition('add','last_visit_date')">最近有访问</div>
+                                        <div class="condition-item" data-type="add" data-key="last_no_visit_date" onclick="selectCondition('add','last_no_visit_date')">最近无访问</div>
                                         <div class="condition-item" data-type="add" data-key="last_favorite_date" onclick="selectCondition('add','last_favorite_date')">最近有收藏</div>
-                                        <div class="condition-item" data-type="add" data-key="last_inactive_date" onclick="selectCondition('add','last_inactive_date')">最近无行为</div>
+                                        <div class="condition-item" data-type="add" data-key="last_no_favorite_date" onclick="selectCondition('add','last_no_favorite_date')">最近无收藏</div>
+                                        <div class="condition-item" data-type="add" data-key="last_cart_date" onclick="selectCondition('add','last_cart_date')">最近有加购</div>
+                                        <div class="condition-item" data-type="add" data-key="last_no_cart_date" onclick="selectCondition('add','last_no_cart_date')">最近无加购</div>
+                                        <div class="condition-item" data-type="add" data-key="last_order_date" onclick="selectCondition('add','last_order_date')">最近有下单</div>
+                                        <div class="condition-item" data-type="add" data-key="last_no_order_date" onclick="selectCondition('add','last_no_order_date')">最近无下单</div>
+                                        <div class="condition-item" data-type="add" data-key="last_pay_date" onclick="selectCondition('add','last_pay_date')">最近有支付</div>
+                                        <div class="condition-item" data-type="add" data-key="last_no_pay_date" onclick="selectCondition('add','last_no_pay_date')">最近无支付</div>
+                                        <div class="condition-item" data-type="add" data-key="unit_price" onclick="selectCondition('add','unit_price')">笔单价</div>
+                                        <div class="condition-item" data-type="add" data-key="consumption_count" onclick="selectCondition('add','consumption_count')">累计消费次数</div>
+                                        <div class="condition-item" data-type="add" data-key="consumption_amount" onclick="selectCondition('add','consumption_amount')">累计消费金额</div>
                                     </div>
                                     <div class="flex-1 border border-neutral-200 rounded p-4">
-                                        <div id="tag-add-condition-form" class="text-sm text-neutral-400">请从左侧选择一个条件</div>
-                                        <div id="tag-add-condition-meaning" class="mt-3 text-sm text-primary font-medium"></div>
+                                        <div id="tag-add-condition-form" class="text-sm text-neutral-400">请从左侧选择条件</div>
                                     </div>
                                 </div>
                             </div>
@@ -1182,8 +1233,8 @@
                                 <div>
                                     <label class="text-sm text-neutral-600 mb-1 block">标签类型</label>
                                     <div class="flex items-center gap-4 h-8">
-                                        <label class="flex items-center gap-1 text-sm"><input type="radio" name="tag-edit-type" value="manual"> 手动标签</label>
-                                        <label class="flex items-center gap-1 text-sm"><input type="radio" name="tag-edit-type" value="auto" checked onchange="toggleTagPageConfig('edit')"> 自动标签</label>
+                                        <label class="flex items-center gap-1 text-sm"><input type="radio" name="tag-edit-type" value="manual" disabled> 手动标签</label>
+                                        <label class="flex items-center gap-1 text-sm"><input type="radio" name="tag-edit-type" value="auto" checked disabled> 自动标签</label>
                                     </div>
                                 </div>
                                 <div class="col-span-2">
@@ -1192,34 +1243,66 @@
                                 </div>
                             </div>
                         </div>
+                        <div id="tag-edit-manual-section" class="hidden">
+                            <hr class="mx-6 border-t border-neutral-200">
+                            <div class="px-5 py-4">
+                                <h3 class="text-sm font-bold text-neutral-800 mb-4">关联会员</h3>
+                                <div class="flex items-center gap-4 mb-3">
+                                    <span class="text-sm text-neutral-600">已选中 <span id="tag-edit-selected-count" class="font-semibold text-primary">0</span> 人</span>
+                                    <button class="btn btn-primary btn-sm" onclick="openSelectMemberModal('edit')">选择会员</button>
+                                </div>
+                                <div class="overflow-x-auto border border-neutral-200 rounded mb-4">
+                                    <table class="data-table w-full">
+                                        <thead>
+                                            <tr class="bg-neutral-50 border-b border-neutral-200">
+                                                <th class="w-12 text-center">序号</th>
+                                                <th class="text-left">会员名</th>
+                                                <th class="text-left">昵称</th>
+                                                <th class="text-left">手机号</th>
+                                                <th class="text-center">等级</th>
+                                                <th class="text-center">成长值</th>
+                                                <th class="text-center">性别</th>
+                                                <th class="text-center">注册时间</th>
+                                                <th class="text-center">最近支付时间</th>
+                                                <th class="text-right w-20">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tag-edit-selected-tbody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                         <div id="tag-edit-config">
                             <hr class="mx-6 border-t border-neutral-200">
                             <div class="px-5 py-4">
                                 <h3 class="text-sm font-bold text-neutral-800 mb-4">规则配置</h3>
-                                <div class="bg-primary-light rounded p-3 mb-4 text-sm text-warning flex items-center gap-2">
-                                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-                                    编辑时不可切换条件类型
-                                </div>
                                 <div class="flex gap-4">
-                                    <div class="w-48 border border-neutral-200 rounded p-2 flex-shrink-0 opacity-50 pointer-events-none">
-                                        <div class="text-xs text-neutral-500 mb-2 font-semibold px-2">会员行为</div>
-                                        <div class="condition-item selected disabled" data-type="edit" data-key="consumption_amount">累计消费金额</div>
+                                    <div class="w-48 border border-neutral-200 rounded p-2 flex-shrink-0 overflow-y-auto" style="max-height:480px">
+                                        <div class="text-xs text-neutral-500 mb-2 font-semibold px-2">会员属性</div>
+                                        <div class="condition-item" data-type="edit" data-key="region" onclick="selectCondition('edit','region')">区域</div>
+                                        <div class="condition-item" data-type="edit" data-key="register_date" onclick="selectCondition('edit','register_date')">注册时间</div>
+                                        <div class="condition-item" data-type="edit" data-key="points" onclick="selectCondition('edit','points')">积分</div>
+                                        <div class="condition-item" data-type="edit" data-key="account_balance" onclick="selectCondition('edit','account_balance')">账户余额</div>
+                                        <div class="condition-item" data-type="edit" data-key="gender" onclick="selectCondition('edit','gender')">会员性别</div>
+                                        <div class="condition-item" data-type="edit" data-key="birthday" onclick="selectCondition('edit','birthday')">会员生日</div>
+                                        <div class="text-xs text-neutral-500 mb-2 mt-3 font-semibold px-2">会员行为</div>
+                                        <div class="condition-item" data-type="edit" data-key="last_visit_date" onclick="selectCondition('edit','last_visit_date')">最近有访问</div>
+                                        <div class="condition-item" data-type="edit" data-key="last_no_visit_date" onclick="selectCondition('edit','last_no_visit_date')">最近无访问</div>
+                                        <div class="condition-item" data-type="edit" data-key="last_favorite_date" onclick="selectCondition('edit','last_favorite_date')">最近有收藏</div>
+                                        <div class="condition-item" data-type="edit" data-key="last_no_favorite_date" onclick="selectCondition('edit','last_no_favorite_date')">最近无收藏</div>
+                                        <div class="condition-item" data-type="edit" data-key="last_cart_date" onclick="selectCondition('edit','last_cart_date')">最近有加购</div>
+                                        <div class="condition-item" data-type="edit" data-key="last_no_cart_date" onclick="selectCondition('edit','last_no_cart_date')">最近无加购</div>
+                                        <div class="condition-item" data-type="edit" data-key="last_order_date" onclick="selectCondition('edit','last_order_date')">最近有下单</div>
+                                        <div class="condition-item" data-type="edit" data-key="last_no_order_date" onclick="selectCondition('edit','last_no_order_date')">最近无下单</div>
+                                        <div class="condition-item" data-type="edit" data-key="last_pay_date" onclick="selectCondition('edit','last_pay_date')">最近有支付</div>
+                                        <div class="condition-item" data-type="edit" data-key="last_no_pay_date" onclick="selectCondition('edit','last_no_pay_date')">最近无支付</div>
+                                        <div class="condition-item" data-type="edit" data-key="unit_price" onclick="selectCondition('edit','unit_price')">笔单价</div>
+                                        <div class="condition-item" data-type="edit" data-key="consumption_count" onclick="selectCondition('edit','consumption_count')">累计消费次数</div>
+                                        <div class="condition-item" data-type="edit" data-key="consumption_amount" onclick="selectCondition('edit','consumption_amount')">累计消费金额</div>
                                     </div>
                                     <div class="flex-1 border border-neutral-200 rounded p-4">
-                                        <div id="tag-edit-condition-form">
-                                            <div class="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label class="text-sm text-neutral-600 mb-1 block">最小值 <span class="text-error">*</span></label>
-                                                    <input type="number" value="1000" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" oninput="updateConditionMeaning('edit')">
-                                                </div>
-                                                <div>
-                                                    <label class="text-sm text-neutral-600 mb-1 block">最大值</label>
-                                                    <input type="number" placeholder="选填" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" oninput="updateConditionMeaning('edit')">
-                                                </div>
-                                            </div>
-                                            <div class="mt-2 text-xs text-neutral-500">单位：元</div>
-                                        </div>
-                                        <div id="tag-edit-condition-meaning" class="mt-3 text-sm text-primary font-medium"></div>
+                                        <div id="tag-edit-condition-form"></div>
                                     </div>
                                 </div>
                             </div>
@@ -1380,22 +1463,139 @@
         </div>
     </div>
 
+    <!-- 弹窗9: 选择会员 -->
+    <div id="modal-select-member" class="modal-overlay hidden" onclick="if(event.target===this)closeSelectMemberModal()">
+        <div class="modal-container max-w-6xl w-full my-8">
+            <div class="flex justify-between items-center px-4 py-4 border-b border-neutral-200 bg-orange-500">
+                <div class="flex items-center gap-3">
+                    <h3 class="text-base font-bold text-white">添加会员</h3>
+                    <span class="text-white text-sm">已选中 <span id="modal-selected-count" class="font-semibold">0</span> 人</span>
+                </div>
+                <button class="close-modal text-white hover:text-white/80" onclick="closeSelectMemberModal()"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-5">
+                <!-- 筛选区 -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 mb-4">
+                    <div class="inline-label-input">
+                        <span class="label">会员名</span>
+                        <input id="search-member-name" type="text" placeholder="请输入">
+                    </div>
+                    <div class="inline-label-input">
+                        <span class="label">手机号</span>
+                        <input id="search-member-phone" type="text" placeholder="请输入">
+                    </div>
+                    <div class="date-range-input">
+                        <span class="label">注册时间</span>
+                        <input id="search-register-start" type="date">
+                        <span class="separator">→</span>
+                        <input id="search-register-end" type="date">
+                    </div>
+                    <div class="date-range-input">
+                        <span class="label">最近一次支付时间</span>
+                        <input id="search-pay-start" type="date">
+                        <span class="separator">→</span>
+                        <input id="search-pay-end" type="date">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mb-4">
+                    <button class="btn btn-secondary btn-md" onclick="resetMemberSearch()">重 置</button>
+                    <button class="btn btn-primary btn-md" onclick="searchMembers()">查 询</button>
+                </div>
+                <!-- 表格 -->
+                <div class="overflow-x-auto border border-neutral-200 rounded mb-4">
+                    <table class="data-table w-full">
+                        <thead>
+                            <tr class="bg-neutral-50 border-b border-neutral-200">
+                                <th class="w-10 text-center"><input type="checkbox" id="select-all-members" onclick="toggleSelectAllMembers()"></th>
+                                <th class="w-12 text-center">序号</th>
+                                <th class="text-left">会员名</th>
+                                <th class="text-left">昵称</th>
+                                <th class="text-left">手机号</th>
+                                <th class="text-center">等级</th>
+                                <th class="text-center">成长值</th>
+                                <th class="text-center">性别</th>
+                                <th class="text-center">注册时间</th>
+                                <th class="text-center">最近支付时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="member-selection-tbody">
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 分页 -->
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-neutral-600">共 <span id="member-total-count">6</span> 条数据</span>
+                    <div class="flex items-center gap-2">
+                        <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium">1</button>
+                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-sm text-neutral-600 hover:border-orange-500 hover:text-orange-500">2</button>
+                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-sm text-neutral-600 hover:border-orange-500 hover:text-orange-500">3</button>
+                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-sm text-neutral-600 hover:border-orange-500 hover:text-orange-500">4</button>
+                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-sm text-neutral-600 hover:border-orange-500 hover:text-orange-500">5</button>
+                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-sm text-neutral-600 hover:border-orange-500 hover:text-orange-500">6</button>
+                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-sm text-neutral-600 hover:border-orange-500 hover:text-orange-500">7</button>
+                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-sm text-neutral-600 hover:border-orange-500 hover:text-orange-500"><i data-lucide="chevron-right" class="w-3 h-3"></i></button>
+                        <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white">
+                            <option>10条/页</option>
+                        </select>
+                        <span class="text-sm text-neutral-600">跳至</span>
+                        <input type="text" class="w-16 h-8 px-2 border border-neutral-200 rounded text-sm text-center">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 px-4 py-4 bg-neutral-50 border-t border-neutral-200">
+                <button class="btn btn-secondary btn-md" onclick="closeSelectMemberModal()">取 消</button>
+                <button class="btn btn-primary btn-md" onclick="confirmSelectMembers()">确 认</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast-container" class="fixed top-4 right-4 z-[1000] flex flex-col gap-2"></div>
 
     <script>
         var currentGrowthValue = 0;
-        var currentSelectedCondition = { add: null, edit: 'consumption_amount' };
+        var currentSelectedCondition = { add: [], edit: ['consumption_amount'] };
+        var currentEditingTagId = null;
+        var currentTagPageType = null; // 'add' or 'edit'
+        var currentSelectedMembers = { add: [], edit: [] }; // 存储选中的会员ID
+        var conditionValues = { add: {}, edit: {} }; // 存储各条件的填写值
+
+        var globalTagList = [
+            { id: 1, name: 'VIP客户', desc: '手动标记的VIP客户', type: 'manual', rule: '', updateTime: '2026-05-14 10:00:00', memberCount: 128, members: [1, 2] },
+            { id: 2, name: '高价值用户', desc: '累计消费金额≥1000元', type: 'auto', rule: '累计消费金额≥ 1000元', updateTime: '2026-05-14 02:00:00', memberCount: 356, conditions: ['consumption_amount'], conditionValues: { consumption_amount: { min: '1000', max: '' } } },
+            { id: 3, name: '活跃用户', desc: '最近60天内有访问', type: 'auto', rule: '最近60天内有访问', updateTime: '2026-05-14 02:00:00', memberCount: 1024, conditions: ['last_visit_date'], conditionValues: { last_visit_date: { value: '60' } } }
+        ];
+
+        var globalMemberList = [
+            { id: 1, name: 'O188271308', nickname: '小张', phone: '186****9057', level: '黄金会员', growthValue: 4520, gender: '男', registerTime: '2026-05-04', lastPayTime: '--' },
+            { id: 2, name: 'M188271307', nickname: '小李', phone: '175****6261', level: '普通会员', growthValue: 800, gender: '女', registerTime: '2026-05-02', lastPayTime: '--' },
+            { id: 3, name: 'M188271306', nickname: '老王', phone: '175****6261', level: '白金会员', growthValue: 6800, gender: '男', registerTime: '2026-05-02', lastPayTime: '--' },
+            { id: 4, name: 'D188271305', nickname: '小赵', phone: '152****8945', level: '普通会员', growthValue: 200, gender: '男', registerTime: '2026-05-02', lastPayTime: '--' },
+            { id: 5, name: 'W188271304', nickname: '小陈', phone: '176****7069', level: '黄金会员', growthValue: 3500, gender: '女', registerTime: '2026-05-02', lastPayTime: '--' },
+            { id: 6, name: 'O188271303', nickname: '小刘', phone: '181****7111', level: '钻石会员', growthValue: 12000, gender: '男', registerTime: '2026-05-02', lastPayTime: '--' }
+        ];
+
+        var daysOptions = [7,15,30,60,90,180,365];
 
         var conditionConfig = {
-            region: { label: '区域', type: 'select', options: ['安徽省','北京市','上海市','广东省','浙江省','江苏省'] },
-            register_date: { label: '注册时间', type: 'date_range' },
-            points: { label: '积分', type: 'number_range', unit: '分' },
-            birthday: { label: '会员生日', type: 'date_range' },
-            consumption_amount: { label: '累计消费金额', type: 'number_range', unit: '元' },
-            consumption_count: { label: '累计消费次数', type: 'number_range', unit: '次' },
-            last_visit_date: { label: '最近有访问', type: 'days_range', options: [7,15,30,60,90,180,365] },
-            last_favorite_date: { label: '最近有收藏', type: 'days_range', options: [7,15,30,60,90,180,365] },
-            last_inactive_date: { label: '最近无行为', type: 'days_range', options: [7,15,30,60,90,180,365] }
+            region: { label: '区域', type: 'select', group: 'attr', options: ['安徽省','北京市','上海市','广东省','浙江省','江苏省'] },
+            register_date: { label: '注册时间', type: 'date_range', group: 'attr' },
+            points: { label: '积分', type: 'number_range', group: 'attr', unit: '分' },
+            account_balance: { label: '账户余额', type: 'number_range', group: 'attr', unit: '元' },
+            gender: { label: '会员性别', type: 'select', group: 'attr', options: ['男','女'] },
+            birthday: { label: '会员生日', type: 'date_range', group: 'attr' },
+            last_visit_date: { label: '最近有访问', type: 'days_range', group: 'behavior', options: daysOptions },
+            last_no_visit_date: { label: '最近无访问', type: 'days_range', group: 'behavior', options: daysOptions },
+            last_favorite_date: { label: '最近有收藏', type: 'days_range', group: 'behavior', options: daysOptions },
+            last_no_favorite_date: { label: '最近无收藏', type: 'days_range', group: 'behavior', options: daysOptions },
+            last_cart_date: { label: '最近有加购', type: 'days_range', group: 'behavior', options: daysOptions },
+            last_no_cart_date: { label: '最近无加购', type: 'days_range', group: 'behavior', options: daysOptions },
+            last_order_date: { label: '最近有下单', type: 'days_range', group: 'behavior', options: daysOptions },
+            last_no_order_date: { label: '最近无下单', type: 'days_range', group: 'behavior', options: daysOptions },
+            last_pay_date: { label: '最近有支付', type: 'days_range', group: 'behavior', options: daysOptions },
+            last_no_pay_date: { label: '最近无支付', type: 'days_range', group: 'behavior', options: daysOptions },
+            unit_price: { label: '笔单价', type: 'days_number_range', group: 'behavior', unit: '元', options: daysOptions },
+            consumption_count: { label: '累计消费次数', type: 'days_number_range', group: 'behavior', unit: '次', options: daysOptions },
+            consumption_amount: { label: '累计消费金额', type: 'days_number_range', group: 'behavior', unit: '元', options: daysOptions }
         };
 
         function showPage(pageId) {
@@ -1403,12 +1603,6 @@
             var target = document.getElementById('page-' + pageId);
             if (target) target.classList.add('active');
             if (typeof lucide !== 'undefined') lucide.createIcons();
-
-            // 编辑标签页面初始化
-            if (pageId === 'tag-edit') {
-                currentSelectedCondition.edit = 'consumption_amount';
-                updateConditionMeaning('edit');
-            }
         }
 
         function switchSubnav(navId) {
@@ -1598,6 +1792,7 @@
                 isAuto = document.querySelector('input[name="tag-edit-type"]:checked') && document.querySelector('input[name="tag-edit-type"]:checked').value === 'auto';
             }
             var configEl = document.getElementById('tag-' + pageType + '-config');
+            var manualSectionEl = document.getElementById('tag-' + pageType + '-manual-section');
             if (configEl) {
                 if (isAuto) {
                     configEl.classList.remove('hidden');
@@ -1605,87 +1800,494 @@
                     configEl.classList.add('hidden');
                 }
             }
+            if (manualSectionEl) {
+                if (!isAuto) {
+                    manualSectionEl.classList.remove('hidden');
+                } else {
+                    manualSectionEl.classList.add('hidden');
+                }
+            }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
+        // ========== 选择会员相关函数 ==========
+
+        function openSelectMemberModal(pageType) {
+            currentTagPageType = pageType;
+            var modal = document.getElementById('modal-select-member');
+            if (modal) modal.classList.remove('hidden');
+            renderMemberSelectionTable();
+            updateModalSelectedCount();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeSelectMemberModal() {
+            var modal = document.getElementById('modal-select-member');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function renderMemberSelectionTable() {
+            var tbody = document.getElementById('member-selection-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            var selectedIds = currentSelectedMembers[currentTagPageType] || [];
+            globalMemberList.forEach(function(member, index) {
+                var tr = document.createElement('tr');
+                tr.className = 'border-b border-neutral-200 table-row';
+                var isChecked = selectedIds.indexOf(member.id) >= 0;
+                tr.innerHTML = '<td class="text-center"><input type="checkbox" class="row-checkbox member-select-checkbox" data-member-id="' + member.id + '" ' + (isChecked ? 'checked' : '') + ' onclick="toggleMemberSelect(' + member.id + ')"></td>' +
+                    '<td class="text-center text-neutral-600">' + (index + 1) + '</td>' +
+                    '<td class="text-left">' + member.name + '</td>' +
+                    '<td class="text-left">' + member.nickname + '</td>' +
+                    '<td class="text-left">' + member.phone + '</td>' +
+                    '<td class="text-center"><span class="status-badge status-info">' + member.level + '</span></td>' +
+                    '<td class="text-center font-semibold">' + member.growthValue + '</td>' +
+                    '<td class="text-center">' + member.gender + '</td>' +
+                    '<td class="text-center">' + member.registerTime + '</td>' +
+                    '<td class="text-center">' + member.lastPayTime + '</td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleMemberSelect(memberId) {
+            var selected = currentSelectedMembers[currentTagPageType] || [];
+            var idx = selected.indexOf(memberId);
+            if (idx >= 0) {
+                selected.splice(idx, 1);
+            } else {
+                selected.push(memberId);
+            }
+            currentSelectedMembers[currentTagPageType] = selected;
+            updateModalSelectedCount();
+            updateSelectAllCheckbox();
+        }
+
+        function toggleSelectAllMembers() {
+            var selectAll = document.getElementById('select-all-members');
+            var checkboxes = document.querySelectorAll('.member-select-checkbox');
+            var isChecked = selectAll && selectAll.checked;
+            var selected = [];
+            if (isChecked) {
+                globalMemberList.forEach(function(member) { selected.push(member.id); });
+            }
+            currentSelectedMembers[currentTagPageType] = selected;
+            if (checkboxes) {
+                checkboxes.forEach(function(cb) { cb.checked = isChecked; });
+            }
+            updateModalSelectedCount();
+        }
+
+        function updateSelectAllCheckbox() {
+            var selectAll = document.getElementById('select-all-members');
+            var checkboxes = document.querySelectorAll('.member-select-checkbox');
+            var selected = currentSelectedMembers[currentTagPageType] || [];
+            if (selectAll) {
+                selectAll.checked = checkboxes.length > 0 && selected.length === checkboxes.length;
+            }
+        }
+
+        function updateModalSelectedCount() {
+            var countEl = document.getElementById('modal-selected-count');
+            if (countEl) {
+                countEl.textContent = (currentSelectedMembers[currentTagPageType] || []).length;
+            }
+        }
+
+        function resetMemberSearch() {
+            document.getElementById('search-member-name').value = '';
+            document.getElementById('search-member-phone').value = '';
+            document.getElementById('search-register-start').value = '';
+            document.getElementById('search-register-end').value = '';
+            document.getElementById('search-pay-start').value = '';
+            document.getElementById('search-pay-end').value = '';
+            renderMemberSelectionTable();
+        }
+
+        function searchMembers() {
+            showToast('查询成功', 'success');
+            renderMemberSelectionTable();
+        }
+
+        function confirmSelectMembers() {
+            updateSelectedMembersDisplay();
+            closeSelectMemberModal();
+        }
+
+        function updateSelectedMembersDisplay() {
+            var pageType = currentTagPageType;
+            var countEl = document.getElementById('tag-' + pageType + '-selected-count');
+            var tbodyEl = document.getElementById('tag-' + pageType + '-selected-tbody');
+            var selected = currentSelectedMembers[pageType] || [];
+            if (countEl) countEl.textContent = selected.length;
+            if (tbodyEl) {
+                tbodyEl.innerHTML = '';
+                selected.forEach(function(memberId, index) {
+                    var member = globalMemberList.find(function(m) { return m.id === memberId; });
+                    if (member) {
+                        var tr = document.createElement('tr');
+                        tr.className = 'border-b border-neutral-200 table-row';
+                        tr.innerHTML = '<td class="text-center text-neutral-600">' + (index + 1) + '</td>' +
+                            '<td class="text-left">' + member.name + '</td>' +
+                            '<td class="text-left">' + member.nickname + '</td>' +
+                            '<td class="text-left">' + member.phone + '</td>' +
+                            '<td class="text-center"><span class="status-badge status-info">' + member.level + '</span></td>' +
+                            '<td class="text-center font-semibold">' + member.growthValue + '</td>' +
+                            '<td class="text-center">' + member.gender + '</td>' +
+                            '<td class="text-center">' + member.registerTime + '</td>' +
+                            '<td class="text-center">' + member.lastPayTime + '</td>' +
+                            '<td class="text-right"><button class="btn btn-text btn-sm text-error" onclick="removeSelectedMember(\'' + pageType + '\',' + member.id + ')">删 除</button></td>';
+                        tbodyEl.appendChild(tr);
+                    }
+                });
+            }
+        }
+
+        function removeSelectedMember(pageType, memberId) {
+            var selected = currentSelectedMembers[pageType] || [];
+            var idx = selected.indexOf(memberId);
+            if (idx >= 0) {
+                selected.splice(idx, 1);
+                currentSelectedMembers[pageType] = selected;
+                updateSelectedMembersDisplay();
+            }
+        }
+
         function selectCondition(pageType, conditionKey) {
-            currentSelectedCondition[pageType] = conditionKey;
+            var selected = currentSelectedCondition[pageType];
+            var idx = selected.indexOf(conditionKey);
+            if (idx >= 0) {
+                selected.splice(idx, 1);
+            } else {
+                selected.push(conditionKey);
+            }
             var items = document.querySelectorAll('[data-type="' + pageType + '"]');
             items.forEach(function(item) {
-                if (item.getAttribute('data-key') === conditionKey) {
+                if (selected.indexOf(item.getAttribute('data-key')) >= 0) {
                     item.classList.add('selected');
                 } else {
                     item.classList.remove('selected');
                 }
             });
-            renderConditionForm(pageType, conditionKey);
+            renderAllConditionForms(pageType);
         }
 
-        function renderConditionForm(pageType, conditionKey) {
-            var config = conditionConfig[conditionKey];
-            if (!config) return;
+        function removeCondition(pageType, conditionKey) {
+            var selected = currentSelectedCondition[pageType];
+            var idx = selected.indexOf(conditionKey);
+            if (idx >= 0) {
+                selected.splice(idx, 1);
+            }
+            // 清除已保存的值
+            delete conditionValues[pageType][conditionKey];
+            var items = document.querySelectorAll('[data-type="' + pageType + '"][data-key="' + conditionKey + '"]');
+            items.forEach(function(item) { item.classList.remove('selected'); });
+            renderAllConditionForms(pageType);
+        }
+
+        function renderAllConditionForms(pageType) {
             var formEl = document.getElementById('tag-' + pageType + '-condition-form');
             if (!formEl) return;
-            var html = '';
-            if (config.type === 'select') {
-                html = '<div><label class="text-sm text-neutral-600 mb-1 block">' + config.label + ' <span class="text-error">*</span></label>';
-                html += '<select class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" onchange="updateConditionMeaning(\'' + pageType + '\')">';
-                html += '<option value="">请选择</option>';
-                config.options.forEach(function(opt) { html += '<option value="' + opt + '">' + opt + '</option>'; });
-                html += '</select></div>';
-            } else if (config.type === 'number_range') {
-                html = '<div class="grid grid-cols-2 gap-4">';
-                html += '<div><label class="text-sm text-neutral-600 mb-1 block">最小值 <span class="text-error">*</span></label><input type="number" placeholder="必填" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" oninput="updateConditionMeaning(\'' + pageType + '\')"></div>';
-                html += '<div><label class="text-sm text-neutral-600 mb-1 block">最大值</label><input type="number" placeholder="选填" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" oninput="updateConditionMeaning(\'' + pageType + '\')"></div>';
-                html += '</div><div class="mt-2 text-xs text-neutral-500">单位：' + config.unit + '</div>';
-            } else if (config.type === 'date_range') {
-                html = '<div class="grid grid-cols-2 gap-4">';
-                html += '<div><label class="text-sm text-neutral-600 mb-1 block">开始日期</label><input type="date" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" onchange="updateConditionMeaning(\'' + pageType + '\')"></div>';
-                html += '<div><label class="text-sm text-neutral-600 mb-1 block">结束日期</label><input type="date" class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" onchange="updateConditionMeaning(\'' + pageType + '\')"></div>';
-                html += '</div>';
-            } else if (config.type === 'days_range') {
-                html = '<div><label class="text-sm text-neutral-600 mb-1 block">' + config.label + '</label>';
-                html += '<select class="h-8 px-2 border border-neutral-200 rounded text-sm w-full input-focus" onchange="updateConditionMeaning(\'' + pageType + '\')">';
-                html += '<option value="">请选择</option>';
-                config.options.forEach(function(d) { html += '<option value="' + d + '">' + d + '天</option>'; });
-                html += '</select></div>';
+            var selected = currentSelectedCondition[pageType];
+            if (!selected || selected.length === 0) {
+                formEl.innerHTML = '<span class="text-sm text-neutral-400">请从左侧选择条件</span>';
+                return;
             }
+            var html = '';
+            selected.forEach(function(key) {
+                html += renderSingleConditionForm(pageType, key);
+            });
             formEl.innerHTML = html;
-            var meaningEl = document.getElementById('tag-' + pageType + '-condition-meaning');
-            if (meaningEl) meaningEl.textContent = '';
+            // 填充已保存的值
+            applyConditionValues(pageType);
+            // 绑定输入事件以保存值
+            bindConditionValueEvents(pageType);
         }
 
-        function getConditionMeaning(pageType) {
-            var key = currentSelectedCondition[pageType];
-            if (!key) return '';
-            var config = conditionConfig[key];
+        function renderSingleConditionForm(pageType, conditionKey) {
+            var config = conditionConfig[conditionKey];
             if (!config) return '';
-            var formEl = document.getElementById('tag-' + pageType + '-condition-form');
-            if (!formEl) return '';
+            var savedValues = conditionValues[pageType][conditionKey] || {};
+            var html = '<div class="condition-form-block" data-condition-key="' + conditionKey + '">';
+            html += '<div class="form-label"><span class="required">*</span>' + config.label + '</div>';
+            html += '<div class="form-content">';
             if (config.type === 'select') {
-                var sel = formEl.querySelector('select');
-                if (sel && sel.value) return config.label + '：' + sel.value;
+                html += '<select class="h-8 px-2 border border-neutral-200 rounded text-sm select-sm input-focus" data-key="' + conditionKey + '" data-field="value">';
+                html += '<option value="">请选择' + config.label + '</option>';
+                config.options.forEach(function(opt) {
+                    var selected = savedValues.value === opt ? ' selected' : '';
+                    html += '<option value="' + opt + '"' + selected + '>' + opt + '</option>';
+                });
+                html += '</select>';
             } else if (config.type === 'number_range') {
-                var inputs = formEl.querySelectorAll('input[type="number"]');
-                var min = inputs[0] ? inputs[0].value : '';
-                var max = inputs[1] ? inputs[1].value : '';
-                if (min && max) return config.label + '在 ' + min + '~' + max + config.unit + ' 之间';
-                if (min) return config.label + '≥ ' + min + config.unit;
+                html += '<input type="number" class="h-8 px-2 border border-neutral-200 rounded text-sm w-32 input-focus" placeholder="≥" data-key="' + conditionKey + '" data-field="min" value="' + (savedValues.min || '') + '">';
+                html += '<span class="form-separator">~</span>';
+                html += '<input type="number" class="h-8 px-2 border border-neutral-200 rounded text-sm w-32 input-focus" placeholder="≤" data-key="' + conditionKey + '" data-field="max" value="' + (savedValues.max || '') + '">';
+                html += '<span class="input-suffix-text">' + config.unit + '</span>';
             } else if (config.type === 'date_range') {
-                var inputs = formEl.querySelectorAll('input[type="date"]');
-                var start = inputs[0] ? inputs[0].value : '';
-                var end = inputs[1] ? inputs[1].value : '';
-                if (start && end) return config.label + '在 ' + start + ' 至 ' + end + ' 之间';
+                html += '<input type="date" class="h-8 px-2 border border-neutral-200 rounded text-sm input-focus" style="flex:1" placeholder="开始时间" data-key="' + conditionKey + '" data-field="start" value="' + (savedValues.start || '') + '">';
+                html += '<span class="form-separator">→</span>';
+                html += '<input type="date" class="h-8 px-2 border border-neutral-200 rounded text-sm input-focus" style="flex:1" placeholder="结束时间" data-key="' + conditionKey + '" data-field="end" value="' + (savedValues.end || '') + '">';
             } else if (config.type === 'days_range') {
-                var sel = formEl.querySelector('select');
-                if (sel && sel.value) return '最近' + sel.value + '天内' + config.label.replace('最近有','有').replace('最近无','无');
+                html += '<select class="h-8 px-2 border border-neutral-200 rounded text-sm flex-1 input-focus" data-key="' + conditionKey + '" data-field="value">';
+                html += '<option value="">请选择</option>';
+                config.options.forEach(function(d) {
+                    var selected = savedValues.value === String(d) ? ' selected' : '';
+                    html += '<option value="' + d + '"' + selected + '>' + d + '</option>';
+                });
+                html += '</select>';
+                html += '<span class="input-suffix-text">天内</span>';
+            } else if (config.type === 'days_number_range') {
+                html += '<select class="h-8 px-2 border border-neutral-200 rounded text-sm w-28 input-focus" data-key="' + conditionKey + '" data-field="days">';
+                html += '<option value="">请选择</option>';
+                config.options.forEach(function(d) {
+                    var selected = savedValues.days === String(d) ? ' selected' : '';
+                    html += '<option value="' + d + '"' + selected + '>' + d + '</option>';
+                });
+                html += '</select>';
+                html += '<span class="input-suffix-text">天内</span>';
+                html += '<input type="number" class="h-8 px-2 border border-neutral-200 rounded text-sm w-32 input-focus" placeholder="≥" data-key="' + conditionKey + '" data-field="min" value="' + (savedValues.min || '') + '">';
+                html += '<span class="form-separator">~</span>';
+                html += '<input type="number" class="h-8 px-2 border border-neutral-200 rounded text-sm w-32 input-focus" placeholder="≤" data-key="' + conditionKey + '" data-field="max" value="' + (savedValues.max || '') + '">';
+                html += '<span class="input-suffix-text">' + config.unit + '</span>';
+            }
+            html += '</div>';
+            html += '<span class="remove-condition" onclick="removeCondition(\'' + pageType + '\',\'' + conditionKey + '\')">&times;</span>';
+            html += '</div>';
+            return html;
+        }
+
+        function applyConditionValues(pageType) {
+            var formEl = document.getElementById('tag-' + pageType + '-condition-form');
+            if (!formEl) return;
+            var blocks = formEl.querySelectorAll('.condition-form-block');
+            blocks.forEach(function(block) {
+                var key = block.getAttribute('data-condition-key');
+                var config = conditionConfig[key];
+                if (!config) return;
+                var savedValues = conditionValues[pageType][key] || {};
+                if (config.type === 'select' || config.type === 'days_range') {
+                    var sel = block.querySelector('select');
+                    if (sel && savedValues.value) sel.value = savedValues.value;
+                } else if (config.type === 'number_range') {
+                    var inputs = block.querySelectorAll('input');
+                    if (inputs[0] && savedValues.min) inputs[0].value = savedValues.min;
+                    if (inputs[1] && savedValues.max) inputs[1].value = savedValues.max;
+                } else if (config.type === 'date_range') {
+                    var inputs = block.querySelectorAll('input');
+                    if (inputs[0] && savedValues.start) inputs[0].value = savedValues.start;
+                    if (inputs[1] && savedValues.end) inputs[1].value = savedValues.end;
+                } else if (config.type === 'days_number_range') {
+                    var sel = block.querySelector('select');
+                    if (sel && savedValues.days) sel.value = savedValues.days;
+                    var inputs = block.querySelectorAll('input');
+                    if (inputs[0] && savedValues.min) inputs[0].value = savedValues.min;
+                    if (inputs[1] && savedValues.max) inputs[1].value = savedValues.max;
+                }
+            });
+        }
+
+        function bindConditionValueEvents(pageType) {
+            var formEl = document.getElementById('tag-' + pageType + '-condition-form');
+            if (!formEl) return;
+            var blocks = formEl.querySelectorAll('.condition-form-block');
+            blocks.forEach(function(block) {
+                var key = block.getAttribute('data-condition-key');
+                if (!conditionValues[pageType][key]) conditionValues[pageType][key] = {};
+                var inputs = block.querySelectorAll('input, select');
+                inputs.forEach(function(input) {
+                    var field = input.getAttribute('data-field');
+                    input.addEventListener('change', function() {
+                        conditionValues[pageType][key][field] = this.value;
+                    });
+                    input.addEventListener('input', function() {
+                        conditionValues[pageType][key][field] = this.value;
+                    });
+                });
+            });
+        }
+
+        function getSingleConditionMeaning(pageType, conditionKey) {
+            var config = conditionConfig[conditionKey];
+            if (!config) return '';
+            // 优先使用已保存的值
+            var saved = conditionValues[pageType][conditionKey] || {};
+            if (config.type === 'select') {
+                var formEl = document.getElementById('tag-' + pageType + '-condition-form');
+                if (!formEl) return '';
+                var block = formEl.querySelector('[data-condition-key="' + conditionKey + '"]');
+                if (block) {
+                    var sel = block.querySelector('select');
+                    if (sel && sel.value) return config.label + '：' + sel.value;
+                }
+                return saved.value ? config.label + '：' + saved.value : '';
+            } else if (config.type === 'number_range') {
+                var formEl = document.getElementById('tag-' + pageType + '-condition-form');
+                if (!formEl) return '';
+                var block = formEl.querySelector('[data-condition-key="' + conditionKey + '"]');
+                if (block) {
+                    var inputs = block.querySelectorAll('input[type="number"]');
+                    var min = inputs[0] ? inputs[0].value : '';
+                    var max = inputs[1] ? inputs[1].value : '';
+                    if (min && max) return config.label + '在 ' + min + '~' + max + config.unit + ' 之间';
+                    if (min) return config.label + '≥ ' + min + config.unit;
+                }
+                var sMin = saved.min || '';
+                var sMax = saved.max || '';
+                if (sMin && sMax) return config.label + '在 ' + sMin + '~' + sMax + config.unit + ' 之间';
+                if (sMin) return config.label + '≥ ' + sMin + config.unit;
+            } else if (config.type === 'date_range') {
+                var formEl = document.getElementById('tag-' + pageType + '-condition-form');
+                if (!formEl) return '';
+                var block = formEl.querySelector('[data-condition-key="' + conditionKey + '"]');
+                if (block) {
+                    var inputs = block.querySelectorAll('input[type="date"]');
+                    var start = inputs[0] ? inputs[0].value : '';
+                    var end = inputs[1] ? inputs[1].value : '';
+                    if (start && end) return config.label + '在 ' + start + ' 至 ' + end + ' 之间';
+                }
+                var sStart = saved.start || '';
+                var sEnd = saved.end || '';
+                if (sStart && sEnd) return config.label + '在 ' + sStart + ' 至 ' + sEnd + ' 之间';
+            } else if (config.type === 'days_range') {
+                var formEl = document.getElementById('tag-' + pageType + '-condition-form');
+                if (!formEl) return '';
+                var block = formEl.querySelector('[data-condition-key="' + conditionKey + '"]');
+                if (block) {
+                    var sel = block.querySelector('select');
+                    if (sel && sel.value) return config.label + '：近' + sel.value + '天内';
+                }
+                return saved.value ? config.label + '：近' + saved.value + '天内' : '';
+            } else if (config.type === 'days_number_range') {
+                var formEl = document.getElementById('tag-' + pageType + '-condition-form');
+                if (!formEl) return '';
+                var block = formEl.querySelector('[data-condition-key="' + conditionKey + '"]');
+                if (block) {
+                    var selects = block.querySelectorAll('select');
+                    var daySel = selects[0] ? selects[0].value : '';
+                    var inputs = block.querySelectorAll('input[type="number"]');
+                    var min = inputs[0] ? inputs[0].value : '';
+                    var max = inputs[1] ? inputs[1].value : '';
+                    var rangeStr = '';
+                    if (min && max) rangeStr = min + '~' + max + config.unit;
+                    else if (min) rangeStr = '≥' + min + config.unit;
+                    var dayStr = daySel ? '近' + daySel + '天内' : '';
+                    if (dayStr && rangeStr) return dayStr + config.label + rangeStr;
+                    if (rangeStr) return config.label + rangeStr;
+                }
+                var sDays = saved.days || '';
+                var sMin = saved.min || '';
+                var sMax = saved.max || '';
+                var rangeStr = '';
+                if (sMin && sMax) rangeStr = sMin + '~' + sMax + config.unit;
+                else if (sMin) rangeStr = '≥' + sMin + config.unit;
+                var dayStr = sDays ? '近' + sDays + '天内' : '';
+                if (dayStr && rangeStr) return dayStr + config.label + rangeStr;
+                if (rangeStr) return config.label + rangeStr;
             }
             return '';
         }
 
+        function getConditionMeaning(pageType) {
+            var selected = currentSelectedCondition[pageType];
+            if (!selected || selected.length === 0) return '';
+            var meanings = [];
+            selected.forEach(function(key) {
+                var m = getSingleConditionMeaning(pageType, key);
+                if (m) meanings.push(m);
+            });
+            return meanings.join(' 且 ');
+        }
+
         function updateConditionMeaning(pageType) {
             var meaningEl = document.getElementById('tag-' + pageType + '-condition-meaning');
-            if (meaningEl) meaningEl.textContent = getConditionMeaning(pageType);
+            if (meaningEl) meaningEl.textContent = '';
+        }
+
+        function renderTagList() {
+            var tbody = document.getElementById('tag-list-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            globalTagList.forEach(function(tag, index) {
+                var tr = document.createElement('tr');
+                tr.className = 'border-b border-neutral-200 table-row';
+                var statusClass = tag.type === 'manual' ? 'status-warning' : 'status-info';
+                var statusText = tag.type === 'manual' ? '手动标签' : '自动标签';
+                tr.innerHTML = '<td class="text-center text-neutral-600">' + (index + 1) + '</td>' +
+                    '<td class="text-left">' + tag.name + '</td>' +
+                    '<td class="text-left">' + (tag.desc || '') + '</td>' +
+                    '<td class="text-left">' + (tag.rule || '--') + '</td>' +
+                    '<td class="text-center"><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>' +
+                    '<td class="text-center">' + tag.updateTime + '</td>' +
+                    '<td class="text-center">' +
+                        '<span>' + tag.memberCount + '</span>' +
+                        '<button class="btn btn-text btn-sm ml-1" onclick="showToast(\'刷新成功\',\'success\')"><i data-lucide="refresh-cw" class="w-3 h-3"></i></button>' +
+                    '</td>' +
+                    '<td class="text-right">' +
+                        '<button class="btn btn-text btn-sm" onclick="openTagEdit(' + tag.id + ')">编 辑</button>' +
+                        '<button class="btn btn-text btn-sm" onclick="deleteTag(' + tag.id + ')">删 除</button>' +
+                    '</td>';
+                tbody.appendChild(tr);
+            });
+            var countEl = document.querySelector('#page-tag-management .text-sm.text-neutral-600 span.font-semibold');
+            if (countEl) countEl.textContent = globalTagList.length;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function openTagEdit(tagId) {
+            var tag = globalTagList.find(function(t) { return t.id === tagId; });
+            if (!tag) return;
+            currentEditingTagId = tagId;
+            // 填充表单
+            var nameInput = document.getElementById('tag-edit-name');
+            var descInput = document.getElementById('tag-edit-desc');
+            if (nameInput) nameInput.value = tag.name;
+            if (descInput) descInput.value = tag.desc;
+            // 类型
+            var radios = document.querySelectorAll('input[name="tag-edit-type"]');
+            radios.forEach(function(r) { r.checked = r.value === tag.type; r.disabled = true; });
+            // 规则配置区域和手动标签区域
+            var configEl = document.getElementById('tag-edit-config');
+            var manualSectionEl = document.getElementById('tag-edit-manual-section');
+            if (tag.type === 'auto') {
+                if (configEl) configEl.classList.remove('hidden');
+                if (manualSectionEl) manualSectionEl.classList.add('hidden');
+            } else {
+                if (configEl) configEl.classList.add('hidden');
+                if (manualSectionEl) manualSectionEl.classList.remove('hidden');
+            }
+            // 条件选择（自动标签）
+            currentSelectedCondition.edit = tag.conditions || [];
+            // 加载已保存的条件值
+            conditionValues.edit = {};
+            if (tag.conditionValues) {
+                for (var key in tag.conditionValues) {
+                    if (tag.conditionValues.hasOwnProperty(key)) {
+                        conditionValues.edit[key] = tag.conditionValues[key];
+                    }
+                }
+            }
+            var editItems = document.querySelectorAll('[data-type="edit"]');
+            editItems.forEach(function(item) {
+                var key = item.getAttribute('data-key');
+                if (currentSelectedCondition.edit.indexOf(key) !== -1) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+            renderAllConditionForms('edit');
+            // 会员选择（手动标签）
+            currentSelectedMembers.edit = tag.members ? tag.members.slice() : [];
+            currentTagPageType = 'edit';
+            updateSelectedMembersDisplay();
+            showPage('tag-edit');
+        }
+
+        function deleteTag(tagId) {
+            if (!confirm('确认删除该标签？')) return;
+            globalTagList = globalTagList.filter(function(t) { return t.id !== tagId; });
+            renderTagList();
+            showToast('删除成功', 'success');
         }
 
         function saveTag(pageType) {
@@ -1695,19 +2297,54 @@
                 showToast('请填写标签名称', 'error');
                 return;
             }
+            var descInput = document.getElementById('tag-' + pageType + '-desc');
+            var desc = descInput ? descInput.value.trim() : '';
             var typeRadio = document.querySelector('input[name="tag-' + pageType + '-type"]:checked');
-            if (typeRadio && typeRadio.value === 'auto') {
-                var meaning = getConditionMeaning(pageType);
-                if (!meaning) {
+            var type = typeRadio ? typeRadio.value : 'manual';
+            var rule = '';
+            var conditions = [];
+            var members = [];
+            if (type === 'auto') {
+                rule = getConditionMeaning(pageType);
+                if (!rule) {
                     showToast('请配置自动标签条件', 'error');
                     return;
                 }
+                conditions = currentSelectedCondition[pageType] || [];
+            } else {
+                members = currentSelectedMembers[pageType] || [];
             }
+            var now = new Date();
+            var nowStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' +
+                String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
+            
+            if (pageType === 'add') {
+                var newId = globalTagList.length > 0 ? Math.max.apply(null, globalTagList.map(function(t) { return t.id; })) + 1 : 1;
+                var newTag = {
+                    id: newId, name: name, desc: desc, type: type, rule: rule,
+                    updateTime: nowStr, memberCount: members.length, conditions: conditions, members: members,
+                    conditionValues: type === 'auto' ? JSON.parse(JSON.stringify(conditionValues[pageType])) : {}
+                };
+                globalTagList.push(newTag);
+            } else if (pageType === 'edit') {
+                var tag = globalTagList.find(function(t) { return t.id === currentEditingTagId; });
+                if (tag) {
+                    tag.name = name; tag.desc = desc; tag.rule = rule;
+                    tag.updateTime = nowStr; tag.conditions = conditions;
+                    if (type === 'auto') {
+                        tag.conditionValues = JSON.parse(JSON.stringify(conditionValues[pageType]));
+                    } else {
+                        tag.members = members;
+                        tag.memberCount = members.length;
+                    }
+                }
+            }
+            renderTagList();
             showToast('保存成功', 'success');
             setTimeout(function() {
                 showPage('tag-management');
                 switchSubnav('tag-management');
-            }, 1000);
+            }, 800);
         }
 
         function resetTagAddPage() {
@@ -1719,11 +2356,16 @@
             if (manualRadio) manualRadio.checked = true;
             var configEl = document.getElementById('tag-add-config');
             if (configEl) configEl.classList.add('hidden');
+            var manualSectionEl = document.getElementById('tag-add-manual-section');
+            if (manualSectionEl) manualSectionEl.classList.remove('hidden');
             var formEl = document.getElementById('tag-add-condition-form');
-            if (formEl) formEl.innerHTML = '<span class="text-sm text-neutral-400">请从左侧选择一个条件</span>';
-            var meaningEl = document.getElementById('tag-add-condition-meaning');
-            if (meaningEl) meaningEl.textContent = '';
-            currentSelectedCondition.add = null;
+            if (formEl) formEl.innerHTML = '<span class="text-sm text-neutral-400">请从左侧选择条件</span>';
+            currentSelectedCondition.add = [];
+            currentSelectedMembers.add = [];
+            var countEl = document.getElementById('tag-add-selected-count');
+            if (countEl) countEl.textContent = '0';
+            var tbodyEl = document.getElementById('tag-add-selected-tbody');
+            if (tbodyEl) tbodyEl.innerHTML = '';
             var items = document.querySelectorAll('[data-type="add"]');
             items.forEach(function(item) { item.classList.remove('selected'); });
         }
@@ -1733,6 +2375,11 @@
             if (nameInput) nameInput.value = '';
             var descInput = document.getElementById('tag-edit-desc');
             if (descInput) descInput.value = '';
+            currentSelectedMembers.edit = [];
+            var tbodyEl = document.getElementById('tag-edit-selected-tbody');
+            if (tbodyEl) tbodyEl.innerHTML = '';
+            var countEl = document.getElementById('tag-edit-selected-count');
+            if (countEl) countEl.textContent = '0';
         }
 
         function openEditGrowth(currentValue) {
@@ -1934,7 +2581,7 @@
             updateBatchActions('member');
         }
 
-        lucide.createIcons(); initMemberSelectAll();
+        lucide.createIcons(); initMemberSelectAll(); renderTagList();
     </script>
 </body>
 </html>

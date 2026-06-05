@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>皖美e行 - 积分管理 - 用户积分管理</title>
@@ -83,8 +81,18 @@
         .stat-card .stat-value { font-size: 20px; font-weight: 700; color: #1F2937; }
         .stat-card .stat-label { font-size: 12px; color: #6B7280; margin-top: 2px; }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+        .rule-tip { background: #FFFBEA; border: 1px solid #FDE68A; border-radius: 3px; padding: 10px 14px; margin-top: 12px; }
+        .rule-tip-title { font-size: 13px; font-weight: 600; color: #92400E; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+        .rule-tip-list { font-size: 12px; color: #78350F; margin: 0; padding-left: 16px; }
+        .rule-tip-list li { margin-bottom: 2px; line-height: 1.5; }
+        .rule-edit-container { display: none; }
+        .rule-tip.editing .rule-view-container { display: none; }
+        .rule-tip.editing .rule-edit-container { display: block; }
+        .rule-edit-textarea { width: 100%; min-height: 120px; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px; line-height: 1.5; resize: vertical; box-sizing: border-box; }
+        .rule-edit-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
+        .rule-tip-title { font-size: 13px; font-weight: 600; color: #92400e; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; justify-content: space-between; }
     </style>
-</head>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.pointer-events-auto{pointer-events:auto}.fixed{position:fixed}.inset-0{inset:0px}.right-4{right:1rem}.top-4{top:1rem}.z-\[1000\]{z-index:1000}.z-\[9999\]{z-index:9999}.mx-2{margin-left:0.5rem;margin-right:0.5rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.ml-1{margin-left:0.25rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.table-row{display:table-row}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-16{height:4rem}.h-20{height:5rem}.h-4{height:1rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-8{height:2rem}.min-h-screen{min-height:100vh}.w-1{width:0.25rem}.w-12{width:3rem}.w-24{width:6rem}.w-4{width:1rem}.w-40{width:10rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-8{width:2rem}.w-\[500px\]{width:500px}.w-\[600px\]{width:600px}.w-\[800px\]{width:800px}.w-full{width:100%}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.scale-95{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-x-4{column-gap:1rem}.gap-y-3{row-gap:0.75rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-auto{overflow:auto}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:0.25rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-r{border-right-width:1px}.border-t{border-top-width:1px}.border-dashed{border-style:dashed}.border-\[\#d8d8d8\]{--tw-border-opacity:1;border-color:rgb(216 216 216 / var(--tw-border-opacity, 1))}.border-neutral-200{--tw-border-opacity:1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.border-neutral-300{--tw-border-opacity:1;border-color:rgb(209 213 219 / var(--tw-border-opacity, 1))}.border-orange-500{--tw-border-opacity:1;border-color:rgb(249 115 22 / var(--tw-border-opacity, 1))}.bg-\[\#e8e8e8\]{--tw-bg-opacity:1;background-color:rgb(232 232 232 / var(--tw-bg-opacity, 1))}.bg-\[\#f5f5f5\]{--tw-bg-opacity:1;background-color:rgb(245 245 245 / var(--tw-bg-opacity, 1))}.bg-neutral-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-neutral-50{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-orange-500{--tw-bg-opacity:1;background-color:rgb(249 115 22 / var(--tw-bg-opacity, 1))}.bg-primary-light{--tw-bg-opacity:1;background-color:rgb(255 247 230 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-transparent{background-color:transparent}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-1{padding-bottom:0.25rem}.pb-2{padding-bottom:0.5rem}.pt-2{padding-top:0.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.text-base{font-size:1rem;line-height:1.5rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.text-\[\#333\]{--tw-text-opacity:1;color:rgb(51 51 51 / var(--tw-text-opacity, 1))}.text-\[\#999\]{--tw-text-opacity:1;color:rgb(153 153 153 / var(--tw-text-opacity, 1))}.text-error{--tw-text-opacity:1;color:rgb(239 68 68 / var(--tw-text-opacity, 1))}.text-neutral-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-neutral-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-neutral-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-neutral-800{--tw-text-opacity:1;color:rgb(31 41 55 / var(--tw-text-opacity, 1))}.text-neutral-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(255 107 53 / var(--tw-text-opacity, 1))}.text-success{--tw-text-opacity:1;color:rgb(16 185 129 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-0{opacity:0}.opacity-100{opacity:1}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-200{transition-duration:200ms}.hover\:border-primary:hover{--tw-border-opacity:1;border-color:rgb(255 107 53 / var(--tw-border-opacity, 1))}.hover\:bg-neutral-50:hover{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.hover\:text-neutral-700:hover{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(255 107 53 / var(--tw-text-opacity, 1))}.hover\:underline:hover{-webkit-text-decoration-line:underline;text-decoration-line:underline}@media (min-width: 768px){.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}</style></head>
 <body class="bg-neutral-100 min-h-screen">
     <div class="flex min-h-screen">
         <!-- 左侧导航 -->
@@ -93,13 +101,24 @@
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">充值管理</div>
                 <div id="subnav-points-recharge" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('points-recharge');showPage('points-recharge')"><span class="font-semibold">·</span><span> 积分充值</span></div>
                 <div id="subnav-deposit-payment" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('deposit-payment');showPage('deposit-payment')"><span class="font-semibold">·</span><span> 保证金缴纳</span></div>
-                <div id="subnav-recharge-review" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('recharge-review');showPage('recharge-review')"><span class="font-semibold">·</span><span> 充值审核</span></div>
+                <div id="subnav-recharge-review" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer active" onclick="switchSubnav('recharge-review');showPage('recharge-review')"><span class="font-semibold">·</span><span> 充值审核</span></div>
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">活动方积分管理</div>
                 <div id="subnav-merchant-points" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('merchant-points');showPage('merchant-points')"><span class="font-semibold">·</span><span> 活动方积分发放</span></div>
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">用户积分管理</div>
-                <div id="subnav-points-issue" class="subnav-item active block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('points-issue');showPage('points-issue')"><span class="font-semibold">·</span><span> 用户积分发放</span></div>
+                <div id="subnav-points-issue" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('points-issue');showPage('points-issue')"><span class="font-semibold">·</span><span> 用户积分发放</span></div>
                 <div id="subnav-points-query" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('points-query');showPage('points-query')"><span class="font-semibold">·</span><span> 用户积分查询</span></div>
             </nav>
+            <!-- 全局规则提示开关 -->
+            <div class="px-3 py-2 border-t border-[#d8d8d8]">
+                <button id="toggle-rule-btn" class="btn btn-secondary btn-sm w-full" onclick="toggleRuleTips()" title="显示/隐藏业务规则提示">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    <span id="toggle-rule-btn-text">隐藏规则</span>
+                </button>
+                <button id="download-html-btn" class="btn btn-primary btn-sm w-full mt-2" onclick="downloadUpdatedHTML()" title="下载更新后的HTML文件">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span>下载文件</span>
+                </button>
+            </div>
         </aside>
 
         <div class="flex-1 overflow-auto">
@@ -115,7 +134,7 @@
                                 <h1 class="text-base font-bold text-neutral-900">积分充值</h1>
                             </div>
                             <div class="flex gap-3">
-                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
                             </div>
                         </div>
                         <!-- 筛选区 -->
@@ -147,7 +166,7 @@
                         </div>
                         <!-- 批量操作区 -->
                         <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
-                            <button class="btn btn-batch-action btn-md" onclick="openRechargeApplyDrawer()"><i data-lucide="plus" class="w-4 h-4"></i>新 增</button>
+                            <button class="btn btn-batch-action btn-md" onclick="openRechargeApplyDrawer()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" aria-hidden="true" class="lucide lucide-plus w-4 h-4"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>新 增</button>
                             <span class="text-xs text-neutral-500">发起充值申请</span>
                         </div>
                         <!-- 表格 -->
@@ -212,18 +231,40 @@
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-sm text-neutral-600">共 <span class="font-semibold">37</span> 条记录</span>
                                 <div class="flex items-center gap-2">
-                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
                                     <div class="flex items-center gap-1">
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">2</button>
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </main>
+                <!-- 规则提示 -->
+                <div class="rule-tip rule-tip-block" data-rule-id="points-recharge" style="">
+                    <div class="rule-tip-title">
+                        <div class="flex items-center gap-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            业务规则
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="startEditRule('points-recharge')" title="编辑规则">编辑</button>
+                    </div>
+                    <div class="rule-view-container">
+                        <ul class="rule-tip-list"><li>积分充值，不涉及活动发行方的积分池数量更新，仅做记录；</li><li>不涉及实际资金划拨操作，仅记录充值申请和审核结果</li></ul>
+                    </div>
+                    <div class="rule-edit-container">
+                        <textarea class="rule-edit-textarea" id="rule-textarea-points-recharge" placeholder="输入业务规则，每行一条...">充值审核通过后，按"充值金额 × 兑换比例"自动计算积分数量并发放到活动发行方账户
+兑换比例由系统配置（如 1元 = 1积分），具体定义见系统配置模块
+不涉及实际资金划拨操作，仅记录充值申请和审核结果</textarea>
+                        <div class="rule-edit-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="cancelEditRule('points-recharge')">取消</button>
+                            <button class="btn btn-primary btn-sm" onclick="saveRule('points-recharge')">保存</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 页面2: 保证金缴纳 -->
@@ -237,7 +278,7 @@
                                 <h1 class="text-base font-bold text-neutral-900">保证金缴纳</h1>
                             </div>
                             <div class="flex gap-3">
-                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
                             </div>
                         </div>
                         <!-- 筛选区 -->
@@ -269,7 +310,7 @@
                         </div>
                         <!-- 批量操作区 -->
                         <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
-                            <button class="btn btn-batch-action btn-md" onclick="openDepositApplyDrawer()"><i data-lucide="plus" class="w-4 h-4"></i>新 增</button>
+                            <button class="btn btn-batch-action btn-md" onclick="openDepositApplyDrawer()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" aria-hidden="true" class="lucide lucide-plus w-4 h-4"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>新 增</button>
                             <span class="text-xs text-neutral-500">发起缴纳申请</span>
                         </div>
                         <!-- 表格 -->
@@ -334,21 +375,42 @@
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-sm text-neutral-600">共 <span class="font-semibold">21</span> 条记录</span>
                                 <div class="flex items-center gap-2">
-                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
                                     <div class="flex items-center gap-1">
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </main>
+                <!-- 规则提示 -->
+                <div class="rule-tip rule-tip-block" data-rule-id="deposit-payment" style="">
+                    <div class="rule-tip-title">
+                        <div class="flex items-center gap-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            业务规则
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="startEditRule('deposit-payment')" title="编辑规则">编辑</button>
+                    </div>
+                    <div class="rule-view-container">
+                        <ul class="rule-tip-list"><li>保证金为押金性质资金，审核通过后保证金记录生效</li></ul>
+                    </div>
+                    <div class="rule-edit-container">
+                        <textarea class="rule-edit-textarea" id="rule-textarea-deposit-payment" placeholder="输入业务规则，每行一条...">保证金为押金性质资金，活动结束后保证金可退回，不产生积分
+审核通过后保证金记录生效，不涉及实际资金划拨操作</textarea>
+                        <div class="rule-edit-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="cancelEditRule('deposit-payment')">取消</button>
+                            <button class="btn btn-primary btn-sm" onclick="saveRule('deposit-payment')">保存</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 页面3: 充值审核 -->
-            <div id="page-recharge-review" class="page">
+            <div id="page-recharge-review" class="page active">
                 <main class="p-2">
                     <div class="bg-white rounded border border-neutral-200">
                         <!-- 标题区 -->
@@ -451,17 +513,39 @@
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-sm text-neutral-600">共 <span class="font-semibold">6</span> 条记录</span>
                                 <div class="flex items-center gap-2">
-                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
                                     <div class="flex items-center gap-1">
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </main>
+                <!-- 规则提示 -->
+                <div class="rule-tip rule-tip-block" data-rule-id="recharge-review" style="">
+                    <div class="rule-tip-title">
+                        <div class="flex items-center gap-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            业务规则
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="startEditRule('recharge-review')" title="编辑规则">编辑</button>
+                    </div>
+                    <div class="rule-view-container">
+                        <ul class="rule-tip-list"><li>审核通过后，不涉及活动发行方的积分池数量更新，仅做记录；</li><li>充值审核与保证金缴纳统一在此模块审核，用类型字段区分</li><li>仅平台管理员可进行审核操作</li></ul>
+                    </div>
+                    <div class="rule-edit-container">
+                        <textarea class="rule-edit-textarea" id="rule-textarea-recharge-review" placeholder="输入业务规则，每行一条...">审核通过后，积分自动发放到活动发行方账户
+充值审核与保证金缴纳统一在此模块审核，用类型字段区分
+仅平台管理员可进行审核操作</textarea>
+                        <div class="rule-edit-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="cancelEditRule('recharge-review')">取消</button>
+                            <button class="btn btn-primary btn-sm" onclick="saveRule('recharge-review')">保存</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
@@ -541,17 +625,39 @@
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-sm text-neutral-600">共 <span class="font-semibold">3</span> 条记录</span>
                                 <div class="flex items-center gap-2">
-                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
                                     <div class="flex items-center gap-1">
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </main>
+                <!-- 规则提示 -->
+                <div class="rule-tip rule-tip-block" data-rule-id="merchant-points" style="">
+                    <div class="rule-tip-title">
+                        <div class="flex items-center gap-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            业务规则
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="startEditRule('merchant-points')" title="编辑规则">编辑</button>
+                    </div>
+                    <div class="rule-view-container">
+                        <ul class="rule-tip-list"><li>数据来源：用户参与活动，积分活动规则自动触发，发给用户。</li><li>发放主体为活动发行方出资（与结算管理中的活动发行方一致）</li><li>发放记录只读展示，不支持手动操作</li></ul>
+                    </div>
+                    <div class="rule-edit-container">
+                        <textarea class="rule-edit-textarea" id="rule-textarea-merchant-points" placeholder="输入业务规则，每行一条...">积分来源：充值审核自动发放、积分活动规则自动触发
+发放主体为活动发行方出资（与结算管理中的活动发行方一致）
+发放记录只读展示，不支持手动操作</textarea>
+                        <div class="rule-edit-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="cancelEditRule('merchant-points')">取消</button>
+                            <button class="btn btn-primary btn-sm" onclick="saveRule('merchant-points')">保存</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 页面4-1: 活动方积分流水明细 -->
@@ -809,21 +915,43 @@
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-sm text-neutral-600">共 <span class="font-semibold">21</span> 条记录</span>
                                 <div class="flex items-center gap-2">
-                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
                                     <div class="flex items-center gap-1">
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </main>
+                <!-- 规则提示 -->
+                <div class="rule-tip rule-tip-block" data-rule-id="merchant-points-detail" style="">
+                    <div class="rule-tip-title">
+                        <div class="flex items-center gap-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            业务规则
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="startEditRule('merchant-points-detail')" title="编辑规则">编辑</button>
+                    </div>
+                    <div class="rule-view-container">
+                        <ul class="rule-tip-list"><li>展示活动发行方维度的积分发放流水</li><li>支持按关联活动、发放ID、手机号、发放时间筛选</li></ul>
+                    </div>
+                    <div class="rule-edit-container">
+                        <textarea class="rule-edit-textarea" id="rule-textarea-merchant-points-detail" placeholder="输入业务规则，每行一条...">展示活动发行方维度的积分发放流水
+积分来源：充值审核自动发放、积分活动规则自动触发
+支持按关联活动、发放ID、手机号、发放时间筛选</textarea>
+                        <div class="rule-edit-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="cancelEditRule('merchant-points-detail')">取消</button>
+                            <button class="btn btn-primary btn-sm" onclick="saveRule('merchant-points-detail')">保存</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 页面5: 用户积分发放列表 -->
-            <div id="page-points-issue" class="page active">
+            <div id="page-points-issue" class="page">
                 <main class="p-2">
                     <div class="bg-white rounded border border-neutral-200">
                         <!-- 标题区 -->
@@ -833,7 +961,7 @@
                                 <h1 class="text-base font-bold text-neutral-900">用户积分发放</h1>
                             </div>
                             <div class="flex gap-3">
-                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
                             </div>
                         </div>
                         <!-- 筛选区 -->
@@ -954,19 +1082,41 @@
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-sm text-neutral-600">共 <span class="font-semibold">128</span> 条记录</span>
                                 <div class="flex items-center gap-2">
-                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
                                     <div class="flex items-center gap-1">
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">2</button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">3</button>
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </main>
+                <!-- 规则提示 -->
+                <div class="rule-tip rule-tip-block" data-rule-id="points-issue" style="">
+                    <div class="rule-tip-title">
+                        <div class="flex items-center gap-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            业务规则
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="startEditRule('points-issue')" title="编辑规则">编辑</button>
+                    </div>
+                    <div class="rule-view-container">
+                        <ul class="rule-tip-list"><li>展示系统自动发放记录，同时同步展示人工补发记录（备注显示"人工补发"）</li><li>扣减顺序：FIFO（先进先出），优先扣减最早获取的积分</li><li>一个订单可能从多个车牌/多个批次的积分中扣减（FIFO原则）</li></ul>
+                    </div>
+                    <div class="rule-edit-container">
+                        <textarea class="rule-edit-textarea" id="rule-textarea-points-issue" placeholder="输入业务规则，每行一条...">展示系统自动发放记录，同时同步展示人工补发记录（备注显示"人工补发"）
+扣减顺序：FIFO（先进先出），优先扣减最早获取的积分
+一个订单可能从多个车牌/多个批次的积分中扣减（FIFO原则）</textarea>
+                        <div class="rule-edit-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="cancelEditRule('points-issue')">取消</button>
+                            <button class="btn btn-primary btn-sm" onclick="saveRule('points-issue')">保存</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 页面6: 用户积分查询 -->
@@ -980,7 +1130,7 @@
                                 <h1 class="text-base font-bold text-neutral-900">用户积分查询</h1>
                             </div>
                             <div class="flex gap-3">
-                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
                             </div>
                         </div>
                         <!-- 筛选区 -->
@@ -1002,7 +1152,7 @@
                         </div>
                         <!-- 批量操作区 -->
                         <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
-                            <button class="btn btn-batch-action btn-md" onclick="openAddPointsModal()"><i data-lucide="plus" class="w-4 h-4"></i>补发积分</button>
+                            <button class="btn btn-batch-action btn-md" onclick="openAddPointsModal()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" aria-hidden="true" class="lucide lucide-plus w-4 h-4"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>补发积分</button>
                         </div>
                         <!-- 表格 -->
                         <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
@@ -1084,19 +1234,43 @@
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-sm text-neutral-600">共 <span class="font-semibold">2,890</span> 条记录</span>
                                 <div class="flex items-center gap-2">
-                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
                                     <div class="flex items-center gap-1">
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">2</button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">3</button>
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </main>
+                <!-- 规则提示 -->
+                <div class="rule-tip rule-tip-block" data-rule-id="points-query" style="">
+                    <div class="rule-tip-title">
+                        <div class="flex items-center gap-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            业务规则
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="startEditRule('points-query')" title="编辑规则">编辑</button>
+                    </div>
+                    <div class="rule-view-container">
+                        <ul class="rule-tip-list"><li>积分有效期：按获取日期计算，具体日期根据活动定义</li><li>积分扣减：FIFO（先进先出），优先扣减最早获取的积分</li><li>人工补发：仅支持正向补发（增加积分），不支持扣减积分，默认365天过期，可修改；必须选择关联活动（即成本的承担方）</li><li>禁止超额扣减：积分扣减不得超过账户可用余额</li><li>仅平台管理员可访问此模块</li></ul>
+                    </div>
+                    <div class="rule-edit-container">
+                        <textarea class="rule-edit-textarea" id="rule-textarea-points-query" placeholder="输入业务规则，每行一条...">积分有效期：按获取日期计算，获得后365天过期
+积分扣减：FIFO（先进先出），优先扣减最早获取的积分
+人工补发：仅支持正向补发（增加积分），不支持扣减积分
+禁止超额扣减：积分扣减不得超过账户可用余额
+仅平台管理员可访问此模块</textarea>
+                        <div class="rule-edit-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="cancelEditRule('points-query')">取消</button>
+                            <button class="btn btn-primary btn-sm" onclick="saveRule('points-query')">保存</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 页面7: 用户积分明细 -->
@@ -1110,7 +1284,7 @@
                                 <h1 class="text-base font-bold">用户积分明细</h1>
                             </div>
                             <div class="flex gap-3">
-                                <button class="btn btn-secondary btn-md" onclick="backFromDetail()"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
+                                <button class="btn btn-secondary btn-md" onclick="backFromDetail()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-left" aria-hidden="true" class="lucide lucide-arrow-left w-4 h-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>返回上级页面</button>
                             </div>
                         </div>
                     </div>
@@ -1299,18 +1473,31 @@
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-sm text-neutral-600">共 <span class="font-semibold">42</span> 条记录</span>
                                 <div class="flex items-center gap-2">
-                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
                                     <div class="flex items-center gap-1">
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
                                         <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">2</button>
-                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </main>
+                <!-- 规则提示 -->
+                <div class="rule-tip rule-tip-block" style="">
+                    <div class="rule-tip-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        业务规则
+                    </div>
+                    <ul class="rule-tip-list">
+                        <li>积分扣减顺序：FIFO（先进先出），优先扣减最早获取的积分</li>
+                        <li>一个订单可能从多个车牌/多个批次的积分中扣减</li>
+                        <li>积分兑换优惠券后，系统生成对应券码</li>
+                        <li>积分有效期365天，过期自动扣除并记录为"积分过期"流水</li>
+                    </ul>
+                </div>
             </div>
 
         </div>
@@ -1323,7 +1510,7 @@
             <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
                 <h2 class="text-base font-bold text-neutral-900">补发积分</h2>
                 <button class="close-drawer text-neutral-500 hover:text-neutral-700" onclick="closeSupplementDrawer()">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                 </button>
             </div>
             <!-- 内容区 -->
@@ -1364,7 +1551,7 @@
             <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
                 <h2 class="text-base font-bold text-neutral-900">发起积分充值申请</h2>
                 <button class="close-drawer text-neutral-500 hover:text-neutral-700" onclick="closeRechargeApplyDrawer()">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                 </button>
             </div>
             <!-- 内容区 -->
@@ -1383,9 +1570,9 @@
                     <div>
                         <div class="text-xs text-neutral-500 mb-1">转账凭证上传 <span class="text-error">*</span> <span class="text-neutral-400 ml-1">支持 jpg/png/pdf，最多3个，单个最大10MB</span></div>
                         <div id="recharge-upload-area" class="border-2 border-dashed border-neutral-300 rounded p-4 text-center cursor-pointer hover:border-primary transition-colors mt-1" onclick="document.getElementById('recharge-file-input').click()">
-                            <i data-lucide="upload" class="w-6 h-6 mx-auto text-neutral-400 mb-1"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="upload" aria-hidden="true" class="lucide lucide-upload w-6 h-6 mx-auto text-neutral-400 mb-1"><path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg>
                             <div class="text-sm text-neutral-500">点击或拖拽文件到此处上传</div>
-                            <input id="recharge-file-input" type="file" class="hidden" accept=".jpg,.jpeg,.png,.pdf" multiple onchange="handleRechargeFileUpload(this)">
+                            <input id="recharge-file-input" type="file" class="hidden" accept=".jpg,.jpeg,.png,.pdf" multiple="" onchange="handleRechargeFileUpload(this)">
                         </div>
                         <div id="recharge-file-list" class="mt-2 space-y-1"></div>
                     </div>
@@ -1410,7 +1597,7 @@
             <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
                 <h2 class="text-base font-bold text-neutral-900">发起保证金缴纳申请</h2>
                 <button class="close-drawer text-neutral-500 hover:text-neutral-700" onclick="closeDepositApplyDrawer()">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                 </button>
             </div>
             <!-- 内容区 -->
@@ -1429,9 +1616,9 @@
                     <div>
                         <div class="text-xs text-neutral-500 mb-1">转账凭证上传 <span class="text-error">*</span> <span class="text-neutral-400 ml-1">支持 jpg/png/pdf，最多3个，单个最大10MB</span></div>
                         <div id="deposit-upload-area" class="border-2 border-dashed border-neutral-300 rounded p-4 text-center cursor-pointer hover:border-primary transition-colors mt-1" onclick="document.getElementById('deposit-file-input').click()">
-                            <i data-lucide="upload" class="w-6 h-6 mx-auto text-neutral-400 mb-1"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="upload" aria-hidden="true" class="lucide lucide-upload w-6 h-6 mx-auto text-neutral-400 mb-1"><path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg>
                             <div class="text-sm text-neutral-500">点击或拖拽文件到此处上传</div>
-                            <input id="deposit-file-input" type="file" class="hidden" accept=".jpg,.jpeg,.png,.pdf" multiple onchange="handleDepositFileUpload(this)">
+                            <input id="deposit-file-input" type="file" class="hidden" accept=".jpg,.jpeg,.png,.pdf" multiple="" onchange="handleDepositFileUpload(this)">
                         </div>
                         <div id="deposit-file-list" class="mt-2 space-y-1"></div>
                     </div>
@@ -1456,7 +1643,7 @@
             <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
                 <h2 class="text-base font-bold text-neutral-900">充值详情</h2>
                 <button class="close-drawer text-neutral-500 hover:text-neutral-700" onclick="closeRechargeDetailDrawer()">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                 </button>
             </div>
             <!-- 内容区 - 两列分区布局 -->
@@ -1498,7 +1685,7 @@
             <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
                 <h2 class="text-base font-bold text-neutral-900">缴纳详情</h2>
                 <button class="close-drawer text-neutral-500 hover:text-neutral-700" onclick="closeDepositDetailDrawer()">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                 </button>
             </div>
             <!-- 内容区 - 两列分区布局 -->
@@ -1540,7 +1727,7 @@
             <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
                 <h2 class="text-base font-bold text-neutral-900" id="review-detail-title">充值审核详情</h2>
                 <button class="close-drawer text-neutral-500 hover:text-neutral-700" onclick="closeReviewDetailDrawer()">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                 </button>
             </div>
             <!-- 内容区 - 两列布局 -->
@@ -1583,7 +1770,7 @@
                             <div>
                                 <div class="text-xs text-neutral-500 mb-1">审核附件</div>
                                 <div class="border border-dashed border-neutral-300 rounded p-3 text-center text-xs text-neutral-400 cursor-pointer hover:border-primary hover:text-primary">
-                                    <i data-lucide="upload" class="w-4 h-4 inline-block mb-1"></i><br>点击上传（jpg/png/pdf，最多3个）
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="upload" aria-hidden="true" class="lucide lucide-upload w-4 h-4 inline-block mb-1"><path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg><br>点击上传（jpg/png/pdf，最多3个）
                                 </div>
                             </div>
                             <div>
@@ -1622,6 +1809,115 @@
     <div id="toast-container" class="fixed top-4 right-4 z-[1000] flex flex-col gap-2"></div>
 
     <script>
+        // 规则提示显隐切换
+        var ruleTipsVisible = true;
+        function toggleRuleTips() {
+            ruleTipsVisible = !ruleTipsVisible;
+            var tips = document.querySelectorAll('.rule-tip-block');
+            for (var i = 0; i < tips.length; i++) {
+                if (ruleTipsVisible) {
+                    tips[i].style.display = '';
+                } else {
+                    tips[i].style.display = 'none';
+                }
+            }
+            var btn = document.getElementById('toggle-rule-btn-text');
+            if (btn) btn.textContent = ruleTipsVisible ? '隐藏规则' : '显示规则';
+        }
+
+        // 业务规则编辑功能
+        var originalRuleContent = {}; // 存储原始内容用于取消编辑时恢复
+
+        // 开始编辑规则
+        function startEditRule(ruleId) {
+            var ruleTip = document.querySelector('.rule-tip[data-rule-id="' + ruleId + '"]');
+            if (!ruleTip) return;
+
+            // 保存原始内容
+            var viewContainer = ruleTip.querySelector('.rule-view-container');
+            originalRuleContent[ruleId] = viewContainer.innerHTML;
+
+            // 进入编辑模式
+            ruleTip.classList.add('editing');
+            
+            // 确保 textarea 中有当前的内容
+            var textarea = document.getElementById('rule-textarea-' + ruleId);
+            if (textarea && !textarea.value) {
+                // 从视图中提取内容到 textarea
+                var listItems = viewContainer.querySelectorAll('li');
+                var content = [];
+                for (var i = 0; i < listItems.length; i++) {
+                    content.push(listItems[i].textContent);
+                }
+                textarea.value = content.join('\n');
+            }
+        }
+
+        // 取消编辑规则
+        function cancelEditRule(ruleId) {
+            var ruleTip = document.querySelector('.rule-tip[data-rule-id="' + ruleId + '"]');
+            if (!ruleTip) return;
+
+            // 恢复原始内容
+            var viewContainer = ruleTip.querySelector('.rule-view-container');
+            if (originalRuleContent[ruleId]) {
+                viewContainer.innerHTML = originalRuleContent[ruleId];
+            }
+
+            // 退出编辑模式
+            ruleTip.classList.remove('editing');
+        }
+
+        // 保存规则
+        function saveRule(ruleId) {
+            var ruleTip = document.querySelector('.rule-tip[data-rule-id="' + ruleId + '"]');
+            var textarea = document.getElementById('rule-textarea-' + ruleId);
+            if (!ruleTip || !textarea) return;
+
+            // 从 textarea 获取内容，按行分割
+            var lines = textarea.value.split('\n').filter(function(line) { return line.trim() !== ''; });
+            
+            // 更新视图
+            var viewContainer = ruleTip.querySelector('.rule-view-container');
+            var ul = viewContainer.querySelector('ul');
+            if (!ul) {
+                ul = document.createElement('ul');
+                ul.className = 'rule-tip-list';
+                viewContainer.appendChild(ul);
+            }
+            ul.innerHTML = '';
+            
+            for (var i = 0; i < lines.length; i++) {
+                var li = document.createElement('li');
+                li.textContent = lines[i];
+                ul.appendChild(li);
+            }
+
+            // 更新原始内容备份
+            originalRuleContent[ruleId] = viewContainer.innerHTML;
+
+            // 退出编辑模式
+            ruleTip.classList.remove('editing');
+
+            // 显示成功提示
+            showToast('规则保存成功！', 'success');
+        }
+
+        // 下载更新后的HTML文件
+        function downloadUpdatedHTML() {
+            var htmlContent = document.documentElement.outerHTML;
+            var blob = new Blob([htmlContent], { type: 'text/html' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'wanmei-integral-updated.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('HTML文件已下载！', 'success');
+        }
+
         // 页面切换
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
@@ -2364,5 +2660,6 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         });
     </script>
-</body>
-</html>
+
+
+</body></html>

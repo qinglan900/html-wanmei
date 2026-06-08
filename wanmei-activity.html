@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>货车活动报名审核 - 皖美e行</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --primary: #FF6B35;
+      --primary-light: #FFF7E6;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --info: #3B82F6;
+    }
+    body { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; color: #1F2937; background: #F3F4F6; margin: 0; }
+
+    /* 按钮 */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500; border-radius: 0.25rem; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
+    .btn-md { height: 32px; padding: 0 1rem; font-size: 14px; }
+    .btn-sm { height: 28px; padding: 0 0.75rem; font-size: 12px; }
+    .btn-primary { background-color: #FF6B35; color: white; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background-color: white; border-color: #D1D5DB; color: #6B7280; }
+    .btn-secondary:hover { background-color: #F3F4F6; }
+    .btn-batch-action { background-color: white; border-color: #FF6B35; color: #FF6B35; }
+    .btn-batch-action:hover { opacity: 0.9; }
+    .btn-danger { background-color: #EF4444; color: white; }
+    .btn-text { background: transparent; border: none; color: #FF6B35; padding: 0; height: auto; }
+    .btn-text:hover { text-decoration: underline; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* 内联标签输入框 */
+    .inline-label-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; min-width: 200px; }
+    .inline-label-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
+    .inline-label-input input, .inline-label-input select { flex: 1; height: 100%; padding: 0 12px; border: none; outline: none; font-size: 14px; background: transparent; }
+    .inline-label-input select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+
+    /* 日期范围 */
+    .date-range-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; }
+    .date-range-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
+    .date-range-input input { flex: 1; height: 100%; padding: 0 8px; border: none; outline: none; font-size: 14px; background: transparent; min-width: 0; }
+    .date-range-input .separator { padding: 0 6px; color: #9CA3AF; font-size: 14px; }
+
+    /* 状态标签 */
+    .status-badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+    .status-success { background-color: #ECFDF5; color: #10B981; }
+    .status-warning { background-color: #FFF7E6; color: #F59E0B; }
+    .status-error { background-color: #FEF2F2; color: #EF4444; }
+    .status-info { background-color: #EFF6FF; color: #3B82F6; }
+    .status-neutral { background-color: #F3F4F6; color: #6B7280; }
+
+    /* 表格 */
+    .data-table { border-collapse: collapse; }
+    .data-table th { font-size: 13px; font-weight: 600; color: #374151; white-space: nowrap; padding: 0 12px; }
+    .data-table td { font-size: 14px; color: #1F2937; padding: 0 12px; }
+    .data-table tbody tr:hover { background-color: #FFF7E6; transition: background-color 0.15s; }
+
+    /* 抽屉 */
+    .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+    .drawer-overlay.active { display: flex; }
+    .drawer-container { position: fixed; top: 0; right: 0; height: 100%; background: white; box-shadow: -4px 0 24px rgba(0,0,0,0.15); transform: translateX(0); transition: transform 0.3s ease-in-out; display: flex; flex-direction: column; }
+    .drawer-container.slide-out { transform: translateX(100%); }
+
+    /* Toast */
+    .toast { padding: 12px 16px; border-radius: 6px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 280px; animation: slideIn 0.3s ease; }
+    .toast-success { border-left: 3px solid #10B981; }
+    .toast-error { border-left: 3px solid #EF4444; }
+    .toast-warning { border-left: 3px solid #F59E0B; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* 抽屉内信息块 */
+    .info-block { margin-bottom: 20px; }
+    .info-block-title { font-size: 14px; font-weight: 600; color: #1F2937; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #E5E7EB; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
+    .info-item { display: flex; align-items: baseline; font-size: 13px; }
+    .info-item .info-label { color: #6B7280; white-space: nowrap; min-width: 100px; }
+    .info-item .info-value { color: #1F2937; font-weight: 500; }
+
+    /* 佐证材料图片 */
+    .evidence-img { width: 120px; height: 80px; border: 1px solid #E5E7EB; border-radius: 4px; object-fit: cover; cursor: pointer; transition: box-shadow 0.2s; }
+    .evidence-img:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+    /* 积分转移预览 */
+    .transfer-preview { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px; padding: 12px 16px; }
+    .transfer-preview .preview-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 13px; }
+    .transfer-preview .preview-row + .preview-row { border-top: 1px dashed #E5E7EB; }
+    .transfer-preview .preview-label { color: #6B7280; }
+    .transfer-preview .preview-value { font-weight: 600; color: #1F2937; }
+    .transfer-preview .preview-value.negative { color: #EF4444; }
+
+    /* 单选按钮组 */
+    .radio-group { display: flex; gap: 24px; }
+    .radio-item { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; }
+    .radio-item input[type="radio"] { accent-color: #FF6B35; width: 16px; height: 16px; }
+
+    /* 图片放大遮罩 */
+    .img-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1100; align-items: center; justify-content: center; cursor: pointer; }
+    .img-overlay.active { display: flex; }
+    .img-overlay img { max-width: 90%; max-height: 90%; object-fit: contain; }
+  </style>
+</head>
+<body>
+  <!-- 主内容区 -->
+  <main class="p-2">
+    <div class="bg-white rounded border border-neutral-200">
+      <!-- 标题区 -->
+      <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <div class="w-1 h-4 bg-orange-500 rounded"></div>
+          <h1 class="text-base font-bold text-neutral-900">货车活动报名审核</h1>
+        </div>
+      </div>
+
+      <!-- 筛选区 -->
+      <div class="px-2 pb-2">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+          <!-- 车牌号 -->
+          <div class="inline-label-input">
+            <span class="label">车牌号</span>
+            <input type="text" id="filter-plate" placeholder="精确查询">
+          </div>
+          <!-- 申诉人手机号 -->
+          <div class="inline-label-input">
+            <span class="label">申诉人手机号</span>
+            <input type="text" id="filter-phone" placeholder="模糊查询">
+          </div>
+          <!-- 审核状态 -->
+          <div class="inline-label-input">
+            <span class="label">审核状态</span>
+            <select id="filter-status">
+              <option value="">全部</option>
+              <option value="pending">待审核</option>
+              <option value="approved">审核通过</option>
+              <option value="rejected">审核驳回</option>
+            </select>
+          </div>
+          <!-- 申诉时间 -->
+          <div class="date-range-input">
+            <span class="label">申诉时间</span>
+            <input type="date" id="filter-date-start" placeholder="开始日期">
+            <span class="separator">→</span>
+            <input type="date" id="filter-date-end" placeholder="结束日期">
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-3">
+          <button class="btn btn-secondary btn-md" onclick="resetFilter()">重 置</button>
+          <button class="btn btn-primary btn-md" onclick="queryList()">查 询</button>
+        </div>
+      </div>
+
+      <!-- 表格容器 -->
+      <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+        <table class="data-table w-full">
+          <thead>
+            <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+              <th class="w-12 text-center">序号</th>
+              <th class="text-left">申诉单号</th>
+              <th class="text-left">车牌号</th>
+              <th class="text-left">活动名称</th>
+              <th class="text-left">申诉人</th>
+              <th class="text-left">原绑定人</th>
+              <th class="text-left">申诉时间</th>
+              <th class="text-center">审核状态</th>
+              <th class="text-left">审核时间</th>
+              <th class="text-right w-32">操作</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- 数据行1：待审核 -->
+            <tr class="border-b border-neutral-200 h-12">
+              <td class="text-center text-neutral-600">1</td>
+              <td class="text-left">AP20260608001</td>
+              <td class="text-left">皖A12345</td>
+              <td class="text-left">皖通高速货车积分活动</td>
+              <td class="text-left">181****9032</td>
+              <td class="text-left">139****5567</td>
+              <td class="text-left">2026-06-07 14:30</td>
+              <td class="text-center"><span class="status-badge status-warning">待审核</span></td>
+              <td class="text-left text-neutral-400">--</td>
+              <td class="text-right">
+                <button class="btn btn-text" onclick="openDrawer('view', 0)">查看</button>
+                <button class="btn btn-text ml-2" onclick="openDrawer('audit', 0)">审核</button>
+              </td>
+            </tr>
+            <!-- 数据行2：待审核 -->
+            <tr class="border-b border-neutral-200 h-12">
+              <td class="text-center text-neutral-600">2</td>
+              <td class="text-left">AP20260608002</td>
+              <td class="text-left">皖B67890</td>
+              <td class="text-left">驿达石化货车优惠活动</td>
+              <td class="text-left">158****2210</td>
+              <td class="text-left">136****8891</td>
+              <td class="text-left">2026-06-07 16:15</td>
+              <td class="text-center"><span class="status-badge status-warning">待审核</span></td>
+              <td class="text-left text-neutral-400">--</td>
+              <td class="text-right">
+                <button class="btn btn-text" onclick="openDrawer('view', 1)">查看</button>
+                <button class="btn btn-text ml-2" onclick="openDrawer('audit', 1)">审核</button>
+              </td>
+            </tr>
+            <!-- 数据行3：审核通过 -->
+            <tr class="border-b border-neutral-200 h-12">
+              <td class="text-center text-neutral-600">3</td>
+              <td class="text-left">AP20260607003</td>
+              <td class="text-left">皖C55555</td>
+              <td class="text-left">皖通高速货车积分活动</td>
+              <td class="text-left">177****3344</td>
+              <td class="text-left">150****7788</td>
+              <td class="text-left">2026-06-06 09:20</td>
+              <td class="text-center"><span class="status-badge status-success">审核通过</span></td>
+              <td class="text-left">2026-06-06 15:45</td>
+              <td class="text-right">
+                <button class="btn btn-text" onclick="openDrawer('view', 2)">查看</button>
+              </td>
+            </tr>
+            <!-- 数据行4：审核驳回 -->
+            <tr class="border-b border-neutral-200 h-12">
+              <td class="text-center text-neutral-600">4</td>
+              <td class="text-left">AP20260606004</td>
+              <td class="text-left">皖D88888</td>
+              <td class="text-left">交控新能源货车补贴活动</td>
+              <td class="text-left">133****1122</td>
+              <td class="text-left">186****4455</td>
+              <td class="text-left">2026-06-05 11:00</td>
+              <td class="text-center"><span class="status-badge status-error">审核驳回</span></td>
+              <td class="text-left">2026-06-05 17:30</td>
+              <td class="text-right">
+                <button class="btn btn-text" onclick="openDrawer('view', 3)">查看</button>
+              </td>
+            </tr>
+            <!-- 数据行5：待审核 -->
+            <tr class="border-b border-neutral-200 h-12">
+              <td class="text-center text-neutral-600">5</td>
+              <td class="text-left">AP20260608005</td>
+              <td class="text-left">皖E99999</td>
+              <td class="text-left">中石化安徽货车加油优惠</td>
+              <td class="text-left">155****6677</td>
+              <td class="text-left">137****8899</td>
+              <td class="text-left">2026-06-08 08:45</td>
+              <td class="text-center"><span class="status-badge status-warning">待审核</span></td>
+              <td class="text-left text-neutral-400">--</td>
+              <td class="text-right">
+                <button class="btn btn-text" onclick="openDrawer('view', 4)">查看</button>
+                <button class="btn btn-text ml-2" onclick="openDrawer('audit', 4)">审核</button>
+              </td>
+            </tr>
+            <!-- 数据行6：审核通过 -->
+            <tr class="border-b border-neutral-200 h-12">
+              <td class="text-center text-neutral-600">6</td>
+              <td class="text-left">AP20260605006</td>
+              <td class="text-left">皖F22222</td>
+              <td class="text-left">驿达石化货车优惠活动</td>
+              <td class="text-left">189****0011</td>
+              <td class="text-left">131****2233</td>
+              <td class="text-left">2026-06-04 13:50</td>
+              <td class="text-center"><span class="status-badge status-success">审核通过</span></td>
+              <td class="text-left">2026-06-05 10:20</td>
+              <td class="text-right">
+                <button class="btn btn-text" onclick="openDrawer('view', 5)">查看</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 分页 -->
+      <div class="mx-2 mb-2">
+        <div class="flex justify-between items-center py-2">
+          <span class="text-sm text-neutral-600">共 <span class="font-semibold">6</span> 条记录</span>
+          <div class="flex items-center gap-2">
+            <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white">
+              <option>10条/页</option>
+              <option selected>20条/页</option>
+              <option>50条/页</option>
+            </select>
+            <div class="flex items-center gap-1">
+              <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+              <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+              <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 申诉详情/审核抽屉 -->
+  <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()">
+    <div class="drawer-container w-[800px]" onclick="event.stopPropagation()">
+      <!-- 标题区 -->
+      <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
+        <h2 id="drawer-title" class="text-base font-bold text-neutral-900">申诉详情</h2>
+        <button class="text-neutral-500 hover:text-neutral-700" onclick="closeDrawer()">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- 内容区 -->
+      <div class="flex-1 overflow-y-auto px-5 py-4" style="max-height: calc(100vh - 140px);">
+        <div id="drawer-content" class="grid grid-cols-2 gap-6">
+          <!-- 左侧：申诉信息区 -->
+          <div class="space-y-5">
+            <!-- 申诉基本信息 -->
+            <div class="info-block">
+              <div class="info-block-title">申诉基本信息</div>
+              <div class="info-grid">
+                <div class="info-item"><span class="info-label">申诉单号：</span><span class="info-value" id="info-appeal-no">AP20260608001</span></div>
+                <div class="info-item"><span class="info-label">车牌号：</span><span class="info-value" id="info-plate">皖A12345</span></div>
+                <div class="info-item"><span class="info-label">活动名称：</span><span class="info-value" id="info-activity">皖通高速货车积分活动</span></div>
+                <div class="info-item"><span class="info-label">申诉人姓名：</span><span class="info-value" id="info-appellant-name">张三</span></div>
+                <div class="info-item"><span class="info-label">申诉人手机号：</span><span class="info-value" id="info-appellant-phone">181****9032</span></div>
+                <div class="info-item"><span class="info-label">实名认证姓名：</span><span class="info-value" id="info-real-name">张三</span></div>
+                <div class="info-item"><span class="info-label">申诉时间：</span><span class="info-value" id="info-appeal-time">2026-06-07 14:30</span></div>
+              </div>
+            </div>
+
+            <!-- 原绑定信息 -->
+            <div class="info-block">
+              <div class="info-block-title">原绑定信息</div>
+              <div class="info-grid">
+                <div class="info-item"><span class="info-label">原绑定人姓名：</span><span class="info-value" id="info-binder-name">李四</span></div>
+                <div class="info-item"><span class="info-label">原绑定人手机号：</span><span class="info-value" id="info-binder-phone">139****5567</span></div>
+                <div class="info-item"><span class="info-label">原绑定时间：</span><span class="info-value" id="info-bind-time">2026-03-15 10:00</span></div>
+                <div class="info-item"><span class="info-label">历史积分总数：</span><span class="info-value text-orange-500 font-bold" id="info-bind-points">500</span></div>
+              </div>
+            </div>
+
+            <!-- 佐证材料 -->
+            <div class="info-block">
+              <div class="info-block-title">佐证材料</div>
+              <div class="flex gap-3 mb-3" id="info-evidence">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20vehicle%20license%20front%20side%20document%20with%20plate%20number%20clearly%20visible%2C%20official%20government%20document%20style&image_size=landscape_4_3" alt="行驶证照片1" class="evidence-img" onclick="enlargeImage(this.src)">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20vehicle%20license%20back%20side%20document%2C%20official%20government%20document%20style&image_size=landscape_4_3" alt="行驶证照片2" class="evidence-img" onclick="enlargeImage(this.src)">
+              </div>
+              <div class="info-item" id="info-remark-wrap">
+                <span class="info-label">申诉说明：</span>
+                <span class="info-value" id="info-remark">该车辆为我本人所有，行驶证所有人姓名与本人实名认证一致，请求平台核实并转移积分。</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右侧：审核信息区（动态内容） -->
+          <div id="audit-area">
+            <!-- 内容由JS动态填充 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部按钮区 -->
+      <div id="drawer-footer" class="px-5 py-4 border-t border-neutral-200 bg-neutral-50 flex justify-end gap-3 hidden">
+        <button class="btn btn-secondary btn-md" onclick="closeDrawer()">取 消</button>
+        <button class="btn btn-primary btn-md" id="btn-submit-audit" onclick="submitAudit()">提交审核</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图片放大遮罩 -->
+  <div id="img-overlay" class="img-overlay" onclick="closeImageOverlay()">
+    <img id="img-overlay-src" src="" alt="放大查看">
+  </div>
+
+  <!-- Toast 容器 -->
+  <div id="toast-container" class="fixed top-4 right-4 z-[1100] flex flex-col gap-2"></div>
+
+  <script>
+    // ========== 模拟数据 ==========
+    var appealData = [
+      {
+        appealNo: 'AP20260608001', plate: '皖A12345', activity: '皖通高速货车积分活动',
+        appellantName: '张三', appellantPhone: '181****9032', realName: '张三',
+        appealTime: '2026-06-07 14:30',
+        binderName: '李四', binderPhone: '139****5567', bindTime: '2026-03-15 10:00', bindPoints: 500,
+        remark: '该车辆为我本人所有，行驶证所有人姓名与本人实名认证一致，请求平台核实并转移积分。',
+        status: 'pending', auditTime: '', auditor: '',
+        rejectReason: '', transferResult: null
+      },
+      {
+        appealNo: 'AP20260608002', plate: '皖B67890', activity: '驿达石化货车优惠活动',
+        appellantName: '王五', appellantPhone: '158****2210', realName: '王五',
+        appealTime: '2026-06-07 16:15',
+        binderName: '赵六', binderPhone: '136****8891', bindTime: '2026-04-01 09:30', bindPoints: 300,
+        remark: '我的车被别人绑定了，行驶证可以证明。',
+        status: 'pending', auditTime: '', auditor: '',
+        rejectReason: '', transferResult: null
+      },
+      {
+        appealNo: 'AP20260607003', plate: '皖C55555', activity: '皖通高速货车积分活动',
+        appellantName: '陈七', appellantPhone: '177****3344', realName: '陈七',
+        appealTime: '2026-06-06 09:20',
+        binderName: '周八', binderPhone: '150****7788', bindTime: '2026-02-20 14:00', bindPoints: 800,
+        remark: '车辆实际所有人是我，请核实。',
+        status: 'approved', auditTime: '2026-06-06 15:45', auditor: '管理员A',
+        rejectReason: '',
+        transferResult: { transferPoints: 800, binderAfterPoints: 200, receiverAfterPoints: 800 }
+      },
+      {
+        appealNo: 'AP20260606004', plate: '皖D88888', activity: '交控新能源货车补贴活动',
+        appellantName: '孙九', appellantPhone: '133****1122', realName: '孙九',
+        appealTime: '2026-06-05 11:00',
+        binderName: '吴十', binderPhone: '186****4455', bindTime: '2026-01-10 08:00', bindPoints: 200,
+        remark: '我的车被冒用绑定。',
+        status: 'rejected', auditTime: '2026-06-05 17:30', auditor: '管理员A',
+        rejectReason: '行驶证照片模糊，无法清晰辨认车牌号与所有人信息，请重新提交高清照片后再申诉。',
+        transferResult: null
+      },
+      {
+        appealNo: 'AP20260608005', plate: '皖E99999', activity: '中石化安徽货车加油优惠',
+        appellantName: '刘一', appellantPhone: '155****6677', realName: '刘一',
+        appealTime: '2026-06-08 08:45',
+        binderName: '郑二', binderPhone: '137****8899', bindTime: '2026-05-01 11:30', bindPoints: 150,
+        remark: '',
+        status: 'pending', auditTime: '', auditor: '',
+        rejectReason: '', transferResult: null
+      },
+      {
+        appealNo: 'AP20260605006', plate: '皖F22222', activity: '驿达石化货车优惠活动',
+        appellantName: '何三', appellantPhone: '189****0011', realName: '何三',
+        appealTime: '2026-06-04 13:50',
+        binderName: '冯四', binderPhone: '131****2233', bindTime: '2026-03-01 16:00', bindPoints: 600,
+        remark: '本人是车辆合法所有人，请求转移积分。',
+        status: 'approved', auditTime: '2026-06-05 10:20', auditor: '管理员B',
+        rejectReason: '',
+        transferResult: { transferPoints: 600, binderAfterPoints: -100, receiverAfterPoints: 600 }
+      }
+    ];
+
+    var currentRowIndex = -1;
+    var currentMode = 'view'; // 'view' | 'audit'
+
+    // ========== 筛选操作 ==========
+    function resetFilter() {
+      var el;
+      el = document.getElementById('filter-plate'); if (el) el.value = '';
+      el = document.getElementById('filter-phone'); if (el) el.value = '';
+      el = document.getElementById('filter-status'); if (el) el.value = '';
+      el = document.getElementById('filter-date-start'); if (el) el.value = '';
+      el = document.getElementById('filter-date-end'); if (el) el.value = '';
+      showToast('筛选条件已重置', 'success');
+    }
+
+    function queryList() {
+      showToast('查询完成', 'success');
+    }
+
+    // ========== 抽屉操作 ==========
+    function openDrawer(mode, rowIndex) {
+      currentRowIndex = rowIndex;
+      currentMode = mode;
+      var data = appealData[rowIndex];
+
+      // 填充左侧申诉信息
+      var el;
+      el = document.getElementById('info-appeal-no'); if (el) el.textContent = data.appealNo;
+      el = document.getElementById('info-plate'); if (el) el.textContent = data.plate;
+      el = document.getElementById('info-activity'); if (el) el.textContent = data.activity;
+      el = document.getElementById('info-appellant-name'); if (el) el.textContent = data.appellantName;
+      el = document.getElementById('info-appellant-phone'); if (el) el.textContent = data.appellantPhone;
+      el = document.getElementById('info-real-name'); if (el) el.textContent = data.realName;
+      el = document.getElementById('info-appeal-time'); if (el) el.textContent = data.appealTime;
+      el = document.getElementById('info-binder-name'); if (el) el.textContent = data.binderName;
+      el = document.getElementById('info-binder-phone'); if (el) el.textContent = data.binderPhone;
+      el = document.getElementById('info-bind-time'); if (el) el.textContent = data.bindTime;
+      el = document.getElementById('info-bind-points'); if (el) el.textContent = data.bindPoints;
+      el = document.getElementById('info-remark'); if (el) el.textContent = data.remark || '无';
+
+      // 更新抽屉标题
+      el = document.getElementById('drawer-title');
+      if (el) {
+        if (mode === 'audit') {
+          el.textContent = '申诉审核';
+        } else {
+          el.textContent = '申诉详情';
+        }
+      }
+
+      // 渲染右侧审核区域
+      renderAuditArea(data, mode);
+
+      // 显示/隐藏底部按钮
+      var footer = document.getElementById('drawer-footer');
+      if (footer) {
+        if (mode === 'audit' && data.status === 'pending') {
+          footer.classList.remove('hidden');
+        } else {
+          footer.classList.add('hidden');
+        }
+      }
+
+      // 打开抽屉
+      var overlay = document.getElementById('drawer-overlay');
+      if (overlay) overlay.classList.add('active');
+    }
+
+    function closeDrawer() {
+      var overlay = document.getElementById('drawer-overlay');
+      if (overlay) overlay.classList.remove('active');
+      // 重置审核表单
+      resetAuditForm();
+    }
+
+    function renderAuditArea(data, mode) {
+      var area = document.getElementById('audit-area');
+      if (!area) return;
+
+      var html = '';
+
+      if (data.status === 'pending' && mode === 'audit') {
+        // 待审核 - 审核模式
+        html = '<div class="space-y-5">'
+          + '<div class="info-block">'
+          + '<div class="info-block-title">审核信息</div>'
+          + '<div class="space-y-4">'
+          // 审核结果
+          + '<div>'
+          + '<label class="block text-sm font-medium text-neutral-700 mb-2">审核结果 <span class="text-error">*</span></label>'
+          + '<div class="radio-group">'
+          + '<label class="radio-item"><input type="radio" name="audit-result" value="approved" onchange="onAuditResultChange()"> 通过</label>'
+          + '<label class="radio-item"><input type="radio" name="audit-result" value="rejected" onchange="onAuditResultChange()"> 驳回</label>'
+          + '</div>'
+          + '</div>'
+          // 驳回原因
+          + '<div id="reject-reason-wrap" class="hidden">'
+          + '<label class="block text-sm font-medium text-neutral-700 mb-2">驳回原因 <span class="text-error">*</span></label>'
+          + '<textarea id="reject-reason" class="w-full h-24 border border-neutral-200 rounded p-3 text-sm resize-none focus:outline-none focus:border-orange-400" placeholder="请输入驳回原因，最多200字" maxlength="200"></textarea>'
+          + '</div>'
+          // 积分转移预览
+          + '<div id="transfer-preview-wrap" class="hidden">'
+          + '<label class="block text-sm font-medium text-neutral-700 mb-2">积分转移预览</label>'
+          + '<div class="transfer-preview">'
+          + '<div class="preview-row"><span class="preview-label">该车辆历史积分总数</span><span class="preview-value">' + data.bindPoints + ' 分</span></div>'
+          + '<div class="preview-row"><span class="preview-label">原绑定人当前可用积分</span><span class="preview-value">300 分</span></div>'
+          + '<div class="preview-row"><span class="preview-label">预计扣除后原绑定人积分</span><span class="preview-value negative" id="preview-binder-after">' + (300 - data.bindPoints) + ' 分</span></div>'
+          + '<div class="preview-row"><span class="preview-label">接收人预计获得积分</span><span class="preview-value">' + data.bindPoints + ' 分（继承原获取时间）</span></div>'
+          + '</div>'
+          + '</div>'
+          // 审核人
+          + '<div>'
+          + '<label class="block text-sm font-medium text-neutral-700 mb-2">审核人</label>'
+          + '<input type="text" value="当前登录用户" class="w-full h-8 border border-neutral-200 rounded px-3 text-sm bg-neutral-50 text-neutral-500" readonly>'
+          + '</div>'
+          // 审核时间
+          + '<div>'
+          + '<label class="block text-sm font-medium text-neutral-700 mb-2">审核时间</label>'
+          + '<input type="text" id="audit-time" value="" class="w-full h-8 border border-neutral-200 rounded px-3 text-sm bg-neutral-50 text-neutral-500" readonly>'
+          + '</div>'
+          + '</div>'
+          + '</div>'
+          + '</div>';
+      } else if (data.status === 'approved') {
+        // 审核通过 - 只读
+        html = '<div class="space-y-5">'
+          + '<div class="info-block">'
+          + '<div class="info-block-title">审核结果</div>'
+          + '<div class="info-grid">'
+          + '<div class="info-item"><span class="info-label">审核结果：</span><span class="status-badge status-success">通过</span></div>'
+          + '<div class="info-item"><span class="info-label">审核人：</span><span class="info-value">' + data.auditor + '</span></div>'
+          + '<div class="info-item"><span class="info-label">审核时间：</span><span class="info-value">' + data.auditTime + '</span></div>'
+          + '</div>'
+          + '</div>'
+          + '<div class="info-block">'
+          + '<div class="info-block-title">积分转移执行结果</div>';
+        if (data.transferResult) {
+          var binderAfterClass = data.transferResult.binderAfterPoints < 0 ? 'text-error font-bold' : 'font-bold';
+          html += '<div class="info-grid">'
+            + '<div class="info-item"><span class="info-label">实际转移积分：</span><span class="info-value font-bold text-orange-500">' + data.transferResult.transferPoints + ' 分</span></div>'
+            + '<div class="info-item"><span class="info-label">原绑定人扣除后积分：</span><span class="info-value ' + binderAfterClass + '">' + data.transferResult.binderAfterPoints + ' 分</span></div>'
+            + '<div class="info-item"><span class="info-label">接收人获得后积分：</span><span class="info-value font-bold">' + data.transferResult.receiverAfterPoints + ' 分</span></div>'
+            + '</div>';
+        }
+        html += '</div></div>';
+      } else if (data.status === 'rejected') {
+        // 审核驳回 - 只读
+        html = '<div class="space-y-5">'
+          + '<div class="info-block">'
+          + '<div class="info-block-title">审核结果</div>'
+          + '<div class="info-grid">'
+          + '<div class="info-item"><span class="info-label">审核结果：</span><span class="status-badge status-error">驳回</span></div>'
+          + '<div class="info-item"><span class="info-label">审核人：</span><span class="info-value">' + data.auditor + '</span></div>'
+          + '<div class="info-item"><span class="info-label">审核时间：</span><span class="info-value">' + data.auditTime + '</span></div>'
+          + '</div>'
+          + '</div>'
+          + '<div class="info-block">'
+          + '<div class="info-block-title">驳回原因</div>'
+          + '<div class="text-sm text-neutral-700 leading-relaxed">' + data.rejectReason + '</div>'
+          + '</div>'
+          + '</div>';
+      } else if (data.status === 'pending' && mode === 'view') {
+        // 待审核 - 查看模式（仅展示申诉信息区，单列布局）
+        html = '<div class="space-y-5">'
+          + '<div class="info-block">'
+          + '<div class="info-block-title">审核状态</div>'
+          + '<div class="flex items-center gap-3">'
+          + '<span class="status-badge status-warning">待审核</span>'
+          + '<span class="text-sm text-neutral-500">等待平台管理员审核</span>'
+          + '</div>'
+          + '</div>'
+          + '</div>';
+      }
+
+      area.innerHTML = html;
+    }
+
+    // ========== 审核交互 ==========
+    function onAuditResultChange() {
+      var radios = document.querySelectorAll('input[name="audit-result"]');
+      var selectedValue = '';
+      for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+          selectedValue = radios[i].value;
+          break;
+        }
+      }
+
+      var rejectWrap = document.getElementById('reject-reason-wrap');
+      var transferWrap = document.getElementById('transfer-preview-wrap');
+
+      if (rejectWrap) {
+        if (selectedValue === 'rejected') {
+          rejectWrap.classList.remove('hidden');
+        } else {
+          rejectWrap.classList.add('hidden');
+        }
+      }
+      if (transferWrap) {
+        if (selectedValue === 'approved') {
+          transferWrap.classList.remove('hidden');
+        } else {
+          transferWrap.classList.add('hidden');
+        }
+      }
+    }
+
+    function resetAuditForm() {
+      var radios = document.querySelectorAll('input[name="audit-result"]');
+      for (var i = 0; i < radios.length; i++) {
+        radios[i].checked = false;
+      }
+      var rejectReason = document.getElementById('reject-reason');
+      if (rejectReason) rejectReason.value = '';
+    }
+
+    function submitAudit() {
+      var radios = document.querySelectorAll('input[name="audit-result"]');
+      var selectedValue = '';
+      for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+          selectedValue = radios[i].value;
+          break;
+        }
+      }
+
+      if (!selectedValue) {
+        showToast('请选择审核结果', 'warning');
+        return;
+      }
+
+      if (selectedValue === 'rejected') {
+        var rejectReason = document.getElementById('reject-reason');
+        if (rejectReason && !rejectReason.value.trim()) {
+          showToast('请输入驳回原因', 'warning');
+          return;
+        }
+      }
+
+      // 模拟提交
+      var btn = document.getElementById('btn-submit-audit');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '提交中...';
+      }
+
+      setTimeout(function() {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '提交审核';
+        }
+
+        // 更新数据状态
+        var data = appealData[currentRowIndex];
+        if (selectedValue === 'approved') {
+          data.status = 'approved';
+          data.auditor = '当前登录用户';
+          data.auditTime = new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\//g, '-');
+          data.transferResult = { transferPoints: data.bindPoints, binderAfterPoints: 300 - data.bindPoints, receiverAfterPoints: data.bindPoints };
+          showToast('审核通过，积分已自动转移', 'success');
+        } else {
+          data.status = 'rejected';
+          data.auditor = '当前登录用户';
+          data.auditTime = new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\//g, '-');
+          var rejectEl = document.getElementById('reject-reason');
+          data.rejectReason = rejectEl ? rejectEl.value : '';
+          showToast('审核已驳回', 'success');
+        }
+
+        // 更新列表行状态
+        updateTableRow(currentRowIndex, data);
+
+        // 切换到查看模式
+        renderAuditArea(data, 'view');
+        var footer = document.getElementById('drawer-footer');
+        if (footer) footer.classList.add('hidden');
+
+        var titleEl = document.getElementById('drawer-title');
+        if (titleEl) titleEl.textContent = '申诉详情';
+      }, 800);
+    }
+
+    function updateTableRow(rowIndex, data) {
+      var tbody = document.getElementById('table-body');
+      if (!tbody) return;
+      var rows = tbody.querySelectorAll('tr');
+      if (rowIndex >= rows.length) return;
+
+      var row = rows[rowIndex];
+      var cells = row.querySelectorAll('td');
+
+      // 更新审核状态（第8列，索引7）
+      if (cells[7]) {
+        if (data.status === 'approved') {
+          cells[7].innerHTML = '<span class="status-badge status-success">审核通过</span>';
+        } else if (data.status === 'rejected') {
+          cells[7].innerHTML = '<span class="status-badge status-error">审核驳回</span>';
+        }
+      }
+
+      // 更新审核时间（第9列，索引8）
+      if (cells[8]) {
+        cells[8].textContent = data.auditTime;
+        cells[8].classList.remove('text-neutral-400');
+      }
+
+      // 更新操作列（第10列，索引9）- 已审核的只保留查看
+      if (cells[9]) {
+        cells[9].innerHTML = '<button class="btn btn-text" onclick="openDrawer(\'view\', ' + rowIndex + ')">查看</button>';
+      }
+    }
+
+    // ========== 图片放大 ==========
+    function enlargeImage(src) {
+      var overlay = document.getElementById('img-overlay');
+      var img = document.getElementById('img-overlay-src');
+      if (overlay && img) {
+        img.src = src;
+        overlay.classList.add('active');
+      }
+    }
+
+    function closeImageOverlay() {
+      var overlay = document.getElementById('img-overlay');
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    // ========== Toast ==========
+    function showToast(message, type) {
+      type = type || 'success';
+      var container = document.getElementById('toast-container');
+      if (!container) return;
+
+      var toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+      var icon = type === 'success' ? 'check-circle' : (type === 'error' ? 'x-circle' : 'alert-triangle');
+      toast.innerHTML = '<div class="flex items-start gap-3"><i data-lucide="' + icon + '" class="w-5 h-5" style="color:' + (type === 'success' ? '#10B981' : (type === 'error' ? '#EF4444' : '#F59E0B')) + '"></i><div class="text-sm text-neutral-800">' + message + '</div></div>';
+      container.appendChild(toast);
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      setTimeout(function() {
+        if (toast.parentNode) toast.remove();
+      }, 3000);
+    }
+
+    // ========== Esc 键关闭 ==========
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var imgOverlay = document.getElementById('img-overlay');
+        if (imgOverlay && imgOverlay.classList.contains('active')) {
+          closeImageOverlay();
+          return;
+        }
+        var drawerOverlay = document.getElementById('drawer-overlay');
+        if (drawerOverlay && drawerOverlay.classList.contains('active')) {
+          closeDrawer();
+        }
+      }
+    });
+
+    // ========== 初始化 ==========
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

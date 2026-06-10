@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>皖美e行 - 统计中心 - 货车积分数据监测</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#FF6B35', light: '#FFF7E6', dark: '#E55A2B' },
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                        neutral: {
+                            50: '#F9FAFB', 100: '#F3F4F6', 200: '#E5E7EB', 300: '#D1D5DB',
+                            400: '#9CA3AF', 500: '#6B7280', 600: '#4B5563', 700: '#374151',
+                            800: '#1F2937', 900: '#111827'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .nav-item { cursor: pointer; transition: all 0.2s; }
+        .nav-item:hover { background-color: #FFF7E6; color: #FF6B35 !important; }
+        .nav-item.active { background-color: #FFF7E6; color: #FF6B35 !important; font-weight: 600; }
+        .table-row { transition: background-color 0.2s ease; }
+        .table-row:hover { background-color: #FFF7E6 !important; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500; border-radius: 0.25rem; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .btn-md { height: 32px; padding: 0 1rem; font-size: 14px; }
+        .btn-sm { height: 28px; padding: 0 0.75rem; font-size: 12px; }
+        .btn-primary { background-color: #FF6B35; color: white; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { background-color: white; border-color: #D1D5DB; color: #6B7280; }
+        .btn-secondary:hover { background-color: #F3F4F6; }
+        .btn-text { background: transparent; border: none; color: #FF6B35; padding: 0; height: auto; }
+        .btn-text:hover { text-decoration: underline; }
+        .inline-label-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; min-width: 200px; }
+        .inline-label-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
+        .inline-label-input input, .inline-label-input select { flex: 1; height: 100%; padding: 0 12px; border: none; outline: none; font-size: 14px; background: transparent; }
+        .inline-label-input select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+        .date-range-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; min-width: 280px; }
+        .date-range-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
+        .date-range-input input { flex: 1; height: 100%; padding: 0 8px; border: none; outline: none; font-size: 13px; background: transparent; min-width: 0; }
+        .date-range-input .separator { padding: 0 6px; color: #9CA3AF; font-size: 13px; }
+        .data-table { border-collapse: collapse; }
+        .data-table th { padding: 10px 8px; font-weight: 600; font-size: 13px; vertical-align: middle; border-right: 1px solid #E5E7EB; }
+        .data-table td { padding: 10px 8px; font-size: 13px; vertical-align: middle; border-right: 1px solid #E5E7EB; }
+        .data-table th:last-child, .data-table td:last-child { border-right: none; }
+        .data-table thead th { border-bottom: 1px solid #E5E7EB; }
+        .tab-btn { padding: 6px 16px; font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; color: #6B7280; transition: all 0.2s; white-space: nowrap; }
+        .tab-btn:hover { color: #FF6B35; }
+        .tab-btn.active { color: #FF6B35; border-bottom-color: #FF6B35; font-weight: 600; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .cumulative-row { background-color: #FFF7E6; font-weight: 600; }
+        .group-header-row { background-color: #F0F9FF; }
+        .group-total-row { background-color: #FFF7E6; font-weight: 600; }
+        .grand-total-row { background-color: #ECFDF5; font-weight: 700; }
+        .formula-box { background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 3px; padding: 10px 16px; font-size: 13px; color: #4B5563; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    </style>
+</head>
+<body class="bg-neutral-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- 左侧导航 -->
+        <aside class="w-40 bg-white border-r border-neutral-200 flex-shrink-0">
+            <div class="py-3 px-3">
+                <div class="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2 px-2">统计中心</div>
+                <nav class="space-y-0.5">
+                    <div class="nav-item active px-3 py-2 rounded text-neutral-600" data-page="funnel" onclick="switchPage('funnel')">线上活动漏斗</div>
+                    <div class="nav-item px-3 py-2 rounded text-neutral-600" data-page="offline" onclick="switchPage('offline')">线下数据</div>
+                    <div class="nav-item px-3 py-2 rounded text-neutral-600" data-page="effect" onclick="switchPage('effect')">活动效果</div>
+                    <div class="nav-item px-3 py-2 rounded text-neutral-600" data-page="coupon" onclick="switchPage('coupon')">券订单</div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <div class="flex-1 overflow-auto">
+
+            <!-- ==================== 页面1：线上活动漏斗 ==================== -->
+            <div id="page-funnel" class="page active">
+                <main class="p-2">
+                    <div class="bg-white rounded border border-neutral-200">
+                        <!-- 标题区 -->
+                        <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                                <h1 class="text-base font-bold text-neutral-900">线上活动漏斗</h1>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                            </div>
+                        </div>
+                        <!-- 筛选区 -->
+                        <div class="px-2 pb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="date-range-input">
+                                    <span class="label">日期范围</span>
+                                    <input type="date" value="2026-06-01">
+                                    <span class="separator">→</span>
+                                    <input type="date" value="2026-06-05">
+                                </div>
+                                <!-- UV Tab时显示的车型筛选 -->
+                                <div id="funnel-uv-vehicle-filter" class="inline-label-input hidden">
+                                    <span class="label">车型</span>
+                                    <select id="funnel-vehicle-type" onchange="switchUVData()">
+                                        <option value="all">全部</option>
+                                        <option value="huo6">货6</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                            </div>
+                        </div>
+                        <!-- Tab切换 -->
+                        <div class="px-2 border-b border-neutral-200">
+                            <div class="flex gap-1">
+                                <div class="tab-btn active" data-tab="funnel-pv" onclick="switchFunnelTab('funnel-pv')">PV数据</div>
+                                <div class="tab-btn" data-tab="funnel-uv" onclick="switchFunnelTab('funnel-uv')">UV数据</div>
+                            </div>
+                        </div>
+                        <!-- PV数据Tab -->
+                        <div id="tab-funnel-pv" class="tab-panel active">
+                            <div class="mx-2 mb-2 mt-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                                <table class="data-table w-full">
+                                    <thead>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                            <th class="text-center">日期</th>
+                                            <th class="text-right">开屏曝光PV</th>
+                                            <th class="text-right">开屏点击PV</th>
+                                            <th class="text-right">首页弹窗曝光PV</th>
+                                            <th class="text-right">首页弹窗点击PV</th>
+                                            <th class="text-right">首页顶部Banner曝光PV</th>
+                                            <th class="text-right">首页顶部Banner点击PV</th>
+                                            <th class="text-right">首页腰部Banner曝光PV</th>
+                                            <th class="text-right">首页腰部Banner点击PV</th>
+                                            <th class="text-right">活动首页曝光PV</th>
+                                            <th class="text-right">点击切换路段PV</th>
+                                            <th class="text-right">点击"我要报名"PV</th>
+                                            <th class="text-right">添加车辆页曝光PV</th>
+                                            <th class="text-right">登录页曝光PV</th>
+                                            <th class="text-right">实名认证PV</th>
+                                            <th class="text-right">实名认证成功PV</th>
+                                            <th class="text-right">报名成功PV</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-01</td>
+                                            <td class="text-right tabular-nums">12,580</td>
+                                            <td class="text-right tabular-nums">3,842</td>
+                                            <td class="text-right tabular-nums">9,620</td>
+                                            <td class="text-right tabular-nums">2,156</td>
+                                            <td class="text-right tabular-nums">8,340</td>
+                                            <td class="text-right tabular-nums">1,920</td>
+                                            <td class="text-right tabular-nums">6,780</td>
+                                            <td class="text-right tabular-nums">1,540</td>
+                                            <td class="text-right tabular-nums">5,230</td>
+                                            <td class="text-right tabular-nums">2,890</td>
+                                            <td class="text-right tabular-nums">1,680</td>
+                                            <td class="text-right tabular-nums">1,420</td>
+                                            <td class="text-right tabular-nums">980</td>
+                                            <td class="text-right tabular-nums">760</td>
+                                            <td class="text-right tabular-nums">620</td>
+                                            <td class="text-right tabular-nums">510</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-02</td>
+                                            <td class="text-right tabular-nums">11,960</td>
+                                            <td class="text-right tabular-nums">3,580</td>
+                                            <td class="text-right tabular-nums">9,150</td>
+                                            <td class="text-right tabular-nums">2,040</td>
+                                            <td class="text-right tabular-nums">7,920</td>
+                                            <td class="text-right tabular-nums">1,810</td>
+                                            <td class="text-right tabular-nums">6,430</td>
+                                            <td class="text-right tabular-nums">1,460</td>
+                                            <td class="text-right tabular-nums">4,980</td>
+                                            <td class="text-right tabular-nums">2,750</td>
+                                            <td class="text-right tabular-nums">1,590</td>
+                                            <td class="text-right tabular-nums">1,350</td>
+                                            <td class="text-right tabular-nums">920</td>
+                                            <td class="text-right tabular-nums">710</td>
+                                            <td class="text-right tabular-nums">580</td>
+                                            <td class="text-right tabular-nums">480</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-03</td>
+                                            <td class="text-right tabular-nums">13,240</td>
+                                            <td class="text-right tabular-nums">4,120</td>
+                                            <td class="text-right tabular-nums">10,080</td>
+                                            <td class="text-right tabular-nums">2,310</td>
+                                            <td class="text-right tabular-nums">8,760</td>
+                                            <td class="text-right tabular-nums">2,050</td>
+                                            <td class="text-right tabular-nums">7,120</td>
+                                            <td class="text-right tabular-nums">1,620</td>
+                                            <td class="text-right tabular-nums">5,560</td>
+                                            <td class="text-right tabular-nums">3,080</td>
+                                            <td class="text-right tabular-nums">1,780</td>
+                                            <td class="text-right tabular-nums">1,510</td>
+                                            <td class="text-right tabular-nums">1,050</td>
+                                            <td class="text-right tabular-nums">810</td>
+                                            <td class="text-right tabular-nums">660</td>
+                                            <td class="text-right tabular-nums">540</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-04</td>
+                                            <td class="text-right tabular-nums">10,890</td>
+                                            <td class="text-right tabular-nums">3,260</td>
+                                            <td class="text-right tabular-nums">8,540</td>
+                                            <td class="text-right tabular-nums">1,890</td>
+                                            <td class="text-right tabular-nums">7,380</td>
+                                            <td class="text-right tabular-nums">1,680</td>
+                                            <td class="text-right tabular-nums">5,960</td>
+                                            <td class="text-right tabular-nums">1,350</td>
+                                            <td class="text-right tabular-nums">4,620</td>
+                                            <td class="text-right tabular-nums">2,560</td>
+                                            <td class="text-right tabular-nums">1,460</td>
+                                            <td class="text-right tabular-nums">1,240</td>
+                                            <td class="text-right tabular-nums">860</td>
+                                            <td class="text-right tabular-nums">660</td>
+                                            <td class="text-right tabular-nums">530</td>
+                                            <td class="text-right tabular-nums">440</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-05</td>
+                                            <td class="text-right tabular-nums">14,120</td>
+                                            <td class="text-right tabular-nums">4,380</td>
+                                            <td class="text-right tabular-nums">10,560</td>
+                                            <td class="text-right tabular-nums">2,450</td>
+                                            <td class="text-right tabular-nums">9,120</td>
+                                            <td class="text-right tabular-nums">2,180</td>
+                                            <td class="text-right tabular-nums">7,450</td>
+                                            <td class="text-right tabular-nums">1,700</td>
+                                            <td class="text-right tabular-nums">5,890</td>
+                                            <td class="text-right tabular-nums">3,260</td>
+                                            <td class="text-right tabular-nums">1,890</td>
+                                            <td class="text-right tabular-nums">1,600</td>
+                                            <td class="text-right tabular-nums">1,120</td>
+                                            <td class="text-right tabular-nums">860</td>
+                                            <td class="text-right tabular-nums">700</td>
+                                            <td class="text-right tabular-nums">580</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- UV数据Tab -->
+                        <div id="tab-funnel-uv" class="tab-panel">
+                            <div class="mx-2 mb-2 mt-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                                <table class="data-table w-full">
+                                    <thead>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                            <th class="text-center">日期</th>
+                                            <th class="text-right">开屏+弹窗+Banner去重曝光UV</th>
+                                            <th class="text-right">去重点击UV</th>
+                                            <th class="text-right">活动首页曝光UV</th>
+                                            <th class="text-right">点击任意路段切换UV</th>
+                                            <th class="text-right">点击"我要报名"UV</th>
+                                            <th class="text-right">添加车辆页曝光UV</th>
+                                            <th class="text-right">报名成功UV</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="uv-table-body">
+                                        <!-- 全部车型数据 -->
+                                        <tbody id="uv-data-all">
+                                            <tr class="border-b border-neutral-200 table-row">
+                                                <td class="text-center">2026-06-01</td>
+                                                <td class="text-right tabular-nums">8,920</td>
+                                                <td class="text-right tabular-nums">3,450</td>
+                                                <td class="text-right tabular-nums">4,120</td>
+                                                <td class="text-right tabular-nums">2,560</td>
+                                                <td class="text-right tabular-nums">1,480</td>
+                                                <td class="text-right tabular-nums">1,260</td>
+                                                <td class="text-right tabular-nums">510</td>
+                                            </tr>
+                                            <tr class="border-b border-neutral-200 table-row">
+                                                <td class="text-center">2026-06-02</td>
+                                                <td class="text-right tabular-nums">8,450</td>
+                                                <td class="text-right tabular-nums">3,210</td>
+                                                <td class="text-right tabular-nums">3,890</td>
+                                                <td class="text-right tabular-nums">2,420</td>
+                                                <td class="text-right tabular-nums">1,390</td>
+                                                <td class="text-right tabular-nums">1,190</td>
+                                                <td class="text-right tabular-nums">480</td>
+                                            </tr>
+                                            <tr class="border-b border-neutral-200 table-row">
+                                                <td class="text-center">2026-06-03</td>
+                                                <td class="text-right tabular-nums">9,380</td>
+                                                <td class="text-right tabular-nums">3,680</td>
+                                                <td class="text-right tabular-nums">4,380</td>
+                                                <td class="text-right tabular-nums">2,720</td>
+                                                <td class="text-right tabular-nums">1,570</td>
+                                                <td class="text-right tabular-nums">1,340</td>
+                                                <td class="text-right tabular-nums">540</td>
+                                            </tr>
+                                            <tr class="border-b border-neutral-200 table-row">
+                                                <td class="text-center">2026-06-04</td>
+                                                <td class="text-right tabular-nums">7,760</td>
+                                                <td class="text-right tabular-nums">2,980</td>
+                                                <td class="text-right tabular-nums">3,620</td>
+                                                <td class="text-right tabular-nums">2,260</td>
+                                                <td class="text-right tabular-nums">1,280</td>
+                                                <td class="text-right tabular-nums">1,100</td>
+                                                <td class="text-right tabular-nums">440</td>
+                                            </tr>
+                                            <tr class="border-b border-neutral-200 table-row">
+                                                <td class="text-center">2026-06-05</td>
+                                                <td class="text-right tabular-nums">9,950</td>
+                                                <td class="text-right tabular-nums">3,890</td>
+                                                <td class="text-right tabular-nums">4,650</td>
+                                                <td class="text-right tabular-nums">2,890</td>
+                                                <td class="text-right tabular-nums">1,670</td>
+                                                <td class="text-right tabular-nums">1,420</td>
+                                                <td class="text-right tabular-nums">580</td>
+                                            </tr>
+                                            <tr class="cumulative-row">
+                                                <td class="text-center">累计（累计去重）</td>
+                                                <td class="text-right tabular-nums">28,640</td>
+                                                <td class="text-right tabular-nums">12,340</td>
+                                                <td class="text-right tabular-nums">14,860</td>
+                                                <td class="text-right tabular-nums">9,230</td>
+                                                <td class="text-right tabular-nums">5,620</td>
+                                                <td class="text-right tabular-nums">4,580</td>
+                                                <td class="text-right tabular-nums">1,860</td>
+                                            </tr>
+                                        </tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- ==================== 页面2：线下数据 ==================== -->
+            <div id="page-offline" class="page">
+                <main class="p-2">
+                    <div class="bg-white rounded border border-neutral-200">
+                        <!-- 标题区 -->
+                        <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                                <h1 class="text-base font-bold text-neutral-900">线下数据</h1>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                            </div>
+                        </div>
+                        <!-- 筛选区 -->
+                        <div class="px-2 pb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="date-range-input">
+                                    <span class="label">日期范围</span>
+                                    <input type="date" value="2026-06-01">
+                                    <span class="separator">→</span>
+                                    <input type="date" value="2026-06-05">
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">路段名</span>
+                                    <select>
+                                        <option>全部</option>
+                                        <option>合安高速</option>
+                                        <option>芜合高速</option>
+                                        <option>连霍高速</option>
+                                        <option>沪渝高速</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                            </div>
+                        </div>
+                        <!-- 表格 -->
+                        <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                        <th class="text-center" rowspan="2">日期</th>
+                                        <th class="text-center" rowspan="2">路段名</th>
+                                        <th class="text-center" colspan="4">车流量</th>
+                                        <th class="text-center" colspan="4">计费额</th>
+                                        <th class="text-center" rowspan="2">去重车辆数<br><span class="font-normal text-neutral-500">货六（当日去重）</span></th>
+                                    </tr>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-9">
+                                        <th class="text-center text-xs">总计</th>
+                                        <th class="text-center text-xs">货六</th>
+                                        <th class="text-center text-xs">其他货车</th>
+                                        <th class="text-center text-xs">已报名货六</th>
+                                        <th class="text-center text-xs">总计</th>
+                                        <th class="text-center text-xs">货六</th>
+                                        <th class="text-center text-xs">其他货车</th>
+                                        <th class="text-center text-xs">已报名货六</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center">2026-06-01</td>
+                                        <td class="text-center">合安高速</td>
+                                        <td class="text-right tabular-nums">3,256</td>
+                                        <td class="text-right tabular-nums">1,280</td>
+                                        <td class="text-right tabular-nums">1,976</td>
+                                        <td class="text-right tabular-nums">420</td>
+                                        <td class="text-right tabular-nums">¥198,450</td>
+                                        <td class="text-right tabular-nums">¥86,320</td>
+                                        <td class="text-right tabular-nums">¥112,130</td>
+                                        <td class="text-right tabular-nums">¥28,560</td>
+                                        <td class="text-right tabular-nums">380</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center">2026-06-02</td>
+                                        <td class="text-center">合安高速</td>
+                                        <td class="text-right tabular-nums">3,120</td>
+                                        <td class="text-right tabular-nums">1,195</td>
+                                        <td class="text-right tabular-nums">1,925</td>
+                                        <td class="text-right tabular-nums">395</td>
+                                        <td class="text-right tabular-nums">¥190,280</td>
+                                        <td class="text-right tabular-nums">¥80,650</td>
+                                        <td class="text-right tabular-nums">¥109,630</td>
+                                        <td class="text-right tabular-nums">¥26,840</td>
+                                        <td class="text-right tabular-nums">356</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center">2026-06-03</td>
+                                        <td class="text-center">合安高速</td>
+                                        <td class="text-right tabular-nums">3,480</td>
+                                        <td class="text-right tabular-nums">1,380</td>
+                                        <td class="text-right tabular-nums">2,100</td>
+                                        <td class="text-right tabular-nums">456</td>
+                                        <td class="text-right tabular-nums">¥212,560</td>
+                                        <td class="text-right tabular-nums">¥93,480</td>
+                                        <td class="text-right tabular-nums">¥119,080</td>
+                                        <td class="text-right tabular-nums">¥31,020</td>
+                                        <td class="text-right tabular-nums">412</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center">2026-06-04</td>
+                                        <td class="text-center">合安高速</td>
+                                        <td class="text-right tabular-nums">2,980</td>
+                                        <td class="text-right tabular-nums">1,150</td>
+                                        <td class="text-right tabular-nums">1,830</td>
+                                        <td class="text-right tabular-nums">378</td>
+                                        <td class="text-right tabular-nums">¥181,920</td>
+                                        <td class="text-right tabular-nums">¥77,860</td>
+                                        <td class="text-right tabular-nums">¥104,060</td>
+                                        <td class="text-right tabular-nums">¥25,680</td>
+                                        <td class="text-right tabular-nums">342</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center">2026-06-05</td>
+                                        <td class="text-center">合安高速</td>
+                                        <td class="text-right tabular-nums">3,650</td>
+                                        <td class="text-right tabular-nums">1,460</td>
+                                        <td class="text-right tabular-nums">2,190</td>
+                                        <td class="text-right tabular-nums">482</td>
+                                        <td class="text-right tabular-nums">¥223,180</td>
+                                        <td class="text-right tabular-nums">¥98,720</td>
+                                        <td class="text-right tabular-nums">¥124,460</td>
+                                        <td class="text-right tabular-nums">¥32,780</td>
+                                        <td class="text-right tabular-nums">435</td>
+                                    </tr>
+                                    <tr class="cumulative-row">
+                                        <td class="text-center">累计</td>
+                                        <td class="text-center">--</td>
+                                        <td class="text-right tabular-nums">16,486</td>
+                                        <td class="text-right tabular-nums">6,465</td>
+                                        <td class="text-right tabular-nums">10,021</td>
+                                        <td class="text-right tabular-nums">2,131</td>
+                                        <td class="text-right tabular-nums">¥1,006,390</td>
+                                        <td class="text-right tabular-nums">¥437,030</td>
+                                        <td class="text-right tabular-nums">¥569,360</td>
+                                        <td class="text-right tabular-nums">¥144,880</td>
+                                        <td class="text-right tabular-nums">1,925</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- ==================== 页面3：活动效果 ==================== -->
+            <div id="page-effect" class="page">
+                <main class="p-2">
+                    <div class="bg-white rounded border border-neutral-200">
+                        <!-- 标题区 -->
+                        <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                                <h1 class="text-base font-bold text-neutral-900">活动效果</h1>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                            </div>
+                        </div>
+                        <!-- 筛选区 -->
+                        <div class="px-2 pb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="date-range-input">
+                                    <span class="label">日期范围</span>
+                                    <input type="date" value="2026-06-01">
+                                    <span class="separator">→</span>
+                                    <input type="date" value="2026-06-05">
+                                </div>
+                                <div id="effect-road-filter" class="inline-label-input">
+                                    <span class="label">路段名</span>
+                                    <select>
+                                        <option>全部</option>
+                                        <option>合安高速</option>
+                                        <option>芜合高速</option>
+                                        <option>连霍高速</option>
+                                        <option>沪渝高速</option>
+                                    </select>
+                                </div>
+                                <!-- 货六明细Tab时额外筛选器 -->
+                                <div id="effect-plate-filter" class="inline-label-input hidden">
+                                    <span class="label">车牌号</span>
+                                    <input type="text" placeholder="请输入车牌号">
+                                </div>
+                                <div id="effect-signup-filter" class="inline-label-input hidden">
+                                    <span class="label">是否报名</span>
+                                    <select>
+                                        <option>全部</option>
+                                        <option>是</option>
+                                        <option>否</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                            </div>
+                        </div>
+                        <!-- Tab切换 -->
+                        <div class="px-2 border-b border-neutral-200">
+                            <div class="flex gap-1">
+                                <div class="tab-btn active" data-tab="effect-points" onclick="switchEffectTab('effect-points')">积分维度</div>
+                                <div class="tab-btn" data-tab="effect-vehicle" onclick="switchEffectTab('effect-vehicle')">车辆维度</div>
+                                <div class="tab-btn" data-tab="effect-huo6" onclick="switchEffectTab('effect-huo6')">货六明细</div>
+                            </div>
+                        </div>
+                        <!-- 积分维度Tab -->
+                        <div id="tab-effect-points" class="tab-panel active">
+                            <div class="mx-2 mb-2 mt-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                                <table class="data-table w-full">
+                                    <thead>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                            <th class="text-center">日期</th>
+                                            <th class="text-right">累计发放积分数量</th>
+                                            <th class="text-right">累计补发积分数量</th>
+                                            <th class="text-right">累计兑换积分数量</th>
+                                            <th class="text-right">累计过期积分数量</th>
+                                            <th class="text-right">累计当前可用积分数量</th>
+                                            <th class="text-right">累计领取积分数量</th>
+                                            <th class="text-right">领取率</th>
+                                            <th class="text-right">累计积分发放次数</th>
+                                            <th class="text-right">累计兑换次数</th>
+                                            <th class="text-right">累计兑换人数</th>
+                                            <th class="text-right">累计兑换车辆数</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-05</td>
+                                            <td class="text-right tabular-nums">1,258,000</td>
+                                            <td class="text-right tabular-nums">12,600</td>
+                                            <td class="text-right tabular-nums">856,200</td>
+                                            <td class="text-right tabular-nums">45,800</td>
+                                            <td class="text-right tabular-nums">368,600</td>
+                                            <td class="text-right tabular-nums">1,082,400</td>
+                                            <td class="text-right tabular-nums">86.03%</td>
+                                            <td class="text-right tabular-nums">3,560</td>
+                                            <td class="text-right tabular-nums">2,722</td>
+                                            <td class="text-right tabular-nums">1,856</td>
+                                            <td class="text-right tabular-nums">2,150</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-04</td>
+                                            <td class="text-right tabular-nums">1,186,000</td>
+                                            <td class="text-right tabular-nums">11,200</td>
+                                            <td class="text-right tabular-nums">789,600</td>
+                                            <td class="text-right tabular-nums">42,300</td>
+                                            <td class="text-right tabular-nums">365,300</td>
+                                            <td class="text-right tabular-nums">1,018,600</td>
+                                            <td class="text-right tabular-nums">85.89%</td>
+                                            <td class="text-right tabular-nums">3,380</td>
+                                            <td class="text-right tabular-nums">2,580</td>
+                                            <td class="text-right tabular-nums">1,762</td>
+                                            <td class="text-right tabular-nums">2,040</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-03</td>
+                                            <td class="text-right tabular-nums">1,098,000</td>
+                                            <td class="text-right tabular-nums">9,800</td>
+                                            <td class="text-right tabular-nums">712,400</td>
+                                            <td class="text-right tabular-nums">38,600</td>
+                                            <td class="text-right tabular-nums">356,800</td>
+                                            <td class="text-right tabular-nums">942,200</td>
+                                            <td class="text-right tabular-nums">85.81%</td>
+                                            <td class="text-right tabular-nums">3,120</td>
+                                            <td class="text-right tabular-nums">2,380</td>
+                                            <td class="text-right tabular-nums">1,628</td>
+                                            <td class="text-right tabular-nums">1,886</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-02</td>
+                                            <td class="text-right tabular-nums">985,000</td>
+                                            <td class="text-right tabular-nums">8,400</td>
+                                            <td class="text-right tabular-nums">625,800</td>
+                                            <td class="text-right tabular-nums">35,200</td>
+                                            <td class="text-right tabular-nums">332,400</td>
+                                            <td class="text-right tabular-nums">845,600</td>
+                                            <td class="text-right tabular-nums">85.85%</td>
+                                            <td class="text-right tabular-nums">2,820</td>
+                                            <td class="text-right tabular-nums">2,160</td>
+                                            <td class="text-right tabular-nums">1,478</td>
+                                            <td class="text-right tabular-nums">1,712</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-01</td>
+                                            <td class="text-right tabular-nums">860,000</td>
+                                            <td class="text-right tabular-nums">6,800</td>
+                                            <td class="text-right tabular-nums">538,200</td>
+                                            <td class="text-right tabular-nums">31,500</td>
+                                            <td class="text-right tabular-nums">297,100</td>
+                                            <td class="text-right tabular-nums">738,200</td>
+                                            <td class="text-right tabular-nums">85.84%</td>
+                                            <td class="text-right tabular-nums">2,480</td>
+                                            <td class="text-right tabular-nums">1,920</td>
+                                            <td class="text-right tabular-nums">1,312</td>
+                                            <td class="text-right tabular-nums">1,520</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- 公式说明 -->
+                            <div class="mx-2 mb-2">
+                                <div class="formula-box">
+                                    <span class="text-neutral-500">逻辑公式：</span>
+                                    <span class="font-semibold">收入积分 + 补发积分 - 已兑换积分 - 过期积分 = 当前可用积分</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 车辆维度Tab -->
+                        <div id="tab-effect-vehicle" class="tab-panel">
+                            <div class="mx-2 mb-2 mt-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                                <table class="data-table w-full">
+                                    <thead>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                            <th class="text-center">日期</th>
+                                            <th class="text-right">目标路段累计通行车辆数（货六ETC）</th>
+                                            <th class="text-right">累计报名人数</th>
+                                            <th class="text-right">累计报名车辆数</th>
+                                            <th class="text-right">累计有效报名车辆数</th>
+                                            <th class="text-right">有效报名率</th>
+                                            <th class="text-right">累计报名达标车辆数</th>
+                                            <th class="text-right">活动达标率</th>
+                                            <th class="text-right">累计兑换车辆数</th>
+                                            <th class="text-right">车辆兑换率</th>
+                                            <th class="text-right">累计兑换人数</th>
+                                            <th class="text-right">人数兑换率</th>
+                                            <th class="text-right">累计核销车辆数</th>
+                                            <th class="text-right">核销率</th>
+                                            <th class="text-right">累计发放车辆数（安徽ETC）</th>
+                                            <th class="text-right">累计报名车辆数达标数（安徽ETC）</th>
+                                            <th class="text-right">累计兑换车辆数（安徽ETC）</th>
+                                            <th class="text-right">累计核销车辆数（安徽ETC）</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-05</td>
+                                            <td class="text-right tabular-nums">6,465</td>
+                                            <td class="text-right tabular-nums">2,890</td>
+                                            <td class="text-right tabular-nums">3,420</td>
+                                            <td class="text-right tabular-nums">2,580</td>
+                                            <td class="text-right tabular-nums">39.91%</td>
+                                            <td class="text-right tabular-nums">2,150</td>
+                                            <td class="text-right tabular-nums">83.33%</td>
+                                            <td class="text-right tabular-nums">1,680</td>
+                                            <td class="text-right tabular-nums">78.14%</td>
+                                            <td class="text-right tabular-nums">1,856</td>
+                                            <td class="text-right tabular-nums">64.22%</td>
+                                            <td class="text-right tabular-nums">1,240</td>
+                                            <td class="text-right tabular-nums">66.84%</td>
+                                            <td class="text-right tabular-nums">5,120</td>
+                                            <td class="text-right tabular-nums">1,980</td>
+                                            <td class="text-right tabular-nums">1,520</td>
+                                            <td class="text-right tabular-nums">1,120</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-04</td>
+                                            <td class="text-right tabular-nums">5,960</td>
+                                            <td class="text-right tabular-nums">2,680</td>
+                                            <td class="text-right tabular-nums">3,180</td>
+                                            <td class="text-right tabular-nums">2,400</td>
+                                            <td class="text-right tabular-nums">40.27%</td>
+                                            <td class="text-right tabular-nums">2,040</td>
+                                            <td class="text-right tabular-nums">85.00%</td>
+                                            <td class="text-right tabular-nums">1,590</td>
+                                            <td class="text-right tabular-nums">77.94%</td>
+                                            <td class="text-right tabular-nums">1,762</td>
+                                            <td class="text-right tabular-nums">63.46%</td>
+                                            <td class="text-right tabular-nums">1,180</td>
+                                            <td class="text-right tabular-nums">66.92%</td>
+                                            <td class="text-right tabular-nums">4,780</td>
+                                            <td class="text-right tabular-nums">1,860</td>
+                                            <td class="text-right tabular-nums">1,440</td>
+                                            <td class="text-right tabular-nums">1,060</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-03</td>
+                                            <td class="text-right tabular-nums">5,480</td>
+                                            <td class="text-right tabular-nums">2,460</td>
+                                            <td class="text-right tabular-nums">2,920</td>
+                                            <td class="text-right tabular-nums">2,200</td>
+                                            <td class="text-right tabular-nums">40.15%</td>
+                                            <td class="text-right tabular-nums">1,886</td>
+                                            <td class="text-right tabular-nums">85.73%</td>
+                                            <td class="text-right tabular-nums">1,470</td>
+                                            <td class="text-right tabular-nums">77.94%</td>
+                                            <td class="text-right tabular-nums">1,628</td>
+                                            <td class="text-right tabular-nums">62.56%</td>
+                                            <td class="text-right tabular-nums">1,090</td>
+                                            <td class="text-right tabular-nums">66.84%</td>
+                                            <td class="text-right tabular-nums">4,380</td>
+                                            <td class="text-right tabular-nums">1,720</td>
+                                            <td class="text-right tabular-nums">1,330</td>
+                                            <td class="text-right tabular-nums">980</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-02</td>
+                                            <td class="text-right tabular-nums">4,980</td>
+                                            <td class="text-right tabular-nums">2,240</td>
+                                            <td class="text-right tabular-nums">2,660</td>
+                                            <td class="text-right tabular-nums">2,000</td>
+                                            <td class="text-right tabular-nums">40.16%</td>
+                                            <td class="text-right tabular-nums">1,712</td>
+                                            <td class="text-right tabular-nums">85.60%</td>
+                                            <td class="text-right tabular-nums">1,330</td>
+                                            <td class="text-right tabular-nums">77.69%</td>
+                                            <td class="text-right tabular-nums">1,478</td>
+                                            <td class="text-right tabular-nums">62.06%</td>
+                                            <td class="text-right tabular-nums">990</td>
+                                            <td class="text-right tabular-nums">66.92%</td>
+                                            <td class="text-right tabular-nums">3,960</td>
+                                            <td class="text-right tabular-nums">1,560</td>
+                                            <td class="text-right tabular-nums">1,210</td>
+                                            <td class="text-right tabular-nums">890</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">2026-06-01</td>
+                                            <td class="text-right tabular-nums">4,420</td>
+                                            <td class="text-right tabular-nums">1,980</td>
+                                            <td class="text-right tabular-nums">2,360</td>
+                                            <td class="text-right tabular-nums">1,780</td>
+                                            <td class="text-right tabular-nums">40.27%</td>
+                                            <td class="text-right tabular-nums">1,520</td>
+                                            <td class="text-right tabular-nums">85.39%</td>
+                                            <td class="text-right tabular-nums">1,180</td>
+                                            <td class="text-right tabular-nums">77.63%</td>
+                                            <td class="text-right tabular-nums">1,312</td>
+                                            <td class="text-right tabular-nums">61.82%</td>
+                                            <td class="text-right tabular-nums">880</td>
+                                            <td class="text-right tabular-nums">66.84%</td>
+                                            <td class="text-right tabular-nums">3,520</td>
+                                            <td class="text-right tabular-nums">1,390</td>
+                                            <td class="text-right tabular-nums">1,080</td>
+                                            <td class="text-right tabular-nums">790</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- 公式说明 -->
+                            <div class="mx-2 mb-2">
+                                <div class="formula-box">
+                                    <div class="mb-1"><span class="text-neutral-500">关键指标公式：</span></div>
+                                    <div>有效报名率 = 累计有效报名车辆数 / 累计通行车辆数（货六ETC）</div>
+                                    <div>活动达标率 = 累计报名达标车辆数 / 累计有效报名车辆数</div>
+                                    <div>车辆兑换率 = 累计兑换车辆数 / 累计报名达标车辆数</div>
+                                    <div>人数兑换率 = 累计兑换人数 / 累计有效报名人数</div>
+                                    <div>核销率 = 累计核销车辆数 / 累计兑换车辆数</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 货六明细Tab -->
+                        <div id="tab-effect-huo6" class="tab-panel">
+                            <div class="mx-2 mb-2 mt-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                                <table class="data-table w-full">
+                                    <thead>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                            <th class="text-center">车牌号</th>
+                                            <th class="text-center">绑定账号ID</th>
+                                            <th class="text-center">是否安徽ETC</th>
+                                            <th class="text-center">是否登录APP（活动期间）</th>
+                                            <th class="text-center">是否浏览过活动页</th>
+                                            <th class="text-center">是否报名</th>
+                                            <th class="text-right">累计发放积分</th>
+                                            <th class="text-right">累计兑换积分</th>
+                                            <th class="text-right">累计核销积分</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">皖A12345</td>
+                                            <td class="text-center">U10086</td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-right tabular-nums">500</td>
+                                            <td class="text-right tabular-nums">300</td>
+                                            <td class="text-right tabular-nums">200</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">皖B67890</td>
+                                            <td class="text-center">U10087</td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-right tabular-nums">500</td>
+                                            <td class="text-right tabular-nums">500</td>
+                                            <td class="text-right tabular-nums">350</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">皖C24680</td>
+                                            <td class="text-center">U10088</td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-neutral-400">否</span></td>
+                                            <td class="text-center"><span class="text-neutral-400">否</span></td>
+                                            <td class="text-right tabular-nums">0</td>
+                                            <td class="text-right tabular-nums">0</td>
+                                            <td class="text-right tabular-nums">0</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">皖D13579</td>
+                                            <td class="text-center">U10089</td>
+                                            <td class="text-center"><span class="text-neutral-400">否</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-right tabular-nums">300</td>
+                                            <td class="text-right tabular-nums">150</td>
+                                            <td class="text-right tabular-nums">100</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">皖E98765</td>
+                                            <td class="text-center">U10090</td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-neutral-400">否</span></td>
+                                            <td class="text-center"><span class="text-neutral-400">否</span></td>
+                                            <td class="text-center"><span class="text-neutral-400">否</span></td>
+                                            <td class="text-right tabular-nums">0</td>
+                                            <td class="text-right tabular-nums">0</td>
+                                            <td class="text-right tabular-nums">0</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">皖F11223</td>
+                                            <td class="text-center">U10091</td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-right tabular-nums">500</td>
+                                            <td class="text-right tabular-nums">200</td>
+                                            <td class="text-right tabular-nums">150</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">皖G44556</td>
+                                            <td class="text-center">U10092</td>
+                                            <td class="text-center"><span class="text-neutral-400">否</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-right tabular-nums">300</td>
+                                            <td class="text-right tabular-nums">300</td>
+                                            <td class="text-right tabular-nums">280</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-200 table-row">
+                                            <td class="text-center">皖H77889</td>
+                                            <td class="text-center">U10093</td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-center"><span class="text-success font-medium">是</span></td>
+                                            <td class="text-right tabular-nums">500</td>
+                                            <td class="text-right tabular-nums">400</td>
+                                            <td class="text-right tabular-nums">320</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- 说明 -->
+                            <div class="mx-2 mb-2">
+                                <div class="formula-box">
+                                    <span class="text-neutral-500">说明：</span>每日更新到最新状态
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- ==================== 页面4：券订单-总览 ==================== -->
+            <div id="page-coupon" class="page">
+                <main class="p-2">
+                    <div class="bg-white rounded border border-neutral-200">
+                        <!-- 标题区 -->
+                        <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                                <h1 class="text-base font-bold text-neutral-900">券订单</h1>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                            </div>
+                        </div>
+                        <!-- 筛选区 -->
+                        <div class="px-2 pb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="inline-label-input">
+                                    <span class="label">日期选择</span>
+                                    <input type="date" value="2026-06-04">
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                            </div>
+                        </div>
+                        <!-- 总览表格 -->
+                        <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                        <th class="text-center" rowspan="2">截止日期</th>
+                                        <th class="text-center" colspan="2">总订单</th>
+                                        <th class="text-center" colspan="2">已核销</th>
+                                        <th class="text-center" colspan="2">未核销</th>
+                                        <th class="text-center" colspan="2">核销率</th>
+                                        <th class="text-center" rowspan="2">操作</th>
+                                    </tr>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-9">
+                                        <th class="text-center text-xs">数量</th>
+                                        <th class="text-center text-xs">金额</th>
+                                        <th class="text-center text-xs">数量</th>
+                                        <th class="text-center text-xs">金额</th>
+                                        <th class="text-center text-xs">数量</th>
+                                        <th class="text-center text-xs">金额</th>
+                                        <th class="text-center text-xs">数量</th>
+                                        <th class="text-center text-xs">金额</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center">2026-06-04</td>
+                                        <td class="text-right tabular-nums">2,722</td>
+                                        <td class="text-right tabular-nums">¥261,270.00</td>
+                                        <td class="text-right tabular-nums">2,524</td>
+                                        <td class="text-right tabular-nums">¥241,113.95</td>
+                                        <td class="text-right tabular-nums">198</td>
+                                        <td class="text-right tabular-nums">¥18,500.00</td>
+                                        <td class="text-right tabular-nums">92.73%</td>
+                                        <td class="text-right tabular-nums">92.29%</td>
+                                        <td class="text-center"><button class="btn btn-text btn-sm" onclick="showCouponDetail()">查看明细</button></td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center">2026-06-03</td>
+                                        <td class="text-right tabular-nums">2,580</td>
+                                        <td class="text-right tabular-nums">¥248,560.00</td>
+                                        <td class="text-right tabular-nums">2,390</td>
+                                        <td class="text-right tabular-nums">¥228,620.40</td>
+                                        <td class="text-right tabular-nums">190</td>
+                                        <td class="text-right tabular-nums">¥17,940.00</td>
+                                        <td class="text-right tabular-nums">92.64%</td>
+                                        <td class="text-right tabular-nums">91.98%</td>
+                                        <td class="text-center"><button class="btn btn-text btn-sm" onclick="showCouponDetail()">查看明细</button></td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center">2026-06-02</td>
+                                        <td class="text-right tabular-nums">2,410</td>
+                                        <td class="text-right tabular-nums">¥232,800.00</td>
+                                        <td class="text-right tabular-nums">2,230</td>
+                                        <td class="text-right tabular-nums">¥213,680.50</td>
+                                        <td class="text-right tabular-nums">180</td>
+                                        <td class="text-right tabular-nums">¥16,120.00</td>
+                                        <td class="text-right tabular-nums">92.53%</td>
+                                        <td class="text-right tabular-nums">91.79%</td>
+                                        <td class="text-center"><button class="btn btn-text btn-sm" onclick="showCouponDetail()">查看明细</button></td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center">2026-06-01</td>
+                                        <td class="text-right tabular-nums">2,260</td>
+                                        <td class="text-right tabular-nums">¥218,400.00</td>
+                                        <td class="text-right tabular-nums">2,085</td>
+                                        <td class="text-right tabular-nums">¥199,680.30</td>
+                                        <td class="text-right tabular-nums">175</td>
+                                        <td class="text-right tabular-nums">¥15,720.00</td>
+                                        <td class="text-right tabular-nums">92.26%</td>
+                                        <td class="text-right tabular-nums">91.42%</td>
+                                        <td class="text-center"><button class="btn btn-text btn-sm" onclick="showCouponDetail()">查看明细</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- ==================== 页面5：券订单-明细 ==================== -->
+            <div id="page-coupon-detail" class="page">
+                <main class="p-2">
+                    <div class="bg-white rounded border border-neutral-200">
+                        <!-- 标题区 -->
+                        <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                                <h1 class="text-base font-bold text-neutral-900">券订单明细</h1>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="btn btn-secondary btn-md" onclick="backToCouponOverview()"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                            </div>
+                        </div>
+                        <!-- 筛选区 -->
+                        <div class="px-2 pb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="inline-label-input">
+                                    <span class="label">日期选择</span>
+                                    <input type="date" value="2026-06-04">
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">券名称</span>
+                                    <input type="text" placeholder="请输入券名称">
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">商家</span>
+                                    <select>
+                                        <option>全部商家</option>
+                                        <option>驿达服务区</option>
+                                        <option>高速石化</option>
+                                        <option>交控石油</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                            </div>
+                        </div>
+                        <!-- 明细表格 -->
+                        <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                        <th class="text-center" rowspan="2">券名称</th>
+                                        <th class="text-center" colspan="2">总订单</th>
+                                        <th class="text-center" colspan="2">已核销</th>
+                                        <th class="text-center" colspan="2">未核销</th>
+                                        <th class="text-center" colspan="2">核销率</th>
+                                    </tr>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-9">
+                                        <th class="text-center text-xs">数量</th>
+                                        <th class="text-center text-xs">金额</th>
+                                        <th class="text-center text-xs">数量</th>
+                                        <th class="text-center text-xs">金额</th>
+                                        <th class="text-center text-xs">数量</th>
+                                        <th class="text-center text-xs">金额</th>
+                                        <th class="text-center text-xs">数量</th>
+                                        <th class="text-center text-xs">金额</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- 驿达服务区消费 -->
+                                    <tr class="group-header-row border-b border-neutral-200">
+                                        <td class="text-left font-semibold" colspan="9">驿达服务区消费</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">10元驿达便利店代金券红包</td>
+                                        <td class="text-right tabular-nums">148</td>
+                                        <td class="text-right tabular-nums">¥1,480.00</td>
+                                        <td class="text-right tabular-nums">131</td>
+                                        <td class="text-right tabular-nums">¥1,272.55</td>
+                                        <td class="text-right tabular-nums">17</td>
+                                        <td class="text-right tabular-nums">¥170.00</td>
+                                        <td class="text-right tabular-nums">88.51%</td>
+                                        <td class="text-right tabular-nums">85.98%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">20元驿达便利店代金券红包</td>
+                                        <td class="text-right tabular-nums">156</td>
+                                        <td class="text-right tabular-nums">¥3,120.00</td>
+                                        <td class="text-right tabular-nums">148</td>
+                                        <td class="text-right tabular-nums">¥2,920.60</td>
+                                        <td class="text-right tabular-nums">8</td>
+                                        <td class="text-right tabular-nums">¥160.00</td>
+                                        <td class="text-right tabular-nums">94.87%</td>
+                                        <td class="text-right tabular-nums">93.61%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">50元驿达便利店代金券红包</td>
+                                        <td class="text-right tabular-nums">1,243</td>
+                                        <td class="text-right tabular-nums">¥62,150.00</td>
+                                        <td class="text-right tabular-nums">1,228</td>
+                                        <td class="text-right tabular-nums">¥60,842.30</td>
+                                        <td class="text-right tabular-nums">15</td>
+                                        <td class="text-right tabular-nums">¥750.00</td>
+                                        <td class="text-right tabular-nums">98.79%</td>
+                                        <td class="text-right tabular-nums">97.90%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">100元驿达便利店代金券红包</td>
+                                        <td class="text-right tabular-nums">79</td>
+                                        <td class="text-right tabular-nums">¥7,900.00</td>
+                                        <td class="text-right tabular-nums">67</td>
+                                        <td class="text-right tabular-nums">¥6,695.50</td>
+                                        <td class="text-right tabular-nums">12</td>
+                                        <td class="text-right tabular-nums">¥1,200.00</td>
+                                        <td class="text-right tabular-nums">84.81%</td>
+                                        <td class="text-right tabular-nums">84.75%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">200元驿达便利店代金券红包</td>
+                                        <td class="text-right tabular-nums">114</td>
+                                        <td class="text-right tabular-nums">¥22,800.00</td>
+                                        <td class="text-right tabular-nums">110</td>
+                                        <td class="text-right tabular-nums">¥21,969.10</td>
+                                        <td class="text-right tabular-nums">4</td>
+                                        <td class="text-right tabular-nums">¥800.00</td>
+                                        <td class="text-right tabular-nums">96.49%</td>
+                                        <td class="text-right tabular-nums">96.36%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">500元驿达便利店代金券红包</td>
+                                        <td class="text-right tabular-nums">115</td>
+                                        <td class="text-right tabular-nums">¥57,500.00</td>
+                                        <td class="text-right tabular-nums">115</td>
+                                        <td class="text-right tabular-nums">¥56,514.10</td>
+                                        <td class="text-right tabular-nums">0</td>
+                                        <td class="text-right tabular-nums">¥0.00</td>
+                                        <td class="text-right tabular-nums">100.00%</td>
+                                        <td class="text-right tabular-nums">98.29%</td>
+                                    </tr>
+                                    <tr class="group-total-row border-b border-neutral-200">
+                                        <td class="text-left font-semibold">驿达服务区消费合计</td>
+                                        <td class="text-right tabular-nums font-semibold">1,855</td>
+                                        <td class="text-right tabular-nums font-semibold">¥154,950.00</td>
+                                        <td class="text-right tabular-nums font-semibold">1,799</td>
+                                        <td class="text-right tabular-nums font-semibold">¥150,214.15</td>
+                                        <td class="text-right tabular-nums font-semibold">56</td>
+                                        <td class="text-right tabular-nums font-semibold">¥3,080.00</td>
+                                        <td class="text-right tabular-nums font-semibold">96.98%</td>
+                                        <td class="text-right tabular-nums font-semibold">96.94%</td>
+                                    </tr>
+                                    <!-- 高速石化加油 -->
+                                    <tr class="group-header-row border-b border-neutral-200">
+                                        <td class="text-left font-semibold" colspan="9">高速石化加油</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">50元加油代金券红包</td>
+                                        <td class="text-right tabular-nums">21</td>
+                                        <td class="text-right tabular-nums">¥1,100.00</td>
+                                        <td class="text-right tabular-nums">19</td>
+                                        <td class="text-right tabular-nums">¥950.00</td>
+                                        <td class="text-right tabular-nums">2</td>
+                                        <td class="text-right tabular-nums">¥100.00</td>
+                                        <td class="text-right tabular-nums">90.48%</td>
+                                        <td class="text-right tabular-nums">86.36%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">100元加油代金券红包</td>
+                                        <td class="text-right tabular-nums">248</td>
+                                        <td class="text-right tabular-nums">¥24,800.00</td>
+                                        <td class="text-right tabular-nums">227</td>
+                                        <td class="text-right tabular-nums">¥22,700.00</td>
+                                        <td class="text-right tabular-nums">21</td>
+                                        <td class="text-right tabular-nums">¥2,100.00</td>
+                                        <td class="text-right tabular-nums">91.53%</td>
+                                        <td class="text-right tabular-nums">91.53%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">150元加油代金券红包</td>
+                                        <td class="text-right tabular-nums">417</td>
+                                        <td class="text-right tabular-nums">¥62,550.00</td>
+                                        <td class="text-right tabular-nums">403</td>
+                                        <td class="text-right tabular-nums">¥60,450.00</td>
+                                        <td class="text-right tabular-nums">14</td>
+                                        <td class="text-right tabular-nums">¥2,100.00</td>
+                                        <td class="text-right tabular-nums">96.64%</td>
+                                        <td class="text-right tabular-nums">96.64%</td>
+                                    </tr>
+                                    <tr class="group-total-row border-b border-neutral-200">
+                                        <td class="text-left font-semibold">高速石化加油合计</td>
+                                        <td class="text-right tabular-nums font-semibold">686</td>
+                                        <td class="text-right tabular-nums font-semibold">¥88,450.00</td>
+                                        <td class="text-right tabular-nums font-semibold">649</td>
+                                        <td class="text-right tabular-nums font-semibold">¥84,100.00</td>
+                                        <td class="text-right tabular-nums font-semibold">37</td>
+                                        <td class="text-right tabular-nums font-semibold">¥4,300.00</td>
+                                        <td class="text-right tabular-nums font-semibold">94.61%</td>
+                                        <td class="text-right tabular-nums font-semibold">95.08%</td>
+                                    </tr>
+                                    <!-- 交控石油加油 -->
+                                    <tr class="group-header-row border-b border-neutral-200">
+                                        <td class="text-left font-semibold" colspan="9">交控石油加油</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">50元交控石油加油代金券红包</td>
+                                        <td class="text-right tabular-nums">27</td>
+                                        <td class="text-right tabular-nums">¥1,300.00</td>
+                                        <td class="text-right tabular-nums">3</td>
+                                        <td class="text-right tabular-nums">¥150.00</td>
+                                        <td class="text-right tabular-nums">24</td>
+                                        <td class="text-right tabular-nums">¥1,200.00</td>
+                                        <td class="text-right tabular-nums">11.11%</td>
+                                        <td class="text-right tabular-nums">11.54%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">100元交控石油加油代金券红包</td>
+                                        <td class="text-right tabular-nums">34</td>
+                                        <td class="text-right tabular-nums">¥3,400.00</td>
+                                        <td class="text-right tabular-nums">6</td>
+                                        <td class="text-right tabular-nums">¥600.00</td>
+                                        <td class="text-right tabular-nums">28</td>
+                                        <td class="text-right tabular-nums">¥2,800.00</td>
+                                        <td class="text-right tabular-nums">17.65%</td>
+                                        <td class="text-right tabular-nums">17.65%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">150元交控石油加油代金券红包</td>
+                                        <td class="text-right tabular-nums">51</td>
+                                        <td class="text-right tabular-nums">¥7,650.00</td>
+                                        <td class="text-right tabular-nums">12</td>
+                                        <td class="text-right tabular-nums">¥1,800.00</td>
+                                        <td class="text-right tabular-nums">39</td>
+                                        <td class="text-right tabular-nums">¥5,850.00</td>
+                                        <td class="text-right tabular-nums">23.53%</td>
+                                        <td class="text-right tabular-nums">23.53%</td>
+                                    </tr>
+                                    <tr class="group-total-row border-b border-neutral-200">
+                                        <td class="text-left font-semibold">交控石油加油合计</td>
+                                        <td class="text-right tabular-nums font-semibold">112</td>
+                                        <td class="text-right tabular-nums font-semibold">¥12,350.00</td>
+                                        <td class="text-right tabular-nums font-semibold">21</td>
+                                        <td class="text-right tabular-nums font-semibold">¥2,550.00</td>
+                                        <td class="text-right tabular-nums font-semibold">91</td>
+                                        <td class="text-right tabular-nums font-semibold">¥9,850.00</td>
+                                        <td class="text-right tabular-nums font-semibold">18.75%</td>
+                                        <td class="text-right tabular-nums font-semibold">20.65%</td>
+                                    </tr>
+                                    <!-- 高速石化加注尿素 -->
+                                    <tr class="group-header-row border-b border-neutral-200">
+                                        <td class="text-left font-semibold" colspan="9">高速石化加注尿素</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">20元高速石化加注尿素代金券红包</td>
+                                        <td class="text-right tabular-nums">16</td>
+                                        <td class="text-right tabular-nums">¥320.00</td>
+                                        <td class="text-right tabular-nums">15</td>
+                                        <td class="text-right tabular-nums">¥300.00</td>
+                                        <td class="text-right tabular-nums">1</td>
+                                        <td class="text-right tabular-nums">¥20.00</td>
+                                        <td class="text-right tabular-nums">93.75%</td>
+                                        <td class="text-right tabular-nums">93.75%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">50元高速石化加注尿素代金券红包</td>
+                                        <td class="text-right tabular-nums">2</td>
+                                        <td class="text-right tabular-nums">¥100.00</td>
+                                        <td class="text-right tabular-nums">1</td>
+                                        <td class="text-right tabular-nums">¥49.80</td>
+                                        <td class="text-right tabular-nums">1</td>
+                                        <td class="text-right tabular-nums">¥50.00</td>
+                                        <td class="text-right tabular-nums">50.00%</td>
+                                        <td class="text-right tabular-nums">49.80%</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-left">100元高速石化加注尿素代金券红包</td>
+                                        <td class="text-right tabular-nums">51</td>
+                                        <td class="text-right tabular-nums">¥5,100.00</td>
+                                        <td class="text-right tabular-nums">39</td>
+                                        <td class="text-right tabular-nums">¥3,900.00</td>
+                                        <td class="text-right tabular-nums">12</td>
+                                        <td class="text-right tabular-nums">¥1,200.00</td>
+                                        <td class="text-right tabular-nums">76.47%</td>
+                                        <td class="text-right tabular-nums">76.47%</td>
+                                    </tr>
+                                    <tr class="group-total-row border-b border-neutral-200">
+                                        <td class="text-left font-semibold">高速石化加注尿素合计</td>
+                                        <td class="text-right tabular-nums font-semibold">69</td>
+                                        <td class="text-right tabular-nums font-semibold">¥5,520.00</td>
+                                        <td class="text-right tabular-nums font-semibold">55</td>
+                                        <td class="text-right tabular-nums font-semibold">¥4,249.80</td>
+                                        <td class="text-right tabular-nums font-semibold">14</td>
+                                        <td class="text-right tabular-nums font-semibold">¥1,270.00</td>
+                                        <td class="text-right tabular-nums font-semibold">79.71%</td>
+                                        <td class="text-right tabular-nums font-semibold">76.99%</td>
+                                    </tr>
+                                    <!-- 总合计 -->
+                                    <tr class="grand-total-row">
+                                        <td class="text-left font-bold">货车积分二期活动合计</td>
+                                        <td class="text-right tabular-nums font-bold">2,722</td>
+                                        <td class="text-right tabular-nums font-bold">¥261,270.00</td>
+                                        <td class="text-right tabular-nums font-bold">2,524</td>
+                                        <td class="text-right tabular-nums font-bold">¥241,113.95</td>
+                                        <td class="text-right tabular-nums font-bold">198</td>
+                                        <td class="text-right tabular-nums font-bold">¥18,500.00</td>
+                                        <td class="text-right tabular-nums font-bold">92.73%</td>
+                                        <td class="text-right tabular-nums font-bold">92.29%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[1000] flex flex-col gap-2"></div>
+
+    <script>
+        // Toast提示
+        function showToast(message, type) {
+            var container = document.getElementById('toast-container');
+            if (!container) return;
+            var toast = document.createElement('div');
+            var bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            toast.className = bgColor + ' text-white px-4 py-2 rounded shadow-lg text-sm font-medium';
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(function() {
+                if (toast.parentNode) toast.parentNode.removeChild(toast);
+            }, 2500);
+        }
+
+        // 三级菜单页面切换
+        function switchPage(pageName) {
+            // 切换页面
+            var pages = document.querySelectorAll('.page');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].classList.remove('active');
+            }
+            var targetPage = document.getElementById('page-' + pageName);
+            if (targetPage) targetPage.classList.add('active');
+
+            // 切换导航高亮
+            var navItems = document.querySelectorAll('.nav-item');
+            for (var i = 0; i < navItems.length; i++) {
+                navItems[i].classList.remove('active');
+                if (navItems[i].getAttribute('data-page') === pageName) {
+                    navItems[i].classList.add('active');
+                }
+            }
+        }
+
+        // 线上活动漏斗 Tab切换
+        function switchFunnelTab(tabName) {
+            // 切换Tab按钮
+            var funnelTabs = document.querySelectorAll('#page-funnel .tab-btn');
+            for (var i = 0; i < funnelTabs.length; i++) {
+                funnelTabs[i].classList.remove('active');
+                if (funnelTabs[i].getAttribute('data-tab') === tabName) {
+                    funnelTabs[i].classList.add('active');
+                }
+            }
+            // 切换Tab内容
+            var funnelPanels = document.querySelectorAll('#page-funnel .tab-panel');
+            for (var i = 0; i < funnelPanels.length; i++) {
+                funnelPanels[i].classList.remove('active');
+            }
+            var targetPanel = document.getElementById('tab-' + tabName);
+            if (targetPanel) targetPanel.classList.add('active');
+
+            // UV Tab时显示车型筛选
+            var vehicleFilter = document.getElementById('funnel-uv-vehicle-filter');
+            if (vehicleFilter) {
+                if (tabName === 'funnel-uv') {
+                    vehicleFilter.classList.remove('hidden');
+                } else {
+                    vehicleFilter.classList.add('hidden');
+                }
+            }
+        }
+
+        // UV数据车型切换
+        function switchUVData() {
+            var vehicleType = document.getElementById('funnel-vehicle-type');
+            if (!vehicleType) return;
+            var type = vehicleType.value;
+            var tableBody = document.getElementById('uv-table-body');
+            if (!tableBody) return;
+
+            if (type === 'huo6') {
+                tableBody.innerHTML = '<tbody>' +
+                    '<tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-01</td><td class="text-right tabular-nums">3,210</td><td class="text-right tabular-nums">1,240</td><td class="text-right tabular-nums">1,680</td><td class="text-right tabular-nums">1,020</td><td class="text-right tabular-nums">580</td><td class="text-right tabular-nums">490</td><td class="text-right tabular-nums">210</td></tr>' +
+                    '<tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-02</td><td class="text-right tabular-nums">3,050</td><td class="text-right tabular-nums">1,160</td><td class="text-right tabular-nums">1,560</td><td class="text-right tabular-nums">960</td><td class="text-right tabular-nums">540</td><td class="text-right tabular-nums">460</td><td class="text-right tabular-nums">190</td></tr>' +
+                    '<tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-03</td><td class="text-right tabular-nums">3,380</td><td class="text-right tabular-nums">1,320</td><td class="text-right tabular-nums">1,760</td><td class="text-right tabular-nums">1,080</td><td class="text-right tabular-nums">620</td><td class="text-right tabular-nums">530</td><td class="text-right tabular-nums">220</td></tr>' +
+                    '<tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-04</td><td class="text-right tabular-nums">2,790</td><td class="text-right tabular-nums">1,070</td><td class="text-right tabular-nums">1,450</td><td class="text-right tabular-nums">900</td><td class="text-right tabular-nums">510</td><td class="text-right tabular-nums">430</td><td class="text-right tabular-nums">180</td></tr>' +
+                    '<tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-05</td><td class="text-right tabular-nums">3,580</td><td class="text-right tabular-nums">1,400</td><td class="text-right tabular-nums">1,870</td><td class="text-right tabular-nums">1,150</td><td class="text-right tabular-nums">660</td><td class="text-right tabular-nums">560</td><td class="text-right tabular-nums">240</td></tr>' +
+                    '<tr class="cumulative-row"><td class="text-center">累计（累计去重）</td><td class="text-right tabular-nums">10,320</td><td class="text-right tabular-nums">4,450</td><td class="text-right tabular-nums">5,980</td><td class="text-right tabular-nums">3,680</td><td class="text-right tabular-nums">2,240</td><td class="text-right tabular-nums">1,830</td><td class="text-right tabular-nums">740</td></tr>' +
+                    '</tbody>';
+            } else {
+                tableBody.innerHTML = '<tbody id="uv-data-all">' +
+                    '<tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-01</td><td class="text-right tabular-nums">8,920</td><td class="text-right tabular-nums">3,450</td><td class="text-right tabular-nums">4,120</td><td class="text-right tabular-nums">2,560</td><td class="text-right tabular-nums">1,480</td><td class="text-right tabular-nums">1,260</td><td class="text-right tabular-nums">510</td></tr>' +
+                    '<tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-02</td><td class="text-right tabular-nums">8,450</td><td class="text-right tabular-nums">3,210</td><td class="text-right tabular-nums">3,890</td><td class="text-right tabular-nums">2,420</td><td class="text-right tabular-nums">1,390</td><td class="text-right tabular-nums">1,190</td><td class="text-right tabular-nums">480</td></tr>' +
+                    '<tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-03</td><td class="text-right tabular-nums">9,380</td><td class="text-right tabular-nums">3,680</td><td class="text-right tabular-nums">4,380</td><td class="text-right tabular-nums">2,720</td><td class="text-right tabular-nums">1,570</td><td class="text-right tabular-nums">1,340</td><td class="text-right tabular-nums">540</td></tr>' +
+                    '<tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-04</td><td class="text-right tabular-nums">7,760</td><td class="text-right tabular-nums">2,980</td><td class="text-right tabular-nums">3,620</td><td class="text-right tabular-nums">2,260</td><td class="text-right tabular-nums">1,280</td><td class="text-right tabular-nums">1,100</td><td class="text-right tabular-nums">440</td></tr>' +
+                    '<tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-05</td><td class="text-right tabular-nums">9,950</td><td class="text-right tabular-nums">3,890</td><td class="text-right tabular-nums">4,650</td><td class="text-right tabular-nums">2,890</td><td class="text-right tabular-nums">1,670</td><td class="text-right tabular-nums">1,420</td><td class="text-right tabular-nums">580</td></tr>' +
+                    '<tr class="cumulative-row"><td class="text-center">累计（累计去重）</td><td class="text-right tabular-nums">28,640</td><td class="text-right tabular-nums">12,340</td><td class="text-right tabular-nums">14,860</td><td class="text-right tabular-nums">9,230</td><td class="text-right tabular-nums">5,620</td><td class="text-right tabular-nums">4,580</td><td class="text-right tabular-nums">1,860</td></tr>' +
+                    '</tbody>';
+            }
+        }
+
+        // 活动效果 Tab切换
+        function switchEffectTab(tabName) {
+            // 切换Tab按钮
+            var effectTabs = document.querySelectorAll('#page-effect .tab-btn');
+            for (var i = 0; i < effectTabs.length; i++) {
+                effectTabs[i].classList.remove('active');
+                if (effectTabs[i].getAttribute('data-tab') === tabName) {
+                    effectTabs[i].classList.add('active');
+                }
+            }
+            // 切换Tab内容
+            var effectPanels = document.querySelectorAll('#page-effect .tab-panel');
+            for (var i = 0; i < effectPanels.length; i++) {
+                effectPanels[i].classList.remove('active');
+            }
+            var targetPanel = document.getElementById('tab-' + tabName);
+            if (targetPanel) targetPanel.classList.add('active');
+
+            // 货六明细Tab时显示额外筛选器
+            var plateFilter = document.getElementById('effect-plate-filter');
+            var signupFilter = document.getElementById('effect-signup-filter');
+            if (plateFilter) {
+                if (tabName === 'effect-huo6') {
+                    plateFilter.classList.remove('hidden');
+                } else {
+                    plateFilter.classList.add('hidden');
+                }
+            }
+            if (signupFilter) {
+                if (tabName === 'effect-huo6') {
+                    signupFilter.classList.remove('hidden');
+                } else {
+                    signupFilter.classList.add('hidden');
+                }
+            }
+        }
+
+        // 券订单 - 查看明细
+        function showCouponDetail() {
+            var pages = document.querySelectorAll('.page');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].classList.remove('active');
+            }
+            var detailPage = document.getElementById('page-coupon-detail');
+            if (detailPage) detailPage.classList.add('active');
+        }
+
+        // 券订单明细 - 返回总览
+        function backToCouponOverview() {
+            var pages = document.querySelectorAll('.page');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].classList.remove('active');
+            }
+            var overviewPage = document.getElementById('page-coupon');
+            if (overviewPage) overviewPage.classList.add('active');
+        }
+
+        // 导出
+        function handleExport() {
+            showToast('导出文件准备中...', 'success');
+        }
+
+        // 初始化图标
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

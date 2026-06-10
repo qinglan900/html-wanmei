@@ -83,8 +83,8 @@
         <aside class="w-36 bg-[#e8e8e8] flex-shrink-0 flex flex-col border-r border-[#d8d8d8]">
             <nav class="flex-1 py-2">
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">货车积分 数据监测</div>
-                <div id="subnav-funnel" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer active" onclick="switchPage('funnel')"><span class="font-semibold">·</span><span> 线上活动漏斗</span></div>
-                <div id="subnav-offline" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('offline')"><span class="font-semibold">·</span><span> 线下数据</span></div>
+                <div id="subnav-funnel" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer active" onclick="switchPage('funnel')"><span class="font-semibold">·</span><span> 运营活动监测</span></div>
+                <div id="subnav-offline" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('offline')"><span class="font-semibold">·</span><span> 路段流量监测</span></div>
                 <div id="subnav-effect" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('effect')"><span class="font-semibold">·</span><span> 活动效果</span></div>
                 <div id="subnav-coupon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('coupon')"><span class="font-semibold">·</span><span> 券订单</span></div>
             </nav>
@@ -104,14 +104,14 @@
         <!-- 主内容区 -->
         <div class="flex-1 overflow-auto">
 
-            <!-- ==================== 页面1：线上活动漏斗 ==================== -->
+            <!-- ==================== 页面1：运营活动监测 ==================== -->
             <div id="page-funnel" class="page active">
                 <main class="p-2">
                     <div class="bg-white rounded border border-neutral-200">
                         <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                                <h1 class="text-base font-bold text-neutral-900">线上活动漏斗</h1>
+                                <h1 class="text-base font-bold text-neutral-900">运营活动监测</h1>
                             </div>
                             <div class="flex gap-3">
                                 <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
@@ -238,14 +238,14 @@ UV转化率：各节点UV / 前序节点UV × 100%，用于分析漏斗各层级
                 </main>
             </div>
 
-            <!-- ==================== 页面2：线下数据 ==================== -->
+            <!-- ==================== 页面2：路段流量监测 ==================== -->
             <div id="page-offline" class="page">
                 <main class="p-2">
                     <div class="bg-white rounded border border-neutral-200">
                         <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                                <h1 class="text-base font-bold text-neutral-900">线下数据</h1>
+                                <h1 class="text-base font-bold text-neutral-900">路段流量监测</h1>
                             </div>
                             <div class="flex gap-3">
                                 <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
@@ -1167,16 +1167,7 @@ UV转化率：各节点UV / 前序节点UV × 100%，用于分析漏斗各层级
             var i, j, row, cumV, sum;
             var limit = Math.min(uvAllData.length, 10);
 
-            for (i = 0; i < limit; i++) {
-                row = uvAllData[i];
-                html += '<tr class="border-b border-neutral-200 table-row">';
-                html += '<td class="text-center">' + row.date + '</td>';
-                for (j = 0; j < row.v.length; j++) {
-                    html += '<td class="text-right tabular-nums">' + formatNum(row.v[j]) + '</td>';
-                }
-                html += '</tr>';
-            }
-            // 累计行（基于全部数据计算）
+            // 累计行（基于全部数据计算）- 放在第一行
             cumV = [];
             for (j = 0; j < uvAllData[0].v.length; j++) {
                 sum = 0;
@@ -1191,6 +1182,16 @@ UV转化率：各节点UV / 前序节点UV × 100%，用于分析漏斗各层级
                 html += '<td class="text-right tabular-nums">' + formatNum(cumV[j]) + '</td>';
             }
             html += '</tr>';
+
+            for (i = 0; i < limit; i++) {
+                row = uvAllData[i];
+                html += '<tr class="border-b border-neutral-200 table-row">';
+                html += '<td class="text-center">' + row.date + '</td>';
+                for (j = 0; j < row.v.length; j++) {
+                    html += '<td class="text-right tabular-nums">' + formatNum(row.v[j]) + '</td>';
+                }
+                html += '</tr>';
+            }
             tbody.innerHTML = html;
         }
 

@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>皖美 E 行 - 横屏首页方案C（顶部Tab）</title>
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #388E3C;
+      --primary-light: #66BB6A;
+      --primary-bg: #E8F5E9;
+      --white: #FFFFFF;
+      --bg: #F5F5F5;
+      --text-primary: #333;
+      --text-secondary: #666;
+      --text-muted: #999;
+      --border: #E0E0E0;
+      --warning: #FF9800;
+      --danger: #F44336;
+      --info: #2196F3;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #E8E8E8;
+      overflow: hidden;
+    }
+
+    .app-container {
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== 顶部融合栏 ===== */
+    .top-bar {
+      height: 40px;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .top-bar-left {
+      width: 65%;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 4px;
+    }
+
+    .top-bar-right {
+      width: 35%;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 8px;
+      justify-content: space-between;
+    }
+
+    .top-logo {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--primary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .logo-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .tab-item {
+      height: 38px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab-item:hover { color: var(--primary); }
+
+    .tab-item.active {
+      color: var(--primary);
+      font-weight: 600;
+      border-bottom-color: var(--primary);
+    }
+
+    .top-search {
+      flex: 1;
+      max-width: 220px;
+      height: 32px;
+      background: var(--bg);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 8px;
+    }
+
+    .top-search input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .top-search input::placeholder { color: var(--text-muted); }
+
+    .top-vehicle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .top-vehicle .plate {
+      background: var(--primary);
+      color: var(--white);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .top-vehicle .msg-icon {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-vehicle .msg-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 16px;
+      height: 16px;
+      background: var(--danger);
+      color: var(--white);
+      border-radius: 8px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 3px;
+      line-height: 1;
+    }
+
+    /* ===== 主内容区 ===== */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    /* Banner */
+    .banner {
+      height: 140px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #A8E6CF 0%, #88D8A8 30%, #FFD3B6 70%, #FFAAA5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner-text {
+      text-align: center;
+      color: var(--white);
+      z-index: 1;
+    }
+
+    .banner-title {
+      font-size: 32px;
+      font-weight: bold;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      margin-bottom: 4px;
+    }
+
+    .banner-subtitle {
+      font-size: 15px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    .banner-deco {
+      position: absolute;
+      font-size: 48px;
+      opacity: 0.3;
+    }
+
+    .banner-deco.left { left: 30px; top: 10px; }
+    .banner-deco.right { right: 30px; bottom: 10px; }
+
+    /* 快捷功能 */
+    .quick-actions {
+      display: flex;
+      justify-content: space-around;
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px 8px;
+      margin-bottom: 16px;
+    }
+
+    .quick-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .quick-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+
+    .quick-icon.green { background: var(--primary-bg); color: var(--primary); }
+    .quick-icon.blue { background: #E3F2FD; color: var(--info); }
+    .quick-icon.orange { background: #FFF3E0; color: var(--warning); }
+    .quick-icon.purple { background: #F3E5F5; color: #9C27B0; }
+
+    .quick-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* 功能网格 - 10列 */
+    .func-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .func-item {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 16px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+
+    .func-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .func-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .func-icon.green { background: var(--primary-bg); color: var(--primary); }
+    .func-icon.blue { background: #E3F2FD; color: var(--info); }
+    .func-icon.orange { background: #FFF3E0; color: var(--warning); }
+    .func-icon.yellow { background: #FFF8E1; color: #FFC107; }
+    .func-icon.purple { background: #F3E5F5; color: #9C27B0; }
+    .func-icon.cyan { background: #E0F7FA; color: #00BCD4; }
+    .func-icon.red { background: #FFEBEE; color: var(--danger); }
+
+    .func-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* 双栏内容区 */
+    .content-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    /* 活动广告 */
+    .promo-card {
+      flex: 1;
+      background: linear-gradient(135deg, var(--primary-bg), #C8E6C9);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .promo-text h3 {
+      font-size: 16px;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+    }
+
+    .promo-text p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .promo-btn {
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 6px 16px;
+      border-radius: 16px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .promo-illustration {
+      margin-left: auto;
+      font-size: 48px;
+    }
+
+    /* 公告 */
+    .notice-bar {
+      background: #FFF8E1;
+      border-radius: 8px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--warning);
+    }
+
+    .notice-icon { flex-shrink: 0; }
+
+    /* 服务卡片 - 3列 */
+    .service-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .service-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .service-card-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .service-card-img.blue { background: #E3F2FD; }
+    .service-card-img.orange { background: #FFF3E0; }
+    .service-card-img.green { background: var(--primary-bg); }
+
+    .service-card-info h4 {
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .service-card-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* 店铺甄选 */
+    .shop-section h3 {
+      font-size: 15px;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .shop-section h3 .more {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: normal;
+      cursor: pointer;
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .shop-item {
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .shop-img {
+      height: 100px;
+      background: linear-gradient(135deg, #FFECD2, #FCB69F);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+
+    .shop-info {
+      padding: 10px;
+    }
+
+    .shop-name {
+      font-size: 13px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .shop-price {
+      font-size: 14px;
+      color: var(--danger);
+      font-weight: bold;
+    }
+
+    .shop-price span {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: normal;
+      text-decoration: line-through;
+      margin-left: 4px;
+    }
+
+    /* ===== 底部导航 ===== */
+    .bottom-nav {
+      height: 56px;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-shrink: 0;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      padding: 4px 16px;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--text-muted);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .nav-item.active svg {
+      stroke: var(--primary);
+    }
+
+    .nav-item .nav-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .nav-item.active .nav-label {
+      color: var(--primary);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 顶部融合栏 -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <div class="top-logo">皖美 E 行</div>
+        <div class="logo-divider"></div>
+        <div class="tab-item active">首页</div>
+        <div class="tab-item">订餐</div>
+        <div class="tab-item">加能</div>
+        <div class="tab-item">休整</div>
+      </div>
+      <div class="top-bar-right">
+        <div class="top-search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" placeholder="搜应用/资讯/地点">
+        </div>
+        <div class="top-vehicle">
+          <div class="msg-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span class="msg-badge">3</span>
+          </div>
+          <span>客车</span>
+          <span class="plate">皖AAT89A5</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <!-- Banner -->
+      <div class="banner">
+        <span class="banner-deco left">🌸</span>
+        <div class="banner-text">
+          <div class="banner-title">暖春助农季 蔬果尝鲜日</div>
+          <div class="banner-subtitle">交通赋能乡村振兴</div>
+        </div>
+        <span class="banner-deco right">🍊</span>
+      </div>
+
+      <!-- 快捷功能 -->
+      <div class="quick-actions">
+        <div class="quick-item">
+          <div class="quick-icon green">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+          <span class="quick-label">扫一扫</span>
+        </div>
+        <div class="quick-item">
+          <div class="quick-icon blue">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          </div>
+          <span class="quick-label">付款码</span>
+        </div>
+        <div class="quick-item">
+          <div class="quick-icon orange">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <span class="quick-label">手机+</span>
+        </div>
+        <div class="quick-item">
+          <div class="quick-icon purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 5h-14a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2z"/><path d="M16 14H8M16 10H8"/></svg>
+          </div>
+          <span class="quick-label">卡包</span>
+        </div>
+      </div>
+
+      <!-- 功能网格 - 10列 -->
+      <div class="func-grid">
+        <div class="func-item">
+          <div class="func-icon green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <span class="func-label">高速补能</span>
+        </div>
+        <div class="func-item">
+          <div class="func-icon blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          </div>
+          <span class="func-label">路况查询</span>
+        </div>
+        <div class="func-item">
+          <div class="func-icon green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <span class="func-label">服务区</span>
+        </div>
+        <div class="func-item">
+          <div class="func-icon blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="20" height="6" rx="2"/><path d="M6 14V10a2 2 0 012-2h8a2 2 0 012 2v4"/></svg>
+          </div>
+          <span class="func-label">收费站</span>
+        </div>
+        <div class="func-item">
+          <div class="func-icon orange">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/></svg>
+          </div>
+          <span class="func-label">美食</span>
+        </div>
+        <div class="func-item">
+          <div class="func-icon yellow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <span class="func-label">充值缴费</span>
+        </div>
+        <div class="func-item">
+          <div class="func-icon purple">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+          </div>
+          <span class="func-label">皖美商城</span>
+        </div>
+        <div class="func-item">
+          <div class="func-icon cyan">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <span class="func-label">发票查询</span>
+        </div>
+        <div class="func-item">
+          <div class="func-icon red">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </div>
+          <span class="func-label">e路畅通</span>
+        </div>
+        <div class="func-item">
+          <div class="func-icon green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </div>
+          <span class="func-label">更多服务</span>
+        </div>
+      </div>
+
+      <!-- 双栏：活动广告 + 公告 -->
+      <div class="content-row">
+        <div class="promo-card">
+          <div class="promo-text">
+            <h3>签到有礼 福利来袭</h3>
+            <p>限量好礼！积分礼品等你来抢</p>
+            <button class="promo-btn">立即签到 &gt;</button>
+          </div>
+          <div class="promo-illustration">🎁</div>
+        </div>
+        <div class="notice-bar" style="min-width: 300px;">
+          <span class="notice-icon">📢</span>
+          <span>【临时养护施工】2026年5月12日15时，合安往……</span>
+        </div>
+      </div>
+
+      <!-- 服务卡片 -->
+      <div class="service-cards">
+        <div class="service-card">
+          <div class="service-card-img blue">⛰️</div>
+          <div class="service-card-info">
+            <h4>旅游服务</h4>
+            <p>带你游世界</p>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-card-img orange">🏨</div>
+          <div class="service-card-info">
+            <h4>酒店预定</h4>
+            <p>周边超值预定</p>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-card-img green">🚗</div>
+          <div class="service-card-info">
+            <h4>车主服务</h4>
+            <p>修车·停车·保险</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 店铺甄选 -->
+      <div class="shop-section">
+        <h3>
+          <span> 店铺甄选 · 地方特产</span>
+          <span class="more">更多 &gt;</span>
+        </h3>
+        <div class="shop-grid">
+          <div class="shop-item">
+            <div class="shop-img" style="background: linear-gradient(135deg, #FFECD2, #FCB69F);">🦐</div>
+            <div class="shop-info">
+              <div class="shop-name">太湖醉虾</div>
+              <div class="shop-price">¥38 <span>¥58</span></div>
+            </div>
+          </div>
+          <div class="shop-item">
+            <div class="shop-img" style="background: linear-gradient(135deg, #E8D5B7, #C9A96E);">🥮</div>
+            <div class="shop-info">
+              <div class="shop-name">徽式烧饼</div>
+              <div class="shop-price">¥15 <span>¥20</span></div>
+            </div>
+          </div>
+          <div class="shop-item">
+            <div class="shop-img" style="background: linear-gradient(135deg, #D4E8D0, #A8D5A0);">🐟</div>
+            <div class="shop-info">
+              <div class="shop-name">黄山臭鱼</div>
+              <div class="shop-price">¥68 <span>¥88</span></div>
+            </div>
+          </div>
+          <div class="shop-item">
+            <div class="shop-img" style="background: linear-gradient(135deg, #F5E6CC, #E8C9A0);">🍵</div>
+            <div class="shop-info">
+              <div class="shop-name">六安瓜片</div>
+              <div class="shop-price">¥128 <span>¥168</span></div>
+            </div>
+          </div>
+          <div class="shop-item">
+            <div class="shop-img" style="background: linear-gradient(135deg, #FFE4E1, #FFB6C1);">💎</div>
+            <div class="shop-info">
+              <div class="shop-name">霍山石斛</div>
+              <div class="shop-price">¥198 <span>¥258</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">首页</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        <span class="nav-label">出行</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        <span class="nav-label">手机+</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="nav-label">ETC</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-label">我的</span>
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    // Tab切换
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // 底部导航切换
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

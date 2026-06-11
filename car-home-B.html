@@ -196,13 +196,10 @@
     .banner {
       height: 110px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #6BCB77 0%, #A8E6CF 30%, #FFD3B6 70%, #FFAAA5 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background-image: url('https://qinglan900.github.io/html-wanmei/images/首页banner.jpg');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
       margin-bottom: 12px;
-      position: relative;
-      overflow: hidden;
     }
 
     .banner-text {
@@ -255,41 +252,90 @@
     }
 
     .service-card {
-      background: var(--white);
-      border-radius: 12px;
-      padding: 10px;
+      border-radius: 14px;
+      padding: 14px 16px;
       display: flex;
-      gap: 10px;
+      align-items: center;
+      gap: 12px;
       cursor: pointer;
-      transition: box-shadow 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+      min-height: 80px;
     }
 
-    .service-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .service-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    /* 旅游服务：天蓝→青绿色渐变 */
+    .service-card:nth-child(1) {
+      background: linear-gradient(135deg, #4FC3F7 0%, #26C6DA 50%, #26A69A 100%);
+    }
+
+    /* 酒店预定：暖橙→珊瑚色渐变 */
+    .service-card:nth-child(2) {
+      background: linear-gradient(135deg, #FFB74D 0%, #FF8A65 50%, #F06292 100%);
+    }
+
+    /* 车主服务：清新绿渐变 */
+    .service-card:nth-child(3) {
+      background: linear-gradient(135deg, #81C784 0%, #66BB6A 50%, #4CAF50 100%);
+    }
+
+    /* 装饰性圆点 */
+    .service-card::before {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .service-card::after {
+      content: '';
+      position: absolute;
+      right: 20px;
+      bottom: -15px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+    }
 
     .service-card-img {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 28px;
       flex-shrink: 0;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(4px);
     }
 
-    .service-card-img.blue { background: #E3F2FD; }
-    .service-card-img.orange { background: #FFF3E0; }
-    .service-card-img.green { background: var(--primary-bg); }
+    .service-card-info {
+      flex: 1;
+      z-index: 1;
+    }
 
     .service-card-info h4 {
-      font-size: 13px;
-      color: var(--text-primary);
-      margin-bottom: 3px;
+      font-size: 16px;
+      color: #fff;
+      margin-bottom: 4px;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
 
     .service-card-info p {
-      font-size: 11px;
-      color: var(--text-muted);
+      font-size: 12px;
+      color: rgba(255,255,255,0.9);
     }
 
     /* 店铺甄选 2行×3列 */
@@ -330,39 +376,44 @@
     .shop-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 
     .shop-img {
-      height: 70px;
-      background: linear-gradient(135deg, #FFECD2, #FCB69F);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
+      height: 110px;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
     }
+
+    .shop-img-1 { background-image: url('https://qinglan900.github.io/html-wanmei/images/太湖醉虾.jpg'); }
+    .shop-img-2 { background-image: url('https://qinglan900.github.io/html-wanmei/images/黄山烧饼.jpg'); }
+    .shop-img-3 { background-image: url('https://qinglan900.github.io/html-wanmei/images/臭鳜鱼.jpg'); }
+    .shop-img-4 { background-image: url('https://qinglan900.github.io/html-wanmei/images/六安瓜皮.jpg'); }
+    .shop-img-5 { background-image: url('https://qinglan900.github.io/html-wanmei/images/霍山石斛.jpg'); }
+    .shop-img-6 { background-image: url('https://qinglan900.github.io/html-wanmei/images/宣纸扇.jpg'); }
 
     .shop-info {
       padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
 
     .shop-name {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--text-primary);
-      margin-bottom: 3px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      flex: 1;
     }
 
     .shop-price {
       font-size: 14px;
       color: var(--danger);
       font-weight: bold;
+      flex-shrink: 0;
     }
 
     .shop-price span {
-      font-size: 10px;
-      color: var(--text-muted);
-      font-weight: normal;
-      text-decoration: line-through;
-      margin-left: 3px;
+      display: none;
     }
 
     /* ===== 右侧功能入口区 35% ===== */
@@ -374,46 +425,6 @@
       flex-direction: column;
       gap: 18px;
       overflow-y: auto;
-    }
-
-    /* 快捷功能 */
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .quick-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      padding: 10px 4px;
-      border-radius: 12px;
-      transition: background 0.2s;
-    }
-
-    .quick-item:hover { background: var(--bg); }
-
-    .quick-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
-
-    .quick-icon.green { background: var(--primary-bg); color: var(--primary); }
-    .quick-icon.blue { background: #E3F2FD; color: var(--info); }
-    .quick-icon.orange { background: #FFF3E0; color: var(--warning); }
-    .quick-icon.purple { background: #F3E5F5; color: #9C27B0; }
-
-    .quick-label {
-      font-size: 12px;
-      color: var(--text-secondary);
     }
 
     /* 功能网格 3×3 + 更多服务 */
@@ -597,19 +608,12 @@
       <!-- ===== 左侧 65% ===== -->
       <main class="left-content">
         <!-- Banner -->
-        <div class="banner">
-          <span class="banner-deco left">🌿</span>
-          <span class="banner-deco top-left">🐦</span>
-          <div class="banner-text">
-            <div class="banner-title">暖春助农季 蔬果尝鲜日</div>
-            <div class="banner-subtitle">交通赋能乡村振兴</div>
-          </div>
-        </div>
+        <div class="banner"></div>
 
         <!-- 公告 -->
         <div class="notice-bar">
           <span>📢</span>
-          <span>【临时养护施工】2026年5月12日15时，合安往……</span>
+          <span>【临时养护施工】2026年5月12日15时，合安高速往合肥方向施工路段，临时调整交通组织……</span>
         </div>
 
         <!-- 服务卡片 -->
@@ -645,45 +649,45 @@
           </h3>
           <div class="shop-grid">
             <div class="shop-item">
-              <div class="shop-img" style="background:linear-gradient(135deg,#FFECD2,#FCB69F)">🦐</div>
+              <div class="shop-img shop-img-1"></div>
               <div class="shop-info">
                 <div class="shop-name">太湖醉虾</div>
-                <div class="shop-price">¥38 <span>¥58</span></div>
+                <div class="shop-price">¥38</div>
               </div>
             </div>
             <div class="shop-item">
-              <div class="shop-img" style="background:linear-gradient(135deg,#E8D5B7,#C9A96E)">🥮</div>
+              <div class="shop-img shop-img-2"></div>
               <div class="shop-info">
                 <div class="shop-name">徽式烧饼</div>
-                <div class="shop-price">¥15 <span>¥20</span></div>
+                <div class="shop-price">¥15</div>
               </div>
             </div>
             <div class="shop-item">
-              <div class="shop-img" style="background:linear-gradient(135deg,#D4E8D0,#A8D5A0)">🐟</div>
+              <div class="shop-img shop-img-3"></div>
               <div class="shop-info">
-                <div class="shop-name">黄山臭鱼</div>
-                <div class="shop-price">¥68 <span>¥88</span></div>
+                <div class="shop-name">黄山臭鳜鱼</div>
+                <div class="shop-price">¥68</div>
               </div>
             </div>
             <div class="shop-item">
-              <div class="shop-img" style="background:linear-gradient(135deg,#F5E6CC,#E8C9A0)">🍵</div>
+              <div class="shop-img shop-img-4"></div>
               <div class="shop-info">
                 <div class="shop-name">六安瓜片</div>
-                <div class="shop-price">¥128 <span>¥168</span></div>
+                <div class="shop-price">¥128</div>
               </div>
             </div>
             <div class="shop-item">
-              <div class="shop-img" style="background:linear-gradient(135deg,#FFE4E1,#FFB6C1)">💎</div>
+              <div class="shop-img shop-img-5"></div>
               <div class="shop-info">
                 <div class="shop-name">霍山石斛</div>
-                <div class="shop-price">¥198 <span>¥258</span></div>
+                <div class="shop-price">¥198</div>
               </div>
             </div>
             <div class="shop-item">
-              <div class="shop-img" style="background:linear-gradient(135deg,#FFF9C4,#FFD54F)">🪭</div>
+              <div class="shop-img shop-img-6"></div>
               <div class="shop-info">
                 <div class="shop-name">宣纸扇</div>
-                <div class="shop-price">¥45 <span>¥68</span></div>
+                <div class="shop-price">¥45</div>
               </div>
             </div>
           </div>
@@ -692,39 +696,10 @@
 
       <!-- ===== 右侧 35% ===== -->
       <aside class="right-content">
-        <!-- 快捷功能 4个 -->
-        <div class="quick-actions">
-          <div class="quick-item">
-            <div class="quick-icon green">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-            </div>
-            <span class="quick-label">扫一扫</span>
-          </div>
-          <div class="quick-item">
-            <div class="quick-icon blue">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-            </div>
-            <span class="quick-label">付款码</span>
-          </div>
-          <div class="quick-item">
-            <div class="quick-icon orange">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-            </div>
-            <span class="quick-label">手机+</span>
-          </div>
-          <div class="quick-item">
-            <div class="quick-icon purple">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 5h-14a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2z"/><path d="M16 14H8M16 10H8"/></svg>
-            </div>
-            <span class="quick-label">卡包</span>
-          </div>
-        </div>
-
         <!-- 功能网格 3×3 + 更多 -->
         <div>
           <div class="section-title">
             <span>常用服务</span>
-            <span class="more-link">更多 &gt;</span>
           </div>
           <div class="func-grid">
             <div class="func-item">
@@ -758,12 +733,6 @@
               <span class="func-label">美食</span>
             </div>
             <div class="func-item">
-              <div class="func-icon yellow">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-              </div>
-              <span class="func-label">充值缴费</span>
-            </div>
-            <div class="func-item">
               <div class="func-icon purple">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
               </div>
@@ -780,6 +749,12 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
               </div>
               <span class="func-label">e路畅通</span>
+            </div>
+            <div class="func-item">
+              <div class="func-icon gray">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              </div>
+              <span class="func-label">更多服务</span>
             </div>
           </div>
         </div>
@@ -805,14 +780,6 @@
       <div class="nav-item">
         <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
         <span class="nav-label">出行</span>
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-        <span class="nav-label">手机+</span>
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span class="nav-label">ETC</span>
       </div>
       <div class="nav-item">
         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

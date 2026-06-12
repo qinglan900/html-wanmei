@@ -1,0 +1,4810 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1024, initial-scale=1.0">
+  <title>皖美 E 行 - 车机版首页</title>
+  <style>
+    :root {
+      --color-primary: #4CAF50;
+      --color-primary-dark: #388E3C;
+      --color-primary-light: #66BB6A;
+      --color-primary-bg: #E8F5E9;
+      --color-white: #FFFFFF;
+      --color-bg-dark: #1A1A2E;
+      --color-bg-card: #16213E;
+      --color-bg-light: #F5F5F5;
+      --color-bg-lighter: #FAFAFA;
+      --color-text-primary: #333333;
+      --color-text-white: #FFFFFF;
+      --color-text-secondary: #666666;
+      --color-text-muted: #999999;
+      --color-success: #4CAF50;
+      --color-warning: #FF9800;
+      --color-danger: #F44336;
+      --color-info: #2196F3;
+      --color-border: #E0E0E0;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 20px;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 12px;
+      --spacing-lg: 16px;
+      --spacing-xl: 24px;
+      --status-bar-height: 50px;
+      --bottom-bar-height: 64px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: var(--color-text-primary);
+      background: #E8E8E8;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      width: 1024px;
+      margin: 0 auto;
+      height: 576px;
+      background: var(--color-bg-light);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ===== 顶部状态栏（直接文字浮在地图上） ===== */
+    .status-bar {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 12;
+      color: #1a1a1a;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .status-time {
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .status-divider {
+      display: inline-block;
+      width: 1px;
+      height: 14px;
+      background: rgba(0, 0, 0, 0.25);
+      vertical-align: middle;
+    }
+
+    .status-speed {
+      font-size: 13px;
+      color: #333;
+    }
+
+    .status-bar-center {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-road {
+      font-size: 13px;
+      color: #333;
+    }
+
+    .status-road .highlight {
+      color: #2e7d32;
+      font-weight: 700;
+    }
+
+    .status-bar-right {
+      display: none;
+    }
+
+    .mode-switch {
+      display: none;
+    }
+
+    /* ===== 主内容区 ===== */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ===== 核心功能区 ===== */
+    .core-area {
+      padding: 12px 24px 8px;
+      flex-shrink: 0;
+    }
+
+    .core-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 12px;
+      height: 120px;
+    }
+
+    .core-btn {
+      background: var(--color-primary);
+      color: var(--color-white);
+      border: none;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+    }
+
+    .core-btn:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .core-btn:active {
+      transform: scale(0.98);
+    }
+
+    .core-btn-icon {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .core-btn-text {
+      letter-spacing: 1px;
+    }
+
+    /* ===== 主内容展示区 ===== */
+    .display-area {
+      flex: 1;
+      display: flex;
+      gap: 16px;
+      padding: 8px 24px 8px;
+      min-height: 0;
+    }
+
+    .service-list-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .service-cards-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .service-card {
+      background: var(--color-white);
+      border-radius: 10px;
+      padding: 10px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .service-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-card-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .service-card-name {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .service-card-distance {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .service-card-distance .highlight {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .service-card-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .service-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .service-tag.green {
+      background: var(--color-primary-bg);
+      color: var(--color-success);
+    }
+
+    .service-tag.blue {
+      background: #E3F2FD;
+      color: var(--color-info);
+    }
+
+    .service-tag.orange {
+      background: #FFF3E0;
+      color: var(--color-warning);
+    }
+
+    .service-tag.gray {
+      background: var(--color-bg-light);
+      color: var(--color-text-muted);
+    }
+
+    .service-card-arrow {
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    .info-cards {
+      width: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+      min-height: 0;
+    }
+
+    .info-card {
+      background: var(--color-white);
+      border-radius: 10px;
+      padding: 10px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .info-card-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .info-card-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--color-primary);
+    }
+
+    .info-card-desc {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    .info-card-desc .highlight {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .info-card-desc .warning {
+      color: var(--color-danger);
+      font-weight: 600;
+    }
+
+    /* ===== 底部固定栏 ===== */
+    .bottom-bar {
+      height: var(--bottom-bar-height);
+      background: var(--color-white);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+    }
+
+    .bottom-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bottom-voice-btn {
+      height: 48px;
+      padding: 0 20px;
+      background: var(--color-primary);
+      color: var(--color-white);
+      border: none;
+      border-radius: 24px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+      flex-shrink: 0;
+    }
+
+    .bottom-voice-btn:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .bottom-voice-btn:active {
+      transform: scale(0.95);
+    }
+
+    .bottom-voice-hint {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .bottom-mall-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-primary-bg);
+      color: var(--color-primary-dark);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 26px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .bottom-mall-btn:hover {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    .bottom-mall-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ===== 驾驶模式提示 ===== */
+    .drive-mode-toast {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: var(--color-danger);
+      color: var(--color-white);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 300;
+      opacity: 0;
+      transition: all 0.3s ease-out;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .drive-mode-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333333;
+      color: var(--color-white);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 300;
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    /* ===== 服务区/收费站列表页 ===== */
+.page-station,
+.page-service-area,
+.page-toll-station,
+.page-navigation,
+.page-fuel,
+.page-ev,
+.page-service,
+.page-detail {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+}
+
+.page-station.active,
+.page-service-area.active,
+.page-toll-station.active,
+.page-navigation.active,
+.page-fuel.active,
+.page-ev.active,
+.page-service.active,
+.page-detail.active {
+  display: flex;
+}
+
+.page-navigation .page-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 12px 20px;
+  gap: 8px;
+}
+
+/* ===== 路况信息 ===== */
+.road-status-section {
+  padding: 16px 24px;
+  flex-shrink: 0;
+}
+
+.road-status-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--color-text-primary);
+  margin-bottom: 12px;
+}
+
+.road-color-bar {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 36px;
+  margin-bottom: 4px;
+}
+
+.road-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-white);
+  padding: 0 8px;
+  min-width: 60px;
+}
+
+.road-segment.green { background: var(--color-success); }
+.road-segment.yellow { background: var(--color-warning); }
+.road-segment.red { background: var(--color-danger); }
+
+.road-legend {
+  display: flex;
+  gap: 16px;
+  padding: 8px 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.road-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.road-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.road-legend-dot.green { background: var(--color-success); }
+.road-legend-dot.yellow { background: var(--color-warning); }
+.road-legend-dot.red { background: var(--color-danger); }
+
+/* 事件提醒列表 */
+.event-section {
+  padding: 0 24px 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.event-section-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--color-text-primary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.event-card {
+  background: var(--color-white);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.event-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.event-icon-wrap.warning { background: #FFF3E0; color: var(--color-warning); }
+.event-icon-wrap.danger { background: #FFEBEE; color: var(--color-danger); }
+.event-icon-wrap.info { background: #E3F2FD; color: var(--color-info); }
+
+.event-main {
+  flex: 1;
+}
+
+.event-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 3px;
+}
+
+.event-desc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.event-desc .highlight { color: var(--color-primary); font-weight: 600; }
+.event-desc .warning-text { color: var(--color-danger); font-weight: 600; }
+
+.event-dist {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--color-primary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* ===== 路线规划 Tab ===== */
+.route-plan-section {
+  padding: 12px 24px;
+  flex-shrink: 1;
+}
+
+.route-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.route-input-row:last-child {
+  margin-bottom: 0;
+}
+
+.route-input-label {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--color-white);
+}
+
+.route-input-label.start { background: var(--color-success); }
+.route-input-label.end { background: var(--color-danger); }
+
+.route-input {
+  flex: 1;
+  height: 42px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0 14px;
+  font-size: 15px;
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.route-input:focus {
+  border-color: var(--color-primary);
+}
+
+.route-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.route-btn {
+  height: 42px;
+  padding: 0 24px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.route-btn:hover { background: var(--color-primary-dark); }
+
+/* 简化路线地图 */
+.route-map {
+  background: var(--color-white);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.route-map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.route-map-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.route-map-note {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.route-map-visual {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  padding: 8px 0;
+}
+
+.route-point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 1;
+}
+
+.route-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid var(--color-success);
+  background: var(--color-white);
+}
+
+.route-dot.end {
+  border-color: var(--color-danger);
+  width: 20px;
+  height: 20px;
+}
+
+.route-label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.route-line {
+  flex: 1;
+  height: 4px;
+  position: relative;
+  border-radius: 2px;
+}
+
+.route-line.green { background: var(--color-success); }
+.route-line.yellow { background: var(--color-warning); }
+.route-line.red { background: var(--color-danger); }
+
+
+
+/* 备选路线列表 */
+.route-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.route-option {
+  background: var(--color-white);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  border: 2px solid transparent;
+}
+
+.route-option:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.route-option.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.route-option-badge {
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.route-option-badge.best { background: var(--color-primary-bg); color: var(--color-primary); }
+.route-option-badge.fast { background: #E3F2FD; color: var(--color-info); }
+.route-option-badge.free { background: #FFF3E0; color: var(--color-warning); }
+
+.route-option-main {
+  flex: 1;
+}
+
+.route-option-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+
+.route-option-detail {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  display: flex;
+  gap: 16px;
+}
+
+.route-option-dist {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.route-option-time {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--color-text-primary);
+}
+
+.route-option-time span {
+  font-size: 13px;
+  font-weight: normal;
+  color: var(--color-text-muted);
+}
+
+.route-option-tag {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.route-navigate-btn {
+  padding: 8px 16px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.route-navigate-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+/* ===== 加油/充电页面 ===== */
+.page-fuel .page-header,
+.page-ev .page-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 12px 20px;
+  gap: 8px;
+}
+
+.page-fuel .page-title-group,
+.page-ev .page-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-fuel .page-title-group .page-title,
+.page-ev .page-title-group .page-title {
+  font-size: 17px;
+}
+
+.sort-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 24px;
+  flex-shrink: 0;
+}
+
+.sort-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.sort-btn {
+  padding: 5px 12px;
+  background: var(--color-bg-light);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sort-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+.sort-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.energy-list {
+  flex: 1;
+  padding: 0 24px 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.energy-card {
+  background: var(--color-white);
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s;
+}
+
+.energy-card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+
+.energy-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.energy-card-icon.fuel { background: #FFF3E0; color: var(--color-warning); }
+.energy-card-icon.ev { background: #E8F5E9; color: var(--color-success); }
+
+.energy-card-main { flex: 1; min-width: 0; }
+
+.energy-card-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--color-text-primary);
+  margin-bottom: 3px;
+}
+
+.energy-card-prices {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+}
+
+.energy-price-item {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.energy-price-item .price {
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.energy-card-status {
+  font-size: 11px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.energy-card-dist {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.energy-dist-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--color-text-primary);
+}
+
+.energy-dist-value span { font-size: 12px; font-weight: normal; color: var(--color-text-muted); }
+
+.energy-card-nav {
+  padding: 8px 18px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.energy-card-nav:hover { background: var(--color-primary-dark); }
+
+/* ===== 订餐页面 ===== */
+.page-service .page-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 20px;
+  gap: 8px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.service-list {
+  flex: 1;
+  padding: 8px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.page-service .service-card {
+  background: var(--color-white) !important;
+  border-radius: 10px !important;
+  padding: 12px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+  transition: box-shadow 0.2s !important;
+  flex: unset !important;
+  height: auto !important;
+  min-height: auto !important;
+  cursor: default !important;
+}
+
+.page-service .service-card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important; }
+
+.page-service .service-card-icon {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.service-card-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.service-card-icon.dining { background: #FFF3E0; color: var(--color-warning); }
+.service-card-icon.parking { background: #E3F2FD; color: var(--color-info); }
+
+.page-service .service-card-main { flex: 1; min-width: 0; }
+
+.page-service .service-card-name {
+  font-size: 14px !important;
+  font-weight: bold !important;
+  color: var(--color-text-primary) !important;
+  margin-bottom: 3px !important;
+}
+
+.page-service .service-card-detail {
+  font-size: 12px !important;
+  color: var(--color-text-secondary) !important;
+  margin-bottom: 3px !important;
+}
+
+.page-service .service-card-info {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.page-service .service-card-info .service-tag {
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+}
+
+.page-service .service-card-right {
+  text-align: right;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-service .service-dist-value {
+  font-size: 18px !important;
+  font-weight: bold !important;
+  color: var(--color-text-primary) !important;
+}
+
+.page-service .service-dist-value span { font-size: 12px !important; font-weight: normal !important; color: var(--color-text-muted) !important; }
+
+.page-service .service-order-btn,
+.page-service .service-park-btn {
+  padding: 8px 18px !important;
+  color: var(--color-white) !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: opacity 0.2s !important;
+  flex-shrink: 0 !important;
+}
+
+.service-order-btn { background: var(--color-primary); }
+.service-park-btn { background: var(--color-info); }
+
+.page-service .service-order-btn:hover,
+.page-service .service-park-btn:hover { opacity: 0.85 !important; }
+
+.page-service .service-card-rest {
+  font-size: 12px !important;
+  color: var(--color-text-muted) !important;
+  font-style: italic !important;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+    .page-back-btn {
+      height: 36px;
+      padding: 0 14px;
+      background: var(--color-bg-light);
+      border: none;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      font-weight: 500;
+    }
+
+    .page-back-btn:hover {
+      background: var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    .page-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      flex-shrink: 0;
+      overflow-x: auto;
+    }
+
+    .filter-btn {
+      padding: 8px 20px;
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    .station-list {
+      flex: 1;
+      padding: 8px 24px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .station-card {
+      background: var(--color-white);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+
+    .station-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .station-card-type {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .station-card-type.service {
+      background: var(--color-primary-bg);
+      color: var(--color-success);
+    }
+
+    .station-card-type.toll {
+      background: #E3F2FD;
+      color: var(--color-info);
+    }
+
+    .station-card-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .station-card-row1 {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .station-card-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .station-card-dist {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--color-primary);
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .station-card-row2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .station-card-info {
+      font-size: 13px;
+      color: var(--color-text-muted);
+    }
+
+    .station-card-info .highlight {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .station-card-tags {
+      display: flex;
+      gap: 6px;
+    }
+
+    .station-nav-btn {
+      padding: 10px 24px;
+      background: var(--color-primary);
+      color: var(--color-white);
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .station-nav-btn:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .load-more-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: var(--color-white);
+      border: 1px dashed var(--color-border);
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 4px;
+    }
+
+    .load-more-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* ===== 服务区详情页 ===== */
+    .page-detail {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .page-detail.active {
+      display: flex;
+    }
+
+    .page-detail .page-header {
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 12px 20px;
+      gap: 8px;
+    }
+
+    .detail-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .detail-header-btn {
+      height: 40px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .detail-header-btn.contact {
+      background: var(--color-bg-light);
+      color: var(--color-text-secondary);
+    }
+
+    .detail-header-btn.contact:hover {
+      background: var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    .detail-header-btn.nav {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    .detail-header-btn.nav:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .detail-collect-btn {
+      width: 40px;
+      height: 40px;
+      background: var(--color-bg-light);
+      border: none;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    .detail-collect-btn:hover {
+      background: var(--color-border);
+    }
+
+    .detail-collect-btn.collected {
+      background: #FFF3E0;
+      color: var(--color-warning);
+    }
+
+    .detail-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 12px 24px;
+      overflow-y: auto;
+    }
+
+    .detail-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .detail-basic-info {
+      background: var(--color-white);
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .detail-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .detail-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .detail-road-info {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .detail-road-info .highlight {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .detail-dist-time {
+      font-size: 14px;
+      color: var(--color-text-primary);
+      margin-bottom: 8px;
+    }
+
+    .detail-dist-time .highlight {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .detail-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .detail-oil-card {
+      background: var(--color-white);
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .detail-card-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .oil-price-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .oil-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .oil-price-label {
+      color: var(--color-text-secondary);
+    }
+
+    .oil-price-value {
+      font-weight: bold;
+      color: var(--color-primary);
+    }
+
+    .oil-update-time {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-top: 6px;
+      text-align: right;
+    }
+
+    .detail-review-card {
+      background: var(--color-white);
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .review-score-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .review-stars {
+      display: flex;
+      gap: 2px;
+    }
+
+    .review-star {
+      width: 16px;
+      height: 16px;
+    }
+
+    .review-star.filled {
+      color: var(--color-warning);
+    }
+
+    .review-star.empty {
+      color: var(--color-border);
+    }
+
+    .review-score {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .review-count {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    .review-item {
+      background: var(--color-bg-light);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+    }
+
+    .review-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .review-user-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .review-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: var(--color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .review-user-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .review-user-type {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .review-content {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+
+    .review-more-btn {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      background: var(--color-bg-light);
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+
+    .review-more-btn:hover {
+      background: var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    /* 右侧面板 */
+    .detail-right-panel {
+      width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+      min-height: 0;
+    }
+
+    /* 订餐店铺 */
+    .detail-dining-card {
+      background: var(--color-white);
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .dining-shop-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--color-bg-light);
+    }
+
+    .dining-shop-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .dining-shop-item:first-child {
+      padding-top: 0;
+    }
+
+    .dining-shop-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      background: var(--color-bg-light);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted);
+    }
+
+    .dining-shop-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .dining-shop-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .dining-shop-name {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dining-shop-status {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .dining-shop-status.open {
+      background: #E8F5E9;
+      color: var(--color-success);
+    }
+
+    .dining-shop-status.closed {
+      background: var(--color-bg-light);
+      color: var(--color-text-muted);
+    }
+
+    .dining-shop-score {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .dining-shop-stars {
+      display: flex;
+      gap: 1px;
+    }
+
+    .dining-shop-stars svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .dining-shop-stars .filled {
+      color: var(--color-warning);
+    }
+
+    .dining-shop-stars .empty {
+      color: var(--color-border);
+    }
+
+    .dining-shop-score-num {
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .dining-shop-score-count {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .dining-shop-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .dining-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--color-bg-light);
+      color: var(--color-text-secondary);
+    }
+
+    .dining-view-all-btn {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      background: var(--color-bg-light);
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+
+    .dining-view-all-btn:hover {
+      background: var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    /* 服务设施状态 */
+    .detail-facilities {
+      background: var(--color-white);
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .facility-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--color-bg-light);
+    }
+
+    .facility-item:last-child {
+      border-bottom: none;
+    }
+
+    .facility-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .facility-left > div {
+      min-width: 0;
+    }
+
+    .facility-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .facility-icon.charging {
+      background: #E8F5E9;
+      color: var(--color-success);
+    }
+
+    .facility-icon.parking {
+      background: #E3F2FD;
+      color: var(--color-info);
+    }
+
+    .facility-icon.dining {
+      background: #FFF3E0;
+      color: var(--color-warning);
+    }
+
+    .facility-icon.restroom {
+      background: #F3E5F5;
+      color: #9C27B0;
+    }
+
+    .facility-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .facility-status {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .facility-right {
+      text-align: right;
+      flex-shrink: 0;
+      width: 80px;
+    }
+
+    .facility-bar-wrap {
+      width: 80px;
+      height: 8px;
+      background: var(--color-bg-light);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .facility-bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+
+    .facility-bar.green {
+      background: var(--color-success);
+    }
+
+    .facility-bar.orange {
+      background: var(--color-warning);
+    }
+
+    .facility-count {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+
+    .facility-text-status {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .facility-text-status.open {
+      color: var(--color-success);
+    }
+
+    .facility-text-status.closed {
+      color: var(--color-text-muted);
+    }
+
+    /* 资质信息 */
+    .detail-qualifications {
+      background: var(--color-white);
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .qual-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+
+    .qual-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .qual-item:hover {
+      color: var(--color-primary);
+    }
+
+    .qual-check {
+      width: 14px;
+      height: 14px;
+      color: var(--color-success);
+      flex-shrink: 0;
+    }
+
+    .qual-audit-time {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+      text-align: right;
+    }
+
+    /* 底部操作栏 */
+    .detail-bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 16px 24px;
+      background: var(--color-white);
+      border-top: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+
+    .detail-navigate-btn {
+      height: 64px;
+      padding: 0 64px;
+      background: var(--color-primary);
+      color: var(--color-white);
+      border: none;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      white-space: nowrap;
+    }
+
+    .detail-navigate-btn:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .detail-secondary-btn {
+      height: 64px;
+      padding: 0 48px;
+      background: var(--color-bg-light);
+      color: var(--color-text-secondary);
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .detail-secondary-btn:hover {
+      background: var(--color-border);
+      color: var(--color-text-primary);
+    }
+    /* ========== 新首页：左侧面板 + 右侧地图 ========== */
+
+    /* 主容器：#homePage 整个区域是地图，左侧面板浮在地图之上 */
+    .home-new {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      background: #e8f1e6;
+    }
+
+    /* ---------- 左侧面板（浮在地图上） ---------- */
+    .left-panel {
+      position: absolute;
+      top: 56px;
+      left: 14px;
+      bottom: 14px;
+      width: 300px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      z-index: 10;
+      transition: width 0.3s ease, height 0.3s ease, top 0.3s ease, bottom 0.3s ease;
+    }
+
+    /* 收缩状态：收缩到底部，只显示搜索框 */
+    .left-panel.collapsed {
+      width: 300px;
+      height: 62px;
+      top: auto;
+      bottom: 14px;
+      overflow: hidden;
+    }
+
+    .left-panel.collapsed .panel-icon-grid,
+    .left-panel.collapsed .panel-quick-set,
+    .left-panel.collapsed .panel-banner,
+    .left-panel.collapsed .panel-weather,
+    .left-panel.collapsed .panel-mall-entry {
+      display: none;
+    }
+
+    /* 展开/收缩切换按钮 */
+    .panel-toggle-btn {
+      position: absolute;
+      top: 16px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #f2f4f6;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      z-index: 5;
+      transition: background 0.2s, transform 0.3s;
+    }
+
+    .panel-toggle-btn:hover { background: #e0e4e8; }
+
+    .left-panel.collapsed .panel-toggle-btn {
+      transform: rotate(180deg);
+    }
+
+    .panel-toggle-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* 搜索框 */
+    .panel-search {
+      padding: 14px 50px 14px 14px;
+      background: transparent;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .panel-search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      background: #f2f4f6;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .panel-search-box:hover { background: #e8ebee; }
+
+    .panel-search-box svg {
+      flex-shrink: 0;
+    }
+
+    .panel-search-text {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      flex: 1;
+    }
+
+    /* 面板内容（可滚动区域，隐藏滚动条） */
+    .panel-content-scroll {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+
+    .panel-content-scroll::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
+
+    /* 功能图标区 */
+    .panel-icon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 10px 10px 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .panel-icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 4px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-align: center;
+    }
+
+    .panel-icon-item:hover { background: #f2f4f6; }
+    .panel-icon-item:active { transform: scale(0.95); }
+
+    .panel-icon-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8f5e9;
+      color: var(--color-primary);
+    }
+
+    .panel-icon-circle.blue { background: #e3f2fd; color: #1976d2; }
+    .panel-icon-circle.orange { background: #fff3e0; color: #f57c00; }
+    .panel-icon-circle.yellow { background: #fff8e1; color: #f9a825; }
+    .panel-icon-circle.red { background: #ffebee; color: #d32f2f; }
+
+    .panel-icon-label {
+      font-size: 12px;
+      color: var(--color-text-primary);
+      line-height: 1.2;
+    }
+
+    /* 快捷设置区 */
+    .panel-quick-set {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--color-border);
+      background: #fafafa;
+    }
+
+    .quick-set-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 4px;
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-set-btn:hover {
+      background: var(--color-primary-bg);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* 活动 Banner */
+    .panel-banner {
+      margin: 12px 14px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s;
+      background: #fff3e0;
+    }
+
+    .panel-banner:hover { transform: translateY(-2px); }
+
+    .panel-banner img {
+      display: block;
+      width: 100%;
+      height: 140px;
+      object-fit: fill;
+    }
+
+    /* 天气区 */
+    .panel-weather {
+      margin: 12px 14px 14px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border-radius: 12px;
+    }
+
+    .weather-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .weather-header-icon {
+      width: 22px;
+      height: 22px;
+      color: #f57c00;
+      flex-shrink: 0;
+    }
+
+    .weather-header-text {
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .weather-hourly {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .weather-hour-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .weather-hour-time {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .weather-hour-icon {
+      width: 18px;
+      height: 18px;
+      color: #f9a825;
+    }
+
+    .weather-hour-temp {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    /* ---------- 右侧地图（占满整个首页） ---------- */
+    .right-map {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      background: #e8f1e6;
+    }
+
+    /* 地图底图（SVG） */
+    .map-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 地图右上浮动按钮 */
+    .map-floating-btns {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .map-float-btn {
+      width: 40px;
+      height: 40px;
+      background: #ffffff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      transition: transform 0.15s, box-shadow 0.15s;
+      color: var(--color-text-secondary);
+    }
+
+    .map-float-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+      color: var(--color-primary);
+    }
+
+    /* 地图左上路况条 */
+    .map-road-status {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 8px 14px;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .map-road-name {
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .map-road-state {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+    }
+
+    .road-state-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .road-state-dot.green { background: #4caf50; }
+    .road-state-dot.yellow { background: #ffc107; }
+    .road-state-dot.red { background: #f44336; }
+
+    /* 地图底部信息条 */
+    .map-bottom-info {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 14px;
+      padding: 12px 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .map-bottom-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .map-next-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .map-next-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .map-next-name {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .map-next-detail {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    .map-next-btn {
+      padding: 8px 16px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .map-next-btn:hover {
+      background: var(--color-primary-dark);
+    }
+
+    /* 地图标注（POI） */
+    .map-poi {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      cursor: pointer;
+      z-index: 5;
+      transition: transform 0.2s;
+    }
+
+    .map-poi:hover { transform: translate(-50%, -100%) scale(1.1); }
+
+    .map-poi-icon {
+      width: 36px;
+      height: 42px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+    }
+
+    .map-poi-pin {
+      width: 28px;
+      height: 28px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+    }
+
+    .map-poi-pin svg { transform: rotate(45deg); width: 14px; height: 14px; color: #fff; }
+
+    .map-poi-pin.green { background: var(--color-primary); }
+    .map-poi-pin.blue { background: #1976d2; }
+    .map-poi-pin.orange { background: #f57c00; }
+    .map-poi-pin.red { background: #d32f2f; }
+
+    .map-poi-label {
+      margin-top: -2px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      color: var(--color-text-primary);
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* 当前车辆位置（闪烁光标） */
+    .map-car-pos {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      z-index: 8;
+      pointer-events: none;
+    }
+
+    .car-pulse-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 50px; height: 50px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: rgba(25, 118, 210, 0.2);
+      animation: carPulse 2s ease-out infinite;
+    }
+
+    .car-pin {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #1976d2;
+      border: 4px solid #fff;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .car-pin svg { width: 18px; height: 18px; color: #fff; }
+
+    @keyframes carPulse {
+      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
+      100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+    }
+
+    /* 右下语音浮动按钮（大号、带脉冲效果） */
+    .map-voice-float {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(76, 175, 80, 0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+      z-index: 11;
+    }
+
+    .map-voice-float::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(76, 175, 80, 0.35);
+      transform: translate(-50%, -50%);
+      animation: voicePulse 2s ease-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes voicePulse {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+      100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+    }
+
+    .map-voice-float:hover {
+      transform: scale(1.06);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.55);
+    }
+
+    .map-voice-float:active {
+      transform: scale(0.95);
+    }
+
+    /* 左侧面板底部：皖美商城入口 */
+    .panel-mall-entry {
+      margin: 0 14px 14px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, #fff7e6 0%, #ffecd1 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid #ffe0a8;
+    }
+
+    .panel-mall-entry:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(245, 124, 0, 0.15);
+    }
+
+    .panel-mall-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #fff;
+      color: #f57c00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .panel-mall-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .panel-mall-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #f57c00;
+    }
+
+    .panel-mall-desc {
+      font-size: 11px;
+      color: #8a6d3b;
+    }
+
+    .panel-mall-arrow {
+      color: #f57c00;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== 通用弹窗 ===== */
+    .modal-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: #fff;
+      border-radius: 16px;
+      width: 380px;
+      max-height: 80%;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--color-text-primary);
+    }
+
+    .modal-close {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted);
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover { background: #f2f4f6; }
+
+    .modal-body {
+      padding: 16px 20px;
+      flex: 1;
+      overflow-y: auto;
+      font-size: 14px;
+      color: var(--color-text-primary);
+      line-height: 1.6;
+    }
+
+    .modal-footer {
+      padding: 12px 20px 16px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .modal-btn {
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .modal-btn.primary {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .modal-btn.primary:hover { background: var(--color-primary-dark); }
+
+    .modal-btn.secondary {
+      background: #f2f4f6;
+      color: var(--color-text-secondary);
+    }
+
+    .modal-btn.secondary:hover { background: #e8ebee; }
+
+    /* 收藏夹列表项 */
+    .fav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: background 0.15s;
+      border-radius: 8px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    .fav-item:last-child { border-bottom: none; }
+    .fav-item:hover { background: #f8fafc; }
+
+    .fav-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .fav-icon.home { background: #e8f5e9; color: var(--color-primary); }
+    .fav-icon.work { background: #e3f2fd; color: #1976d2; }
+    .fav-icon.star { background: #fff8e1; color: #f9a825; }
+
+    .fav-info { flex: 1; min-width: 0; }
+
+    .fav-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .fav-addr {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+
+    .fav-nav-btn {
+      padding: 6px 12px;
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+      border: none;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .fav-nav-btn:hover { background: #c8e6c9; }
+
+    /* 收藏夹删除按钮 */
+    .fav-del-btn {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: #ffebee;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-danger);
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .fav-del-btn:hover { background: #ef9a9a; }
+    .fav-del-btn:active { background: #e57373; }
+
+    /* 搜索面板样式 */
+    .search-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f5f5f5;
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      transition: border-color 0.2s;
+    }
+
+    .search-input-wrap:focus-within {
+      border-color: var(--color-primary);
+      background: #fff;
+    }
+
+    .search-input-wrap input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      outline: none;
+      color: var(--color-text-primary);
+    }
+
+    .search-input-wrap input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .search-hot-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+
+    .search-hot-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .search-hot-tag {
+      padding: 6px 14px;
+      background: #f2f4f6;
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      border: none;
+    }
+
+    .search-hot-tag:hover {
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+    }
+
+    /* 设置家/单位确认弹窗中的输入框 */
+    .modal-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-top: 8px;
+    }
+
+    .modal-input:focus { border-color: var(--color-primary); }
+
+    .modal-hint {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 6px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <!-- 首页：左侧面板 + 右侧地图 -->
+      <div id="homePage" class="home-new">
+        <!-- 左侧功能面板（浮动在地图上） -->
+        <aside class="left-panel" id="leftPanel">
+          <!-- 搜索框 + 展开/收缩切换按钮 -->
+          <div class="panel-search">
+            <button class="panel-toggle-btn" onclick="togglePanel()" title="展开/收缩">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+            <div class="panel-search-box" onclick="openSearchPanel()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <span class="panel-search-text">查找地点、服务区、收费站</span>
+            </div>
+          </div>
+
+          <!-- 可滚动内容区 -->
+          <div class="panel-content-scroll">
+            <!-- 功能图标区（3列2行） -->
+            <div class="panel-icon-grid">
+            <div class="panel-icon-item" onclick="showNavigationPage()">
+              <div class="panel-icon-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                  <circle cx="19" cy="12" r="1" fill="currentColor"/>
+                </svg>
+              </div>
+              <span class="panel-icon-label">路况导航</span>
+            </div>
+            <div class="panel-icon-item" onclick="showServiceAreaPage()">
+              <div class="panel-icon-circle blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+              </div>
+              <span class="panel-icon-label">服务区</span>
+            </div>
+            <div class="panel-icon-item" onclick="showTollStationPage()">
+              <div class="panel-icon-circle orange">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="5" width="14" height="14" rx="2"/>
+                  <line x1="10" y1="9" x2="10" y2="15"/>
+                  <line x1="14" y1="9" x2="14" y2="15"/>
+                </svg>
+              </div>
+              <span class="panel-icon-label">收费站</span>
+            </div>
+            <div class="panel-icon-item" onclick="showFuelPage()">
+              <div class="panel-icon-circle red">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 22V5a2 2 0 012-2h8a2 2 0 012 2v17"/>
+                  <path d="M15 10h2a2 2 0 012 2v2a2 2 0 002 2h0a2 2 0 002-2V7l-3-3"/>
+                  <path d="M3 22h12"/>
+                </svg>
+              </div>
+              <span class="panel-icon-label">加油</span>
+            </div>
+            <div class="panel-icon-item" onclick="showEvPage()">
+              <div class="panel-icon-circle yellow">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+              <span class="panel-icon-label">充电</span>
+            </div>
+            <div class="panel-icon-item" onclick="showServicePage()">
+              <div class="panel-icon-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8h1a4 4 0 010 8h-1"/>
+                  <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+                  <line x1="6" y1="1" x2="6" y2="4"/>
+                  <line x1="10" y1="1" x2="10" y2="4"/>
+                  <line x1="14" y1="1" x2="14" y2="4"/>
+                </svg>
+              </div>
+              <span class="panel-icon-label">订餐</span>
+            </div>
+          </div>
+
+          <!-- 快捷设置区 -->
+          <div class="panel-quick-set">
+            <button class="quick-set-btn" id="setHomeBtn" onclick="setHomeLocation()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12l9-9 9 9"/>
+                <path d="M5 10v10h14V10"/>
+              </svg>
+              <span id="setHomeLabel">设置家</span>
+            </button>
+            <button class="quick-set-btn" id="setWorkBtn" onclick="setWorkLocation()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="7" width="18" height="14" rx="2"/>
+                <path d="M8 7V3h8v4"/>
+              </svg>
+              <span id="setWorkLabel">设置单位</span>
+            </button>
+            <button class="quick-set-btn" onclick="openFavorites()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              收藏夹
+            </button>
+          </div>
+
+          <!-- 活动 Banner -->
+          <div class="panel-banner" onclick="showToast('打开货车活动详情')">
+            <img src="https://qinglan900.github.io/html-wanmei/images/首页banner.jpg" alt="活动 Banner">
+          </div>
+
+          <!-- 天气区 -->
+          <div class="panel-weather">
+            <div class="weather-header">
+              <svg class="weather-header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+              <span class="weather-header-text">今日合肥 22°/32° 阴</span>
+            </div>
+            <div class="weather-hourly">
+              <div class="weather-hour-item">
+                <span class="weather-hour-time">现在</span>
+                <svg class="weather-hour-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.5 19a4.5 4.5 0 100-9h-1.8A7 7 0 104 15h13.5a3.5 3.5 0 100-6h-1"/>
+                </svg>
+                <span class="weather-hour-temp">26°</span>
+              </div>
+              <div class="weather-hour-item">
+                <span class="weather-hour-time">11点</span>
+                <svg class="weather-hour-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="5"/>
+                  <line x1="12" y1="1" x2="12" y2="3"/>
+                  <line x1="12" y1="21" x2="12" y2="23"/>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                  <line x1="1" y1="12" x2="3" y2="12"/>
+                  <line x1="21" y1="12" x2="23" y2="12"/>
+                </svg>
+                <span class="weather-hour-temp">28°</span>
+              </div>
+              <div class="weather-hour-item">
+                <span class="weather-hour-time">12点</span>
+                <svg class="weather-hour-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="5"/>
+                  <line x1="12" y1="1" x2="12" y2="3"/>
+                  <line x1="21" y1="12" x2="23" y2="12"/>
+                </svg>
+                <span class="weather-hour-temp">30°</span>
+              </div>
+              <div class="weather-hour-item">
+                <span class="weather-hour-time">13点</span>
+                <svg class="weather-hour-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="5"/>
+                  <line x1="12" y1="1" x2="12" y2="3"/>
+                  <line x1="21" y1="12" x2="23" y2="12"/>
+                </svg>
+                <span class="weather-hour-temp">32°</span>
+              </div>
+              <div class="weather-hour-item">
+                <span class="weather-hour-time">14点</span>
+                <svg class="weather-hour-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.5 19a4.5 4.5 0 100-9h-1.8A7 7 0 104 15h13.5a3.5 3.5 0 100-6h-1"/>
+                </svg>
+                <span class="weather-hour-temp">31°</span>
+              </div>
+              <div class="weather-hour-item">
+                <span class="weather-hour-time">15点</span>
+                <svg class="weather-hour-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.5 19a4.5 4.5 0 100-9h-1.8A7 7 0 104 15h13.5a3.5 3.5 0 100-6h-1"/>
+                </svg>
+                <span class="weather-hour-temp">29°</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 皖美商城入口 -->
+          <div class="panel-mall-entry" onclick="showToast('进入皖美商城')">
+            <div class="panel-mall-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"/>
+                <circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+              </svg>
+            </div>
+            <div class="panel-mall-text">
+              <span class="panel-mall-title">皖美商城</span>
+              <span class="panel-mall-desc">高速周边好物 · 一键购买</span>
+            </div>
+            <div class="panel-mall-arrow">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </div>
+          </div>
+          </div>
+        </aside>
+
+        <!-- 右侧地图区 -->
+        <section class="right-map">
+          <!-- 顶部文字信息（浮在地图上） -->
+          <header class="status-bar">
+            <span class="status-time" id="statusTime">09:41</span>
+            <span class="status-divider"></span>
+            <span class="status-speed">100 km/h</span>
+            <span class="status-divider"></span>
+            <span class="status-road"><span class="highlight">京台高速</span> · 合肥方向 · K656+200</span>
+          </header>
+
+          <!-- 仿高德地图风格的 SVG 底图 -->
+          <svg class="map-svg" viewBox="0 0 700 400" preserveAspectRatio="xMidYMid slice">
+            <!-- 背景：浅色地面 -->
+            <defs>
+              <linearGradient id="mapBgGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#e8f1e6"/>
+                <stop offset="100%" stop-color="#d4e8d2"/>
+              </linearGradient>
+              <linearGradient id="roadGreen" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#4caf50"/>
+                <stop offset="100%" stop-color="#4caf50"/>
+              </linearGradient>
+            </defs>
+
+            <rect width="700" height="400" fill="url(#mapBgGrad)"/>
+
+            <!-- 绿地/公园（浅绿色块） -->
+            <rect x="20" y="30" width="120" height="90" rx="12" fill="#c5e0c0" opacity="0.55"/>
+            <rect x="540" y="20" width="140" height="110" rx="12" fill="#c5e0c0" opacity="0.55"/>
+            <rect x="580" y="260" width="110" height="110" rx="12" fill="#c5e0c0" opacity="0.55"/>
+            <circle cx="360" cy="110" r="40" fill="#c5e0c0" opacity="0.45"/>
+            <circle cx="180" cy="310" r="55" fill="#c5e0c0" opacity="0.5"/>
+
+            <!-- 水系（河流/湖泊，浅蓝色） -->
+            <path d="M0 180 Q120 150 260 190 T520 170 Q620 155 700 180 L700 210 Q620 200 520 215 T260 220 Q120 200 0 220 Z" fill="#b3d4e8" opacity="0.6"/>
+            <ellipse cx="100" cy="340" rx="70" ry="35" fill="#b3d4e8" opacity="0.6"/>
+
+            <!-- 小路/支路（灰色细线） -->
+            <line x1="0" y1="70" x2="700" y2="90" stroke="#d8d8d8" stroke-width="2"/>
+            <line x1="50" y1="0" x2="80" y2="400" stroke="#d8d8d8" stroke-width="2"/>
+            <line x1="230" y1="0" x2="210" y2="400" stroke="#d8d8d8" stroke-width="2"/>
+            <line x1="420" y1="0" x2="450" y2="400" stroke="#d8d8d8" stroke-width="2"/>
+            <line x1="590" y1="0" x2="610" y2="400" stroke="#d8d8d8" stroke-width="2"/>
+            <line x1="0" y1="340" x2="700" y2="355" stroke="#d8d8d8" stroke-width="2"/>
+            <line x1="150" y1="0" x2="180" y2="130" stroke="#d8d8d8" stroke-width="2"/>
+            <line x1="370" y1="300" x2="420" y2="400" stroke="#d8d8d8" stroke-width="2"/>
+
+            <!-- 横向街区（浅色矩形） -->
+            <rect x="110" y="120" width="90" height="40" fill="#f0ede8" opacity="0.8"/>
+            <rect x="110" y="240" width="90" height="40" fill="#f0ede8" opacity="0.8"/>
+            <rect x="250" y="100" width="100" height="40" fill="#f0ede8" opacity="0.8"/>
+            <rect x="250" y="240" width="100" height="40" fill="#f0ede8" opacity="0.8"/>
+            <rect x="470" y="110" width="90" height="40" fill="#f0ede8" opacity="0.8"/>
+            <rect x="470" y="240" width="90" height="40" fill="#f0ede8" opacity="0.8"/>
+
+            <!-- 主干道京台高速（分段显示路况） -->
+            <!-- 白色底（全线） -->
+            <line x1="0" y1="380" x2="700" y2="30" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+            <!-- 绿色畅通段1 -->
+            <line x1="0" y1="380" x2="300" y2="230" stroke="#4caf50" stroke-width="2" stroke-linecap="round"/>
+            <!-- 黄色缓行段 -->
+            <line x1="300" y1="230" x2="420" y2="170" stroke="#ffc107" stroke-width="2" stroke-linecap="round"/>
+            <!-- 红色拥堵段 -->
+            <line x1="420" y1="170" x2="520" y2="120" stroke="#f44336" stroke-width="2" stroke-linecap="round"/>
+            <!-- 绿色畅通段2 -->
+            <line x1="520" y1="120" x2="700" y2="30" stroke="#4caf50" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- 高速编号牌 -->
+            <g transform="translate(620, 70)">
+              <rect x="-18" y="-10" width="36" height="20" rx="3" fill="#e53935"/>
+              <text x="0" y="6" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">G3</text>
+            </g>
+
+            <!-- 道路名称 -->
+            <text x="30" y="360" font-size="11" fill="#555" font-family="Arial" opacity="0.7">京台高速</text>
+            <text x="620" y="380" font-size="11" fill="#555" font-family="Arial" opacity="0.7">京台高速</text>
+          </svg>
+
+          <!-- 右上浮动按钮 -->
+          <div class="map-floating-btns">
+            <div class="map-float-btn" onclick="showToast('切换图层')" title="图层">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                <polyline points="2 17 12 22 22 17"/>
+                <polyline points="2 12 12 17 22 12"/>
+              </svg>
+            </div>
+            <div class="map-float-btn" onclick="showToast('定位到当前位置')" title="定位">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <line x1="12" y1="2" x2="12" y2="5"/>
+                <line x1="12" y1="19" x2="12" y2="22"/>
+                <line x1="2" y1="12" x2="5" y2="12"/>
+                <line x1="19" y1="12" x2="22" y2="12"/>
+              </svg>
+            </div>
+            <div class="map-float-btn" onclick="showNavigationPage()" title="路线导航">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 右下语音浮动按钮（大号） -->
+          <div class="map-voice-float" onclick="showToast('语音唤醒已激活')" title="点击/长按语音唤醒">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+              <path d="M19 10v2a7 7 0 01-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+          </div>
+
+          <!-- 地图 POI 标注 -->
+          <!-- 丰乐服务区（前方较近处） -->
+          <div class="map-poi" style="left: 55%; top: 52%;" onclick="showDetailPage('丰乐服务区', '5km', '3分钟')">
+            <div class="map-poi-icon">
+              <div class="map-poi-pin green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                  <circle cx="12" cy="10" r="2.5"/>
+                </svg>
+              </div>
+              <div class="map-poi-label">丰乐服务区 5km</div>
+            </div>
+          </div>
+
+          <!-- 中石化加油站 -->
+          <div class="map-poi" style="left: 48%; top: 64%;" onclick="showFuelPage()">
+            <div class="map-poi-icon">
+              <div class="map-poi-pin red">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 22V5a2 2 0 012-2h8a2 2 0 012 2v17"/>
+                  <path d="M15 10h2a2 2 0 012 2v2a2 2 0 002 2h0a2 2 0 002-2V7l-3-3"/>
+                  <path d="M3 22h12"/>
+                </svg>
+              </div>
+              <div class="map-poi-label">中石化 7.98元/L</div>
+            </div>
+          </div>
+
+          <!-- 充电站 -->
+          <div class="map-poi" style="left: 70%; top: 35%;" onclick="showEvPage()">
+            <div class="map-poi-icon">
+              <div class="map-poi-pin orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+              <div class="map-poi-label">国网充电站 1.2元/度</div>
+            </div>
+          </div>
+
+          <!-- 收费站 -->
+          <div class="map-poi" style="left: 80%; top: 18%;" onclick="showTollStationPage()">
+            <div class="map-poi-icon">
+              <div class="map-poi-pin blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="4" width="16" height="16" rx="2"/>
+                  <line x1="10" y1="8" x2="10" y2="16"/>
+                  <line x1="14" y1="8" x2="14" y2="16"/>
+                </svg>
+              </div>
+              <div class="map-poi-label">合肥南收费站 18km</div>
+            </div>
+          </div>
+
+          <!-- 前方施工 -->
+          <div class="map-poi" style="left: 62%; top: 30%;" onclick="showToast('前方5km施工，限速60km/h')">
+            <div class="map-poi-icon">
+              <div class="map-poi-pin orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+              </div>
+              <div class="map-poi-label">施工 限速60</div>
+            </div>
+          </div>
+
+          <!-- 当前车辆位置（蓝色闪烁光标） -->
+          <div class="map-car-pos" style="left: 38%; top: 72%;">
+            <div class="car-pulse-ring"></div>
+            <div class="car-pin">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+              </svg>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 服务区/收费站列表页 -->
+      <div id="stationPage" class="page-station">
+        <div class="page-header">
+          <button class="page-back-btn" onclick="showHomePage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            返回
+          </button>
+          <span class="page-title">服务区 / 收费站</span>
+        </div>
+
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="setFilter(this)">5km内</button>
+          <button class="filter-btn" onclick="setFilter(this)">10km内</button>
+          <button class="filter-btn" onclick="setFilter(this)">20km内</button>
+          <button class="filter-btn" onclick="setFilter(this)">全部</button>
+        </div>
+
+        <div class="station-list" id="stationList">
+          <div class="station-card" onclick="showDetailPage('丰乐服务区', '5km', '3分钟')">
+            <span class="station-card-type service">服务区</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">丰乐服务区</span>
+                <span class="station-card-dist">5km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">3分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag green">充电桩可用</span>
+                  <span class="service-tag blue">餐厅开放</span>
+                  <span class="service-tag green">停车位充足</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="event.stopPropagation(); showToast('导航到丰乐服务区')">导航</button>
+          </div>
+
+          <div class="station-card" onclick="showDetailPage('顺达服务区', '12km', '7分钟')">
+            <span class="station-card-type service">服务区</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">顺达服务区</span>
+                <span class="station-card-dist">12km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">7分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag orange">充电桩排队中</span>
+                  <span class="service-tag blue">餐厅开放</span>
+                  <span class="service-tag orange">停车位紧张</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="event.stopPropagation(); showToast('导航到顺达服务区')">导航</button>
+          </div>
+
+          <div class="station-card">
+            <span class="station-card-type toll">收费站</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">合肥南收费站</span>
+                <span class="station-card-dist">18km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">11分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag blue">ETC通道可用</span>
+                  <span class="service-tag green">人工通道</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="showToast('导航到合肥南收费站')">导航</button>
+          </div>
+
+          <div class="station-card" onclick="showDetailPage('安捷服务区', '25km', '15分钟')">
+            <span class="station-card-type service">服务区</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">安捷服务区</span>
+                <span class="station-card-dist">25km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">15分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag green">充电桩可用</span>
+                  <span class="service-tag gray">餐厅休息中</span>
+                  <span class="service-tag green">停车位充足</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="event.stopPropagation(); showToast('导航到安捷服务区')">导航</button>
+          </div>
+
+          <div class="station-card">
+            <span class="station-card-type toll">收费站</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">方兴大道收费站</span>
+                <span class="station-card-dist">32km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">20分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag blue">ETC通道可用</span>
+                  <span class="service-tag green">人工通道</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="showToast('导航到方兴大道收费站')">导航</button>
+          </div>
+
+          <div class="station-card" onclick="showDetailPage('长丰服务区', '45km', '28分钟')">
+            <span class="station-card-type service">服务区</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">长丰服务区</span>
+                <span class="station-card-dist">45km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">28分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag green">充电桩可用</span>
+                  <span class="service-tag blue">餐厅开放</span>
+                  <span class="service-tag green">停车位充足</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="event.stopPropagation(); showToast('导航到长丰服务区')">导航</button>
+          </div>
+
+          <button class="load-more-btn" onclick="showToast('加载更多...')">加载更多</button>
+        </div>
+      </div>
+
+      <!-- 服务区页 -->
+      <div id="serviceAreaPage" class="page-service-area">
+        <div class="page-header">
+          <button class="page-back-btn" onclick="showHomePage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            返回
+          </button>
+          <span class="page-title">服务区</span>
+        </div>
+
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="setFilter(this)">5km内</button>
+          <button class="filter-btn" onclick="setFilter(this)">10km内</button>
+          <button class="filter-btn" onclick="setFilter(this)">20km内</button>
+          <button class="filter-btn" onclick="setFilter(this)">全部</button>
+        </div>
+
+        <div class="station-list">
+          <div class="station-card" onclick="showDetailPage('丰乐服务区', '5km', '3分钟')">
+            <span class="station-card-type service">服务区</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">丰乐服务区</span>
+                <span class="station-card-dist">5km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">3分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag green">充电桩可用</span>
+                  <span class="service-tag blue">餐厅开放</span>
+                  <span class="service-tag green">停车位充足</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="event.stopPropagation(); showToast('导航到丰乐服务区')">导航</button>
+          </div>
+
+          <div class="station-card" onclick="showDetailPage('顺达服务区', '12km', '7分钟')">
+            <span class="station-card-type service">服务区</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">顺达服务区</span>
+                <span class="station-card-dist">12km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">7分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag orange">充电桩排队中</span>
+                  <span class="service-tag blue">餐厅开放</span>
+                  <span class="service-tag orange">停车位紧张</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="event.stopPropagation(); showToast('导航到顺达服务区')">导航</button>
+          </div>
+
+          <div class="station-card" onclick="showDetailPage('安捷服务区', '25km', '15分钟')">
+            <span class="station-card-type service">服务区</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">安捷服务区</span>
+                <span class="station-card-dist">25km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">15分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag green">充电桩可用</span>
+                  <span class="service-tag gray">餐厅休息中</span>
+                  <span class="service-tag green">停车位充足</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="event.stopPropagation(); showToast('导航到安捷服务区')">导航</button>
+          </div>
+
+          <div class="station-card" onclick="showDetailPage('长丰服务区', '45km', '28分钟')">
+            <span class="station-card-type service">服务区</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">长丰服务区</span>
+                <span class="station-card-dist">45km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">28分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag green">充电桩可用</span>
+                  <span class="service-tag blue">餐厅开放</span>
+                  <span class="service-tag green">停车位充足</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="event.stopPropagation(); showToast('导航到长丰服务区')">导航</button>
+          </div>
+
+          <button class="load-more-btn" onclick="showToast('加载更多...')">加载更多</button>
+        </div>
+      </div>
+
+      <!-- 收费站页 -->
+      <div id="tollStationPage" class="page-toll-station">
+        <div class="page-header">
+          <button class="page-back-btn" onclick="showHomePage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            返回
+          </button>
+          <span class="page-title">收费站</span>
+        </div>
+
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="setFilter(this)">5km内</button>
+          <button class="filter-btn" onclick="setFilter(this)">10km内</button>
+          <button class="filter-btn" onclick="setFilter(this)">20km内</button>
+          <button class="filter-btn" onclick="setFilter(this)">全部</button>
+        </div>
+
+        <div class="station-list">
+          <div class="station-card">
+            <span class="station-card-type toll">收费站</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">合肥南收费站</span>
+                <span class="station-card-dist">18km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">11分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag blue">ETC通道可用</span>
+                  <span class="service-tag green">人工通道</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="showToast('导航到合肥南收费站')">导航</button>
+          </div>
+
+          <div class="station-card">
+            <span class="station-card-type toll">收费站</span>
+            <div class="station-card-main">
+              <div class="station-card-row1">
+                <span class="station-card-name">方兴大道收费站</span>
+                <span class="station-card-dist">32km</span>
+              </div>
+              <div class="station-card-row2">
+                <span class="station-card-info">合肥方向 · 预计<span class="highlight">20分钟</span></span>
+                <div class="station-card-tags">
+                  <span class="service-tag blue">ETC通道可用</span>
+                  <span class="service-tag green">人工通道</span>
+                </div>
+              </div>
+            </div>
+            <button class="station-nav-btn" onclick="showToast('导航到方兴大道收费站')">导航</button>
+          </div>
+
+          <button class="load-more-btn" onclick="showToast('加载更多...')">加载更多</button>
+        </div>
+      </div>
+
+      <!-- 路况/导航页 -->
+      <div id="navigationPage" class="page-navigation">
+        <div class="page-header">
+          <button class="page-back-btn" onclick="showHomePage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            返回
+          </button>
+          <span class="page-title">路况</span>
+        </div>
+
+        <div class="road-status-section">
+          <div class="road-color-bar">
+            <div class="road-segment green" style="flex:3;">K650-K660 畅通</div>
+            <div class="road-segment yellow" style="flex:1;">K660-K665 缓行</div>
+            <div class="road-segment green" style="flex:2;">K665-K670 畅通</div>
+            <div class="road-segment red" style="flex:1;">K670-K672 拥堵</div>
+            <div class="road-segment green" style="flex:2;">K672-K680 畅通</div>
+          </div>
+          <div class="road-legend">
+            <span class="road-legend-item"><span class="road-legend-dot green"></span>畅通</span>
+            <span class="road-legend-item"><span class="road-legend-dot yellow"></span>缓行</span>
+            <span class="road-legend-item"><span class="road-legend-dot red"></span>拥堵</span>
+          </div>
+        </div>
+
+        <div class="event-section">
+          <div class="event-list">
+            <div class="event-card">
+              <div class="event-icon-wrap warning">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+                </svg>
+              </div>
+              <div class="event-main">
+                <div class="event-name">前方施工</div>
+                <div class="event-desc">限速 <span class="warning-text">60km/h</span>，施工区域约 <span class="highlight">2km</span></div>
+              </div>
+              <div class="event-dist">5km</div>
+            </div>
+
+            <div class="event-card">
+              <div class="event-icon-wrap danger">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+              </div>
+              <div class="event-main">
+                <div class="event-name">交通事故</div>
+                <div class="event-desc">两车追尾，占用 <span class="warning-text">右侧车道</span>，通行缓慢</div>
+              </div>
+              <div class="event-dist">12km</div>
+            </div>
+
+            <div class="event-card">
+              <div class="event-icon-wrap info">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 01-3.46 0"/>
+                </svg>
+              </div>
+              <div class="event-main">
+                <div class="event-name">天气预警</div>
+                <div class="event-desc">前方 <span class="warning-text">大雾</span>，能见度低，注意保持车距</div>
+              </div>
+              <div class="event-dist">20km</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding: 12px 24px; flex-shrink: 0;">
+          <button class="route-navigate-btn" style="width: 100%; padding: 12px; font-size: 15px;" onclick="showToast('路线规划功能')">路线规划</button>
+        </div>
+      </div>
+
+      <!-- 加油页 -->
+      <div id="fuelPage" class="page-fuel">
+        <div class="page-header">
+          <button class="page-back-btn" onclick="showHomePage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            返回
+          </button>
+          <span class="page-title">加油</span>
+        </div>
+
+          <div class="sort-bar">
+            <span class="sort-label">排序：</span>
+            <button class="sort-btn active" onclick="setSort(this)">按距离</button>
+            <button class="sort-btn" onclick="setSort(this)">按价格</button>
+            <button class="sort-btn" onclick="setSort(this)">5km内</button>
+            <button class="sort-btn" onclick="setSort(this)">10km内</button>
+            <button class="sort-btn" onclick="setSort(this)">全部</button>
+          </div>
+
+          <div class="energy-list">
+            <div class="energy-card">
+              <div class="energy-card-icon fuel">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 22V5a2 2 0 012-2h8a2 2 0 012 2v17"/>
+                  <path d="M15 10h2a2 2 0 012 2v2a2 2 0 002 2h0a2 2 0 002-2V7l-3-3"/>
+                  <path d="M3 22h12"/>
+                </svg>
+              </div>
+              <div class="energy-card-main">
+                <div class="energy-card-name">中石化（丰乐服务区）</div>
+                <div class="energy-card-prices">
+                  <span class="energy-price-item">92# <span class="price">7.98</span>元/L</span>
+                  <span class="energy-price-item">95# <span class="price">8.51</span>元/L</span>
+                  <span class="energy-price-item">0#柴油 <span class="price">7.65</span>元/L</span>
+                </div>
+                <div class="energy-card-status">
+                  <span class="service-tag green">畅通</span>
+                  <span class="service-tag blue">24小时</span>
+                </div>
+              </div>
+              <div class="energy-card-dist">
+                <div class="energy-dist-value">5<span>km</span></div>
+              </div>
+              <button class="energy-card-nav" onclick="showToast('导航到中石化（丰乐服务区）')">导航</button>
+            </div>
+
+            <div class="energy-card">
+              <div class="energy-card-icon fuel">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 22V5a2 2 0 012-2h8a2 2 0 012 2v17"/>
+                  <path d="M15 10h2a2 2 0 012 2v2a2 2 0 002 2h0a2 2 0 002-2V7l-3-3"/>
+                  <path d="M3 22h12"/>
+                </svg>
+              </div>
+              <div class="energy-card-main">
+                <div class="energy-card-name">中石油（方兴大道收费站出口）</div>
+                <div class="energy-card-prices">
+                  <span class="energy-price-item">92# <span class="price">7.89</span>元/L</span>
+                  <span class="energy-price-item">95# <span class="price">8.42</span>元/L</span>
+                  <span class="energy-price-item">0#柴油 <span class="price">7.58</span>元/L</span>
+                </div>
+                <div class="energy-card-status">
+                  <span class="service-tag green">畅通</span>
+                  <span class="service-tag blue">24小时</span>
+                  <span class="service-tag orange">高速出口</span>
+                </div>
+              </div>
+              <div class="energy-card-dist">
+                <div class="energy-dist-value">8<span>km</span></div>
+              </div>
+              <button class="energy-card-nav" onclick="showToast('导航到中石油（方兴大道收费站出口）')">导航</button>
+            </div>
+
+            <div class="energy-card">
+              <div class="energy-card-icon fuel">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 22V5a2 2 0 012-2h8a2 2 0 012 2v17"/>
+                  <path d="M15 10h2a2 2 0 012 2v2a2 2 0 002 2h0a2 2 0 002-2V7l-3-3"/>
+                  <path d="M3 22h12"/>
+                </svg>
+              </div>
+              <div class="energy-card-main">
+                <div class="energy-card-name">中石油（顺达服务区）</div>
+                <div class="energy-card-prices">
+                  <span class="energy-price-item">92# <span class="price">7.95</span>元/L</span>
+                  <span class="energy-price-item">95# <span class="price">8.48</span>元/L</span>
+                  <span class="energy-price-item">0#柴油 <span class="price">7.62</span>元/L</span>
+                </div>
+                <div class="energy-card-status">
+                  <span class="service-tag orange">排队中</span>
+                  <span class="service-tag blue">24小时</span>
+                </div>
+              </div>
+              <div class="energy-card-dist">
+                <div class="energy-dist-value">12<span>km</span></div>
+              </div>
+              <button class="energy-card-nav" onclick="showToast('导航到中石油（顺达服务区）')">导航</button>
+            </div>
+
+            <div class="energy-card">
+              <div class="energy-card-icon fuel">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 22V5a2 2 0 012-2h8a2 2 0 012 2v17"/>
+                  <path d="M15 10h2a2 2 0 012 2v2a2 2 0 002 2h0a2 2 0 002-2V7l-3-3"/>
+                  <path d="M3 22h12"/>
+                </svg>
+              </div>
+              <div class="energy-card-main">
+                <div class="energy-card-name">中石化（金寨南路出口）</div>
+                <div class="energy-card-prices">
+                  <span class="energy-price-item">92# <span class="price">7.92</span>元/L</span>
+                  <span class="energy-price-item">95# <span class="price">8.45</span>元/L</span>
+                  <span class="energy-price-item">0#柴油 <span class="price">7.60</span>元/L</span>
+                </div>
+                <div class="energy-card-status">
+                  <span class="service-tag green">畅通</span>
+                  <span class="service-tag gray">06:00-22:00</span>
+                  <span class="service-tag orange">高速出口</span>
+                </div>
+              </div>
+              <div class="energy-card-dist">
+                <div class="energy-dist-value">18<span>km</span></div>
+              </div>
+              <button class="energy-card-nav" onclick="showToast('导航到中石化（金寨南路出口）')">导航</button>
+            </div>
+
+            <div class="energy-card">
+              <div class="energy-card-icon fuel">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 22V5a2 2 0 012-2h8a2 2 0 012 2v17"/>
+                  <path d="M15 10h2a2 2 0 012 2v2a2 2 0 002 2h0a2 2 0 002-2V7l-3-3"/>
+                  <path d="M3 22h12"/>
+                </svg>
+              </div>
+              <div class="energy-card-main">
+                <div class="energy-card-name">壳牌（安捷服务区）</div>
+                <div class="energy-card-prices">
+                  <span class="energy-price-item">92# <span class="price">8.02</span>元/L</span>
+                  <span class="energy-price-item">95# <span class="price">8.55</span>元/L</span>
+                  <span class="energy-price-item">0#柴油 <span class="price">7.68</span>元/L</span>
+                </div>
+                <div class="energy-card-status">
+                  <span class="service-tag green">畅通</span>
+                  <span class="service-tag gray">06:00-22:00</span>
+                </div>
+              </div>
+              <div class="energy-card-dist">
+                <div class="energy-dist-value">25<span>km</span></div>
+              </div>
+              <button class="energy-card-nav" onclick="showToast('导航到壳牌（安捷服务区）')">导航</button>
+            </div>
+          </div>
+      </div>
+
+      <!-- 充电页 -->
+      <div id="evPage" class="page-ev">
+        <div class="page-header">
+          <button class="page-back-btn" onclick="showHomePage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            返回
+          </button>
+          <span class="page-title">充电</span>
+        </div>
+
+          <div class="sort-bar">
+            <span class="sort-label">排序：</span>
+            <button class="sort-btn active" onclick="setSort(this)">按距离</button>
+            <button class="sort-btn" onclick="setSort(this)">按价格</button>
+            <button class="sort-btn" onclick="setSort(this)">5km内</button>
+            <button class="sort-btn" onclick="setSort(this)">10km内</button>
+            <button class="sort-btn" onclick="setSort(this)">全部</button>
+          </div>
+
+          <div class="energy-list">
+            <div class="energy-card">
+              <div class="energy-card-icon ev">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+              <div class="energy-card-main">
+                <div class="energy-card-name">国家电网充电站（丰乐服务区）</div>
+                <div class="energy-card-prices">
+                  <span class="energy-price-item">可用 <span class="price">6/8</span> 个桩</span>
+                  <span class="energy-price-item">快充 120kW</span>
+                  <span class="energy-price-item">慢充 7kW</span>
+                  <span class="energy-price-item"><span class="price">1.20</span>元/度</span>
+                </div>
+                <div class="energy-card-status">
+                  <span class="service-tag green">快充可用</span>
+                  <span class="service-tag blue">慢充可用</span>
+                </div>
+              </div>
+              <div class="energy-card-dist">
+                <div class="energy-dist-value">5<span>km</span></div>
+              </div>
+              <button class="energy-card-nav" onclick="showToast('导航到国家电网充电站（丰乐服务区）')">导航</button>
+            </div>
+
+            <div class="energy-card">
+              <div class="energy-card-icon ev">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+              <div class="energy-card-main">
+                <div class="energy-card-name">特来电充电站（顺达服务区）</div>
+                <div class="energy-card-prices">
+                  <span class="energy-price-item">可用 <span class="price">2/4</span> 个桩</span>
+                  <span class="energy-price-item">快充 160kW</span>
+                  <span class="energy-price-item">换电可用</span>
+                  <span class="energy-price-item"><span class="price">1.35</span>元/度</span>
+                </div>
+                <div class="energy-card-status">
+                  <span class="service-tag orange">快充紧张</span>
+                  <span class="service-tag green">换电可用</span>
+                </div>
+              </div>
+              <div class="energy-card-dist">
+                <div class="energy-dist-value">12<span>km</span></div>
+              </div>
+              <button class="energy-card-nav" onclick="showToast('导航到特来电充电站（顺达服务区）')">导航</button>
+            </div>
+
+            <div class="energy-card">
+              <div class="energy-card-icon ev">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+              <div class="energy-card-main">
+                <div class="energy-card-name">星星充电（安捷服务区）</div>
+                <div class="energy-card-prices">
+                  <span class="energy-price-item">可用 <span class="price">4/6</span> 个桩</span>
+                  <span class="energy-price-item">快充 100kW</span>
+                  <span class="energy-price-item">慢充 7kW</span>
+                  <span class="energy-price-item"><span class="price">1.10</span>元/度</span>
+                </div>
+                <div class="energy-card-status">
+                  <span class="service-tag green">快充可用</span>
+                  <span class="service-tag blue">慢充可用</span>
+                </div>
+              </div>
+              <div class="energy-card-dist">
+                <div class="energy-dist-value">25<span>km</span></div>
+              </div>
+              <button class="energy-card-nav" onclick="showToast('导航到星星充电（安捷服务区）')">导航</button>
+            </div>
+          </div>
+      </div>
+
+      <!-- 订餐/停车页 -->
+      <div id="servicePage" class="page-service">
+        <div class="page-header">
+          <button class="page-back-btn" onclick="showHomePage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            返回
+          </button>
+          <span class="page-title">订餐</span>
+        </div>
+
+        <div class="service-list">
+            <div class="service-card">
+              <div class="service-card-icon dining">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8h1a4 4 0 010 8h-1"/>
+                  <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+                  <line x1="6" y1="1" x2="6" y2="4"/>
+                  <line x1="10" y1="1" x2="10" y2="4"/>
+                  <line x1="14" y1="1" x2="14" y2="4"/>
+                </svg>
+              </div>
+              <div class="service-card-main">
+                <div class="service-card-name">丰乐服务区 · 徽味轩</div>
+                <div class="service-card-detail">推荐：红烧肉、毛豆腐、臭鳜鱼</div>
+                <div class="service-card-info">
+                  <span class="service-tag green">可预订</span>
+                  <span class="service-tag blue">预计15分钟取餐</span>
+                </div>
+              </div>
+              <div class="service-card-right">
+                <div class="service-dist-value">5<span>km</span></div>
+                <button class="service-order-btn" onclick="showToast('预订成功')">预订</button>
+              </div>
+            </div>
+
+            <div class="service-card">
+              <div class="service-card-icon dining">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8h1a4 4 0 010 8h-1"/>
+                  <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+                  <line x1="6" y1="1" x2="6" y2="4"/>
+                  <line x1="10" y1="1" x2="10" y2="4"/>
+                  <line x1="14" y1="1" x2="14" y2="4"/>
+                </svg>
+              </div>
+              <div class="service-card-main">
+                <div class="service-card-name">长丰服务区 · 老乡鸡</div>
+                <div class="service-card-detail">推荐：肥西老母鸡汤、农家小炒肉</div>
+                <div class="service-card-info">
+                  <span class="service-tag green">可预订</span>
+                  <span class="service-tag blue">预计10分钟取餐</span>
+                  <span class="service-tag orange">人气热卖</span>
+                </div>
+              </div>
+              <div class="service-card-right">
+                <div class="service-dist-value">45<span>km</span></div>
+                <button class="service-order-btn" onclick="showToast('预订成功')">预订</button>
+              </div>
+            </div>
+
+            <div class="service-card">
+              <div class="service-card-icon dining">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8h1a4 4 0 010 8h-1"/>
+                  <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+                  <line x1="6" y1="1" x2="6" y2="4"/>
+                  <line x1="10" y1="1" x2="10" y2="4"/>
+                  <line x1="14" y1="1" x2="14" y2="4"/>
+                </svg>
+              </div>
+              <div class="service-card-main">
+                <div class="service-card-name">顺达服务区 · 高速食堂</div>
+                <div class="service-card-detail">推荐：红烧肉、卤蛋、面条</div>
+                <div class="service-card-info">
+                  <span class="service-tag green">可预订</span>
+                  <span class="service-tag blue">预计20分钟取餐</span>
+                </div>
+              </div>
+              <div class="service-card-right">
+                <div class="service-dist-value">12<span>km</span></div>
+                <button class="service-order-btn" onclick="showToast('预订成功')">预订</button>
+              </div>
+            </div>
+
+            <div class="service-card">
+              <div class="service-card-icon dining">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8h1a4 4 0 010 8h-1"/>
+                  <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+                  <line x1="6" y1="1" x2="6" y2="4"/>
+                  <line x1="10" y1="1" x2="10" y2="4"/>
+                  <line x1="14" y1="1" x2="14" y2="4"/>
+                </svg>
+              </div>
+              <div class="service-card-main">
+                <div class="service-card-name">安捷服务区 · 美食城</div>
+                <div class="service-card-detail">推荐：牛肉面、盖浇饭、快餐</div>
+                <div class="service-card-info">
+                  <span class="service-tag gray">休息中</span>
+                  <span class="service-tag gray">10:00-21:00</span>
+                </div>
+              </div>
+              <div class="service-card-right">
+                <div class="service-dist-value">25<span>km</span></div>
+                <div class="service-card-rest">餐厅休息中</div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <!-- 服务区详情页 -->
+      <div id="detailPage" class="page-detail">
+        <div class="page-header">
+          <button class="page-back-btn" onclick="showStationPageFromDetail()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            返回
+          </button>
+          <span class="page-title" id="detailPageTitle">丰乐服务区详情</span>
+          <div class="detail-header-actions">
+            <button class="detail-header-btn contact" onclick="showToast('联系服务区')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+              </svg>
+              联系服务区
+            </button>
+            <button class="detail-header-btn nav" onclick="showToast('开始导航到丰乐服务区')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+              </svg>
+              导航
+            </button>
+            <button class="detail-collect-btn" id="detailCollectBtn" onclick="toggleCollect()" title="收藏">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="detail-content">
+          <!-- 左列：基本信息+设施合并 + 油价 -->
+          <div class="detail-col">
+            <!-- 基本信息 + 服务设施状态（合并卡片） -->
+            <div class="detail-basic-info">
+              <div class="detail-name-row">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span class="detail-name" id="detailName">丰乐服务区</span>
+              </div>
+              <div class="detail-road-info">
+                <span class="highlight">京台高速</span> · 合肥方向 · K658+300
+              </div>
+              <div class="detail-dist-time">
+                距离 <span class="highlight" id="detailDist">5km</span> · 预计 <span class="highlight" id="detailTime">3分钟</span> 到达
+              </div>
+              <div class="detail-tags" id="detailTags">
+                <span class="service-tag green">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                  充电桩可用
+                </span>
+                <span class="service-tag blue">餐厅开放</span>
+                <span class="service-tag green">停车位充足</span>
+                <span class="service-tag blue">24小时</span>
+              </div>
+
+              <!-- 服务设施状态（嵌入） -->
+              <div style="border-top: 1px solid var(--color-border); margin-top: 12px; padding-top: 12px;">
+                <div class="detail-card-title" style="margin-bottom: 10px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                    <path d="M16 7V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v3"/>
+                  </svg>
+                  服务设施状态
+                </div>
+
+                <div class="facility-item">
+                  <div class="facility-left">
+                    <div class="facility-icon charging">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
+                    <div>
+                      <div class="facility-name">充电桩</div>
+                      <div class="facility-status">快充 120kW · 慢充 7kW</div>
+                    </div>
+                  </div>
+                  <div class="facility-right">
+                    <div class="facility-bar-wrap">
+                      <div class="facility-bar green" style="width: 75%;"></div>
+                    </div>
+                    <div class="facility-count">6/8 可用</div>
+                  </div>
+                </div>
+
+                <div class="facility-item">
+                  <div class="facility-left">
+                    <div class="facility-icon parking">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 17V7h4a3 3 0 010 6H9"/></svg>
+                    </div>
+                    <div>
+                      <div class="facility-name">停车场</div>
+                      <div class="facility-status">小车/大车/货车</div>
+                    </div>
+                  </div>
+                  <div class="facility-right">
+                    <div class="facility-bar-wrap">
+                      <div class="facility-bar green" style="width: 56%;"></div>
+                    </div>
+                    <div class="facility-count">46/82 剩余</div>
+                  </div>
+                </div>
+
+                <div class="facility-item">
+                  <div class="facility-left">
+                    <div class="facility-icon dining">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                    </div>
+                    <div>
+                      <div class="facility-name">餐厅</div>
+                      <div class="facility-status">3家 · 营业中</div>
+                    </div>
+                  </div>
+                  <div class="facility-right">
+                    <div class="facility-text-status open">营业中</div>
+                  </div>
+                </div>
+
+                <div class="facility-item" style="border-bottom: none; padding-bottom: 0;">
+                  <div class="facility-left">
+                    <div class="facility-icon restroom">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 12h16a1 1 0 011 1v3a4 4 0 01-4 4H7a4 4 0 01-4-4v-3a1 1 0 011-1z"/>
+                        <path d="M6 12V5a2 2 0 012-2h3v2.25"/>
+                        <circle cx="9" cy="16" r="1"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="facility-name">卫生间</div>
+                      <div class="facility-status">24小时 · 热水</div>
+                    </div>
+                  </div>
+                  <div class="facility-right">
+                    <div class="facility-text-status open">清洁</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 油价信息 -->
+            <div class="detail-oil-card">
+              <div class="detail-card-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 22V5a2 2 0 012-2h8a2 2 0 012 2v17"/>
+                  <path d="M15 10h2a2 2 0 012 2v2a2 2 0 002 2h0a2 2 0 002-2V7l-3-3"/>
+                  <path d="M3 22h12"/>
+                </svg>
+                油价信息
+              </div>
+              <div class="oil-price-list">
+                <div class="oil-price-row">
+                  <span class="oil-price-label">92# 汽油</span>
+                  <span class="oil-price-value">7.98 元/L</span>
+                </div>
+                <div class="oil-price-row">
+                  <span class="oil-price-label">95# 汽油</span>
+                  <span class="oil-price-value">8.51 元/L</span>
+                </div>
+                <div class="oil-price-row">
+                  <span class="oil-price-label">0# 柴油</span>
+                  <span class="oil-price-value">7.65 元/L</span>
+                </div>
+              </div>
+              <div class="oil-update-time">更新时间：2026-06-02 08:30</div>
+            </div>
+          </div>
+
+          <!-- 右列：订餐店铺 + 用户评价 -->
+          <div class="detail-col">
+            <!-- 订餐店铺 -->
+            <div class="detail-dining-card">
+              <div class="detail-card-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8h1a4 4 0 010 8h-1"/>
+                  <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+                  <line x1="6" y1="1" x2="6" y2="4"/>
+                  <line x1="10" y1="1" x2="10" y2="4"/>
+                  <line x1="14" y1="1" x2="14" y2="4"/>
+                </svg>
+                订餐店铺
+              </div>
+
+              <div class="dining-shop-item">
+                <div class="dining-shop-img">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </div>
+                <div class="dining-shop-info">
+                  <div class="dining-shop-header">
+                    <span class="dining-shop-name">徽味轩</span>
+                    <span class="dining-shop-status open">营业中</span>
+                  </div>
+                  <div class="dining-shop-score">
+                    <div class="dining-shop-stars">
+                      <svg viewBox="0 0 24 24" fill="currentColor" class="filled"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      <svg viewBox="0 0 24 24" fill="currentColor" class="filled"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      <svg viewBox="0 0 24 24" fill="currentColor" class="filled"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      <svg viewBox="0 0 24 24" fill="currentColor" class="filled"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      <svg viewBox="0 0 24 24" fill="currentColor" class="empty"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    </div>
+                    <span class="dining-shop-score-num">4.5</span>
+                    <span class="dining-shop-score-count">(86条评价)</span>
+                  </div>
+                  <div class="dining-shop-tags">
+                    <span class="dining-tag">农家菜</span>
+                    <span class="dining-tag">快餐</span>
+                    <span class="dining-tag">面条</span>
+                    <span class="dining-tag">06:00-21:00</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dining-shop-item">
+                <div class="dining-shop-img">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </div>
+                <div class="dining-shop-info">
+                  <div class="dining-shop-header">
+                    <span class="dining-shop-name">皖香阁</span>
+                    <span class="dining-shop-status open">营业中</span>
+                  </div>
+                  <div class="dining-shop-score">
+                    <div class="dining-shop-stars">
+                      <svg viewBox="0 0 24 24" fill="currentColor" class="filled"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      <svg viewBox="0 0 24 24" fill="currentColor" class="filled"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      <svg viewBox="0 0 24 24" fill="currentColor" class="filled"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      <svg viewBox="0 0 24 24" fill="currentColor" class="filled"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      <svg viewBox="0 0 24 24" fill="currentColor" class="empty"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    </div>
+                    <span class="dining-shop-score-num">4.3</span>
+                    <span class="dining-shop-score-count">(62条评价)</span>
+                  </div>
+                  <div class="dining-shop-tags">
+                    <span class="dining-tag">安徽菜</span>
+                    <span class="dining-tag">炒菜</span>
+                    <span class="dining-tag">06:30-20:00</span>
+                  </div>
+                </div>
+              </div>
+
+              <button class="dining-view-all-btn" onclick="showToast('查看全部餐厅')">查看全部 3 家餐厅</button>
+            </div>
+
+            <!-- 用户评价 -->
+            <div class="detail-review-card">
+              <div class="detail-card-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                用户评价
+              </div>
+              <div class="review-score-row">
+                <div class="review-stars">
+                  <svg class="review-star filled" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg class="review-star filled" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg class="review-star filled" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg class="review-star filled" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg class="review-star empty" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <span class="review-score">4.2</span>
+                <span class="review-count">(128条)</span>
+              </div>
+
+              <div class="review-item">
+                <div class="review-user-row">
+                  <div class="review-avatar">王</div>
+                  <span class="review-user-name">王师傅</span>
+                  <span class="review-user-type">· 货车</span>
+                </div>
+                <div class="review-content">环境整洁，菜品不错，充电桩多。</div>
+              </div>
+
+              <div class="review-item">
+                <div class="review-user-row">
+                  <div class="review-avatar">李</div>
+                  <span class="review-user-name">李师傅</span>
+                  <span class="review-user-type">· 客车</span>
+                </div>
+                <div class="review-content">卫生间干净，餐厅价格实惠。</div>
+              </div>
+
+              <button class="review-more-btn" onclick="showToast('查看全部评价')">查看全部 128 条评价</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+    <div class="drive-mode-toast" id="driveModeToast">驾驶模式下该功能不可用</div>
+
+    <!-- 通用弹窗遮罩 -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+      <div class="modal-dialog" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <span class="modal-title" id="modalTitle">提示</span>
+          <button class="modal-close" onclick="closeModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer" id="modalFooter"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateTime() {
+      var now = new Date();
+      var hours = now.getHours();
+      var minutes = now.getMinutes();
+      var timeStr = (hours < 10 ? '0' + hours : hours) + ':' + (minutes < 10 ? '0' + minutes : minutes);
+      var timeEl = document.getElementById('statusTime');
+      if (timeEl) timeEl.textContent = timeStr;
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    var isDrivingMode = true;
+    var modeSwitch = document.getElementById('modeSwitch');
+    var modeText = document.getElementById('modeText');
+
+    if (modeSwitch) {
+      modeSwitch.addEventListener('click', function() {
+        if (isDrivingMode) {
+          showDriveModeToast();
+        } else {
+          isDrivingMode = true;
+          modeSwitch.classList.add('locked');
+          modeText.textContent = '驾驶模式';
+          showToast('已切换为驾驶模式');
+        }
+      });
+    }
+
+    function toggleMode() {
+      isDrivingMode = !isDrivingMode;
+      if (modeSwitch) {
+        modeSwitch.classList.toggle('locked', isDrivingMode);
+      }
+      if (modeText) {
+        modeText.textContent = isDrivingMode ? '驾驶模式' : '停车模式';
+      }
+    }
+
+    function showDriveModeToast() {
+      var toast = document.getElementById('driveModeToast');
+      if (!toast) return;
+      toast.classList.add('show');
+      setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    function showToast(message) {
+      var toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.style.opacity = '1';
+      setTimeout(function() {
+        toast.style.opacity = '0';
+      }, 2000);
+    }
+
+    // 左侧面板展开/收缩切换
+    function togglePanel() {
+      var panel = document.getElementById('leftPanel');
+      if (!panel) return;
+      panel.classList.toggle('collapsed');
+    }
+
+    // ===== 通用弹窗 =====
+    var homeAddr = '';
+    var workAddr = '';
+
+    function openModal(title, bodyHtml, footerHtml) {
+      var overlay = document.getElementById('modalOverlay');
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalBody').innerHTML = bodyHtml;
+      document.getElementById('modalFooter').innerHTML = footerHtml || '';
+      overlay.classList.add('show');
+    }
+
+    function closeModal() {
+      var overlay = document.getElementById('modalOverlay');
+      overlay.classList.remove('show');
+    }
+
+    // 设置家
+    function setHomeLocation() {
+      var currentVal = homeAddr || '';
+      openModal('设置家',
+        '<div>将当前位置设为"家"，方便一键导航回家</div>' +
+        '<input class="modal-input" id="homeInput" type="text" placeholder="输入家的地址，如：合肥市蜀山区望江西路" value="' + currentVal + '">' +
+        '<div class="modal-hint">也可点击"使用当前位置"自动填充</div>',
+        '<button class="modal-btn secondary" onclick="useCurrentPos(\'homeInput\')">使用当前位置</button>' +
+        '<button class="modal-btn primary" onclick="confirmSetHome()">确认设置</button>'
+      );
+    }
+
+    function confirmSetHome() {
+      var input = document.getElementById('homeInput');
+      var val = input ? input.value.trim() : '';
+      if (!val) { showToast('请输入家的地址'); return; }
+      homeAddr = val;
+      var label = document.getElementById('setHomeLabel');
+      if (label) label.textContent = '家';
+      var btn = document.getElementById('setHomeBtn');
+      if (btn) btn.style.borderColor = 'var(--color-primary)';
+      closeModal();
+      showToast('已设置家：' + val);
+    }
+
+    // 设置单位
+    function setWorkLocation() {
+      var currentVal = workAddr || '';
+      openModal('设置单位',
+        '<div>将当前位置设为"单位"，方便一键导航上班</div>' +
+        '<input class="modal-input" id="workInput" type="text" placeholder="输入单位的地址，如：合肥市包河区北京路" value="' + currentVal + '">' +
+        '<div class="modal-hint">也可点击"使用当前位置"自动填充</div>',
+        '<button class="modal-btn secondary" onclick="useCurrentPos(\'workInput\')">使用当前位置</button>' +
+        '<button class="modal-btn primary" onclick="confirmSetWork()">确认设置</button>'
+      );
+    }
+
+    function confirmSetWork() {
+      var input = document.getElementById('workInput');
+      var val = input ? input.value.trim() : '';
+      if (!val) { showToast('请输入单位的地址'); return; }
+      workAddr = val;
+      var label = document.getElementById('setWorkLabel');
+      if (label) label.textContent = '单位';
+      var btn = document.getElementById('setWorkBtn');
+      if (btn) btn.style.borderColor = '#1976d2';
+      closeModal();
+      showToast('已设置单位：' + val);
+    }
+
+    function useCurrentPos(inputId) {
+      var input = document.getElementById(inputId);
+      if (input) input.value = '京台高速 K656+200（当前位置）';
+    }
+
+    // 收藏夹
+    var customFavorites = [];
+
+    function openFavorites() {
+      var homeItem = homeAddr
+        ? '<div class="fav-item" onclick="closeModal(); showToast(\'导航到家：' + homeAddr + '\')">' +
+          '<div class="fav-icon home"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg></div>' +
+          '<div class="fav-info"><div class="fav-name">家</div><div class="fav-addr">' + homeAddr + '</div></div>' +
+          '<button class="fav-nav-btn" onclick="event.stopPropagation(); closeModal(); showToast(\'导航到家\')">导航</button></div>'
+        : '<div class="fav-item"><div class="fav-icon home"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg></div>' +
+          '<div class="fav-info"><div class="fav-name" style="color:var(--color-text-muted)">家（未设置）</div><div class="fav-addr">点击"设置家"添加</div></div></div>';
+
+      var workItem = workAddr
+        ? '<div class="fav-item" onclick="closeModal(); showToast(\'导航到单位：' + workAddr + '\')">' +
+          '<div class="fav-icon work"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4"/></svg></div>' +
+          '<div class="fav-info"><div class="fav-name">单位</div><div class="fav-addr">' + workAddr + '</div></div>' +
+          '<button class="fav-nav-btn" onclick="event.stopPropagation(); closeModal(); showToast(\'导航到单位\')">导航</button></div>'
+        : '<div class="fav-item"><div class="fav-icon work"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4"/></svg></div>' +
+          '<div class="fav-info"><div class="fav-name" style="color:var(--color-text-muted)">单位（未设置）</div><div class="fav-addr">点击"设置单位"添加</div></div></div>';
+
+      var starItems =
+        '<div class="fav-item" onclick="closeModal(); showDetailPage(\'丰乐服务区\', \'5km\', \'3分钟\')">' +
+          '<div class="fav-icon star"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>' +
+          '<div class="fav-info"><div class="fav-name">丰乐服务区</div><div class="fav-addr">京台高速 · 合肥方向 · 5km</div></div>' +
+          '<button class="fav-nav-btn" onclick="event.stopPropagation(); closeModal(); showToast(\'导航到丰乐服务区\')">导航</button></div>' +
+        '<div class="fav-item" onclick="closeModal(); showToast(\'导航到合肥南收费站\')">' +
+          '<div class="fav-icon star"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>' +
+          '<div class="fav-info"><div class="fav-name">合肥南收费站</div><div class="fav-addr">京台高速 · 合肥方向 · 18km</div></div>' +
+          '<button class="fav-nav-btn" onclick="event.stopPropagation(); closeModal(); showToast(\'导航到合肥南收费站\')">导航</button></div>';
+
+      // 用户自定义收藏项
+      var customItems = '';
+      for (var i = 0; i < customFavorites.length; i++) {
+        var fav = customFavorites[i];
+        customItems += '<div class="fav-item" onclick="closeModal(); showToast(\'导航到' + fav.name + '\')">' +
+          '<div class="fav-icon star"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>' +
+          '<div class="fav-info"><div class="fav-name">' + fav.name + '</div><div class="fav-addr">' + fav.addr + '</div></div>' +
+          '<button class="fav-nav-btn" onclick="event.stopPropagation(); closeModal(); showToast(\'导航到' + fav.name + '\')">导航</button>' +
+          '<button class="fav-del-btn" onclick="event.stopPropagation(); removeFavorite(' + i + ')" title="删除"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>';
+      }
+
+      openModal('收藏夹', homeItem + workItem + starItems + customItems,
+        '<button class="modal-btn secondary" onclick="closeModal()">关闭</button>' +
+        '<button class="modal-btn primary" onclick="addFavorite()">添加收藏</button>');
+    }
+
+    function addFavorite() {
+      openModal('添加收藏',
+        '<div>输入收藏地点信息</div>' +
+        '<input class="modal-input" id="favNameInput" type="text" placeholder="地点名称，如：常去的服务区">' +
+        '<input class="modal-input" id="favAddrInput" type="text" placeholder="地址，如：京台高速 K656+500">',
+        '<button class="modal-btn secondary" onclick="openFavorites()">取消</button>' +
+        '<button class="modal-btn primary" onclick="confirmAddFavorite()">确认添加</button>');
+      setTimeout(function() {
+        var nameInput = document.getElementById('favNameInput');
+        if (nameInput) nameInput.focus();
+      }, 100);
+    }
+
+    function confirmAddFavorite() {
+      var nameInput = document.getElementById('favNameInput');
+      var addrInput = document.getElementById('favAddrInput');
+      var name = nameInput ? nameInput.value.trim() : '';
+      var addr = addrInput ? addrInput.value.trim() : '';
+      if (!name) { showToast('请输入地点名称'); return; }
+      if (!addr) { showToast('请输入地址'); return; }
+      customFavorites.push({ name: name, addr: addr });
+      showToast('已添加收藏：' + name);
+      openFavorites();
+    }
+
+    function removeFavorite(index) {
+      if (index < 0 || index >= customFavorites.length) return;
+      var removed = customFavorites.splice(index, 1)[0];
+      showToast('已删除收藏：' + removed.name);
+      openFavorites();
+    }
+
+    // 搜索面板
+    function openSearchPanel() {
+      var hotTags = ['丰乐服务区', '合肥南收费站', '中石化加油站', '国网充电站'];
+      var tagsHtml = '';
+      for (var i = 0; i < hotTags.length; i++) {
+        tagsHtml += '<button class="search-hot-tag" onclick="doSearch(\'' + hotTags[i] + '\')">' + hotTags[i] + '</button>';
+      }
+      openModal('搜索',
+        '<div class="search-input-wrap">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+          '<input id="searchPanelInput" type="text" placeholder="查找地点、服务区、收费站" onkeydown="if(event.key===\'Enter\')doSearch(this.value)">' +
+        '</div>' +
+        '<div class="search-hot-label">热门搜索</div>' +
+        '<div class="search-hot-tags">' + tagsHtml + '</div>',
+        '<button class="modal-btn secondary" onclick="closeModal()">取消</button>' +
+        '<button class="modal-btn primary" onclick="doSearch(document.getElementById(\'searchPanelInput\').value)">搜索</button>');
+      setTimeout(function() {
+        var input = document.getElementById('searchPanelInput');
+        if (input) input.focus();
+      }, 100);
+    }
+
+    function doSearch(keyword) {
+      keyword = (keyword || '').trim();
+      if (!keyword) { showToast('请输入搜索内容'); return; }
+      closeModal();
+      showToast('搜索：' + keyword);
+    }
+
+    var voiceBtn = document.getElementById('bottomVoiceBtn');
+    var voiceTimer = null;
+
+    if (voiceBtn) {
+      voiceBtn.addEventListener('mousedown', function() {
+        voiceTimer = setTimeout(function() {
+          showToast('语音唤醒中...请说出指令');
+        }, 800);
+      });
+      voiceBtn.addEventListener('mouseup', function() {
+        if (voiceTimer) {
+          clearTimeout(voiceTimer);
+          voiceTimer = null;
+        }
+      });
+      voiceBtn.addEventListener('mouseleave', function() {
+        if (voiceTimer) {
+          clearTimeout(voiceTimer);
+          voiceTimer = null;
+        }
+      });
+    }
+
+    /* 页面切换 */
+    function showStationPage() {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('stationPage').classList.add('active');
+    }
+
+    function showServiceAreaPage() {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('serviceAreaPage').classList.add('active');
+    }
+
+    function showTollStationPage() {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('tollStationPage').classList.add('active');
+    }
+
+    function showHomePage() {
+      document.getElementById('navigationPage').classList.remove('active');
+      document.getElementById('stationPage').classList.remove('active');
+      document.getElementById('serviceAreaPage').classList.remove('active');
+      document.getElementById('tollStationPage').classList.remove('active');
+      document.getElementById('fuelPage').classList.remove('active');
+      document.getElementById('evPage').classList.remove('active');
+      document.getElementById('servicePage').classList.remove('active');
+      document.getElementById('detailPage').classList.remove('active');
+      document.getElementById('homePage').style.display = 'flex';
+    }
+
+    function setFilter(btn) {
+      var btns = document.querySelectorAll('.filter-btn');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.remove('active');
+      }
+      btn.classList.add('active');
+      showToast('筛选：' + btn.textContent);
+    }
+
+    /* 路况页面切换 */
+    function showNavigationPage() {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('stationPage').classList.remove('active');
+      document.getElementById('serviceAreaPage').classList.remove('active');
+      document.getElementById('tollStationPage').classList.remove('active');
+      document.getElementById('fuelPage').classList.remove('active');
+      document.getElementById('evPage').classList.remove('active');
+      document.getElementById('servicePage').classList.remove('active');
+      document.getElementById('detailPage').classList.remove('active');
+      document.getElementById('navigationPage').classList.add('active');
+    }
+
+    /* 加油页面切换 */
+    function showFuelPage() {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('navigationPage').classList.remove('active');
+      document.getElementById('stationPage').classList.remove('active');
+      document.getElementById('serviceAreaPage').classList.remove('active');
+      document.getElementById('tollStationPage').classList.remove('active');
+      document.getElementById('evPage').classList.remove('active');
+      document.getElementById('servicePage').classList.remove('active');
+      document.getElementById('detailPage').classList.remove('active');
+      document.getElementById('fuelPage').classList.add('active');
+    }
+
+    /* 充电页面切换 */
+    function showEvPage() {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('navigationPage').classList.remove('active');
+      document.getElementById('stationPage').classList.remove('active');
+      document.getElementById('serviceAreaPage').classList.remove('active');
+      document.getElementById('tollStationPage').classList.remove('active');
+      document.getElementById('fuelPage').classList.remove('active');
+      document.getElementById('servicePage').classList.remove('active');
+      document.getElementById('detailPage').classList.remove('active');
+      document.getElementById('evPage').classList.add('active');
+    }
+
+    /* 向后兼容 */
+    function showEnergyPage() {
+      showFuelPage();
+    }
+
+    function setSort(btn) {
+      var parent = btn.parentElement;
+      var btns = parent.querySelectorAll('.sort-btn');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.remove('active');
+      }
+      btn.classList.add('active');
+      showToast('筛选：' + btn.textContent);
+    }
+
+    function showServicePage() {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('navigationPage').classList.remove('active');
+      document.getElementById('stationPage').classList.remove('active');
+      document.getElementById('serviceAreaPage').classList.remove('active');
+      document.getElementById('tollStationPage').classList.remove('active');
+      document.getElementById('fuelPage').classList.remove('active');
+      document.getElementById('evPage').classList.remove('active');
+      document.getElementById('servicePage').classList.add('active');
+    }
+
+    function switchServiceTab(tabBtn, tabContentId) {
+      var tabs = document.querySelectorAll('.service-header-tab');
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+      }
+      tabBtn.classList.add('active');
+
+      var contents = document.querySelectorAll('.service-tab-content');
+      for (var i = 0; i < contents.length; i++) {
+        contents[i].classList.remove('active');
+      }
+      document.getElementById(tabContentId).classList.add('active');
+    }
+
+    /* 服务区详情页 */
+    var isCollected = false;
+
+    function showDetailPage(name, dist, time) {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('stationPage').classList.remove('active');
+      document.getElementById('serviceAreaPage').classList.remove('active');
+      document.getElementById('tollStationPage').classList.remove('active');
+      document.getElementById('navigationPage').classList.remove('active');
+      document.getElementById('fuelPage').classList.remove('active');
+      document.getElementById('evPage').classList.remove('active');
+      document.getElementById('servicePage').classList.remove('active');
+
+      var titleEl = document.getElementById('detailPageTitle');
+      if (titleEl) titleEl.textContent = name + '详情';
+      var nameEl = document.getElementById('detailName');
+      if (nameEl) nameEl.textContent = name;
+      var distEl = document.getElementById('detailDist');
+      if (distEl) distEl.textContent = dist;
+      var timeEl = document.getElementById('detailTime');
+      if (timeEl) timeEl.textContent = time;
+
+      isCollected = false;
+      var collectBtn = document.getElementById('detailCollectBtn');
+      if (collectBtn) collectBtn.classList.remove('collected');
+
+      document.getElementById('detailPage').classList.add('active');
+    }
+
+    function showStationPageFromDetail() {
+      document.getElementById('detailPage').classList.remove('active');
+      showServiceAreaPage();
+    }
+
+    function toggleCollect() {
+      isCollected = !isCollected;
+      var collectBtn = document.getElementById('detailCollectBtn');
+      if (collectBtn) {
+        collectBtn.classList.toggle('collected', isCollected);
+      }
+      showToast(isCollected ? '已收藏' : '已取消收藏');
+    }
+  </script>
+</body>
+</html>

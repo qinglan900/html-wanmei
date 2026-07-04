@@ -96,19 +96,16 @@
         function handleAppealAudit() { showToast('复核审核提交成功', 'success'); setTimeout(function() { showPage('appeal'); switchSubnav('appeal'); }, 1000); }
         
         var payOrderData = {
-            'PAY202605180001': { orderNo: 'PAY202605180001', bizNo: 'OIL20260518001', merchant: '城东加油站', amount: '300.00', channel: '平台自有', status: '已支付', statusCls: 'status-success', time: '2026-05-18 10:23:45', txn: 'ICBC123456', refunds: [], logs: ['[2026-05-18 10:23:45] 支付订单创建并完成支付'] },
-            'PAY202605180002': { orderNo: 'PAY202605180002', bizNo: 'EV20260518002', merchant: '绿能充电站', amount: '45.50', channel: 'e码通付', status: '已支付', statusCls: 'status-success', time: '2026-05-18 12:10:22', txn: 'EMT987654', refunds: [], logs: ['[2026-05-18 12:10:22] 支付订单创建并完成支付'] },
-            'PAY202605170001': { orderNo: 'PAY202605170001', bizNo: 'OIL20260517088', merchant: '城北加油站', amount: '210.00', channel: '商户自有', status: '退款中', statusCls: 'status-warning', time: '2026-05-17 18:30:12', txn: 'MCH555666', refunds: [{ time: '2026-05-17 20:00:00', amount: '210.00', reason: '订单误操作退款', channel: '工行退款接口', txn: 'ICBC_REF_001' }], logs: ['[2026-05-17 18:30:12] 支付订单创建并完成支付', '[2026-05-17 20:00:00] 发起退款申请，金额 ¥210.00', '[2026-05-17 20:00:05] 退款处理中，调用工行退款接口'] },
-            'PAY202605160011': { orderNo: 'PAY202605160011', bizNo: 'FOOD20260516002', merchant: '驿达餐厅', amount: '68.00', channel: 'e码通付', status: '已退款', statusCls: '', time: '2026-05-16 08:15:00', txn: 'EMT111222', refunds: [{ time: '2026-05-16 10:00:00', amount: '68.00', reason: '客户取消订单', channel: 'e码通付退款', txn: 'EMT_REF_002' }], logs: ['[2026-05-16 08:15:00] 支付订单创建并完成支付', '[2026-05-16 10:00:00] 发起退款申请，金额 ¥68.00', '[2026-05-16 10:00:05] 退款成功'] },
-            'PAY202605150031': { orderNo: 'PAY202605150031', bizNo: 'GAS20260515007', merchant: '皖能加气站', amount: '156.00', channel: '平台自有', status: '已支付', statusCls: 'status-success', time: '2026-05-15 14:20:33', txn: 'ICBC789012', refunds: [], logs: ['[2026-05-15 14:20:33] 支付订单创建并完成支付'] }
+            'PAY202605180001': { orderNo: 'PAY202605180001', bizNo: 'OIL20260518001', merchant: '城东加油站', amount: '300.00', channel: '平台自有', status: '已支付', statusCls: 'status-success', time: '2026-05-18 10:23:45' },
+            'PAY202605180002': { orderNo: 'PAY202605180002', bizNo: 'EV20260518002', merchant: '绿能充电站', amount: '45.50', channel: 'e码通付', status: '已支付', statusCls: 'status-success', time: '2026-05-18 12:10:22' },
+            'PAY202605170001': { orderNo: 'PAY202605170001', bizNo: 'OIL20260517088', merchant: '城北加油站', amount: '210.00', channel: '商户自有', status: '已退款', statusCls: '', time: '2026-05-17 18:30:12' },
+            'PAY202605160011': { orderNo: 'PAY202605160011', bizNo: 'FOOD20260516002', merchant: '驿达餐厅', amount: '68.00', channel: 'e码通付', status: '已退款', statusCls: '', time: '2026-05-16 08:15:00' },
+            'PAY202605150031': { orderNo: 'PAY202605150031', bizNo: 'GAS20260515007', merchant: '皖能加气站', amount: '156.00', channel: '平台自有', status: '已支付', statusCls: 'status-success', time: '2026-05-15 14:20:33' }
         };
-        var currentRefundOrder = null;
 
         function showPayOrderDetail(orderNo) {
             var order = payOrderData[orderNo];
             if (!order) return;
-
-            currentRefundOrder = orderNo;
 
             var el;
             el = document.getElementById('po-detail-order-no'); if (el) el.textContent = order.orderNo;
@@ -117,40 +114,13 @@
             el = document.getElementById('po-detail-amount'); if (el) el.textContent = '¥' + order.amount;
             el = document.getElementById('po-detail-channel'); if (el) el.textContent = order.channel;
             el = document.getElementById('po-detail-time'); if (el) el.textContent = order.time;
-            el = document.getElementById('po-detail-txn'); if (el) el.textContent = order.txn;
             el = document.getElementById('po-detail-status'); if (el) {
-                var cls = order.statusCls ? 'status-badge ' + order.statusCls : 'status-badge';
-                if (order.status === '已退款') cls = 'status-badge';
-                var color = order.status === '已支付' ? 'status-success' : order.status === '退款中' ? 'status-warning' : '';
-                el.innerHTML = '<span class="' + cls + '">' + order.status + '</span>';
-            }
-
-            var refundSection = document.getElementById('po-detail-refund-section');
-            if (refundSection) {
-                if (order.refunds && order.refunds.length > 0) {
-                    var html = '<div class="space-y-2">';
-                    for (var i = 0; i < order.refunds.length; i++) {
-                        var r = order.refunds[i];
-                        html += '<div class="border border-neutral-200 rounded p-3 text-sm">' +
-                            '<div class="flex justify-between mb-1"><span class="font-medium">退款金额：¥' + r.amount + '</span><span class="text-neutral-500">' + r.time + '</span></div>' +
-                            '<div class="text-neutral-600 mb-1">退款原因：' + (r.reason || '无') + '</div>' +
-                            '<div class="text-neutral-500 text-xs">退款渠道：' + r.channel + ' | 退款流水：' + r.txn + '</div>' +
-                            '</div>';
-                    }
-                    html += '</div>';
-                    refundSection.innerHTML = html;
+                var color = order.status === '已支付' ? 'status-success' : '';
+                if (order.status === '已退款') {
+                    el.innerHTML = '<span class="status-badge" style="background:#ede9fe;color:#7c3aed">' + order.status + '</span>';
                 } else {
-                    refundSection.innerHTML = '<div class="bg-neutral-50 rounded p-3 text-sm text-neutral-400">暂无退款记录</div>';
+                    el.innerHTML = '<span class="status-badge ' + color + '">' + order.status + '</span>';
                 }
-            }
-
-            var logSection = document.getElementById('po-detail-logs');
-            if (logSection) {
-                var logHtml = '';
-                for (var j = 0; j < order.logs.length; j++) {
-                    logHtml += '<div class="text-neutral-600">' + order.logs[j] + '</div>';
-                }
-                logSection.innerHTML = logHtml;
             }
 
             var panel = document.getElementById('pay-order-detail-panel');
@@ -168,104 +138,6 @@
             if (panel) panel.style.transform = 'translateX(100%)';
             if (backdrop) backdrop.style.display = 'none';
             if (detailPage) detailPage.style.display = 'none';
-            currentRefundOrder = null;
-        }
-
-        function showRefundModal(orderNo) {
-            var order = payOrderData[orderNo];
-            if (!order) return;
-
-            var refundedAmount = 0;
-            if (order.refunds) {
-                for (var i = 0; i < order.refunds.length; i++) {
-                    refundedAmount += parseFloat(order.refunds[i].amount);
-                }
-            }
-            var availAmount = parseFloat(order.amount) - refundedAmount;
-
-            var el;
-            el = document.getElementById('refund-order-no'); if (el) el.value = order.orderNo;
-            el = document.getElementById('refund-avail-amount'); if (el) el.value = availAmount.toFixed(2);
-            el = document.getElementById('refund-amount'); if (el) { el.value = availAmount.toFixed(2); el.max = availAmount; }
-            el = document.getElementById('refund-reason'); if (el) el.value = '';
-            el = document.getElementById('refund-use-channel'); if (el) el.checked = order.channel === '平台自有';
-
-            showModal('modal-refund');
-        }
-
-        function handleRefundSubmit() {
-            var refundAmount = document.getElementById('refund-amount').value;
-            var refundReason = document.getElementById('refund-reason').value;
-            if (!refundAmount || parseFloat(refundAmount) <= 0) { showToast('请输入有效的退款金额', 'error'); return; }
-
-            var order = payOrderData[currentRefundOrder];
-            if (!order) return;
-
-            var refundedAmount = 0;
-            if (order.refunds) {
-                for (var i = 0; i < order.refunds.length; i++) { refundedAmount += parseFloat(order.refunds[i].amount); }
-            }
-            var availAmount = parseFloat(order.amount) - refundedAmount;
-
-            if (parseFloat(refundAmount) > availAmount) { showToast('退款金额不能超过可退金额', 'error'); return; }
-
-            var now = new Date();
-            var timeStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
-
-            if (!order.refunds) order.refunds = [];
-            order.refunds.push({
-                time: timeStr,
-                amount: refundAmount,
-                reason: refundReason || '无',
-                channel: document.getElementById('refund-use-channel').checked ? '工行退款接口' : order.channel + '退款',
-                txn: 'REF_' + Date.now()
-            });
-            order.logs.push('[' + timeStr + '] 发起退款申请，金额 ¥' + refundAmount);
-
-            if (parseFloat(refundAmount) >= availAmount) {
-                order.status = '退款中';
-                order.statusCls = 'status-warning';
-                order.logs.push('[' + timeStr + '] 退款处理中');
-            }
-
-            hideModal('modal-refund');
-            showToast('退款申请已提交', 'success');
-            setTimeout(function() { showPayOrderDetail(currentRefundOrder); }, 500);
-        }
-
-        function showBatchRefundModal() {
-            var checkedBoxes = document.querySelectorAll('#page-pay-order tbody input[type="checkbox"]:checked');
-            var count = checkedBoxes.length;
-            if (count === 0) { showToast('请先选择要退款的订单', 'error'); return; }
-
-            var totalAmount = 0;
-            var orderIds = [];
-            checkedBoxes.forEach(function(cb) {
-                var row = cb.closest('tr');
-                if (row) {
-                    var cells = row.querySelectorAll('td');
-                    var orderNo = cells[1].textContent.trim();
-                    var order = payOrderData[orderNo];
-                    if (order) {
-                        var refunded = 0;
-                        if (order.refunds) { for (var i = 0; i < order.refunds.length; i++) { refunded += parseFloat(order.refunds[i].amount); } }
-                        totalAmount += parseFloat(order.amount) - refunded;
-                        orderIds.push(orderNo);
-                    }
-                }
-            });
-
-            document.getElementById('batch-refund-count').textContent = count;
-            document.getElementById('batch-refund-total').textContent = totalAmount.toFixed(2);
-            document.getElementById('batch-refund-reason').value = '';
-
-            showModal('modal-batch-refund');
-        }
-
-        function handleBatchRefundSubmit() {
-            var refundReason = document.getElementById('batch-refund-reason').value;
-            hideModal('modal-batch-refund');
-            showToast('批量退款申请已提交，共 ' + document.getElementById('batch-refund-count').textContent + ' 笔订单', 'success');
         }
         
         var appealDrawerData = {
@@ -914,39 +786,6 @@
             lucide.createIcons();
         }
 
-        function initPayOrderSelectAll() {
-            var selectAll = document.getElementById('pay-order-select-all');
-            var rowCheckboxes = document.querySelectorAll('#page-pay-order .row-checkbox');
-            var batchButtons = document.querySelectorAll('#page-pay-order .batch-action-btn');
-
-            if (!selectAll || rowCheckboxes.length === 0) return;
-
-            function updateSelectAll() {
-                var allChecked = Array.from(rowCheckboxes).every(function(cb) { return cb.checked; });
-                selectAll.checked = allChecked;
-            }
-
-            function updateBatchButtonsState() {
-                var anyChecked = Array.from(rowCheckboxes).some(function(cb) { return cb.checked; });
-                batchButtons.forEach(function(btn) { btn.disabled = !anyChecked; });
-            }
-
-            selectAll.addEventListener('change', function(e) {
-                rowCheckboxes.forEach(function(cb) { cb.checked = e.target.checked; });
-                updateBatchButtonsState();
-            });
-
-            rowCheckboxes.forEach(function(cb) {
-                cb.addEventListener('change', function() {
-                    updateSelectAll();
-                    updateBatchButtonsState();
-                });
-            });
-
-            updateSelectAll();
-            updateBatchButtonsState();
-        }
-
         function initMerchantBillSelectAll() {
             var selectAll = document.getElementById('merchant-bill-select-all');
             var rowCheckboxes = document.querySelectorAll('.merchant-bill-checkbox');
@@ -1216,20 +1055,20 @@
                 <a onclick="switchSubnav('trade-recon'); showPage('trade-recon')" id="subnav-trade-recon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 交易对账</span></a>
                 <a onclick="switchSubnav('settlement-account'); showPage('settlement-account')" id="subnav-settlement-account" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 结算账号</span></a>
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">支付管理</div>
-                <a onclick="switchSubnav('pay-order'); showPage('pay-order')" id="subnav-pay-order" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 支付订单</span></a>
+                <a onclick="switchSubnav('pay-order'); showPage('pay-order')" id="subnav-pay-order" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 支付账单</span></a>
                 <a onclick="switchSubnav('pay-recon'); showPage('pay-recon')" id="subnav-pay-recon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 支付对账</span></a>
             </nav>
         </aside>
 
         <main class="flex-1 ml-36 p-2 min-h-screen">
 
-            <!-- ========== 支付订单列表 ========== -->
+            <!-- ========== 支付账单列表 ========== -->
             <div id="page-pay-order" class="page">
                 <div class="bg-white rounded border border-neutral-200">
                     <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold text-neutral-900">支付订单管理</h1>
+                            <h1 class="text-base font-bold text-neutral-900">支付账单管理</h1>
                         </div>
                         <div class="flex gap-3">
                             <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
@@ -1240,7 +1079,7 @@
                     <div class="px-2 pb-2">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
                             <div class="inline-label-input">
-                                <span class="label">支付订单号</span>
+                                <span class="label">支付账单号</span>
                                 <input type="text" placeholder="请输入" class="input-focus">
                             </div>
                             <div class="inline-label-input">
@@ -1257,7 +1096,7 @@
                             </div>
                             <div class="inline-label-input">
                                 <span class="label">支付状态</span>
-                                <select><option value="">全部</option><option>已支付</option><option>退款中</option><option>已退款</option></select>
+                                <select><option value="">全部</option><option>已支付</option><option>已退款</option></select>
                             </div>
                             <div class="date-range-input">
                                 <span class="label">时间范围</span>
@@ -1272,32 +1111,24 @@
                         </div>
                     </div>
 
-                    <!-- 批量操作区（浅橙色背景，符合Design-System.md 1.1，常驻展示，未勾选时按钮 disabled） -->
-                    <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
-                        <button class="btn btn-batch-action btn-md batch-action-btn" disabled onclick="showBatchRefundModal()">批 量 退 款</button>
-                    </div>
-
-                    <!-- 订单列表 -->
+                    <!-- 账单列表 -->
                     <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
                         <table class="data-table w-full">
                             <thead>
                                 <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                    <th class="w-10 text-center"><input type="checkbox" id="pay-order-select-all" class="cursor-pointer"></th>
                                     <th class="w-12 text-center">序号</th>
-                                    <th class="text-left">支付订单号</th>
+                                    <th class="text-left">支付账单号</th>
                                     <th class="text-left">业务订单号</th>
                                     <th class="text-left">店铺名称</th>
                                     <th class="text-right">金额(¥)</th>
-                                    <th class="text-left">渠道</th>
+                                    <th class="text-left">支付渠道</th>
                                     <th class="text-left">状态</th>
-                                    <th class="text-right">已退金额</th>
-                                    <th class="text-left">支付时间</th>
-                                    <th class="text-right w-32">操作</th>
+                                    <th class="text-left">账单时间</th>
+                                    <th class="text-right w-20">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center"><input type="checkbox" class="row-checkbox cursor-pointer"></td>
                                     <td class="text-center text-neutral-600">1</td>
                                     <td class="text-left">PAY202605180001</td>
                                     <td class="text-left">OIL20260518001</td>
@@ -1305,15 +1136,12 @@
                                     <td class="text-right font-semibold tabular-nums">¥300.00</td>
                                     <td class="text-left"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">平台自有</span></td>
                                     <td class="text-left"><span class="status-badge status-success">已支付</span></td>
-                                    <td class="text-right tabular-nums">¥0.00</td>
                                     <td class="text-left text-neutral-500">2026-05-18 10:23:45</td>
                                     <td class="text-right">
-                                        <button class="btn btn-text" onclick="showRefundModal('PAY202605180001')">退 款</button>
-                                        <button class="btn btn-text ml-2" onclick="showPayOrderDetail('PAY202605180001')">查 看</button>
+                                        <button class="btn btn-text" onclick="showPayOrderDetail('PAY202605180001')">查 看</button>
                                     </td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center"><input type="checkbox" class="row-checkbox cursor-pointer"></td>
                                     <td class="text-center text-neutral-600">2</td>
                                     <td class="text-left">PAY202605180002</td>
                                     <td class="text-left">EV20260518002</td>
@@ -1321,31 +1149,25 @@
                                     <td class="text-right font-semibold tabular-nums">¥45.50</td>
                                     <td class="text-left"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">e码通付</span></td>
                                     <td class="text-left"><span class="status-badge status-success">已支付</span></td>
-                                    <td class="text-right tabular-nums">¥0.00</td>
                                     <td class="text-left text-neutral-500">2026-05-18 12:10:22</td>
                                     <td class="text-right">
-                                        <button class="btn btn-text" onclick="showRefundModal('PAY202605180002')">退 款</button>
-                                        <button class="btn btn-text ml-2" onclick="showPayOrderDetail('PAY202605180002')">查 看</button>
+                                        <button class="btn btn-text" onclick="showPayOrderDetail('PAY202605180002')">查 看</button>
                                     </td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center"><input type="checkbox" class="row-checkbox cursor-pointer"></td>
                                     <td class="text-center text-neutral-600">3</td>
                                     <td class="text-left">PAY202605170001</td>
                                     <td class="text-left">OIL20260517088</td>
                                     <td class="text-left">城北加油站</td>
                                     <td class="text-right font-semibold tabular-nums">¥210.00</td>
                                     <td class="text-left"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-purple-50 text-purple-700">商户自有</span></td>
-                                    <td class="text-left"><span class="status-badge status-warning">退款中</span></td>
-                                    <td class="text-right tabular-nums">¥210.00</td>
+                                    <td class="text-left"><span class="status-badge" style="background:#ede9fe;color:#7c3aed">已退款</span></td>
                                     <td class="text-left text-neutral-500">2026-05-17 18:30:12</td>
                                     <td class="text-right">
-                                        <button class="btn btn-text" disabled style="opacity:0.5">退 款</button>
-                                        <button class="btn btn-text ml-2" onclick="showPayOrderDetail('PAY202605170001')">查 看</button>
+                                        <button class="btn btn-text" onclick="showPayOrderDetail('PAY202605170001')">查 看</button>
                                     </td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center"><input type="checkbox" class="row-checkbox cursor-pointer"></td>
                                     <td class="text-center text-neutral-600">4</td>
                                     <td class="text-left">PAY202605160011</td>
                                     <td class="text-left">FOOD20260516002</td>
@@ -1353,15 +1175,12 @@
                                     <td class="text-right font-semibold tabular-nums">¥68.00</td>
                                     <td class="text-left"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">e码通付</span></td>
                                     <td class="text-left"><span class="status-badge" style="background:#ede9fe;color:#7c3aed">已退款</span></td>
-                                    <td class="text-right tabular-nums">¥68.00</td>
                                     <td class="text-left text-neutral-500">2026-05-16 08:15:00</td>
                                     <td class="text-right">
-                                        <button class="btn btn-text" disabled style="opacity:0.5">退 款</button>
-                                        <button class="btn btn-text ml-2" onclick="showPayOrderDetail('PAY202605160011')">查 看</button>
+                                        <button class="btn btn-text" onclick="showPayOrderDetail('PAY202605160011')">查 看</button>
                                     </td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center"><input type="checkbox" class="row-checkbox cursor-pointer"></td>
                                     <td class="text-center text-neutral-600">5</td>
                                     <td class="text-left">PAY202605150031</td>
                                     <td class="text-left">GAS20260515007</td>
@@ -1369,11 +1188,9 @@
                                     <td class="text-right font-semibold tabular-nums">¥156.00</td>
                                     <td class="text-left"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">平台自有</span></td>
                                     <td class="text-left"><span class="status-badge status-success">已支付</span></td>
-                                    <td class="text-right tabular-nums">¥0.00</td>
                                     <td class="text-left text-neutral-500">2026-05-15 14:20:33</td>
                                     <td class="text-right">
-                                        <button class="btn btn-text" onclick="showRefundModal('PAY202605150031')">退 款</button>
-                                        <button class="btn btn-text ml-2" onclick="showPayOrderDetail('PAY202605150031')">查 看</button>
+                                        <button class="btn btn-text" onclick="showPayOrderDetail('PAY202605150031')">查 看</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -1397,7 +1214,7 @@
                 </div>
             </div>
 
-            <!-- ========== 支付订单详情（侧滑面板） ========== -->
+            <!-- ========== 支付账单详情（侧滑面板） ========== -->
             <div id="page-pay-order-detail" class="page">
                 <div class="relative">
                     <!-- 遮罩层 -->
@@ -1406,7 +1223,7 @@
                     <div id="pay-order-detail-panel" class="fixed right-0 top-0 bottom-0 w-[420px] bg-white shadow-2xl z-30 overflow-y-auto" style="transform: translateX(100%); transition: transform 0.3s ease;">
                         <!-- 顶部 -->
                         <div class="px-5 py-3 border-b border-neutral-200 flex justify-between items-center sticky top-0 bg-white z-10">
-                            <h3 class="text-base font-bold text-neutral-900">订单详情</h3>
+                            <h3 class="text-base font-bold text-neutral-900">账单详情</h3>
                             <button onclick="hidePayOrderDetail()" class="text-neutral-400 hover:text-neutral-600 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
                         </div>
                         <!-- 基本信息 -->
@@ -1414,7 +1231,7 @@
                             <h4 class="text-sm font-semibold text-neutral-700 mb-3">基本信息</h4>
                             <div class="space-y-3 text-sm">
                                 <div class="flex">
-                                    <span class="text-neutral-500 w-28 flex-shrink-0">支付订单号：</span>
+                                    <span class="text-neutral-500 w-28 flex-shrink-0">支付账单号：</span>
                                     <span class="font-medium" id="po-detail-order-no">PAY202605180001</span>
                                 </div>
                                 <div class="flex">
@@ -1438,27 +1255,9 @@
                                     <span class="font-medium" id="po-detail-status"><span class="status-badge status-success">已支付</span></span>
                                 </div>
                                 <div class="flex">
-                                    <span class="text-neutral-500 w-28 flex-shrink-0">支付时间：</span>
+                                    <span class="text-neutral-500 w-28 flex-shrink-0">账单时间：</span>
                                     <span class="font-medium" id="po-detail-time">2026-05-18 10:23:45</span>
                                 </div>
-                                <div class="flex">
-                                    <span class="text-neutral-500 w-28 flex-shrink-0">渠道流水号：</span>
-                                    <span class="font-medium" id="po-detail-txn">ICBC123456</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- 退款记录 -->
-                        <div class="px-5 py-4 border-t border-neutral-200">
-                            <h4 class="text-sm font-semibold text-neutral-700 mb-3">退款记录</h4>
-                            <div id="po-detail-refund-section">
-                                <div class="bg-neutral-50 rounded p-3 text-sm text-neutral-400">暂无退款记录</div>
-                            </div>
-                        </div>
-                        <!-- 操作日志 -->
-                        <div class="px-5 py-4 border-t border-neutral-200">
-                            <h4 class="text-sm font-semibold text-neutral-700 mb-3">操作日志</h4>
-                            <div class="bg-neutral-50 rounded p-3 text-sm space-y-2" id="po-detail-logs">
-                                <div class="text-neutral-600">[2026-05-18 10:23:45] 支付订单创建并完成支付</div>
                             </div>
                         </div>
                     </div>
@@ -1480,7 +1279,7 @@
                     <div class="px-2 pb-2">
                         <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
                             <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                            <span class="text-sm text-neutral-600">温馨提示：支付对账每日凌晨03:00自动执行，对比平台支付订单与渠道方（工行/e码通付/商户自有）的流水数据。对账成功后可查看数据对比，存在差异时可下钻差异明细。</span>
+                            <span class="text-sm text-neutral-600">温馨提示：支付对账每日凌晨03:00自动执行，对比支付账单（渠道方收款记录）与平台订单数据，及时发现并处理差异。对账成功后可查看数据对比，存在差异时可下钻差异明细。</span>
                         </div>
                         <div class="grid grid-cols-4 gap-3 mb-3">
                             <div class="bg-neutral-50 rounded p-3">
@@ -1698,7 +1497,7 @@
                                 <thead>
                                     <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
                                         <th class="w-12 text-center">序号</th>
-                                        <th class="text-left">支付订单号</th>
+                                        <th class="text-left">支付账单号</th>
                                         <th class="text-left">店铺名称</th>
                                         <th class="text-right">平台金额</th>
                                         <th class="text-right">渠道金额</th>
@@ -1758,7 +1557,7 @@
                             </div>
                             <div>
                                 <p class="text-sm font-semibold text-green-700">对账成功</p>
-                                <p class="text-sm text-neutral-500 mt-0.5">平台支付订单与渠道流水完全匹配，无差异</p>
+                                <p class="text-sm text-neutral-500 mt-0.5">支付账单与平台订单完全匹配，无差异</p>
                             </div>
                         </div>
                         <div class="grid grid-cols-4 gap-4">
@@ -4187,74 +3986,6 @@
         </div>
     </div>
 
-    <!-- ========== 发起退款弹窗 ========== -->
-    <div id="modal-refund" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-refund')">
-        <div class="modal-content max-w-md w-full my-8">
-            <div class="flex justify-between items-center px-5 py-3 border-b border-neutral-200">
-                <h3 class="text-base font-bold text-neutral-900">发起退款</h3>
-                <button onclick="hideModal('modal-refund')" class="text-neutral-400 hover:text-neutral-600 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="px-5 py-4">
-                <div class="space-y-3">
-                    <div>
-                        <span class="text-sm text-neutral-700">支付订单号</span>
-                        <input type="text" id="refund-order-no" class="w-full h-9 px-3 border border-neutral-200 rounded mt-1.5 text-sm bg-neutral-50" readonly>
-                    </div>
-                    <div>
-                        <span class="text-sm text-neutral-700">可退金额 (¥)</span>
-                        <input type="text" id="refund-avail-amount" class="w-full h-9 px-3 border border-neutral-200 rounded mt-1.5 text-sm bg-neutral-50" readonly>
-                    </div>
-                    <div>
-                        <span class="text-sm text-neutral-700">退款金额 (¥)</span>
-                        <input type="number" id="refund-amount" class="w-full h-9 px-3 border border-neutral-200 rounded mt-1.5 text-sm" placeholder="请输入退款金额" step="0.01" min="0">
-                    </div>
-                    <div>
-                        <span class="text-sm text-neutral-700">退款原因</span>
-                        <textarea id="refund-reason" class="w-full px-3 py-1.5 border border-neutral-200 rounded mt-1.5 text-sm resize-none" rows="2" placeholder="可选"></textarea>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" id="refund-use-channel" class="cursor-pointer">
-                        <label for="refund-use-channel" class="text-sm text-neutral-600 cursor-pointer">将调用平台自有渠道退款（工行退款接口）</label>
-                    </div>
-                </div>
-            </div>
-            <div class="px-5 py-3 bg-neutral-50 border-t border-neutral-200 flex justify-end gap-3">
-                <button class="btn btn-secondary btn-md" onclick="hideModal('modal-refund')">取 消</button>
-                <button class="btn btn-primary btn-md" onclick="handleRefundSubmit()">确认退款</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== 批量退款弹窗 ========== -->
-    <div id="modal-batch-refund" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-batch-refund')">
-        <div class="modal-content max-w-lg w-full my-8">
-            <div class="flex justify-between items-center px-5 py-4 border-b border-neutral-200">
-                <h3 class="text-base font-bold text-neutral-900">批量退款</h3>
-                <button onclick="hideModal('modal-batch-refund')" class="text-neutral-500 hover:text-neutral-700 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="px-5 py-5">
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-neutral-700">已选择</span>
-                        <span class="text-base font-semibold text-neutral-900"><span id="batch-refund-count">0</span> 笔订单</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-neutral-700">退款总额</span>
-                        <span class="text-base font-semibold tabular-nums text-primary">¥<span id="batch-refund-total">0.00</span></span>
-                    </div>
-                    <div>
-                        <span class="text-sm text-neutral-700">退款原因</span>
-                        <textarea id="batch-refund-reason" class="w-full px-3 py-2 border border-neutral-200 rounded mt-2 text-sm resize-none input-focus" rows="3" placeholder="请输入退款原因（选填）"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="px-5 py-4 bg-neutral-50 border-t border-neutral-200 flex justify-end gap-3">
-                <button class="btn btn-secondary btn-md" onclick="hideModal('modal-batch-refund')">取 消</button>
-                <button class="btn btn-primary btn-md" onclick="handleBatchRefundSubmit()">确 认</button>
-            </div>
-        </div>
-    </div>
-
     <!-- ========== 三方对账确认单弹窗 ========== -->
     <div id="modal-tripartite" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-tripartite')">
         <div class="modal-content max-w-3xl w-full my-8">
@@ -4452,6 +4183,6 @@
         </div>
     </div>
 
-    <script>lucide.createIcons(); initBillDropdown(); initPayOrderSelectAll(); initMerchantBillSelectAll(); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
+    <script>lucide.createIcons(); initBillDropdown(); initMerchantBillSelectAll(); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
 </body>
 </html>

@@ -79,9 +79,9 @@
             var info = document.getElementById('tripartite-info');
             if (info) {
                 if (billIds.length === 1) {
-                    info.innerHTML = '<p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为结算单预览样例，实际功能为下载 Excel 表格文件。</p>';
+                    info.innerHTML = '<p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为结算单预览样例，实际功能为直接下载 Excel 文件。</p>';
                 } else {
-                    info.innerHTML = '<p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为结算单预览样例（第 1 个 Sheet），实际功能为下载 Excel 文件，每笔账单将分别展示到多个 Sheet 页（共 ' + billIds.length + ' 个 Sheet）。</p>';
+                    info.innerHTML = '<p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为结算单预览样例（第 1 个 Sheet），实际功能为直接下载 Excel 文件，每笔账单将分别展示到多个 Sheet 页（共 ' + billIds.length + ' 个 Sheet）。</p>';
                 }
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
@@ -96,11 +96,11 @@
         function handleAppealAudit() { showToast('复核审核提交成功', 'success'); setTimeout(function() { showPage('appeal'); switchSubnav('appeal'); }, 1000); }
         
         var payOrderData = {
-            'PAY202605180001': { orderNo: 'PAY202605180001', bizNo: 'OIL20260518001', merchant: '城东加油站', amount: '300.00', channel: '平台自有', status: '已支付', statusCls: 'status-success', time: '2026-05-18 10:23:45' },
+            'PAY202605180001': { orderNo: 'PAY202605180001', bizNo: 'OIL20260518001', merchant: '城东加油站', amount: '300.00', channel: '平台自有（工行）', status: '已支付', statusCls: 'status-success', time: '2026-05-18 10:23:45' },
             'PAY202605180002': { orderNo: 'PAY202605180002', bizNo: 'EV20260518002', merchant: '绿能充电站', amount: '45.50', channel: 'e码通付', status: '已支付', statusCls: 'status-success', time: '2026-05-18 12:10:22' },
             'PAY202605170001': { orderNo: 'PAY202605170001', bizNo: 'OIL20260517088', merchant: '城北加油站', amount: '210.00', channel: '商户自有', status: '已退款', statusCls: '', time: '2026-05-17 18:30:12' },
             'PAY202605160011': { orderNo: 'PAY202605160011', bizNo: 'FOOD20260516002', merchant: '驿达餐厅', amount: '68.00', channel: 'e码通付', status: '已退款', statusCls: '', time: '2026-05-16 08:15:00' },
-            'PAY202605150031': { orderNo: 'PAY202605150031', bizNo: 'GAS20260515007', merchant: '皖能加气站', amount: '156.00', channel: '平台自有', status: '已支付', statusCls: 'status-success', time: '2026-05-15 14:20:33' }
+            'PAY202605150031': { orderNo: 'PAY202605150031', bizNo: 'GAS20260515007', merchant: '皖能加气站', amount: '156.00', channel: '平台自有（工行）', status: '已支付', statusCls: 'status-success', time: '2026-05-15 14:20:33' }
         };
 
         function showPayOrderDetail(orderNo) {
@@ -147,7 +147,7 @@
                 reason: '账单JS-20260514-001中部分券码核销金额与实际不符，5月13日10:23的加油订单实际核销金额应为¥150.00而非¥100.00，请核实调整。',
                 amount: '+¥500.00',
                 attachments: ['凭证1.jpg', '凭证2.pdf'],
-                applicant: '张三（商户管理员）',
+                applicant: 'SH-2026001',
                 applyTime: '2026-05-14 09:30',
                 status: '待审核',
                 statusCls: 'status-warning',
@@ -159,7 +159,7 @@
                 reason: '账单JS-20260514-001中部分券码核销金额与实际不符，5月13日10:23的加油订单实际核销金额应为¥150.00而非¥100.00，请核实调整。',
                 amount: '+¥500.00',
                 attachments: ['凭证1.jpg', '凭证2.pdf'],
-                applicant: '张三（商户管理员）',
+                applicant: 'SH-2026001',
                 applyTime: '2026-05-14 09:30',
                 status: '待审核',
                 statusCls: 'status-warning',
@@ -167,7 +167,7 @@
             },
             'approved': {
                 title: '账单复核详情',
-                bills: [{ no: 'JS-20260512-003', date: '2026-05-11', amount: '¥4,200.00' }],
+                bills: [{ no: 'JS-20260514-003', date: '2026-05-13', amount: '¥3,900.00' }],
                 reason: '部分订单重复结算，申请扣减退款金额。',
                 amount: '-¥300.00',
                 attachments: ['退款凭证.pdf'],
@@ -186,13 +186,13 @@
             'approved2': {
                 title: '账单复核详情',
                 bills: [
-                    { no: 'JS-20260510-001', date: '2026-05-09', amount: '¥21,500.00' },
-                    { no: 'JS-20260510-002', date: '2026-05-09', amount: '¥8,900.00' }
+                    { no: 'JS-20260513-002', date: '2026-05-12', amount: '¥20,300.00' },
+                    { no: 'JS-20260514-002', date: '2026-05-13', amount: '¥8,900.00' }
                 ],
                 reason: '多个账单中存在券码面额核算偏低的情况，申请补差。',
                 amount: '+¥1,200.00',
                 attachments: ['核算明细.xlsx', '差异对比.pdf'],
-                applicant: '张三（商户管理员）',
+                applicant: 'SH-2026001',
                 applyTime: '2026-05-11 14:30',
                 status: '审核通过',
                 statusCls: 'status-success',
@@ -206,11 +206,11 @@
             },
             'rejected': {
                 title: '账单复核详情',
-                bills: [{ no: 'JS-20260511-002', date: '2026-05-10', amount: '¥8,900.00' }],
+                bills: [{ no: 'JS-20260514-002', date: '2026-05-13', amount: '¥8,900.00' }],
                 reason: '订单金额与实际消费不符，申请调账。',
                 amount: '+¥200.00',
                 attachments: [],
-                applicant: '王六（中石化管理员）',
+                applicant: 'ZS-2026002',
                 applyTime: '2026-05-12 08:45',
                 status: '审核驳回',
                 statusCls: 'status-error',
@@ -375,11 +375,11 @@
             { id: 'JS-20260514-001', merchant: '中国石油安徽分公司', date: '2026-05-13', genTime: '2026-05-14 02:35', coupons: 156, positive: '¥17,550.00', negative: '¥0.00', original: '¥17,550.00', originalNum: 17550, adjust: '+¥500.00', adjustNum: 500, final: '¥18,050.00', finalNum: 18050,
               adjustRecords: [{ appealNo: 'SS-20260514-001', amount: '+¥500.00', reason: '商品金额核算差异', time: '2026-05-14 15:30' }],
               distributors: [
-                  { name: '皖通公司', activity: '皖通春日加油活动', amount: '¥5,460.00', ratio: '35.00%' },
-                  { name: '皖通公司', activity: '皖通高速出行活动', amount: '¥3,900.00', ratio: '25.00%' },
-                  { name: '皖通公司', activity: '皖通新能源充电活动', amount: '¥3,120.00', ratio: '20.00%' },
-                  { name: '皖通公司', activity: '皖通驿达服务区活动', amount: '¥1,560.00', ratio: '10.00%' },
-                  { name: '皖通公司', activity: '皖通交控能源活动', amount: '¥1,560.00', ratio: '10.00%' }
+                  { name: '皖通公司', activity: '皖通春日加油活动', amount: '¥6,142.50', ratio: '35.00%' },
+                  { name: '皖通公司', activity: '皖通高速出行活动', amount: '¥4,387.50', ratio: '25.00%' },
+                  { name: '皖通公司', activity: '皖通新能源充电活动', amount: '¥3,510.00', ratio: '20.00%' },
+                  { name: '皖通公司', activity: '皖通驿达服务区活动', amount: '¥1,755.00', ratio: '10.00%' },
+                  { name: '皖通公司', activity: '皖通交控能源活动', amount: '¥1,755.00', ratio: '10.00%' }
               ],
               details: [
                   { seq: 1, time: '2026-05-13 10:23', plate: '皖AF61291', points: 1000, amt: '50.00', provider: '石化公司', type: '加油', orderNo: 'PO20260114000001', status: '已核销', statusCls: 'status-success', couponCode: '8943ce9ef83c7283a46dcbf84ddf4fcf', couponName: '50元加油代金券红包' },
@@ -425,40 +425,39 @@
         ];
 
         var activityBillData = [
-            { id: 'HF-20260514-001', activityName: '皖通春日加油活动', date: '2026-05-13', genTime: '2026-05-14 02:38', totalAmount: '¥14,820.00', merchantCount: 3,
-              merchants: [
-                  { name: '中国石油安徽分公司', settleDate: '2026-05-13', coupons: 98, amount: '¥9,360.00', ratio: '63.16%' },
-                  { name: '中石化安徽分公司', settleDate: '2026-05-13', coupons: 56, amount: '¥3,360.00', ratio: '22.67%' },
-                  { name: '驿达石化能源', settleDate: '2026-05-13', coupons: 28, amount: '¥2,100.00', ratio: '14.17%' }
+            { id: 'HF-20260514-001', activityName: '皖通春日加油活动', date: '2026-05-13', genTime: '2026-05-14 02:38', totalAmount: '¥14,820.00', providerCount: 3,
+              providers: [
+                  { name: '石化公司', type: '加油/尿素加注', orders: 98, points: '245,000', amount: '¥9,360.00', ratio: '63.16%' },
+                  { name: '驿达集团', type: '便利店消费', orders: 56, points: '95,200', amount: '¥3,360.00', ratio: '22.67%' },
+                  { name: '交控石油公司', type: '加油', orders: 28, points: '70,000', amount: '¥2,100.00', ratio: '14.17%' }
               ]
             },
-            { id: 'HF-20260514-002', activityName: '皖通高速出行活动', date: '2026-05-13', genTime: '2026-05-14 02:39', totalAmount: '¥9,540.00', merchantCount: 3,
-              merchants: [
-                  { name: '中国石油安徽分公司', settleDate: '2026-05-13', coupons: 58, amount: '¥5,800.00', ratio: '60.80%' },
-                  { name: '中石化安徽分公司', settleDate: '2026-05-13', coupons: 33, amount: '¥1,980.00', ratio: '20.76%' },
-                  { name: '驿达石化能源', settleDate: '2026-05-13', coupons: 14, amount: '¥1,760.00', ratio: '18.44%' }
+            { id: 'HF-20260514-002', activityName: '皖通高速出行活动', date: '2026-05-13', genTime: '2026-05-14 02:39', totalAmount: '¥9,540.00', providerCount: 3,
+              providers: [
+                  { name: '石化公司', type: '加油', orders: 58, points: '145,000', amount: '¥5,800.00', ratio: '60.80%' },
+                  { name: '驿达集团', type: '便利店消费', orders: 33, points: '56,100', amount: '¥1,980.00', ratio: '20.76%' },
+                  { name: '交控石油公司', type: '充电', orders: 14, points: '35,000', amount: '¥1,760.00', ratio: '18.44%' }
               ]
             },
-            { id: 'HF-20260514-003', activityName: '皖通新能源充电活动', date: '2026-05-13', genTime: '2026-05-14 02:40', totalAmount: '¥8,920.00', merchantCount: 3,
-              merchants: [
-                  { name: '中国石油安徽分公司', settleDate: '2026-05-13', coupons: 42, amount: '¥4,200.00', ratio: '47.09%' },
-                  { name: '中石化安徽分公司', settleDate: '2026-05-13', coupons: 30, amount: '¥3,000.00', ratio: '33.63%' },
-                  { name: '驿达石化能源', settleDate: '2026-05-13', coupons: 12, amount: '¥1,720.00', ratio: '19.28%' }
+            { id: 'HF-20260514-003', activityName: '皖通新能源充电活动', date: '2026-05-13', genTime: '2026-05-14 02:40', totalAmount: '¥8,920.00', providerCount: 3,
+              providers: [
+                  { name: '石化公司', type: '充电', orders: 42, points: '105,000', amount: '¥4,200.00', ratio: '47.09%' },
+                  { name: '驿达集团', type: '便利店消费', orders: 30, points: '51,000', amount: '¥3,000.00', ratio: '33.63%' },
+                  { name: '交控石油公司', type: '充电', orders: 12, points: '30,000', amount: '¥1,720.00', ratio: '19.28%' }
               ]
             },
-            { id: 'HF-20260513-001', activityName: '皖通春日加油活动', date: '2026-05-12', genTime: '2026-05-13 02:36', totalAmount: '¥16,200.00', merchantCount: 4,
-              merchants: [
-                  { name: '中国石油安徽分公司', settleDate: '2026-05-12', coupons: 120, amount: '¥12,000.00', ratio: '74.07%' },
-                  { name: '中石化安徽分公司', settleDate: '2026-05-12', coupons: 40, amount: '¥2,400.00', ratio: '14.81%' },
-                  { name: '驿达石化能源', settleDate: '2026-05-12', coupons: 20, amount: '¥1,200.00', ratio: '7.41%' },
-                  { name: '交控新能源', settleDate: '2026-05-12', coupons: 10, amount: '¥600.00', ratio: '3.70%' }
+            { id: 'HF-20260513-001', activityName: '皖通春日加油活动', date: '2026-05-12', genTime: '2026-05-13 02:36', totalAmount: '¥16,200.00', providerCount: 3,
+              providers: [
+                  { name: '石化公司', type: '加油/尿素加注', orders: 120, points: '300,000', amount: '¥12,000.00', ratio: '74.07%' },
+                  { name: '驿达集团', type: '便利店消费', orders: 40, points: '68,000', amount: '¥2,400.00', ratio: '14.81%' },
+                  { name: '交控石油公司', type: '加油', orders: 30, points: '75,000', amount: '¥1,800.00', ratio: '11.12%' }
               ]
             },
-            { id: 'HF-20260513-002', activityName: '皖通高速出行活动', date: '2026-05-12', genTime: '2026-05-13 02:37', totalAmount: '¥6,300.00', merchantCount: 3,
-              merchants: [
-                  { name: '中国石油安徽分公司', settleDate: '2026-05-12', coupons: 83, amount: '¥4,980.00', ratio: '79.05%' },
-                  { name: '中石化安徽分公司', settleDate: '2026-05-12', coupons: 27, amount: '¥810.00', ratio: '12.86%' },
-                  { name: '交控新能源', settleDate: '2026-05-12', coupons: 40, amount: '¥510.00', ratio: '8.10%' }
+            { id: 'HF-20260513-002', activityName: '皖通高速出行活动', date: '2026-05-12', genTime: '2026-05-13 02:37', totalAmount: '¥6,300.00', providerCount: 3,
+              providers: [
+                  { name: '石化公司', type: '加油', orders: 83, points: '207,500', amount: '¥4,980.00', ratio: '79.05%' },
+                  { name: '驿达集团', type: '便利店消费', orders: 27, points: '45,900', amount: '¥810.00', ratio: '12.86%' },
+                  { name: '交控石油公司', type: '充电', orders: 40, points: '68,000', amount: '¥510.00', ratio: '8.10%' }
               ]
             }
         ];
@@ -516,7 +515,7 @@
                 for (var m = 0; m < bill.details.length; m++) {
                     var dt = bill.details[m];
                     var amtCls = dt.amt.indexOf('-') >= 0 ? 'text-error' : '';
-                    detailTbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row"><td class="text-center text-neutral-600">' + dt.seq + '</td><td class="text-left">' + dt.time + '</td><td class="text-left">' + dt.plate + '</td><td class="text-right tabular-nums">' + dt.points + '</td><td class="text-right tabular-nums ' + amtCls + '">' + dt.amt + '</td><td class="text-left">' + dt.provider + '</td><td class="text-left">' + dt.type + '</td><td class="text-left">' + dt.orderNo + '</td><td class="text-left"><span class="status-badge ' + dt.statusCls + '">' + dt.status + '</span></td><td class="text-left text-xs font-mono">' + dt.couponCode + '</td><td class="text-left">' + dt.couponName + '</td></tr>';
+                    detailTbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row"><td class="text-center text-neutral-600">' + dt.seq + '</td><td class="text-left">' + dt.provider + '</td><td class="text-left">' + dt.type + '</td><td class="text-left">' + dt.orderNo + '</td><td class="text-left">' + dt.time + '</td><td class="text-left">' + dt.couponName + '</td><td class="text-left text-xs font-mono">' + dt.couponCode + '</td><td class="text-right tabular-nums">' + dt.points + '</td><td class="text-right tabular-nums ' + amtCls + '">' + dt.amt + '</td><td class="text-left"><span class="status-badge ' + dt.statusCls + '">' + dt.status + '</span></td></tr>';
                 }
             }
 
@@ -1092,14 +1091,14 @@
                             </div>
                             <div class="inline-label-input">
                                 <span class="label">支付渠道</span>
-                                <select><option value="">全部</option><option>平台自有</option><option>e码通付</option><option>商户自有</option></select>
+                                <select><option value="">全部</option><option>平台自有（工行）</option><option>e码通付</option><option>商户自有</option></select>
                             </div>
                             <div class="inline-label-input">
                                 <span class="label">支付状态</span>
                                 <select><option value="">全部</option><option>已支付</option><option>已退款</option></select>
                             </div>
                             <div class="date-range-input">
-                                <span class="label">时间范围</span>
+                                <span class="label">账单时间</span>
                                 <input type="date" class="input-focus">
                                 <span class="separator">→</span>
                                 <input type="date" class="input-focus">
@@ -1134,7 +1133,7 @@
                                     <td class="text-left">OIL20260518001</td>
                                     <td class="text-left">城东加油站</td>
                                     <td class="text-right font-semibold tabular-nums">¥300.00</td>
-                                    <td class="text-left"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">平台自有</span></td>
+                                    <td class="text-left"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">平台自有（工行）</span></td>
                                     <td class="text-left"><span class="status-badge status-success">已支付</span></td>
                                     <td class="text-left text-neutral-500">2026-05-18 10:23:45</td>
                                     <td class="text-right">
@@ -1186,7 +1185,7 @@
                                     <td class="text-left">GAS20260515007</td>
                                     <td class="text-left">皖能加气站</td>
                                     <td class="text-right font-semibold tabular-nums">¥156.00</td>
-                                    <td class="text-left"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">平台自有</span></td>
+                                    <td class="text-left"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">平台自有（工行）</span></td>
                                     <td class="text-left"><span class="status-badge status-success">已支付</span></td>
                                     <td class="text-left text-neutral-500">2026-05-15 14:20:33</td>
                                     <td class="text-right">
@@ -1456,7 +1455,7 @@
                     <div class="px-5 py-4">
                         <div class="grid grid-cols-5 gap-4">
                             <div><span class="text-sm text-neutral-500">对账批次号</span><p id="pay-recon-no" class="text-sm font-medium mt-1">ZD-20260518-002</p></div>
-                            <div><span class="text-sm text-neutral-500">商户名称</span><p id="pay-recon-merchant" class="text-sm font-medium mt-1">驿达石化能源</p></div>
+                            <div><span class="text-sm text-neutral-500">商户名称</span><p id="pay-recon-merchant" class="text-sm font-medium mt-1">中国石油安徽分公司</p></div>
                             <div><span class="text-sm text-neutral-500">支付渠道</span><p id="pay-recon-channel" class="text-sm font-medium mt-1">e码通付</p></div>
                             <div><span class="text-sm text-neutral-500">对账日期</span><p id="pay-recon-date" class="text-sm font-medium mt-1">2026-05-17</p></div>
                             <div><span class="text-sm text-neutral-500">对账状态</span><p class="mt-1"><span id="pay-recon-status" class="status-badge status-warning">存在差异</span></p></div>
@@ -1468,18 +1467,18 @@
                         <div class="grid grid-cols-3 gap-4">
                             <div class="bg-neutral-50 rounded p-4">
                                 <span class="text-sm text-neutral-500 block mb-2">平台数据</span>
-                                <div class="flex justify-between text-sm"><span>笔数</span><span id="pay-recon-platform-count" class="font-semibold">32</span></div>
-                                <div class="flex justify-between text-sm mt-1"><span>金额</span><span id="pay-recon-platform-amount" class="font-semibold tabular-nums">¥8,920.00</span></div>
+                                <div class="flex justify-between text-sm"><span>笔数</span><span id="pay-recon-platform-count" class="font-semibold">28</span></div>
+                                <div class="flex justify-between text-sm mt-1"><span>金额</span><span id="pay-recon-platform-amount" class="font-semibold tabular-nums">¥6,780.00</span></div>
                             </div>
                             <div class="bg-neutral-50 rounded p-4">
                                 <span class="text-sm text-neutral-500 block mb-2">渠道数据</span>
-                                <div class="flex justify-between text-sm"><span>笔数</span><span id="pay-recon-channel-count" class="font-semibold">33</span></div>
-                                <div class="flex justify-between text-sm mt-1"><span>金额</span><span id="pay-recon-channel-amount" class="font-semibold tabular-nums">¥9,265.50</span></div>
+                                <div class="flex justify-between text-sm"><span>笔数</span><span id="pay-recon-channel-count" class="font-semibold">29</span></div>
+                                <div class="flex justify-between text-sm mt-1"><span>金额</span><span id="pay-recon-channel-amount" class="font-semibold tabular-nums">¥6,980.50</span></div>
                             </div>
                             <div class="bg-orange-50 rounded p-4">
                                 <span class="text-sm text-neutral-500 block mb-2">差异数据</span>
                                 <div class="flex justify-between text-sm"><span>笔数差异</span><span id="pay-recon-diff-count" class="font-semibold text-error">-1</span></div>
-                                <div class="flex justify-between text-sm mt-1"><span>金额差异</span><span id="pay-recon-diff-amount" class="font-semibold text-error tabular-nums">-¥345.50</span></div>
+                                <div class="flex justify-between text-sm mt-1"><span>金额差异</span><span id="pay-recon-diff-amount" class="font-semibold text-error tabular-nums">-¥200.50</span></div>
                             </div>
                         </div>
                     </div>
@@ -1509,35 +1508,26 @@
                                     <tr class="border-b border-neutral-200 h-12 table-row">
                                         <td class="text-center text-neutral-600">1</td>
                                         <td class="text-left">PAY202605170003</td>
-                                        <td class="text-left">城南超市</td>
-                                        <td class="text-right tabular-nums">¥128.00</td>
+                                        <td class="text-left">城东加油站</td>
+                                        <td class="text-right tabular-nums">¥50.00</td>
                                         <td class="text-right tabular-nums">¥0.00</td>
-                                        <td class="text-right tabular-nums text-error">+¥128.00</td>
+                                        <td class="text-right tabular-nums text-error">+¥50.00</td>
                                         <td class="text-left"><span class="status-badge status-error">平台有渠道无</span></td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 h-12 table-row">
                                         <td class="text-center text-neutral-600">2</td>
-                                        <td class="text-left">PAY202605170012</td>
-                                        <td class="text-left">北站便利店</td>
-                                        <td class="text-right tabular-nums">¥0.00</td>
-                                        <td class="text-right tabular-nums">¥217.50</td>
-                                        <td class="text-right tabular-nums text-error">-¥217.50</td>
-                                        <td class="text-left"><span class="status-badge" style="background:#fef3c7;color:#d97706">平台无渠道有</span></td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-center text-neutral-600">3</td>
                                         <td class="text-left">PAY202605170025</td>
-                                        <td class="text-left">高速服务区</td>
-                                        <td class="text-right tabular-nums">¥256.00</td>
-                                        <td class="text-right tabular-nums">¥345.50</td>
-                                        <td class="text-right tabular-nums text-error">-¥89.50</td>
+                                        <td class="text-left">城北加油站</td>
+                                        <td class="text-right tabular-nums">¥200.00</td>
+                                        <td class="text-right tabular-nums">¥450.50</td>
+                                        <td class="text-right tabular-nums text-error">-¥250.50</td>
                                         <td class="text-left"><span class="status-badge status-info">金额不一致</span></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="flex justify-between items-center py-2 mt-2">
-                            <span class="text-sm text-neutral-600">共 <span class="font-semibold">3</span> 条记录</span>
+                            <span class="text-sm text-neutral-600">共 <span class="font-semibold">2</span> 条记录</span>
                             <div class="flex items-center gap-2">
                                 <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
                                 <div class="flex items-center gap-1">
@@ -1699,7 +1689,7 @@
                                     <th class="text-right">正向结算金额</th>
                                     <th class="text-right">负向结算金额</th>
                                     <th class="text-right">调账金额</th>
-                                    <th class="text-right">最终金额</th>
+                                    <th class="text-right">最终结算金额</th>
                                     <th class="text-left">生成时间</th>
                                     <th class="text-right w-32">操作</th>
                                 </tr>
@@ -1712,10 +1702,10 @@
                                     <td class="text-left">中国石油安徽分公司</td>
                                     <td class="text-left">2026-05-13</td>
                                     <td class="text-right">156</td>
-                                    <td class="text-right font-semibold tabular-nums">¥15,600.00</td>
+                                    <td class="text-right font-semibold tabular-nums">¥17,550.00</td>
                                     <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
                                     <td class="text-right tabular-nums text-success">+¥500.00</td>
-                                    <td class="text-right font-semibold tabular-nums">¥16,100.00</td>
+                                    <td class="text-right font-semibold tabular-nums">¥18,050.00</td>
                                     <td class="text-left text-neutral-500">2026-05-14 02:35</td>
                                     <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-001')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260514-001'])">下载结算单</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260514-001'])">账单复核</button></td>
                                 </tr>
@@ -1819,7 +1809,7 @@
                         <div class="grid grid-cols-4 gap-4">
                             <div class="bg-green-50 rounded p-4 text-center">
                                 <span class="text-sm text-neutral-500">正向结算金额</span>
-                                <p class="text-xl font-bold tabular-nums mt-1 text-success" id="mb-detail-positive-box">¥15,600.00</p>
+                                <p class="text-xl font-bold tabular-nums mt-1 text-success" id="mb-detail-positive-box">¥17,550.00</p>
                             </div>
                             <div class="bg-red-50 rounded p-4 text-center">
                                 <span class="text-sm text-neutral-500">负向结算金额</span>
@@ -1831,7 +1821,7 @@
                             </div>
                             <div class="bg-green-50 rounded p-4 text-center">
                                 <span class="text-sm text-neutral-500">最终结算金额</span>
-                                <p class="text-xl font-bold tabular-nums mt-1 text-success" id="mb-detail-final-box">¥16,100.00</p>
+                                <p class="text-xl font-bold tabular-nums mt-1 text-success" id="mb-detail-final-box">¥18,050.00</p>
                             </div>
                         </div>
                     </div>
@@ -1876,31 +1866,31 @@
                                     <tr class="border-b border-neutral-200 h-10 table-row">
                                         <td class="text-left">皖通公司</td>
                                         <td class="text-left">皖通春日加油活动</td>
-                                        <td class="text-right font-semibold tabular-nums">¥5,460.00</td>
+                                        <td class="text-right font-semibold tabular-nums">¥6,142.50</td>
                                         <td class="text-right">35.00%</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 h-10 table-row">
                                         <td class="text-left">皖通公司</td>
                                         <td class="text-left">皖通高速出行活动</td>
-                                        <td class="text-right font-semibold tabular-nums">¥3,900.00</td>
+                                        <td class="text-right font-semibold tabular-nums">¥4,387.50</td>
                                         <td class="text-right">25.00%</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 h-10 table-row">
                                         <td class="text-left">皖通公司</td>
                                         <td class="text-left">皖通新能源充电活动</td>
-                                        <td class="text-right font-semibold tabular-nums">¥3,120.00</td>
+                                        <td class="text-right font-semibold tabular-nums">¥3,510.00</td>
                                         <td class="text-right">20.00%</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 h-10 table-row">
                                         <td class="text-left">皖通公司</td>
                                         <td class="text-left">皖通驿达服务区活动</td>
-                                        <td class="text-right font-semibold tabular-nums">¥1,560.00</td>
+                                        <td class="text-right font-semibold tabular-nums">¥1,755.00</td>
                                         <td class="text-right">10.00%</td>
                                     </tr>
                                     <tr class="border-b border-neutral-200 h-10 table-row">
                                         <td class="text-left">皖通公司</td>
                                         <td class="text-left">皖通交控能源活动</td>
-                                        <td class="text-right font-semibold tabular-nums">¥1,560.00</td>
+                                        <td class="text-right font-semibold tabular-nums">¥1,755.00</td>
                                         <td class="text-right">10.00%</td>
                                     </tr>
                                 </tbody>
@@ -1930,11 +1920,11 @@
                             <input type="text" placeholder="请输入" class="input-focus">
                         </div>
                         <div class="inline-label-input">
-                            <span class="label">业务类型</span>
-                            <select><option value="">全部</option><option>加油</option><option>充电</option><option>洗车</option></select>
+                            <span class="label">服务类型</span>
+                            <select><option value="">全部</option><option>加油</option><option>充电</option><option>便利店消费</option></select>
                         </div>
                         <div class="inline-label-input">
-                            <span class="label">订单状态</span>
+                            <span class="label">核销状态</span>
                             <select><option value="">全部</option><option>已核销</option><option>已退货</option></select>
                         </div>
                         <div class="date-range-input">
@@ -1949,16 +1939,15 @@
                             <thead>
                                 <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
                                     <th class="w-12 text-center">序号</th>
-                                    <th class="text-left">核销时间</th>
-                                    <th class="text-left">用户车牌号</th>
-                                    <th class="text-right">兑换积分数量</th>
-                                    <th class="text-right">核销金额(元)</th>
                                     <th class="text-left">服务产品提供方</th>
                                     <th class="text-left">服务类型</th>
                                     <th class="text-left">订单号</th>
-                                    <th class="text-left">核销状态</th>
-                                    <th class="text-left">优惠券code</th>
+                                    <th class="text-left">核销时间</th>
                                     <th class="text-left">券名称</th>
+                                    <th class="text-left">券码ID</th>
+                                    <th class="text-right">兑换积分数量</th>
+                                    <th class="text-right">核销金额(元)</th>
+                                    <th class="text-left">核销状态</th>
                                 </tr>
                             </thead>
                             <tbody id="mb-detail-detail-tbody">
@@ -1992,7 +1981,7 @@
                             <h1 class="text-base font-bold text-neutral-900">活动方账单</h1>
                         </div>
                         <div class="flex gap-3">
-                            <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导出活动方账单</button>
+                            <button class="btn btn-secondary btn-md" onclick="showModal('modal-activity-bill-export')"><i data-lucide="download" class="w-4 h-4"></i>导出活动方账单</button>
                             <button class="btn btn-secondary btn-md" onclick="handleExportCouponSummary()"><i data-lucide="download" class="w-4 h-4"></i>导出按券活动汇总表</button>
                         </div>
                     </div>
@@ -2027,7 +2016,7 @@
                                     <th class="text-left">活动名称</th>
                                     <th class="text-left">账单日期</th>
                                     <th class="text-right">涉及商户数</th>
-                                    <th class="text-right">分摊总金额</th>
+                                    <th class="text-right">实际应付结算金额</th>
                                     <th class="text-left">生成时间</th>
                                     <th class="text-right w-40">操作 <button class="btn btn-text text-xs ml-1" id="toggle-all-expand-btn" onclick="toggleAllActivityExpand()" style="font-size:12px;"><i data-lucide="chevrons-down" class="w-3 h-3 inline-block"></i>全部</button></th>
                                 </tr>
@@ -2048,41 +2037,51 @@
             <table class="data-table w-full">
                 <thead>
                     <tr class="bg-white border-b border-neutral-200 h-9">
-                        <th class="text-left text-xs font-medium text-neutral-500">商户名称</th>
-                        <th class="text-left text-xs font-medium text-neutral-500">结算日期</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">券数</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">分摊金额</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">服务产品提供方</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">服务类型</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销订单数</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销积分</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销金额</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">实际应付结算金额</th>
                         <th class="text-right text-xs font-medium text-neutral-500">占比</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">中国石油安徽分公司</td>
-                        <td class="text-left text-sm">2026-05-13</td>
-                        <td class="text-right text-sm">98</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥9,360.00</td>
+                        <td class="text-left text-sm">石化公司</td>
+                        <td class="text-left text-sm">加油/尿素加注</td>
+                        <td class="text-right text-sm tabular-nums">98</td>
+                        <td class="text-right text-sm tabular-nums">245,000</td>
+                        <td class="text-right text-sm tabular-nums">9,360.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">9,360.00</td>
                         <td class="text-right text-sm">63.16%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">中石化安徽分公司</td>
-                        <td class="text-left text-sm">2026-05-13</td>
-                        <td class="text-right text-sm">56</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥3,360.00</td>
+                        <td class="text-left text-sm">驿达集团</td>
+                        <td class="text-left text-sm">便利店消费</td>
+                        <td class="text-right text-sm tabular-nums">56</td>
+                        <td class="text-right text-sm tabular-nums">95,200</td>
+                        <td class="text-right text-sm tabular-nums">3,360.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">3,360.00</td>
                         <td class="text-right text-sm">22.67%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">驿达石化能源</td>
-                        <td class="text-left text-sm">2026-05-13</td>
-                        <td class="text-right text-sm">28</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥2,100.00</td>
+                        <td class="text-left text-sm">交控石油公司</td>
+                        <td class="text-left text-sm">加油</td>
+                        <td class="text-right text-sm tabular-nums">28</td>
+                        <td class="text-right text-sm tabular-nums">70,000</td>
+                        <td class="text-right text-sm tabular-nums">2,100.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">2,100.00</td>
                         <td class="text-right text-sm">14.17%</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr class="h-9 font-semibold text-sm">
                         <td class="text-left" colspan="2">合计</td>
-                        <td class="text-right">182</td>
-                        <td class="text-right tabular-nums">¥14,820.00</td>
+                        <td class="text-right tabular-nums">182</td>
+                        <td class="text-right tabular-nums">410,200</td>
+                        <td class="text-right tabular-nums">14,820.00</td>
+                        <td class="text-right tabular-nums">14,820.00</td>
                         <td class="text-right">100.00%</td>
                     </tr>
                 </tfoot>
@@ -2104,41 +2103,51 @@
             <table class="data-table w-full">
                 <thead>
                     <tr class="bg-white border-b border-neutral-200 h-9">
-                        <th class="text-left text-xs font-medium text-neutral-500">商户名称</th>
-                        <th class="text-left text-xs font-medium text-neutral-500">结算日期</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">券数</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">分摊金额</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">服务产品提供方</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">服务类型</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销订单数</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销积分</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销金额</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">实际应付结算金额</th>
                         <th class="text-right text-xs font-medium text-neutral-500">占比</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">中国石油安徽分公司</td>
-                        <td class="text-left text-sm">2026-05-13</td>
-                        <td class="text-right text-sm">58</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥5,800.00</td>
+                        <td class="text-left text-sm">石化公司</td>
+                        <td class="text-left text-sm">加油/尿素加注</td>
+                        <td class="text-right text-sm tabular-nums">58</td>
+                        <td class="text-right text-sm tabular-nums">145,000</td>
+                        <td class="text-right text-sm tabular-nums">5,800.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">5,800.00</td>
                         <td class="text-right text-sm">60.80%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">中石化安徽分公司</td>
-                        <td class="text-left text-sm">2026-05-13</td>
-                        <td class="text-right text-sm">33</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥1,980.00</td>
+                        <td class="text-left text-sm">驿达集团</td>
+                        <td class="text-left text-sm">便利店消费</td>
+                        <td class="text-right text-sm tabular-nums">33</td>
+                        <td class="text-right text-sm tabular-nums">56,100</td>
+                        <td class="text-right text-sm tabular-nums">1,980.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">1,980.00</td>
                         <td class="text-right text-sm">20.76%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">驿达石化能源</td>
-                        <td class="text-left text-sm">2026-05-13</td>
-                        <td class="text-right text-sm">14</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥1,760.00</td>
+                        <td class="text-left text-sm">交控石油公司</td>
+                        <td class="text-left text-sm">加油</td>
+                        <td class="text-right text-sm tabular-nums">14</td>
+                        <td class="text-right text-sm tabular-nums">35,000</td>
+                        <td class="text-right text-sm tabular-nums">1,760.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">1,760.00</td>
                         <td class="text-right text-sm">18.44%</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr class="h-9 font-semibold text-sm">
                         <td class="text-left" colspan="2">合计</td>
-                        <td class="text-right">105</td>
-                        <td class="text-right tabular-nums">¥9,540.00</td>
+                        <td class="text-right tabular-nums">105</td>
+                        <td class="text-right tabular-nums">236,100</td>
+                        <td class="text-right tabular-nums">9,540.00</td>
+                        <td class="text-right tabular-nums">9,540.00</td>
                         <td class="text-right">100.00%</td>
                     </tr>
                 </tfoot>
@@ -2160,41 +2169,51 @@
             <table class="data-table w-full">
                 <thead>
                     <tr class="bg-white border-b border-neutral-200 h-9">
-                        <th class="text-left text-xs font-medium text-neutral-500">商户名称</th>
-                        <th class="text-left text-xs font-medium text-neutral-500">结算日期</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">券数</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">分摊金额</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">服务产品提供方</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">服务类型</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销订单数</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销积分</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销金额</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">实际应付结算金额</th>
                         <th class="text-right text-xs font-medium text-neutral-500">占比</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">中国石油安徽分公司</td>
-                        <td class="text-left text-sm">2026-05-13</td>
-                        <td class="text-right text-sm">42</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥4,200.00</td>
+                        <td class="text-left text-sm">交控石油公司</td>
+                        <td class="text-left text-sm">充电</td>
+                        <td class="text-right text-sm tabular-nums">42</td>
+                        <td class="text-right text-sm tabular-nums">105,000</td>
+                        <td class="text-right text-sm tabular-nums">4,200.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">4,200.00</td>
                         <td class="text-right text-sm">47.09%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">中石化安徽分公司</td>
-                        <td class="text-left text-sm">2026-05-13</td>
-                        <td class="text-right text-sm">30</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥3,000.00</td>
+                        <td class="text-left text-sm">石化公司</td>
+                        <td class="text-left text-sm">充电</td>
+                        <td class="text-right text-sm tabular-nums">30</td>
+                        <td class="text-right text-sm tabular-nums">75,000</td>
+                        <td class="text-right text-sm tabular-nums">3,000.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">3,000.00</td>
                         <td class="text-right text-sm">33.63%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">驿达石化能源</td>
-                        <td class="text-left text-sm">2026-05-13</td>
-                        <td class="text-right text-sm">12</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥1,720.00</td>
+                        <td class="text-left text-sm">驿达集团</td>
+                        <td class="text-left text-sm">充电</td>
+                        <td class="text-right text-sm tabular-nums">12</td>
+                        <td class="text-right text-sm tabular-nums">30,000</td>
+                        <td class="text-right text-sm tabular-nums">1,720.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">1,720.00</td>
                         <td class="text-right text-sm">19.28%</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr class="h-9 font-semibold text-sm">
                         <td class="text-left" colspan="2">合计</td>
-                        <td class="text-right">84</td>
-                        <td class="text-right tabular-nums">¥8,920.00</td>
+                        <td class="text-right tabular-nums">84</td>
+                        <td class="text-right tabular-nums">210,000</td>
+                        <td class="text-right tabular-nums">8,920.00</td>
+                        <td class="text-right tabular-nums">8,920.00</td>
                         <td class="text-right">100.00%</td>
                     </tr>
                 </tfoot>
@@ -2206,7 +2225,7 @@
         <td class="text-left">HF-20260513-001</td>
         <td class="text-left">皖通春日加油活动</td>
         <td class="text-left">2026-05-12</td>
-        <td class="text-right">4</td>
+        <td class="text-right">3</td>
         <td class="text-right font-semibold tabular-nums">¥16,200.00</td>
         <td class="text-left text-neutral-500">2026-05-13 02:36</td>
         <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-4')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
@@ -2216,48 +2235,51 @@
             <table class="data-table w-full">
                 <thead>
                     <tr class="bg-white border-b border-neutral-200 h-9">
-                        <th class="text-left text-xs font-medium text-neutral-500">商户名称</th>
-                        <th class="text-left text-xs font-medium text-neutral-500">结算日期</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">券数</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">分摊金额</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">服务产品提供方</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">服务类型</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销订单数</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销积分</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销金额</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">实际应付结算金额</th>
                         <th class="text-right text-xs font-medium text-neutral-500">占比</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">中国石油安徽分公司</td>
-                        <td class="text-left text-sm">2026-05-12</td>
-                        <td class="text-right text-sm">120</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥12,000.00</td>
+                        <td class="text-left text-sm">石化公司</td>
+                        <td class="text-left text-sm">加油/尿素加注</td>
+                        <td class="text-right text-sm tabular-nums">120</td>
+                        <td class="text-right text-sm tabular-nums">300,000</td>
+                        <td class="text-right text-sm tabular-nums">12,000.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">12,000.00</td>
                         <td class="text-right text-sm">74.07%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">中石化安徽分公司</td>
-                        <td class="text-left text-sm">2026-05-12</td>
-                        <td class="text-right text-sm">40</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥2,400.00</td>
+                        <td class="text-left text-sm">驿达集团</td>
+                        <td class="text-left text-sm">便利店消费</td>
+                        <td class="text-right text-sm tabular-nums">40</td>
+                        <td class="text-right text-sm tabular-nums">68,000</td>
+                        <td class="text-right text-sm tabular-nums">2,400.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">2,400.00</td>
                         <td class="text-right text-sm">14.81%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">驿达石化能源</td>
-                        <td class="text-left text-sm">2026-05-12</td>
-                        <td class="text-right text-sm">20</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥1,200.00</td>
-                        <td class="text-right text-sm">7.41%</td>
-                    </tr>
-                    <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">交控新能源</td>
-                        <td class="text-left text-sm">2026-05-12</td>
-                        <td class="text-right text-sm">10</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥600.00</td>
-                        <td class="text-right text-sm">3.70%</td>
+                        <td class="text-left text-sm">交控石油公司</td>
+                        <td class="text-left text-sm">加油</td>
+                        <td class="text-right text-sm tabular-nums">30</td>
+                        <td class="text-right text-sm tabular-nums">75,000</td>
+                        <td class="text-right text-sm tabular-nums">1,800.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">1,800.00</td>
+                        <td class="text-right text-sm">11.12%</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr class="h-9 font-semibold text-sm">
                         <td class="text-left" colspan="2">合计</td>
-                        <td class="text-right">190</td>
-                        <td class="text-right tabular-nums">¥16,200.00</td>
+                        <td class="text-right tabular-nums">190</td>
+                        <td class="text-right tabular-nums">443,000</td>
+                        <td class="text-right tabular-nums">16,200.00</td>
+                        <td class="text-right tabular-nums">16,200.00</td>
                         <td class="text-right">100.00%</td>
                     </tr>
                 </tfoot>
@@ -2279,41 +2301,51 @@
             <table class="data-table w-full">
                 <thead>
                     <tr class="bg-white border-b border-neutral-200 h-9">
-                        <th class="text-left text-xs font-medium text-neutral-500">商户名称</th>
-                        <th class="text-left text-xs font-medium text-neutral-500">结算日期</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">券数</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">分摊金额</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">服务产品提供方</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">服务类型</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销订单数</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销积分</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">累计核销金额</th>
+                        <th class="text-right text-xs font-medium text-neutral-500">实际应付结算金额</th>
                         <th class="text-right text-xs font-medium text-neutral-500">占比</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">中国石油安徽分公司</td>
-                        <td class="text-left text-sm">2026-05-12</td>
-                        <td class="text-right text-sm">83</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥4,980.00</td>
+                        <td class="text-left text-sm">石化公司</td>
+                        <td class="text-left text-sm">加油/尿素加注</td>
+                        <td class="text-right text-sm tabular-nums">83</td>
+                        <td class="text-right text-sm tabular-nums">207,500</td>
+                        <td class="text-right text-sm tabular-nums">4,980.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">4,980.00</td>
                         <td class="text-right text-sm">79.05%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">中石化安徽分公司</td>
-                        <td class="text-left text-sm">2026-05-12</td>
-                        <td class="text-right text-sm">27</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥810.00</td>
+                        <td class="text-left text-sm">驿达集团</td>
+                        <td class="text-left text-sm">便利店消费</td>
+                        <td class="text-right text-sm tabular-nums">27</td>
+                        <td class="text-right text-sm tabular-nums">45,900</td>
+                        <td class="text-right text-sm tabular-nums">810.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">810.00</td>
                         <td class="text-right text-sm">12.86%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
-                        <td class="text-left text-sm">交控新能源</td>
-                        <td class="text-left text-sm">2026-05-12</td>
-                        <td class="text-right text-sm">40</td>
-                        <td class="text-right text-sm font-semibold tabular-nums">¥510.00</td>
+                        <td class="text-left text-sm">交控石油公司</td>
+                        <td class="text-left text-sm">加油</td>
+                        <td class="text-right text-sm tabular-nums">40</td>
+                        <td class="text-right text-sm tabular-nums">100,000</td>
+                        <td class="text-right text-sm tabular-nums">510.00</td>
+                        <td class="text-right text-sm font-semibold tabular-nums">510.00</td>
                         <td class="text-right text-sm">8.10%</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr class="h-9 font-semibold text-sm">
                         <td class="text-left" colspan="2">合计</td>
-                        <td class="text-right">150</td>
-                        <td class="text-right tabular-nums">¥6,300.00</td>
+                        <td class="text-right tabular-nums">150</td>
+                        <td class="text-right tabular-nums">353,400</td>
+                        <td class="text-right tabular-nums">6,300.00</td>
+                        <td class="text-right tabular-nums">6,300.00</td>
                         <td class="text-right">100.00%</td>
                     </tr>
                 </tfoot>
@@ -2350,23 +2382,28 @@
                         </div>
                     </div>
                     <div class="px-4 py-3">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
                             <div class="inline-label-input">
                                 <span class="label">账单日期</span>
                                 <input type="date" value="2026-05-13" class="input-focus">
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">商户</span>
-                                <select class="input-focus"><option value="">全部</option><option>中国石油安徽分公司</option><option>中石化安徽分公司</option><option>驿达石化能源</option><option>交控新能源</option></select>
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">活动名称</span>
-                                <select class="input-focus"><option value="">全部</option><option>皖通春日加油活动</option><option>皖通高速出行活动</option><option>皖通新能源充电活动</option></select>
                             </div>
                         </div>
                         <div class="flex justify-end gap-3 mt-3">
                             <button class="btn btn-secondary btn-md">重 置</button>
                             <button class="btn btn-primary btn-md">查 询</button>
+                        </div>
+                    </div>
+                    <div class="px-4 pb-2">
+                        <div class="text-center pb-3 border-b border-neutral-200">
+                            <h2 class="text-lg font-bold text-neutral-900 mb-2">2026年货车积分试点活动结算总览表</h2>
+                            <div class="flex justify-center items-center gap-6 text-sm text-neutral-600">
+                                <span>编号：<span class="font-medium">SETT-2026-06-001</span></span>
+                                <span>|</span>
+                                <span>账单日期：<span class="font-medium">2026-05-13</span></span>
+                                <span>|</span>
+                                <span>生成时间：<span class="font-medium">2026-05-14 02:38</span></span>
+                            </div>
+                            <div class="text-right text-xs text-neutral-500 mt-1">单位：元</div>
                         </div>
                     </div>
                     <div class="px-4 pb-4 overflow-x-auto">
@@ -2524,7 +2561,7 @@
                                 <select><option value="">全部</option><option>待审核</option><option>审核通过</option><option>审核驳回</option></select>
                             </div>
                             <div class="date-range-input">
-                                <span class="label">复核日期</span>
+                                <span class="label">申请时间</span>
                                 <input type="date" class="input-focus">
                                 <span class="separator">→</span>
                                 <input type="date" class="input-focus">
@@ -2545,9 +2582,9 @@
                                 <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
                                     <th class="w-12 text-center">序号</th>
                                     <th class="text-left">账单复核单号</th>
-                                    <th class="text-left">申请商户</th>
+                                    <th class="text-left">商户名称</th>
                                     <th class="text-left">关联账单</th>
-                                    <th class="text-left">复核日期</th>
+                                    <th class="text-left">申请时间</th>
                                     <th class="text-right">期望调账金额</th>
                                     <th class="text-left">审核状态</th>
                                     <th class="text-left">调账计入日期</th>
@@ -2573,7 +2610,7 @@
                                     <td class="text-center text-neutral-600">2</td>
                                     <td class="text-left">SS-20260513-001</td>
                                     <td class="text-left">驿达石化能源</td>
-                                    <td class="text-left">JS-20260512-003</td>
+                                    <td class="text-left">JS-20260514-003</td>
                                     <td class="text-left">2026-05-13</td>
                                     <td class="text-right tabular-nums">-¥300.00</td>
                                     <td class="text-left"><span class="status-badge status-success">审核通过</span></td>
@@ -2586,7 +2623,7 @@
                                     <td class="text-center text-neutral-600">3</td>
                                     <td class="text-left">SS-20260512-001</td>
                                     <td class="text-left">中石化安徽分公司</td>
-                                    <td class="text-left">JS-20260511-002</td>
+                                    <td class="text-left">JS-20260514-002</td>
                                     <td class="text-left">2026-05-12</td>
                                     <td class="text-right tabular-nums">+¥200.00</td>
                                     <td class="text-left"><span class="status-badge status-error">审核驳回</span></td>
@@ -2599,7 +2636,7 @@
                                     <td class="text-center text-neutral-600">4</td>
                                     <td class="text-left">SS-20260511-001</td>
                                     <td class="text-left">中国石油安徽分公司</td>
-                                    <td class="text-left">JS-20260510-001, JS-20260510-002</td>
+                                    <td class="text-left">JS-20260513-002, JS-20260514-002</td>
                                     <td class="text-left">2026-05-11</td>
                                     <td class="text-right tabular-nums">+¥1,200.00</td>
                                     <td class="text-left"><span class="status-badge status-success">审核通过</span></td>
@@ -2659,8 +2696,8 @@
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
-                                        <div><span class="text-sm text-neutral-500">复核申请人</span><p id="appeal-drawer-applicant" class="text-sm font-medium mt-1"></p></div>
-                                        <div><span class="text-sm text-neutral-500">复核时间</span><p id="appeal-drawer-applyTime" class="text-sm font-medium mt-1"></p></div>
+                                        <div><span class="text-sm text-neutral-500">申请人ID</span><p id="appeal-drawer-applicant" class="text-sm font-medium mt-1"></p></div>
+                                        <div><span class="text-sm text-neutral-500">申请时间</span><p id="appeal-drawer-applyTime" class="text-sm font-medium mt-1"></p></div>
                                     </div>
                                 </div>
                             </div>
@@ -2772,31 +2809,31 @@
                                             <input type="checkbox" class="bill-checkbox">
                                             <span class="text-sm">JS-20260514-001</span>
                                             <span class="text-xs text-neutral-400">2026-05-13</span>
-                                            <span class="text-xs text-neutral-400">原结算金额：¥15,600.00</span>
+                                            <span class="text-xs text-neutral-400">原结算金额：¥17,550.00</span>
+                                        </div>
+                                        <div class="bill-option flex items-center gap-2 px-3 py-2 hover:bg-primary-light cursor-pointer" data-bill="JS-20260513-002">
+                                            <input type="checkbox" class="bill-checkbox">
+                                            <span class="text-sm">JS-20260513-002</span>
+                                            <span class="text-xs text-neutral-400">2026-05-12</span>
+                                            <span class="text-xs text-neutral-400">原结算金额：¥20,300.00</span>
+                                        </div>
+                                        <div class="bill-option flex items-center gap-2 px-3 py-2 hover:bg-primary-light cursor-pointer" data-bill="JS-20260514-002">
+                                            <input type="checkbox" class="bill-checkbox">
+                                            <span class="text-sm">JS-20260514-002</span>
+                                            <span class="text-xs text-neutral-400">2026-05-13</span>
+                                            <span class="text-xs text-neutral-400">原结算金额：¥8,900.00</span>
                                         </div>
                                         <div class="bill-option flex items-center gap-2 px-3 py-2 hover:bg-primary-light cursor-pointer" data-bill="JS-20260513-001">
                                             <input type="checkbox" class="bill-checkbox">
                                             <span class="text-sm">JS-20260513-001</span>
                                             <span class="text-xs text-neutral-400">2026-05-12</span>
-                                            <span class="text-xs text-neutral-400">原结算金额：¥20,300.00</span>
-                                        </div>
-                                        <div class="bill-option flex items-center gap-2 px-3 py-2 hover:bg-primary-light cursor-pointer" data-bill="JS-20260512-001">
-                                            <input type="checkbox" class="bill-checkbox">
-                                            <span class="text-sm">JS-20260512-001</span>
-                                            <span class="text-xs text-neutral-400">2026-05-11</span>
-                                            <span class="text-xs text-neutral-400">原结算金额：¥8,900.00</span>
-                                        </div>
-                                        <div class="bill-option flex items-center gap-2 px-3 py-2 hover:bg-primary-light cursor-pointer" data-bill="JS-20260511-001">
-                                            <input type="checkbox" class="bill-checkbox">
-                                            <span class="text-sm">JS-20260511-001</span>
-                                            <span class="text-xs text-neutral-400">2026-05-10</span>
                                             <span class="text-xs text-neutral-400">原结算金额：¥6,700.00</span>
                                         </div>
-                                        <div class="bill-option flex items-center gap-2 px-3 py-2 hover:bg-primary-light cursor-pointer" data-bill="JS-20260510-001">
+                                        <div class="bill-option flex items-center gap-2 px-3 py-2 hover:bg-primary-light cursor-pointer" data-bill="JS-20260514-003">
                                             <input type="checkbox" class="bill-checkbox">
-                                            <span class="text-sm">JS-20260510-001</span>
-                                            <span class="text-xs text-neutral-400">2026-05-09</span>
-                                            <span class="text-xs text-neutral-400">原结算金额：¥21,500.00</span>
+                                            <span class="text-sm">JS-20260514-003</span>
+                                            <span class="text-xs text-neutral-400">2026-05-13</span>
+                                            <span class="text-xs text-neutral-400">原结算金额：¥3,900.00</span>
                                         </div>
                                     </div>
                                     <div id="appeal-bill-selected" class="mt-2 space-y-1"></div>
@@ -3668,8 +3705,8 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
-                            <div><span class="text-sm text-neutral-500">复核申请人</span><p class="text-sm font-medium mt-1">张三（商户管理员）</p></div>
-                            <div><span class="text-sm text-neutral-500">复核时间</span><p class="text-sm font-medium mt-1" id="review-drawer-time"></p></div>
+                            <div><span class="text-sm text-neutral-500">申请人ID</span><p class="text-sm font-medium mt-1">SH-2026001</p></div>
+                            <div><span class="text-sm text-neutral-500">申请时间</span><p class="text-sm font-medium mt-1" id="review-drawer-time"></p></div>
                         </div>
                     </div>
                 </div>
@@ -3995,11 +4032,11 @@
             </div>
             <div class="px-5 py-5">
                 <div id="tripartite-info" class="bg-amber-50 border border-amber-200 rounded px-4 py-3 mb-4">
-                    <p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为结算单预览样例，实际功能为下载 Excel 表格文件。</p>
+                    <p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为结算单预览样例，实际功能为直接下载 Excel 文件。</p>
                 </div>
                 <div class="text-center mb-4">
                     <h4 class="text-lg font-bold text-neutral-900">2026年货车积分试点活动三方对账确认单</h4>
-                    <p class="text-sm text-neutral-500 mt-1">确认单编号：SETT-2026-05-001 | 结算周期：2026年5月13日</p>
+                    <p class="text-sm text-neutral-500 mt-1">账单号：SETT-2026-05-001 | 结算周期：2026年5月13日</p>
                 </div>
                 <div class="overflow-x-auto mb-5">
                     <table class="w-full border-collapse text-sm">
@@ -4066,7 +4103,19 @@
             </div>
             <div class="px-5 py-5">
                 <div class="bg-amber-50 border border-amber-200 rounded px-4 py-3 mb-4">
-                    <p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为报表预览样例，实际功能为下载 Excel 表格文件。</p>
+                    <p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为报表预览样例（第 1 个 Sheet），实际功能为直接下载 Excel 文件，不同的活动名称/结算日期会展示在不同的 Sheet 页。</p>
+                </div>
+                <div class="text-center pb-3 border-b border-neutral-200 mb-4">
+                    <h2 class="text-lg font-bold text-neutral-900 mb-2">2026年货车积分试点结算汇总表-按券活动名称</h2>
+                    <div class="flex justify-center items-center gap-6 text-sm text-neutral-600">
+                        <span>活动名称：<span class="font-medium">皖通春日加油活动</span></span>
+                        <span>|</span>
+                        <span>账单号：<span class="font-medium">HF-20260514-001</span></span>
+                        <span>|</span>
+                        <span>账单日期：<span class="font-medium">2026-05-13</span></span>
+                        <span>|</span>
+                        <span>生成时间：<span class="font-medium">2026-05-14 02:38</span></span>
+                    </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full border-collapse text-xs">
@@ -4179,6 +4228,88 @@
             </div>
             <div class="px-5 py-4 border-t border-neutral-200 flex justify-end gap-3">
                 <button class="btn btn-primary btn-md" onclick="hideModal('modal-coupon-summary')">关 闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 活动方账单导出弹窗 ========== -->
+    <div id="modal-activity-bill-export" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-activity-bill-export')">
+        <div class="modal-content max-w-5xl w-full my-8">
+            <div class="flex justify-between items-center px-5 py-4 border-b border-neutral-200">
+                <h3 class="text-base font-bold text-neutral-900">活动方账单导出预览</h3>
+                <button onclick="hideModal('modal-activity-bill-export')" class="text-neutral-500 hover:text-neutral-700 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="px-5 py-5">
+                <div class="bg-amber-50 border border-amber-200 rounded px-4 py-3 mb-4">
+                    <p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为报表预览样例（第 1 个 Sheet），实际功能为直接下载 Excel 文件，不同的活动名称/结算日期会展示在不同的 Sheet 页。</p>
+                </div>
+                <div class="text-center pb-3 border-b border-neutral-200 mb-4">
+                    <h2 class="text-lg font-bold text-neutral-900 mb-2">2026年货车积分试点活动-营销活动方&服务产品提供方结算单</h2>
+                    <div class="flex justify-center items-center gap-6 text-sm text-neutral-600">
+                        <span>活动名称：<span class="font-medium">皖通春日加油活动</span></span>
+                        <span>|</span>
+                        <span>账单号：<span class="font-medium">HF-20260514-001</span></span>
+                        <span>|</span>
+                        <span>账单日期：<span class="font-medium">2026-05-13</span></span>
+                        <span>|</span>
+                        <span>生成时间：<span class="font-medium">2026-05-14 02:38</span></span>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-neutral-50">
+                                <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200">服务产品提供方</th>
+                                <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200">服务类型</th>
+                                <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">累计核销订单数</th>
+                                <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">累计核销积分</th>
+                                <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">累计核销金额</th>
+                                <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">实际应付结算金额</th>
+                                <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">占比</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white">
+                                <td class="p-2 text-sm border border-neutral-200">石化公司</td>
+                                <td class="p-2 text-sm border border-neutral-200">加油/尿素加注</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">98</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">245,000</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">9,360.00</td>
+                                <td class="p-2 text-right text-sm font-semibold tabular-nums border border-neutral-200">9,360.00</td>
+                                <td class="p-2 text-right text-sm border border-neutral-200">63.16%</td>
+                            </tr>
+                            <tr class="bg-neutral-50/50">
+                                <td class="p-2 text-sm border border-neutral-200">驿达集团</td>
+                                <td class="p-2 text-sm border border-neutral-200">便利店消费</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">56</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">95,200</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">3,360.00</td>
+                                <td class="p-2 text-right text-sm font-semibold tabular-nums border border-neutral-200">3,360.00</td>
+                                <td class="p-2 text-right text-sm border border-neutral-200">22.67%</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="p-2 text-sm border border-neutral-200">交控石油公司</td>
+                                <td class="p-2 text-sm border border-neutral-200">加油</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">28</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">70,000</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">2,100.00</td>
+                                <td class="p-2 text-right text-sm font-semibold tabular-nums border border-neutral-200">2,100.00</td>
+                                <td class="p-2 text-right text-sm border border-neutral-200">14.17%</td>
+                            </tr>
+                            <tr class="bg-green-50 font-semibold">
+                                <td class="p-2 text-sm border border-neutral-200" colspan="2">合计</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">182</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">410,200</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">14,820.00</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">14,820.00</td>
+                                <td class="p-2 text-right text-sm border border-neutral-200">100.00%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="px-5 py-4 border-t border-neutral-200 flex justify-end gap-3">
+                <button class="btn btn-primary btn-md" onclick="hideModal('modal-activity-bill-export')">关 闭</button>
             </div>
         </div>
     </div>

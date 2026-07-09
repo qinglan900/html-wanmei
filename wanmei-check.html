@@ -2382,7 +2382,7 @@
                         </div>
                     </div>
                     <div class="px-4 py-3">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3">
                             <div class="inline-label-input">
                                 <span class="label">账单日期</span>
                                 <input type="date" value="2026-05-13" class="input-focus">
@@ -4025,7 +4025,7 @@
 
     <!-- ========== 三方对账确认单弹窗 ========== -->
     <div id="modal-tripartite" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-tripartite')">
-        <div class="modal-content max-w-3xl w-full my-8">
+        <div class="modal-content max-w-5xl w-full my-8">
             <div class="flex justify-between items-center px-5 py-4 border-b border-neutral-200">
                 <h3 class="text-base font-bold text-neutral-900" id="tripartite-title">三方对账确认单</h3>
                 <button onclick="hideModal('modal-tripartite')" class="text-neutral-500 hover:text-neutral-700 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -4036,55 +4036,85 @@
                 </div>
                 <div class="text-center mb-4">
                     <h4 class="text-lg font-bold text-neutral-900">2026年货车积分试点活动三方对账确认单</h4>
-                    <p class="text-sm text-neutral-500 mt-1">账单号：SETT-2026-05-001 | 结算周期：2026年5月13日</p>
+                    <div class="flex justify-between mt-2 text-sm text-neutral-500">
+                        <span>账单号：SETT-2026-06-003</span>
+                        <span>账单日期：2026-05-13</span>
+                    </div>
                 </div>
                 <div class="overflow-x-auto mb-5">
                     <table class="w-full border-collapse text-sm">
                         <thead>
                             <tr class="bg-neutral-50">
-                                <th class="p-2 text-left font-medium text-neutral-600 border border-neutral-200">主体名称</th>
-                                <th class="p-2 text-right font-medium text-neutral-600 border border-neutral-200">实收金额(元)</th>
-                                <th class="p-2 text-right font-medium text-neutral-600 border border-neutral-200">实付金额(元)</th>
-                                <th class="p-2 text-right font-medium text-neutral-600 border border-neutral-200">最终结算金额(元)</th>
+                                <th class="p-2 text-center font-medium text-neutral-600 border border-neutral-200">主体名称</th>
+                                <th class="p-2 text-right font-medium text-neutral-600 border border-neutral-200">应收金额(元)</th>
+                                <th class="p-2 text-right font-medium text-neutral-600 border border-neutral-200">应付金额(元)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="bg-white">
-                                <td class="p-2 border border-neutral-200">皖通公司（营销活动方）</td>
+                                <td class="p-2 text-center border border-neutral-200">皖通公司(营销活动方)</td>
                                 <td class="p-2 text-right tabular-nums border border-neutral-200">¥0.00</td>
-                                <td class="p-2 text-right tabular-nums text-error border border-neutral-200">-¥16,100.00</td>
-                                <td class="p-2 text-right tabular-nums font-semibold text-error border border-neutral-200">-¥16,100.00</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥3,400.00</td>
                             </tr>
                             <tr class="bg-neutral-50/50">
-                                <td class="p-2 border border-neutral-200">中国石油安徽分公司（服务提供方）</td>
-                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥16,100.00</td>
-                                <td class="p-2 text-right tabular-nums text-neutral-400 border border-neutral-200">¥0.00</td>
-                                <td class="p-2 text-right tabular-nums font-semibold border border-neutral-200">¥16,100.00</td>
+                                <td class="p-2 text-center border border-neutral-200">交控石油公司(服务提供方)</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥3,400.00</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥0.00</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="bg-neutral-50 rounded p-3 mb-5">
-                    <p class="text-xs text-neutral-600"><span class="font-medium">备注：</span>高速石化的费用已由交通数科垫付，所以皖通直接付给交通数科。营销活动方（皖通公司）需向服务产品提供方收取对应服务费，按实际核销金额结算。</p>
+                <div class="border border-neutral-200 rounded mb-5 p-2 text-sm text-neutral-600">
+                    备注：三方确认以上对账内容已全部核对无误，无异议，签字后生效。
                 </div>
                 <div class="grid grid-cols-3 gap-4 text-sm">
-                    <div class="border border-neutral-200 rounded p-3">
-                        <p class="font-medium text-neutral-700 mb-2">甲方（平台运营方）</p>
-                        <p class="text-neutral-500">联网公司</p>
-                        <p class="text-neutral-500 mt-3">签字：____________</p>
-                        <p class="text-neutral-500 mt-2">日期：____年__月__日</p>
+                    <div class="border border-neutral-200 rounded">
+                        <table class="w-full">
+                            <tr class="bg-neutral-50">
+                                <td class="p-2 border-b border-neutral-200 text-center font-medium text-neutral-700">甲方（平台运营方）</td>
+                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-500">联网公司</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-600">平台运营方（甲方）签字</td>
+                                <td class="p-2 border-b border-neutral-200 text-center">________________</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 text-center text-neutral-600">日期</td>
+                                <td class="p-2 text-center">____年____月____日</td>
+                            </tr>
+                        </table>
                     </div>
-                    <div class="border border-neutral-200 rounded p-3">
-                        <p class="font-medium text-neutral-700 mb-2">乙方（服务提供方）</p>
-                        <p class="text-neutral-500">中国石油安徽分公司</p>
-                        <p class="text-neutral-500 mt-3">签字：____________</p>
-                        <p class="text-neutral-500 mt-2">日期：____年__月__日</p>
+                    <div class="border border-neutral-200 rounded">
+                        <table class="w-full">
+                            <tr class="bg-neutral-50">
+                                <td class="p-2 border-b border-neutral-200 text-center font-medium text-neutral-700">乙方（服务提供方）</td>
+                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-500">交控石油公司</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-600">服务提供方（乙方）签字</td>
+                                <td class="p-2 border-b border-neutral-200 text-center">________________</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 text-center text-neutral-600">日期</td>
+                                <td class="p-2 text-center">____年____月____日</td>
+                            </tr>
+                        </table>
                     </div>
-                    <div class="border border-neutral-200 rounded p-3">
-                        <p class="font-medium text-neutral-700 mb-2">丙方（营销活动方）</p>
-                        <p class="text-neutral-500">皖通公司</p>
-                        <p class="text-neutral-500 mt-3">签字：____________</p>
-                        <p class="text-neutral-500 mt-2">日期：____年__月__日</p>
+                    <div class="border border-neutral-200 rounded">
+                        <table class="w-full">
+                            <tr class="bg-neutral-50">
+                                <td class="p-2 border-b border-neutral-200 text-center font-medium text-neutral-700">丙方（营销活动方）</td>
+                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-500">皖通公司</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-600">营销活动方（丙方）签字</td>
+                                <td class="p-2 border-b border-neutral-200 text-center">________________</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 text-center text-neutral-600">日期</td>
+                                <td class="p-2 text-center">____年____月____日</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>

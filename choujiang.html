@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>积分抽奖 - 皖美E行</title>
+  <style>
+    /* ========== CSS 变量 ========== */
+    :root {
+      --green: #4CAF50;
+      --green-dark: #388E3C;
+      --green-light: #E8F5E9;
+      --white: #FFFFFF;
+      --bg: #F5F5F5;
+      --text-primary: #333333;
+      --text-secondary: #666666;
+      --text-hint: #999999;
+      --border: #E0E0E0;
+      --red: #F44336;
+      --orange: #FF9800;
+      --blue: #2196F3;
+      --gray: #9E9E9E;
+      --radius: 8px;
+    }
+
+    /* ========== 全局 ========== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+    .app-container {
+      max-width: 450px;
+      margin: 0 auto;
+      background: var(--bg);
+      min-height: 100vh;
+      position: relative;
+    }
+    @media (min-width: 768px) {
+      body { background: #E8E8E8; }
+      .app-container {
+        box-shadow: 0 0 20px rgba(0,0,0,0.05);
+      }
+    }
+
+    /* ========== 导航栏 ========== */
+    .navbar {
+      height: 48px;
+      background: var(--green);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding-top: env(safe-area-inset-top);
+    }
+    .navbar-back {
+      color: var(--white);
+      font-size: 20px;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .navbar-title {
+      color: var(--white);
+      font-size: 18px;
+      font-weight: bold;
+      flex: 1;
+      text-align: center;
+      margin-right: 24px;
+    }
+
+    /* ========== 排名横幅 ========== */
+    .rank-banner {
+      background: var(--green-light);
+      margin: 12px 16px;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .rank-banner .rank-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    .rank-banner .rank-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--green-dark);
+      text-align: center;
+    }
+    .rank-banner .rank-stats {
+      display: flex;
+      gap: 16px;
+      text-align: center;
+    }
+    .rank-banner .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .rank-banner .stat-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-primary);
+    }
+    .rank-banner .stat-label {
+      font-size: 11px;
+      color: var(--text-hint);
+    }
+    .rank-divider {
+      width: 1px;
+      height: 36px;
+      background: #A5D6A7;
+      align-self: center;
+    }
+
+    /* ========== 转盘区域 ========== */
+    .wheel-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 16px 0;
+    }
+    .wheel-outer {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin: 0 auto;
+    }
+    /* 外圈装饰 */
+    .wheel-ring {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        #BF360C 0deg 15deg, #FFAB91 15deg 30deg,
+        #D84315 30deg 45deg, #FFCC80 45deg 60deg,
+        #E65100 60deg 75deg, #FFE0B2 75deg 90deg,
+        #BF360C 90deg 105deg, #FFAB91 105deg 120deg,
+        #D84315 120deg 135deg, #FFCC80 135deg 150deg,
+        #E65100 150deg 165deg, #FFE0B2 165deg 180deg,
+        #BF360C 180deg 195deg, #FFAB91 195deg 210deg,
+        #D84315 210deg 225deg, #FFCC80 225deg 240deg,
+        #E65100 240deg 255deg, #FFE0B2 255deg 270deg,
+        #BF360C 270deg 285deg, #FFAB91 285deg 300deg,
+        #D84315 300deg 315deg, #FFCC80 315deg 330deg,
+        #E65100 330deg 345deg, #FFE0B2 345deg 360deg
+      );
+    }
+    .wheel-wrapper {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      transition: transform 4.5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    }
+    .wheel-canvas {
+      width: 280px;
+      height: 280px;
+      display: block;
+    }
+    /* 指针 */
+    .wheel-pointer {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      width: 0;
+      height: 0;
+      border-left: 16px solid transparent;
+      border-right: 16px solid transparent;
+      border-top: 28px solid #BF360C;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+    }
+    .wheel-pointer::after {
+      content: '';
+      position: absolute;
+      top: -32px;
+      left: -8px;
+      width: 16px;
+      height: 16px;
+      background: #BF360C;
+      border-radius: 50%;
+    }
+
+    /* 中心圆 */
+    .wheel-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px;
+      height: 52px;
+      background: var(--white);
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #BF360C;
+      font-weight: bold;
+    }
+
+    /* ========== 抽奖按钮 ========== */
+    .btn-lottery {
+      display: block;
+      width: 220px;
+      height: 48px;
+      margin: 20px auto 0;
+      background: linear-gradient(135deg, #E65100, #BF360C);
+      color: var(--white);
+      border: none;
+      border-radius: 24px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 2px;
+      box-shadow: 0 4px 12px rgba(230, 81, 0, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-lottery:hover { background: linear-gradient(135deg, #BF360C, #BF360C); }
+    .btn-lottery:active { transform: scale(0.95); }
+    .btn-lottery:disabled {
+      background: linear-gradient(135deg, #BDBDBD, #9E9E9E);
+      box-shadow: none;
+      cursor: not-allowed;
+      letter-spacing: 2px;
+    }
+
+    /* ========== 活动规则 ========== */
+    .prize-list-section {
+      margin: 20px 16px 12px;
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .prize-list-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .prize-list-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: #E65100;
+      border-radius: 2px;
+    }
+    .rule-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .rule-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .rule-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #FFF3E0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .rule-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .rule-label {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .rule-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .prize-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin: 2px 4px 2px 0;
+      font-weight: 500;
+    }
+    .prize-tag.first  { background: #FFF3E0; color: #E65100; }
+    .prize-tag.second { background: #FFF8E1; color: #E65100; }
+    .prize-tag.third  { background: #FFECB3; color: #BF360C; }
+
+    /* ========== 中奖名单 ========== */
+    .winner-list-section {
+      margin: 0 16px 24px;
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .winner-list-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .winner-list-title-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .winner-list-title-left::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: var(--orange);
+      border-radius: 2px;
+    }
+    .winner-list-more {
+      font-size: 12px;
+      color: var(--blue);
+      cursor: pointer;
+    }
+    .winner-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .winner-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--bg);
+      font-size: 13px;
+    }
+    .winner-item:last-child { border-bottom: none; }
+    .winner-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-primary);
+    }
+    .winner-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--green-light);
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .winner-prize {
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .winner-prize.first  { background: #FFF3E0; color: #E65100; }
+    .winner-prize.second { background: #ECEFF1; color: #546E7A; }
+    .winner-prize.third  { background: #E8F5E9; color: var(--green); }
+    .winner-time {
+      font-size: 12px;
+      color: var(--text-hint);
+    }
+
+    /* ========== 中奖弹窗 ========== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal {
+      background: var(--white);
+      border-radius: 16px;
+      width: 85%;
+      max-width: 340px;
+      overflow: hidden;
+      transform: scale(0.8);
+      transition: transform 0.3s;
+    }
+    .modal-overlay.active .modal { transform: scale(1); }
+    .modal-body {
+      padding: 28px 24px 20px;
+      text-align: center;
+    }
+    .modal-prize-icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+    .modal-prize-icon.gold   { background: linear-gradient(135deg, #FF8A65, #E65100); color: #FFF; }
+    .modal-prize-icon.silver { background: linear-gradient(135deg, #CFD8DC, #90A4AE); color: #FFF; }
+    .modal-prize-icon.bronze { background: linear-gradient(135deg, #FFE0B2, #FF9800); color: #FFF; }
+    .modal-prize-icon.none   { background: linear-gradient(135deg, #E0E0E0, #9E9E9E); color: #FFF; }
+    .modal-prize-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .modal-prize-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .btn-modal {
+      height: 40px;
+      padding: 0 28px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-modal:active { transform: scale(0.95); }
+    .btn-modal-primary {
+      background: linear-gradient(135deg, #E65100, #BF360C);
+      color: var(--white);
+    }
+    .btn-modal-secondary {
+      background: var(--bg);
+      color: var(--text-secondary);
+    }
+
+    /* ========== Toast ========== */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.75);
+      color: var(--white);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ========== 动画 ========== */
+    @media (prefers-reduced-motion: reduce) {
+      .wheel-wrapper { transition: none !important; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ========== 响应式 ========== */
+    @media (max-width: 374px) {
+      .wheel-outer, .wheel-wrapper, .wheel-canvas {
+        width: 240px;
+        height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+      <span class="navbar-back" onclick="showToast('返回上一页')">&#10094;</span>
+      <span class="navbar-title">积分抽奖</span>
+    </nav>
+
+    <!-- 排名信息横幅 -->
+    <div class="rank-banner" id="rankBanner">
+      <div>
+        <div class="rank-label">本月新增积分排名</div>
+        <div class="rank-value">第 <span id="userRank">12</span> 名</div>
+      </div>
+      <div class="rank-divider"></div>
+      <div class="rank-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="userTotalPoints">12,580</div>
+          <div class="stat-label">总积分</div>
+        </div>
+      </div>
+      <div class="rank-divider"></div>
+      <div class="rank-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="userMonthPoints" style="color: var(--orange);">+8,520</div>
+          <div class="stat-label">本月新增</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 转盘区域 -->
+    <div class="wheel-section">
+      <div class="wheel-outer">
+        <div class="wheel-ring"></div>
+        <div class="wheel-pointer"></div>
+        <div class="wheel-wrapper" id="wheelWrapper">
+          <canvas class="wheel-canvas" id="wheelCanvas" width="560" height="560"></canvas>
+        </div>
+        <div class="wheel-center" id="wheelCenter">抽奖</div>
+      </div>
+      <button class="btn-lottery" id="btnLottery" onclick="startLottery()">开始抽奖</button>
+    </div>
+
+    <!-- 活动规则 -->
+    <div class="prize-list-section">
+      <div class="prize-list-title">活动规则</div>
+      <div class="rule-list">
+        <div class="rule-item">
+          <div class="rule-icon">&#x1F465;</div>
+          <div class="rule-text">
+            <div class="rule-label">参与对象</div>
+            <div class="rule-desc">每月新增积分排行榜 <strong>前100名</strong> 用户</div>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon">&#x1F3C6;</div>
+          <div class="rule-text">
+            <div class="rule-label">奖品设置</div>
+            <div class="rule-desc">
+              <span class="prize-tag first">一等奖 1000积分</span>
+              <span class="prize-tag second">二等奖 500积分</span>
+              <span class="prize-tag third">三等奖 100积分</span>
+            </div>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon">&#x1F4DD;</div>
+          <div class="rule-text">
+            <div class="rule-label">名额限制</div>
+            <div class="rule-desc">一等奖 <strong>1名</strong> · 二等奖 <strong>2名</strong> · 三等奖 <strong>7名</strong></div>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon">&#x1F3AF;</div>
+          <div class="rule-text">
+            <div class="rule-label">参与规则</div>
+            <div class="rule-desc">每位用户仅限 <strong>1次</strong> 抽奖机会，奖品数量有限，先到先得，中奖后积分自动到账</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中奖名单 -->
+    <div class="winner-list-section">
+      <div class="winner-list-title">
+        <span class="winner-list-title-left">中奖名单</span>
+        <span class="winner-list-more" onclick="showToast('查看完整中奖名单')">查看全部 &gt;</span>
+      </div>
+      <div class="winner-items" id="winnerItems">
+        <!-- JS 动态渲染 -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 中奖弹窗 -->
+  <div class="modal-overlay" id="prizeModal">
+    <div class="modal">
+      <div class="modal-body">
+        <div class="modal-prize-icon" id="modalPrizeIcon"></div>
+        <div class="modal-prize-name" id="modalPrizeName"></div>
+        <div class="modal-prize-desc" id="modalPrizeDesc"></div>
+        <div class="modal-actions">
+          <button class="btn-modal btn-modal-primary" onclick="closePrizeModal()">我知道了</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      // ==================== 模拟数据 ====================
+
+      const userData = {
+        rank: 12,
+        totalPoints: 12580,
+        monthPoints: 8520,
+        chances: 1
+      };
+
+      // 扇区配置（8 扇区，从顶部顺时针排列，橙红色系）
+      const sectorConfig = [
+        { id: 'first',  name: '一等奖',   points: 1000, isDark: true,  color: '#D84315', lightColor: '#FF8A65' },
+        { id: 'third',  name: '三等奖',   points: 100,  isDark: false, color: '#FFF3E0', lightColor: '#FFE0B2' },
+        { id: 'none',   name: '谢谢参与', points: 0,    isDark: false, color: '#FFECB3', lightColor: '#FFF8E1' },
+        { id: 'second', name: '二等奖',   points: 500,  isDark: true,  color: '#E65100', lightColor: '#FFB74D' },
+        { id: 'third',  name: '三等奖',   points: 100,  isDark: false, color: '#FFF3E0', lightColor: '#FFE0B2' },
+        { id: 'none',   name: '谢谢参与', points: 0,    isDark: false, color: '#FFECB3', lightColor: '#FFF8E1' },
+        { id: 'third',  name: '三等奖',   points: 100,  isDark: false, color: '#FFF3E0', lightColor: '#FFE0B2' },
+        { id: 'second', name: '二等奖',   points: 500,  isDark: true,  color: '#E65100', lightColor: '#FFB74D' }
+      ];
+
+      // 名额池
+      const prizePool = {
+        first:  { name: '一等奖', points: 1000, total: 1, remaining: 1 },
+        second: { name: '二等奖', points: 500,  total: 2, remaining: 2 },
+        third:  { name: '三等奖', points: 100,  total: 7, remaining: 7 }
+      };
+
+      // 中奖名单（预设演示数据）
+      const winnerList = [
+        { name: '王**', prize: 'second', time: '5分钟前' },
+        { name: '李**', prize: 'third',  time: '12分钟前' },
+        { name: '赵**', prize: 'first',  time: '28分钟前' },
+        { name: '陈**', prize: 'third',  time: '35分钟前' },
+        { name: '刘**', prize: 'second', time: '1小时前' },
+        { name: '周**', prize: 'third',  time: '1小时前' },
+        { name: '孙**', prize: 'third',  time: '2小时前' }
+      ];
+
+      const prizeClassMap = {
+        first: 'gold',
+        second: 'silver',
+        third: 'bronze',
+        none: 'none'
+      };
+      const prizeTagClassMap = {
+        first: 'first',
+        second: 'second',
+        third: 'third'
+      };
+
+      // ==================== 状态 ====================
+      let isSpinning = false;
+      let currentRotation = 0;       // 累计旋转角度
+      let hasWon = false;
+
+      // ==================== DOM 缓存 ====================
+      const $rankBanner    = document.getElementById('rankBanner');
+      const $userRank      = document.getElementById('userRank');
+      const $userTotalPts  = document.getElementById('userTotalPoints');
+      const $userMonthPts  = document.getElementById('userMonthPoints');
+      const $wheelWrapper = document.getElementById('wheelWrapper');
+      const $wheelCanvas  = document.getElementById('wheelCanvas');
+      const $wheelCenter  = document.getElementById('wheelCenter');
+      const $btnLottery   = document.getElementById('btnLottery');
+      const $winnerItems  = document.getElementById('winnerItems');
+      const $prizeModal   = document.getElementById('prizeModal');
+      const $prizeIcon    = document.getElementById('modalPrizeIcon');
+      const $prizeName    = document.getElementById('modalPrizeName');
+      const $prizeDesc    = document.getElementById('modalPrizeDesc');
+      const $toast        = document.getElementById('toast');
+
+      // ==================== Canvas 绘制转盘 ====================
+      const CANVAS_SIZE = 560;   // 实际像素（2x Retina）
+      const DISPLAY_SIZE = 280; // 显示尺寸
+
+      function drawWheel() {
+        const ctx = $wheelCanvas.getContext('2d');
+        const cx = CANVAS_SIZE / 2;
+        const cy = CANVAS_SIZE / 2;
+        const radius = CANVAS_SIZE / 2 - 4;
+        const sectors = sectorConfig;
+        const count = sectors.length;
+        const arc = (2 * Math.PI) / count;
+        const startOffset = -Math.PI / 2 - arc / 2; // 第一个扇区起始边
+
+        ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+        // 绘制扇区
+        sectors.forEach((sector, i) => {
+          const startAngle = startOffset + i * arc;
+          const endAngle = startAngle + arc;
+
+          // 扇区填充（渐变）
+          const midAngle = startAngle + arc / 2;
+          const gradStartX = cx + Math.cos(midAngle) * radius * 0.3;
+          const gradStartY = cy + Math.sin(midAngle) * radius * 0.3;
+          const gradEndX = cx + Math.cos(midAngle) * radius;
+          const gradEndY = cy + Math.sin(midAngle) * radius;
+
+          const gradient = ctx.createLinearGradient(gradStartX, gradStartY, gradEndX, gradEndY);
+          gradient.addColorStop(0, sector.lightColor);
+          gradient.addColorStop(1, sector.color);
+
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, radius, startAngle, endAngle);
+          ctx.closePath();
+          ctx.fillStyle = gradient;
+          ctx.fill();
+
+          // 扇区边框
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+          ctx.stroke();
+
+          // 扇区文字（底部扇区翻转180度避免倒立）
+          ctx.save();
+          ctx.translate(cx, cy);
+          // midAngle 在 (0, PI) 之间的扇区在下方，文字需要翻转
+          const isFlipped = midAngle > 0 && midAngle < Math.PI;
+          const textAngle = isFlipped ? midAngle + Math.PI : midAngle;
+          const textX = isFlipped ? -radius * 0.58 : radius * 0.58;
+          ctx.rotate(textAngle);
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.font = 'bold 24px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+          // 先画白色描边，再画深色填充，确保任何底色上都清晰
+          ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+          ctx.lineWidth = 4;
+          ctx.strokeText(sector.name, textX, 0);
+          ctx.fillStyle = '#3E2723';
+          ctx.fillText(sector.name, textX, 0);
+          ctx.restore();
+        });
+
+        // 外圈描边
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.stroke();
+
+        // 内圈光点装饰
+        for (let i = 0; i < 16; i++) {
+          const angle = (i / 16) * 2 * Math.PI;
+          const dotRadius = i % 2 === 0 ? 5 : 3;
+          const dotX = cx + Math.cos(angle) * (radius - 14);
+          const dotY = cy + Math.sin(angle) * (radius - 14);
+          ctx.beginPath();
+          ctx.arc(dotX, dotY, dotRadius, 0, 2 * Math.PI);
+          ctx.fillStyle = 'rgba(255,255,255,0.8)';
+          ctx.fill();
+        }
+      }
+
+      // ==================== 中奖名单渲染 ====================
+      function renderWinnerList() {
+        $winnerItems.innerHTML = winnerList.map(w => {
+          const pool = prizePool[w.prize];
+          const prizeName = pool ? pool.name : '谢谢参与';
+          return `
+            <div class="winner-item">
+              <div class="winner-user">
+                <div class="winner-avatar">${w.name.charAt(0)}</div>
+                <span>${w.name}</span>
+              </div>
+              <span class="winner-prize ${prizeTagClassMap[w.prize] || ''}">${prizeName}</span>
+              <span class="winner-time">${w.time}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // ==================== 中奖逻辑 ====================
+      function determinePrize() {
+        // 收集有剩余名额的奖品
+        const available = Object.entries(prizePool).filter(([, pool]) => pool.remaining > 0);
+        if (available.length === 0) return { id: 'none', name: '谢谢参与', points: 0, poolKey: null };
+
+        // 给谢谢参与一个权重（和剩余奖品总数相关）
+        const totalRemaining = available.reduce((s, [, p]) => s + p.remaining, 0);
+        const noneWeight = Math.max(2, 10 - totalRemaining); // 剩余名额越少，谢谢参与概率越大
+
+        // 构建概率区间
+        let ranges = [];
+        let cumulative = 0;
+        for (const [key, pool] of available) {
+          ranges.push({ key, pool, start: cumulative, end: cumulative + pool.remaining });
+          cumulative += pool.remaining;
+        }
+        const total = cumulative + noneWeight;
+        const rand = Math.random() * total;
+
+        for (const r of ranges) {
+          if (rand < r.end) return { id: r.key, name: r.pool.name, points: r.pool.points, poolKey: r.key };
+        }
+        return { id: 'none', name: '谢谢参与', points: 0, poolKey: null };
+      }
+
+      function getTargetSectorIndex(prizeId) {
+        // 找到 prizeId 对应的所有扇区索引
+        const indices = [];
+        sectorConfig.forEach((s, i) => {
+          if (s.id === prizeId) indices.push(i);
+        });
+        if (indices.length === 0) {
+          // 谢谢参与
+          sectorConfig.forEach((s, i) => {
+            if (s.id === 'none') indices.push(i);
+          });
+        }
+        return indices[Math.floor(Math.random() * indices.length)];
+      }
+
+      // ==================== 抽奖流程 ====================
+      function startLottery() {
+        if (isSpinning) return;
+        if (userData.chances <= 0) {
+          showToast('抽奖次数已用完');
+          return;
+        }
+
+        isSpinning = true;
+        $btnLottery.disabled = true;
+        $btnLottery.textContent = '抽奖中...';
+        $wheelCenter.textContent = '...';
+
+        // 判定中奖结果
+        const result = determinePrize();
+
+        // 消耗名额
+        if (result.poolKey && prizePool[result.poolKey]) {
+          prizePool[result.poolKey].remaining--;
+        }
+
+        // 消耗抽奖机会
+        userData.chances--;
+
+        // 计算目标扇区和旋转角度
+        const targetIdx = getTargetSectorIndex(result.id);
+        const sectorArc = 360 / sectorConfig.length; // 45度
+        // 扇区 i 的中心在 i * sectorArc 度（从顶部顺时针）
+        // 指针在顶部，需要让扇区 targetIdx 对准顶部
+        // 旋转方向：顺时针为正。wrapper rotate(Xdeg) 会让 Canvas 的顶部顺时针旋转到 Xdeg 处
+        // 如果扇区 i 在 Canvas 上 i*45deg 处，要对准顶部，需要旋转 -i*45deg（逆时针），即负角度
+        // 加到多圈上
+        const baseTarget = -(targetIdx * sectorArc);
+        // 加上随机偏移（±扇区半角内）
+        const offset = (Math.random() - 0.5) * sectorArc * 0.85;
+        // 随机 6-8 圈
+        const fullSpins = (6 + Math.floor(Math.random() * 3)) * 360;
+        const targetAngle = currentRotation + fullSpins + baseTarget + offset;
+
+        // 使目标角度为负值（确保顺时针补偿后指向正确）
+        // 确保总旋转值始终递增（顺时针多圈）
+        const finalTarget = targetAngle;
+
+        // 应用旋转动画
+        $wheelWrapper.style.transition = 'transform 4.5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+        $wheelWrapper.style.transform = `rotate(${finalTarget}deg)`;
+
+        // 记录结果和旋转后的累计角度
+        const resultCopy = { ...result };
+        const newRotation = finalTarget;
+
+        // 监听动画结束
+        const onTransitionEnd = function () {
+          $wheelWrapper.removeEventListener('transitionend', onTransitionEnd);
+          currentRotation = newRotation;
+
+          // 更新 UI
+          $btnLottery.textContent = '已使用';
+          $btnLottery.disabled = true;
+          $wheelCenter.textContent = resultCopy.points > 0 ? `+${resultCopy.points}` : '---';
+          hasWon = resultCopy.points > 0;
+
+          // 更新排名横幅
+          $userRank.textContent = userData.rank;
+          $userTotalPts.textContent = (userData.totalPoints + resultCopy.points).toLocaleString();
+          $userMonthPts.textContent = '+' + (userData.monthPoints + resultCopy.points).toLocaleString();
+
+          // 更新积分
+          userData.totalPoints += resultCopy.points;
+          userData.monthPoints += resultCopy.points;
+
+          // 弹窗展示结果
+          setTimeout(() => showPrizeModal(resultCopy), 400);
+
+          isSpinning = false;
+        };
+        $wheelWrapper.addEventListener('transitionend', onTransitionEnd);
+      }
+
+      // ==================== 中奖弹窗 ====================
+      function showPrizeModal(result) {
+        const iconMap = { first: 'gold', second: 'silver', third: 'bronze', none: 'none' };
+        const emojiMap = { first: '&#x1F3C6;', second: '&#x1F948;', third: '&#x1F949;', none: '&#x1F3AF;' };
+        const iconClass = iconMap[result.id] || 'none';
+        const emoji = emojiMap[result.id] || emojiMap['none'];
+
+        $prizeIcon.className = 'modal-prize-icon ' + iconClass;
+        $prizeIcon.innerHTML = emoji;
+        $prizeName.textContent = result.points > 0 ? `恭喜获得 ${result.name}` : '很遗憾';
+        $prizeDesc.textContent = result.points > 0 ? `+${result.points} 积分已到账` : '下次好运！';
+
+        $prizeModal.classList.add('active');
+      }
+
+      function closePrizeModal() {
+        $prizeModal.classList.remove('active');
+
+        // 如果中奖了，将中奖记录追加到名单顶部
+        if (hasWon && window._lastResult) {
+          winnerList.unshift({
+            name: '我',
+            prize: window._lastResult.id,
+            time: '刚刚'
+          });
+          renderWinnerList();
+        }
+
+        // 更新转盘中心文字
+        if (userData.chances <= 0) {
+          $wheelCenter.textContent = '已抽';
+        }
+      }
+
+      // 在 showPrizeModal 中保存结果
+      const origShowPrizeModal = showPrizeModal;
+      showPrizeModal = function (result) {
+        window._lastResult = result;
+        origShowPrizeModal(result);
+      };
+
+      // ==================== Toast ====================
+      let toastTimer = null;
+      function showToast(msg) {
+        if (toastTimer) clearTimeout(toastTimer);
+        $toast.textContent = msg;
+        $toast.classList.add('show');
+        toastTimer = setTimeout(() => {
+          $toast.classList.remove('show');
+          toastTimer = null;
+        }, 2000);
+      }
+      window.showToast = showToast;
+
+      // ==================== 初始化 ====================
+      function init() {
+        drawWheel();
+        renderWinnerList();
+        $userRank.textContent = userData.rank;
+        $userTotalPts.textContent = userData.totalPoints.toLocaleString();
+        $userMonthPts.textContent = '+' + userData.monthPoints.toLocaleString();
+        $btnLottery.textContent = '开始抽奖（' + userData.chances + '次）';
+
+        // 弹窗关闭事件
+        $prizeModal.addEventListener('click', function (e) {
+          if (e.target === $prizeModal) closePrizeModal();
+        });
+
+        // 暴露到全局
+        window.closePrizeModal = closePrizeModal;
+        window.startLottery = startLottery;
+      }
+
+      document.addEventListener('DOMContentLoaded', init);
+    })();
+  </script>
+</body>
+</html>

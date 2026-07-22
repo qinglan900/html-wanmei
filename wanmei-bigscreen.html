@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1.0">
+<title>皖美 e 行 · 一体化出行服务平台 — 数据大屏</title>
+<style>
+  :root {
+    --bg-deep: #0a0e27; --cyan: #00d4ff; --orange: #FF6B35;
+    --green: #10B981; --blue: #3B82F6; --yellow: #F59E0B; --red: #EF4444;
+    --purple: #8B5CF6;
+  }
+  * { margin:0;padding:0;box-sizing:border-box; }
+  body {
+    font-family:'Microsoft YaHei','PingFang SC',sans-serif;
+    background:var(--bg-deep); color:#fff;
+    width:100vw; height:100vh; overflow:hidden; user-select:none;
+  }
+  #app {
+    width:100%; height:100%;
+    background:linear-gradient(180deg, #0a0e27 0%, #0d1b3e 50%, #0a0e27 100%);
+    display:flex; flex-direction:column; padding:10px 24px 8px;
+  }
+
+  /* ========== 标题栏 ========== */
+  .title-bar { display:flex; align-items:center; justify-content:center; gap:24px; margin-bottom:6px; flex-shrink:0; }
+  .title-line { height:1px; width:120px; background:linear-gradient(90deg,transparent,rgba(0,212,255,0.4)); }
+  .title-line.r { background:linear-gradient(90deg,rgba(0,212,255,0.4),transparent); }
+  .title-main { color:var(--cyan); font-size:20px; font-weight:700; letter-spacing:4px; text-shadow:0 0 18px rgba(0,212,255,0.5); }
+  .title-sub { font-size:11px; color:rgba(0,212,255,0.35); letter-spacing:6px; }
+  .title-info { font-size:10px; color:rgba(0,212,255,0.25); margin-top:2px; }
+  .status-dot { display:inline-block; width:6px; height:6px; background:var(--green); border-radius:50%; animation:breathe 2s ease-in-out infinite; vertical-align:middle; margin-right:3px; }
+  @keyframes breathe { 0%,100%{opacity:1;box-shadow:0 0 4px var(--green)} 50%{opacity:.4;box-shadow:0 0 10px var(--green)} }
+
+  /* ========== 第一行：4 卡片概况 ========== */
+  .overview-row { display:flex; gap:8px; flex-shrink:0; margin-bottom:5px; }
+  .ov-card {
+    flex:1; border-radius:3px; overflow:hidden;
+    display:flex; flex-direction:column;
+    background:linear-gradient(180deg, rgba(13,27,62,0.95) 0%, rgba(10,14,39,0.98) 100%);
+    border:1px solid rgba(0,212,255,0.12);
+  }
+  .ov-header {
+    display:flex; align-items:center; padding:0; flex-shrink:0; min-height:32px;
+    border-bottom:1px solid rgba(0,212,255,0.06);
+  }
+  .ov-header-tag {
+    display:inline-flex; align-items:center;
+    padding:6px 16px 6px 12px;
+    background:linear-gradient(135deg, #1e2d5a 0%, #162048 100%);
+    color:var(--cyan); font-size:13px; font-weight:700; letter-spacing:1px;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
+    min-width:130px;
+  }
+  .ov-body {
+    padding:12px 16px 10px; flex:1;
+    display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
+    gap:8px 20px;
+  }
+  .ov-item { display:flex; flex-direction:column; justify-content:center; }
+  .ov-label { font-size:12px; color:rgba(168,188,220,0.70); margin-bottom:4px; }
+  .ov-value { font-size:28px; font-weight:700; line-height:1.1; color:#e0ecff; }
+  .ov-value .yen { font-size:16px; font-weight:400; margin-right:1px; color:rgba(224,236,255,0.5); }
+
+  /* ========== 第二行：累计数据 4 卡片 ========== */
+  .stats-row { display:flex; gap:8px; flex-shrink:0; margin-bottom:5px; }
+  .stat-card {
+    flex:1.2; background:linear-gradient(180deg,rgba(0,212,255,0.05) 0%,rgba(0,212,255,0.01) 100%);
+    border:1px solid rgba(0,212,255,0.1); border-radius:3px; padding:14px 16px;
+    text-align:center; position:relative; overflow:hidden;
+  }
+  .stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg,transparent,var(--mc,var(--cyan)),transparent); opacity:0.5; }
+  .stat-label { font-size:13px; letter-spacing:1px; margin-bottom:5px; }
+  .stat-value { font-size:32px; font-weight:700; line-height:1.1; }
+  .stat-sub { font-size:10px; margin-top:4px; }
+
+  /* ========== 第三行：重点业务 3+1 ========== */
+  .biz-row { display:flex; gap:8px; flex-shrink:0; margin-bottom:5px; }
+  .biz-card {
+    flex:1; background:linear-gradient(180deg,rgba(0,212,255,0.04) 0%,rgba(0,212,255,0.01) 100%);
+    border:1px solid rgba(0,212,255,0.1); border-radius:3px; padding:6px 10px;
+    display:flex; flex-direction:column; position:relative; overflow:hidden;
+  }
+  .biz-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+  .biz-card.oil::before { background:linear-gradient(90deg,transparent,var(--orange),transparent); }
+  .biz-card.charge::before { background:linear-gradient(90deg,transparent,var(--green),transparent); }
+  .biz-card.meal::before { background:linear-gradient(90deg,transparent,var(--purple),transparent); }
+  .biz-title { font-size:12px; color:rgba(0,212,255,0.6); margin-bottom:5px; display:flex; align-items:center; gap:5px; }
+  .biz-title::before { content:''; display:inline-block; width:3px; height:10px; border-radius:1px; }
+  .biz-title.oil::before { background:var(--orange); }
+  .biz-title.charge::before { background:var(--green); }
+  .biz-title.meal::before { background:var(--purple); }
+  .biz-metrics { display:flex; gap:14px; flex:1; align-items:center; justify-content:center; }
+  .biz-metric { text-align:center; }
+  .biz-metric .bm-label { font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:3px; }
+  .biz-metric .bm-value { font-size:26px; font-weight:700; }
+  .biz-metric .bm-sub { font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px; }
+
+  /* 业务卡片内折线图 */
+  .biz-chart { margin-top:2px; flex-shrink:0; }
+  .biz-chart-title { font-size:8px; color:rgba(255,255,255,0.25); margin-bottom:2px; }
+  .biz-line-wrap { position:relative; height:60px; }
+  .biz-line-wrap svg { display:block; width:100%; height:100%; }
+  .biz-line-labels { display:flex; justify-content:space-between; padding:0 6px; margin-top:1px; }
+  .biz-line-labels span { font-size:8px; color:rgba(255,255,255,0.25); }
+
+  /* ========== 底部：活跃度 + 活动内容 ========== */
+  .bottom-row { display:flex; gap:8px; flex:1; min-height:0; }
+  .bottom-left { flex:1; display:flex; flex-direction:column; gap:8px; min-height:0; }
+  .bottom-right { flex:1; min-height:0; }
+  .strip {
+    background:linear-gradient(180deg,rgba(0,212,255,0.04) 0%,rgba(0,212,255,0.01) 100%);
+    border:1px solid rgba(0,212,255,0.1); border-radius:3px; padding:10px;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .strip.half { flex:1; min-height:0; }
+  .strip.full { flex:1; min-height:0; }
+  .st-title { color:rgba(0,212,255,0.55); font-size:11px; font-weight:600; margin-bottom:6px; flex-shrink:0; display:flex; align-items:center; gap:4px; }
+  .st-title::before { content:''; display:inline-block; width:3px; height:10px; border-radius:1px; background:var(--cyan); }
+  .st-title.o::before { background:var(--orange); }
+  .st-title.g::before { background:var(--green); }
+
+  /* 活动卡片 */
+  .act-row { display:flex; gap:8px; flex:1; align-items:stretch; }
+  .act-card { flex:1; background:rgba(0,212,255,0.03); border-radius:2px; padding:6px 4px;
+    display:flex; flex-direction:column; justify-content:center; text-align:center;
+    border-left:2px solid var(--green); }
+  .act-card.pending { border-left-color:var(--yellow); }
+
+  /* 活跃度条形 */
+  .activity-bar { display:flex; gap:6px; flex:1; align-items:stretch; }
+  .ab-item { flex:1; background:rgba(0,212,255,0.03); border-radius:2px; padding:6px 8px; display:flex; flex-direction:column; justify-content:center; }
+  .ab-label { font-size:10px; color:rgba(255,255,255,0.4); margin-bottom:2px; }
+  .ab-value { font-size:18px; font-weight:700; }
+  .ab-bar-bg { height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin-top:4px; overflow:hidden; }
+  .ab-bar-fill { height:100%; border-radius:2px; transition:width 1s ease; }
+
+  /* 实时订单表格 */
+  .order-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .order-table thead th {
+    text-align:left; padding:4px 8px; font-weight:500;
+    color:rgba(0,212,255,0.45); font-size:12px; border-bottom:1px solid rgba(0,212,255,0.08);
+  }
+  .order-table thead th:last-child { text-align:right; }
+  .order-table tbody td {
+    padding:5px 8px; color:rgba(255,255,255,0.7);
+    border-bottom:1px solid rgba(0,212,255,0.04);
+    white-space:nowrap;
+  }
+  .order-table tbody td:last-child { text-align:right; color:rgba(0,212,255,0.45); }
+  .order-table .tag-scene {
+    display:inline-block; padding:1px 6px; border-radius:2px; font-size:11px; font-weight:600;
+  }
+  .order-table .tag-scene.oil { background:rgba(255,107,53,0.15); color:var(--orange); }
+  .order-table .tag-scene.charge { background:rgba(16,185,129,0.15); color:var(--green); }
+  .order-table .tag-scene.meal { background:rgba(139,92,246,0.15); color:var(--purple); }
+  .order-wrap { flex:1; overflow:hidden; }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- 标题 -->
+  <div class="title-bar">
+    <div class="title-line"></div>
+    <div style="text-align:center;">
+      <div class="title-sub">安徽省高速公路出行服务</div>
+      <div class="title-main">皖美 e 行 · 一体化出行服务平台</div>
+      <div class="title-info"><span class="status-dot"></span>2026-07-21 · 系统运行中 · 上次刷新 <span id="refresh-time">14:32:15</span></div>
+    </div>
+    <div class="title-line r"></div>
+  </div>
+
+  <!-- ===== 第一行：4 卡片概况 ===== -->
+  <div class="overview-row">
+    <div class="ov-card">
+      <div class="ov-header"><span class="ov-header-tag">今日交易概况</span></div>
+      <div class="ov-body">
+        <div class="ov-item"><div class="ov-label">下单数</div><div class="ov-value" id="ov-orders">832</div></div>
+        <div class="ov-item"><div class="ov-label">下单金额(元)</div><div class="ov-value"><span class="yen">¥</span><span id="ov-amount">52,680</span></div></div>
+        <div class="ov-item"><div class="ov-label">支付订单数</div><div class="ov-value" id="ov-paid-orders">619</div></div>
+        <div class="ov-item"><div class="ov-label">支付金额(元)</div><div class="ov-value"><span class="yen">¥</span><span id="ov-paid-amount">41,350</span></div></div>
+      </div>
+    </div>
+    <div class="ov-card">
+      <div class="ov-header"><span class="ov-header-tag">今日流量概况</span></div>
+      <div class="ov-body">
+        <div class="ov-item"><div class="ov-label">访客数</div><div class="ov-value" id="ov-visitors">12,560</div></div>
+        <div class="ov-item"><div class="ov-label">浏览量</div><div class="ov-value" id="ov-pv">45,830</div></div>
+        <div class="ov-item"><div class="ov-label">商品访客数</div><div class="ov-value" id="ov-item-visitors">8,270</div></div>
+        <div class="ov-item"><div class="ov-label">商品浏览量</div><div class="ov-value" id="ov-item-pv">28,410</div></div>
+      </div>
+    </div>
+    <div class="ov-card">
+      <div class="ov-header"><span class="ov-header-tag">今日商品概况</span></div>
+      <div class="ov-body">
+        <div class="ov-item"><div class="ov-label">商品总数</div><div class="ov-value" id="ov-items-total">186</div></div>
+        <div class="ov-item"><div class="ov-label">新增商品数</div><div class="ov-value" id="ov-items-new">12</div></div>
+        <div class="ov-item"><div class="ov-label">在售商品数</div><div class="ov-value" id="ov-items-sale">168</div></div>
+        <div class="ov-item"><div class="ov-label">下架商品数</div><div class="ov-value" id="ov-items-off">18</div></div>
+      </div>
+    </div>
+    <div class="ov-card">
+      <div class="ov-header"><span class="ov-header-tag">今日用户概况</span></div>
+      <div class="ov-body">
+        <div class="ov-item"><div class="ov-label">商户总数</div><div class="ov-value" id="ov-shops">48</div></div>
+        <div class="ov-item"><div class="ov-label">新增商户数</div><div class="ov-value" id="ov-shops-new">3</div></div>
+        <div class="ov-item"><div class="ov-label">登录会员总数</div><div class="ov-value" id="ov-members">128,640</div></div>
+        <div class="ov-item"><div class="ov-label">新增会员数</div><div class="ov-value" id="ov-members-new">86</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 第二行：累计数据 4 卡片 ===== -->
+  <div class="stats-row">
+    <div class="stat-card" style="--mc:var(--cyan);">
+      <div class="stat-label" style="color:rgba(0,212,255,0.5);">累计订单总数</div>
+      <div class="stat-value" id="v-total-orders" style="color:var(--cyan);">892,500</div>
+      <div class="stat-sub" style="color:rgba(0,212,255,0.55);">皖美商城 512,300 · 积分商城 380,200</div>
+    </div>
+    <div class="stat-card" style="--mc:var(--green);">
+      <div class="stat-label" style="color:rgba(16,185,129,0.5);">累计注册用户</div>
+      <div class="stat-value" id="v-total-users" style="color:var(--green);">128,640</div>
+      <div class="stat-sub" style="color:rgba(16,185,129,0.55);">入驻以来累计 · 月均增长 12.3%</div>
+    </div>
+    <div class="stat-card" style="--mc:var(--yellow);">
+      <div class="stat-label" style="color:rgba(245,158,11,0.5);">累计积分发放</div>
+      <div class="stat-value" style="color:var(--yellow);"><span id="v-total-points">1,286.4</span><span style="font-size:14px;">万</span></div>
+      <div class="stat-sub" style="color:rgba(245,158,11,0.55);">消耗 938.0万 · 消耗率 72.9%</div>
+    </div>
+    <div class="stat-card" style="--mc:var(--orange);">
+      <div class="stat-label" style="color:rgba(255,107,53,0.5);">累计订单金额</div>
+      <div class="stat-value" style="color:var(--orange);">¥<span id="v-total-amount">2,847.6</span><span style="font-size:14px;">万</span></div>
+      <div class="stat-sub" style="color:rgba(255,107,53,0.55);">入驻以来累计 · 月均 ¥406.8万</div>
+    </div>
+  </div>
+
+  <!-- ===== 第三行：重点业务 3 + 1 ===== -->
+  <div class="biz-row">
+    <!-- 左侧 3 张业务卡片 -->
+    <div class="biz-card oil">
+      <div class="biz-title oil">加油业务 · 今日</div>
+      <div class="biz-metrics">
+        <div class="biz-metric"><div class="bm-label">订单量</div><div class="bm-value" style="color:var(--orange);" id="v-oil-orders">1,856</div><div class="bm-sub" id="sub-oil-orders">较昨日 ↑ 15.2%</div></div>
+        <div class="biz-metric"><div class="bm-label">订单金额</div><div class="bm-value" style="color:var(--orange);" id="v-oil-amount">¥<span style="font-size:16px;">28.6</span><span style="font-size:12px;">万</span></div><div class="bm-sub" id="sub-oil-amount">占总额 60.5%</div></div>
+        <div class="biz-metric"><div class="bm-label">核销率</div><div class="bm-value" style="color:var(--orange);" id="v-oil-rate">87.3<span style="font-size:14px;">%</span></div><div class="bm-sub" id="sub-oil-rate">较昨日 ↑ 2.1%</div></div>
+      </div>
+      <div class="biz-chart">
+        <div class="biz-chart-title">近7天订单趋势</div>
+        <div class="biz-line-wrap" id="line-oil">
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none">
+            <defs><linearGradient id="go" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF6B35" stop-opacity="0.2"/><stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/></linearGradient></defs>
+            <polygon fill="url(#go)" points="0,60 0,12 33,18 67,9 100,27 133,15 167,21 200,14 200,60"/>
+            <polyline fill="none" stroke="#FF6B35" stroke-width="1.2" points="0,12 33,18 67,9 100,27 133,15 167,21 200,14"/>
+          </svg>
+        </div>
+        <div class="biz-line-labels"><span>07-15</span><span>07-16</span><span>07-17</span><span>07-18</span><span>07-19</span><span>07-20</span><span>07-21</span></div>
+      </div>
+    </div>
+    <div class="biz-card charge">
+      <div class="biz-title charge">充电业务 · 今日</div>
+      <div class="biz-metrics">
+        <div class="biz-metric"><div class="bm-label">订单量</div><div class="bm-value" style="color:var(--green);" id="v-charge-orders">982</div><div class="bm-sub" id="sub-charge-orders">较昨日 ↑ 22.8%</div></div>
+        <div class="biz-metric"><div class="bm-label">订单金额</div><div class="bm-value" style="color:var(--green);" id="v-charge-amount">¥<span style="font-size:16px;">12.4</span><span style="font-size:12px;">万</span></div><div class="bm-sub" id="sub-charge-amount">占总额 26.2%</div></div>
+        <div class="biz-metric"><div class="bm-label">核销率</div><div class="bm-value" style="color:var(--green);" id="v-charge-rate">91.6<span style="font-size:14px;">%</span></div><div class="bm-sub" id="sub-charge-rate">较昨日 ↑ 3.5%</div></div>
+      </div>
+      <div class="biz-chart">
+        <div class="biz-chart-title">近7天订单趋势</div>
+        <div class="biz-line-wrap" id="line-charge">
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none">
+            <defs><linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10B981" stop-opacity="0.2"/><stop offset="100%" stop-color="#10B981" stop-opacity="0"/></linearGradient></defs>
+            <polygon fill="url(#gc)" points="0,60 0,21 33,15 67,24 100,12 133,8 167,18 200,9 200,60"/>
+            <polyline fill="none" stroke="#10B981" stroke-width="1.2" points="0,21 33,15 67,24 100,12 133,8 167,18 200,9"/>
+          </svg>
+        </div>
+        <div class="biz-line-labels"><span>07-15</span><span>07-16</span><span>07-17</span><span>07-18</span><span>07-19</span><span>07-20</span><span>07-21</span></div>
+      </div>
+    </div>
+    <div class="biz-card meal">
+      <div class="biz-title meal">订餐业务 · 今日</div>
+      <div class="biz-metrics">
+        <div class="biz-metric"><div class="bm-label">订单量</div><div class="bm-value" style="color:var(--purple);" id="v-meal-orders">436</div><div class="bm-sub" id="sub-meal-orders">较昨日 ↑ 8.6%</div></div>
+        <div class="biz-metric"><div class="bm-label">订单金额</div><div class="bm-value" style="color:var(--purple);" id="v-meal-amount">¥<span style="font-size:16px;">6.3</span><span style="font-size:12px;">万</span></div><div class="bm-sub" id="sub-meal-amount">占总额 13.3%</div></div>
+        <div class="biz-metric"><div class="bm-label">核销率</div><div class="bm-value" style="color:var(--purple);" id="v-meal-rate">82.5<span style="font-size:14px;">%</span></div><div class="bm-sub" id="sub-meal-rate">较昨日 ↑ 1.8%</div></div>
+      </div>
+      <div class="biz-chart">
+        <div class="biz-chart-title">近7天订单趋势</div>
+        <div class="biz-line-wrap" id="line-meal">
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none">
+            <defs><linearGradient id="gm" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.2"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/></linearGradient></defs>
+            <polygon fill="url(#gm)" points="0,60 0,27 33,21 67,33 100,18 133,30 167,24 200,15 200,60"/>
+            <polyline fill="none" stroke="#8B5CF6" stroke-width="1.2" points="0,27 33,21 67,33 100,18 133,30 167,24 200,15"/>
+          </svg>
+        </div>
+        <div class="biz-line-labels"><span>07-15</span><span>07-16</span><span>07-17</span><span>07-18</span><span>07-19</span><span>07-20</span><span>07-21</span></div>
+      </div>
+    </div>
+    <!-- 右侧：实时订单 -->
+    <div class="biz-card" style="border-left:2px solid var(--orange);">
+      <div class="biz-title" style="color:var(--orange);">实时订单</div>
+      <div class="order-wrap" id="order-scroll"></div>
+    </div>
+  </div>
+
+  <!-- ===== 底部：活跃度 + 活动内容 并列 ===== -->
+  <div class="bottom-row">
+    <div class="strip" style="flex:1;">
+      <div class="st-title">用户活跃度</div>
+      <div class="activity-bar">
+        <div class="ab-item">
+          <div class="ab-label">日活跃</div>
+          <div class="ab-value" style="color:var(--cyan);" id="ab-dau">8,642</div>
+          <div class="ab-bar-bg"><div class="ab-bar-fill" style="width:68%;background:var(--cyan);"></div></div>
+        </div>
+        <div class="ab-item">
+          <div class="ab-label">周活跃</div>
+          <div class="ab-value" style="color:var(--green);" id="ab-wau">18,230</div>
+          <div class="ab-bar-bg"><div class="ab-bar-fill" style="width:82%;background:var(--green);"></div></div>
+        </div>
+        <div class="ab-item">
+          <div class="ab-label">月活跃</div>
+          <div class="ab-value" style="color:var(--blue);" id="ab-mau">26,580</div>
+          <div class="ab-bar-bg"><div class="ab-bar-fill" style="width:95%;background:var(--blue);"></div></div>
+        </div>
+        <div class="ab-item">
+          <div class="ab-label">平均停留</div>
+          <div class="ab-value" style="color:var(--yellow);" id="ab-stay">4.2<span style="font-size:11px;">min</span></div>
+          <div class="ab-bar-bg"><div class="ab-bar-fill" style="width:55%;background:var(--yellow);"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="strip" style="flex:1;">
+      <div class="st-title g">活动内容</div>
+      <div class="act-row">
+        <div class="act-card"><div style="color:rgba(255,255,255,0.55);font-size:12px;">货车积分活动</div><div style="color:rgba(0,212,255,0.3);font-size:10px;">皖通 · 进行中</div></div>
+        <div class="act-card"><div style="color:rgba(255,255,255,0.55);font-size:12px;">加油满减</div><div style="color:rgba(0,212,255,0.3);font-size:10px;">中石油 · 进行中</div></div>
+        <div class="act-card"><div style="color:rgba(255,255,255,0.55);font-size:12px;">充电优惠</div><div style="color:rgba(0,212,255,0.3);font-size:10px;">交控新能源 · 进行中</div></div>
+        <div class="act-card"><div style="color:rgba(255,255,255,0.55);font-size:12px;">驿达特惠</div><div style="color:rgba(0,212,255,0.3);font-size:10px;">驿达 · 进行中</div></div>
+        <div class="act-card pending"><div style="color:rgba(255,255,255,0.4);font-size:12px;">注册有礼</div><div style="color:rgba(245,158,11,0.4);font-size:10px;">即将开始</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== 今日数据 ====================
+var todayData = {
+  orders:832, paidOrders:619,
+  amount:52680, paidAmount:41350,
+  visitors:12560, pv:45830, itemVisitors:8270, itemPv:28410,
+  itemsTotal:186, itemsNew:12, itemsSale:168, itemsOff:18,
+  shops:48, shopsNew:3, members:8430, membersNew:86,
+  oilOrders:1856, oilAmount:286000, oilRate:87.3,
+  chargeOrders:982, chargeAmount:124000, chargeRate:91.6,
+  mealOrders:436, mealAmount:63000, mealRate:82.5,
+  activeUsers:8642
+};
+function rr(b,p){return Math.round(b*(1+(Math.random()-.5)*2*p));}
+function fmtNum(n){return n.toLocaleString();}
+function fmtMoney(n){return n.toFixed(2);}
+function fmtWan(n){return (n/10000).toFixed(1);}
+function setV(id,v){var e=document.getElementById(id);if(e)e.innerHTML=v;}
+
+// ==================== 实时订单滚动 ====================
+var nicks=['张师傅','李车主','王先生','刘女士','陈先生','赵车主','周师傅','吴女士','郑先生','孙车主',
+  '钱师傅','冯女士','蒋车主','沈先生','韩先生','杨女士','朱车主','秦师傅','许女士','何先生'];
+var phones=['181****9032','139****5678','156****2345','177****8901','133****4567','188****1234','150****7890','136****3456',
+  '182****7654','155****9988','138****1122','189****3344','131****5566','187****7788','153****9900','176****2233'];
+var scenes=[
+  {tag:'oil',name:'加油',desc:'中石油安徽',min:100,max:500},
+  {tag:'charge',name:'充电',desc:'交控新能源',min:20,max:150},
+  {tag:'meal',name:'订餐',desc:'驿达服务区',min:15,max:80},
+  {tag:'oil',name:'加油',desc:'中石化安徽',min:100,max:500},
+  {tag:'charge',name:'充电',desc:'特来电',min:20,max:120},
+  {tag:'meal',name:'订餐',desc:'高速餐厅',min:15,max:60}
+];
+var queue=[];
+function go(){
+  var n=new Date(),s=scenes[Math.floor(Math.random()*scenes.length)];
+  return{
+    tag:s.tag, name:s.name, desc:s.desc,
+    user:nicks[Math.floor(Math.random()*nicks.length)],
+    phone:phones[Math.floor(Math.random()*phones.length)],
+    amount:(Math.random()*(s.max-s.min)+s.min).toFixed(2),
+    time:n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')+':'+n.getSeconds().toString().padStart(2,'0')
+  };
+}
+function ro(){
+  var ct=document.getElementById('order-scroll');if(!ct)return;
+  if(queue.length>=10)queue.shift();queue.push(go());
+  var h='<table class="order-table"><thead><tr><th style="width:26%;">业务场景</th><th style="width:34%;">用户</th><th style="width:16%;text-align:center;">金额</th><th style="width:24%;">下单时间</th></tr></thead><tbody>';
+  for(var i=0;i<queue.length;i++){
+    var o=queue[i];
+    h+='<tr>';
+    h+='<td><span class="tag-scene '+o.tag+'">'+o.name+'</span> <span style="font-size:11px;color:rgba(255,255,255,0.45);">'+o.desc+'</span></td>';
+    h+='<td>'+o.user+' <span style="color:rgba(255,255,255,0.4);font-size:11px;">'+o.phone+'</span></td>';
+    h+='<td style="color:rgba(255,255,255,0.7);font-weight:600;text-align:center;">¥'+o.amount+'</td>';
+    h+='<td>'+o.time+'</td>';
+    h+='</tr>';
+  }
+  h+='</tbody></table>';
+  ct.innerHTML=h;
+}
+
+// ==================== 定时刷新 ====================
+function refresh(){
+  todayData.orders=rr(832,0.05);
+  todayData.paidOrders=rr(619,0.05);
+  todayData.amount=rr(52680,0.05);
+  todayData.paidAmount=rr(41350,0.05);
+  todayData.visitors=rr(12560,0.03);
+  todayData.pv=rr(45830,0.03);
+  todayData.itemVisitors=rr(8270,0.03);
+  todayData.itemPv=rr(28410,0.03);
+  todayData.oilOrders=rr(1856,0.04);
+  todayData.oilAmount=rr(286000,0.04);
+  todayData.oilRate=+(87.3+Math.random()*3-1.5).toFixed(1);
+  todayData.chargeOrders=rr(982,0.04);
+  todayData.chargeAmount=rr(124000,0.04);
+  todayData.chargeRate=+(91.6+Math.random()*2-1).toFixed(1);
+  todayData.mealOrders=rr(436,0.04);
+  todayData.mealAmount=rr(63000,0.04);
+  todayData.mealRate=+(82.5+Math.random()*2-1).toFixed(1);
+  todayData.activeUsers=rr(8642,0.03);
+  todayData.members=rr(8430,0.03);
+
+  setV('ov-orders', fmtNum(todayData.orders));
+  setV('ov-amount', fmtNum(todayData.amount));
+  setV('ov-paid-orders', fmtNum(todayData.paidOrders));
+  setV('ov-paid-amount', fmtNum(todayData.paidAmount));
+  setV('ov-visitors', fmtNum(todayData.visitors));
+  setV('ov-pv', fmtNum(todayData.pv));
+  setV('ov-item-visitors', fmtNum(todayData.itemVisitors));
+  setV('ov-item-pv', fmtNum(todayData.itemPv));
+  setV('v-oil-orders', fmtNum(todayData.oilOrders));
+  setV('v-oil-amount','¥'+fmtWan(todayData.oilAmount)+'万');
+  setV('v-oil-rate', todayData.oilRate+'<span style="font-size:14px;">%</span>');
+  setV('v-charge-orders', fmtNum(todayData.chargeOrders));
+  setV('v-charge-amount','¥'+fmtWan(todayData.chargeAmount)+'万');
+  setV('v-charge-rate', todayData.chargeRate+'<span style="font-size:14px;">%</span>');
+  setV('v-meal-orders', fmtNum(todayData.mealOrders));
+  setV('v-meal-amount','¥'+fmtWan(todayData.mealAmount)+'万');
+  setV('v-meal-rate', todayData.mealRate+'<span style="font-size:14px;">%</span>');
+  setV('ab-dau', fmtNum(todayData.activeUsers));
+  setV('ov-members', fmtNum(todayData.members));
+
+  var now=new Date();
+  var el=document.getElementById('refresh-time');
+  if(el)el.textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+}
+
+function init(){
+  for(var i=0;i<10;i++) queue.push(go());
+  ro();
+  setInterval(ro,3000);
+  refresh();
+  setInterval(refresh,15000);
+}
+init();
+</script>
+</body>
+</html>

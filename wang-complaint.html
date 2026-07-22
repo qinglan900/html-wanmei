@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投诉反馈管理</title>
+    <style>
+        :root {
+            --primary: #4facfe;
+            --primary-dark: #00f2fe;
+            --secondary: #667eea;
+            --success: #11998e;
+            --warning: #f5a623;
+            --danger: #ff6b6b;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #333;
+            --text-secondary: #666;
+            --text-light: #999;
+            --border: #e8ecf0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .page-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            padding: 20px 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title::before {
+            content: '📋';
+            font-size: 22px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 24px 30px;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .search-bar {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .search-input {
+            width: 280px;
+            height: 40px;
+            padding: 0 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .search-select {
+            height: 40px;
+            padding: 0 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 140px;
+        }
+
+        .search-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            height: 40px;
+            padding: 0 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f2f5;
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .tabs-container {
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .tabs {
+            display: flex;
+            padding: 0 24px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab {
+            padding: 18px 32px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 1px;
+        }
+
+        .table-container {
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .table td {
+            padding: 16px 20px;
+            font-size: 14px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fff5e6;
+            color: #f5a623;
+        }
+
+        .status-processed {
+            background: #e8f5f0;
+            color: #25c685;
+        }
+
+        .action-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .action-link {
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .action-link.process {
+            color: var(--primary);
+        }
+
+        .action-link.process:hover {
+            color: var(--secondary);
+        }
+
+        .action-link.view {
+            color: var(--text-secondary);
+        }
+
+        .action-link.view:hover {
+            color: var(--text);
+        }
+
+        .photo-placeholder {
+            width: 60px;
+            height: 45px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .photo-placeholder:hover {
+            transform: scale(1.05);
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: var(--card);
+            border-radius: 0 0 16px 16px;
+            margin-top: -1px;
+            border-top: 1px solid var(--border);
+        }
+
+        .pagination-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .pagination-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .page-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .page-jump {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .page-jump input {
+            width: 50px;
+            height: 36px;
+            padding: 0 8px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .page-jump input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state::before {
+            content: '📭';
+            font-size: 48px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: var(--card);
+            border-radius: 20px;
+            width: 480px;
+            max-width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .view-modal .modal {
+            width: 640px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .view-modal .modal-body {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: var(--text);
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            min-height: 34px;
+            display: flex;
+            align-items: center;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            width: 100%;
+        }
+
+        .photo-thumb {
+            aspect-ratio: 4 / 3;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .photo-thumb:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .photo-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-thumb .photo-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 4px 8px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+            color: #fff;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: none;
+            transition: all 0.3s;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            height: 44px;
+            padding: 0 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            background: #f8fafc;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-modal {
+            height: 40px;
+            padding: 0 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-modal-cancel {
+            background: #f0f2f5;
+            color: var(--text-secondary);
+        }
+
+        .btn-modal-cancel:hover {
+            background: var(--border);
+        }
+
+        .btn-modal-confirm {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-modal-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(79, 172, 254, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .tab {
+                white-space: nowrap;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .pagination-container {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="header">
+            <div class="header-title">投诉反馈</div>
+        </div>
+
+        <div class="main-content">
+            <div class="search-bar">
+                <div class="search-group">
+                    <span class="search-label">投诉内容</span>
+                    <input type="text" class="search-input" placeholder="请输入投诉内容">
+                </div>
+                <div class="search-group">
+                    <span class="search-label">处理状态</span>
+                    <select class="search-select">
+                        <option>全部</option>
+                        <option>未处理</option>
+                        <option>已处理</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary">🔍 查询</button>
+                <button class="btn btn-secondary">🔄 重置</button>
+            </div>
+
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('road')">路况上报</div>
+                    <div class="tab" onclick="switchTab('transaction')">交易投诉</div>
+                    <div class="tab" onclick="switchTab('product')">产品建议</div>
+                    <div class="tab" onclick="switchTab('function')">功能异常</div>
+                </div>
+
+                <div id="road-tab" class="tab-content">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>投诉类型</th>
+                                    <th>事件位置</th>
+                                    <th>事件类型</th>
+                                    <th>现场照片</th>
+                                    <th>补充信息</th>
+                                    <th>提交人</th>
+                                    <th>创建时间</th>
+                                    <th>处理状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>路况上报</td>
+                                    <td>合肥市高新区彩虹路1200号</td>
+                                    <td>事件</td>
+                                    <td><div class="photo-placeholder">现场<br>照片</div></td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>路况上报</td>
+                                    <td>合肥市高新区彩虹路1200号</td>
+                                    <td>事件</td>
+                                    <td><div class="photo-placeholder">现场<br>照片</div></td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>路况上报</td>
+                                    <td>合肥市高新区彩虹路1200号</td>
+                                    <td>事件</td>
+                                    <td><div class="photo-placeholder">现场<br>照片</div></td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>路况上报</td>
+                                    <td>合肥市高新区彩虹路1200号</td>
+                                    <td>事件</td>
+                                    <td><div class="photo-placeholder">现场<br>照片</div></td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-processed">已处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination-container">
+                            <div class="pagination-right">
+                                <span class="pagination-info">共10页/100条数据</span>
+                                <div class="pagination-nav">
+                                    <button class="page-btn disabled">‹</button>
+                                    <button class="page-btn active">1</button>
+                                    <button class="page-btn">2</button>
+                                    <button class="page-btn">3</button>
+                                    <button class="page-btn">4</button>
+                                    <button class="page-btn">5</button>
+                                    <span>...</span>
+                                    <button class="page-btn">50</button>
+                                    <button class="page-btn">›</button>
+                                </div>
+                                <div class="page-jump">
+                                    跳至
+                                    <input type="number" min="1" max="10" value="1">
+                                    页
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="transaction-tab" class="tab-content" style="display:none;">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>投诉类型</th>
+                                    <th>商家</th>
+                                    <th>订单编号</th>
+                                    <th>订单金额</th>
+                                    <th>投诉原因</th>
+                                    <th>联系电话</th>
+                                    <th>图片</th>
+                                    <th>补充信息</th>
+                                    <th>提交人</th>
+                                    <th>创建时间</th>
+                                    <th>处理状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>交易投诉</td>
+                                    <td>驿达集团</td>
+                                    <td>202788888887</td>
+                                    <td>86.00元</td>
+                                    <td>商家拒绝发货</td>
+                                    <td>191200200</td>
+                                    <td></td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>交易投诉</td>
+                                    <td>驿达集团</td>
+                                    <td>202788888887</td>
+                                    <td>86.00元</td>
+                                    <td>商家拒绝发货</td>
+                                    <td>191200200</td>
+                                    <td></td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>交易投诉</td>
+                                    <td>驿达集团</td>
+                                    <td>202788888887</td>
+                                    <td>86.00元</td>
+                                    <td>商家拒绝发货</td>
+                                    <td>191200200</td>
+                                    <td></td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-processed">已处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>交易投诉</td>
+                                    <td>驿达集团</td>
+                                    <td>202788888887</td>
+                                    <td>86.00元</td>
+                                    <td>商家拒绝发货</td>
+                                    <td>191200200</td>
+                                    <td></td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination-container">
+                            <div class="pagination-right">
+                                <span class="pagination-info">共10页/100条数据</span>
+                                <div class="pagination-nav">
+                                    <button class="page-btn disabled">‹</button>
+                                    <button class="page-btn active">1</button>
+                                    <button class="page-btn">2</button>
+                                    <button class="page-btn">3</button>
+                                    <button class="page-btn">4</button>
+                                    <button class="page-btn">5</button>
+                                    <span>...</span>
+                                    <button class="page-btn">50</button>
+                                    <button class="page-btn">›</button>
+                                </div>
+                                <div class="page-jump">
+                                    跳至
+                                    <input type="number" min="1" max="10" value="1">
+                                    页
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="product-tab" class="tab-content" style="display:none;">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>投诉类型</th>
+                                    <th>相关描述</th>
+                                    <th>图片</th>
+                                    <th>提交人</th>
+                                    <th>创建时间</th>
+                                    <th>处理状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>产品建议</td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td></td>
+                                    <td>汪女士 (181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>产品建议</td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td></td>
+                                    <td>汪女士 (181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>产品建议</td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td></td>
+                                    <td>汪女士 (181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-processed">已处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>产品建议</td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td></td>
+                                    <td>汪女士 (181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination-container">
+                            <div class="pagination-right">
+                                <span class="pagination-info">共10页/100条数据</span>
+                                <div class="pagination-nav">
+                                    <button class="page-btn disabled">‹</button>
+                                    <button class="page-btn active">1</button>
+                                    <button class="page-btn">2</button>
+                                    <button class="page-btn">3</button>
+                                    <button class="page-btn">4</button>
+                                    <button class="page-btn">5</button>
+                                    <span>...</span>
+                                    <button class="page-btn">50</button>
+                                    <button class="page-btn">›</button>
+                                </div>
+                                <div class="page-jump">
+                                    跳至
+                                    <input type="number" min="1" max="10" value="1">
+                                    页
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="function-tab" class="tab-content" style="display:none;">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>投诉类型</th>
+                                    <th>投诉原因</th>
+                                    <th>相关描述</th>
+                                    <th>图片</th>
+                                    <th>提交人</th>
+                                    <th>创建时间</th>
+                                    <th>处理状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>功能异常</td>
+                                    <td>死机</td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td><div class="photo-placeholder">现场<br>照片</div></td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>功能异常</td>
+                                    <td>死机</td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td><div class="photo-placeholder">现场<br>照片</div></td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>功能异常</td>
+                                    <td>死机</td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td><div class="photo-placeholder">现场<br>照片</div></td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-processed">已处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>功能异常</td>
+                                    <td>死机</td>
+                                    <td>目前路况已经拥堵，希望尽快处理</td>
+                                    <td><div class="photo-placeholder">现场<br>照片</div></td>
+                                    <td>汪女士<br>(181****1079)</td>
+                                    <td>2026-08-01 12:34:34</td>
+                                    <td><span class="status-badge status-pending">未处理</span></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <span class="action-link process">处理</span>
+                                            <span class="action-link view">查看</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination-container">
+                            <div class="pagination-right">
+                                <span class="pagination-info">共10页/100条数据</span>
+                                <div class="pagination-nav">
+                                    <button class="page-btn disabled">‹</button>
+                                    <button class="page-btn active">1</button>
+                                    <button class="page-btn">2</button>
+                                    <button class="page-btn">3</button>
+                                    <button class="page-btn">4</button>
+                                    <button class="page-btn">5</button>
+                                    <span>...</span>
+                                    <button class="page-btn">50</button>
+                                    <button class="page-btn">›</button>
+                                </div>
+                                <div class="page-jump">
+                                    跳至
+                                    <input type="number" min="1" max="10" value="1">
+                                    页
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="processModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">🛠️ 处理投诉</div>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">处理结果</label>
+                    <select class="form-select" id="processResult">
+                        <option value="">请选择处理结果</option>
+                        <option value="resolved">已解决</option>
+                        <option value="partially_resolved">部分解决</option>
+                        <option value="unresolved">未解决</option>
+                        <option value="invalid">无效投诉</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">处理备注</label>
+                    <textarea class="form-textarea" id="processNote" placeholder="请输入处理备注信息..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-modal-cancel" onclick="closeModal()">取消</button>
+                <button class="btn-modal btn-modal-confirm" onclick="confirmProcess()">确认处理</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay view-modal" id="viewModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">📄 投诉详情</div>
+                <button class="modal-close" onclick="closeViewModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-grid" id="viewDetailGrid">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-modal-confirm" onclick="closeViewModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            
+            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).style.display = 'block';
+        }
+
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if(this.classList.contains('disabled')) return;
+                document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        let currentProcessRow = null;
+
+        document.querySelectorAll('.action-link.process').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.stopPropagation();
+                currentProcessRow = this.closest('tr');
+                document.getElementById('processModal').classList.add('active');
+                document.getElementById('processResult').value = '';
+                document.getElementById('processNote').value = '';
+            });
+        });
+
+        function closeModal() {
+            document.getElementById('processModal').classList.remove('active');
+            currentProcessRow = null;
+        }
+
+        function confirmProcess() {
+            const result = document.getElementById('processResult').value;
+            const note = document.getElementById('processNote').value;
+
+            if (!result) {
+                alert('请选择处理结果');
+                return;
+            }
+
+            if (currentProcessRow) {
+                const statusCell = currentProcessRow.querySelector('.status-badge');
+                if (statusCell) {
+                    statusCell.textContent = '已处理';
+                    statusCell.className = 'status-badge status-processed';
+                }
+
+                const processLink = currentProcessRow.querySelector('.action-link.process');
+                if (processLink) {
+                    processLink.remove();
+                }
+            }
+
+            closeModal();
+            alert('处理成功！');
+        }
+
+        document.getElementById('processModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.querySelectorAll('.action-link.view').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const row = this.closest('tr');
+                const grid = document.getElementById('viewDetailGrid');
+                grid.innerHTML = '';
+
+                const cells = row.querySelectorAll('td');
+                const table = row.closest('table');
+                const headers = table.querySelectorAll('thead th');
+
+                const skipLabels = ['序号', '操作'];
+                const labelMap = {
+                    '投诉类型': '投诉类型',
+                    '事件位置': '事件位置',
+                    '事件类型': '事件类型',
+                    '现场照片': '现场照片',
+                    '补充信息': '补充信息',
+                    '提交人': '提交人',
+                    '创建时间': '创建时间',
+                    '商家': '商家',
+                    '订单编号': '订单编号',
+                    '订单金额': '订单金额',
+                    '投诉原因': '投诉原因',
+                    '联系电话': '联系电话',
+                    '图片': '图片',
+                    '处理状态': '处理状态',
+                    '相关描述': '相关描述'
+                };
+
+                const photoLabels = ['现场照片', '图片'];
+
+                for (let i = 0; i < cells.length; i++) {
+                    const label = headers[i] ? headers[i].textContent.trim() : '';
+                    const value = cells[i].innerHTML.trim();
+                    if (skipLabels.includes(label)) continue;
+
+                    const isFull = label === '补充信息' || label === '相关描述';
+                    const item = document.createElement('div');
+
+                    if (photoLabels.includes(label)) {
+                        item.className = 'detail-item full-width';
+                        const photoId = Date.now();
+                        item.innerHTML = '<span class="detail-label">' + label + '</span><div class="detail-value" style="padding:12px"><div class="photo-grid">'
+                            + '<div class="photo-thumb"><img src="https://picsum.photos/seed/' + photoId + '1/400/300" alt="照片1" loading="lazy"><span class="photo-label">现场照片1</span></div>'
+                            + '<div class="photo-thumb"><img src="https://picsum.photos/seed/' + photoId + '2/400/300" alt="照片2" loading="lazy"><span class="photo-label">现场照片2</span></div>'
+                            + '<div class="photo-thumb"><img src="https://picsum.photos/seed/' + photoId + '3/400/300" alt="照片3" loading="lazy"><span class="photo-label">现场照片3</span></div>'
+                            + '<div class="photo-thumb"><img src="https://picsum.photos/seed/' + photoId + '4/400/300" alt="照片4" loading="lazy"><span class="photo-label">现场照片4</span></div>'
+                            + '</div></div>';
+                    } else if (value) {
+                        item.className = 'detail-item' + (isFull ? ' full-width' : '');
+                        item.innerHTML = '<span class="detail-label">' + label + '</span><span class="detail-value">' + value + '</span>';
+                    }
+                    grid.appendChild(item);
+                }
+
+                const statusBadge = row.querySelector('.status-badge');
+                const isProcessed = statusBadge && statusBadge.textContent.trim() === '已处理';
+
+                if (isProcessed) {
+                    const handlerItem = document.createElement('div');
+                    handlerItem.className = 'detail-item';
+                    handlerItem.innerHTML = '<span class="detail-label">处理人</span><span class="detail-value">张三</span>';
+                    grid.appendChild(handlerItem);
+
+                    const timeItem = document.createElement('div');
+                    timeItem.className = 'detail-item';
+                    const now = new Date();
+                    const timeStr = now.getFullYear() + '-' +
+                        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(now.getDate()).padStart(2, '0') + ' ' +
+                        String(now.getHours()).padStart(2, '0') + ':' +
+                        String(now.getMinutes()).padStart(2, '0') + ':' +
+                        String(now.getSeconds()).padStart(2, '0');
+                    timeItem.innerHTML = '<span class="detail-label">处理时间</span><span class="detail-value">' + timeStr + '</span>';
+                    grid.appendChild(timeItem);
+                }
+
+                document.getElementById('viewModal').classList.add('active');
+            });
+        });
+
+        function closeViewModal() {
+            document.getElementById('viewModal').classList.remove('active');
+        }
+
+        document.getElementById('viewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeViewModal();
+            }
+        });
+    </script>
+</body>
+</html>

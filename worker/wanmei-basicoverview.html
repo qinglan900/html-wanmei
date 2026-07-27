@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高速公路营运一体化平台 - 基础数据概览</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        .map-container svg {
+            background: #f2efe6;
+        }
+        .map-border {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 2px solid #94a3b8;
+            border-radius: 6px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .map-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+        }
+        .city-label {
+            font-size: 11px;
+            font-weight: 500;
+            fill: #475569;
+            text-anchor: middle;
+            dominant-baseline: central;
+            paint-order: stroke;
+            stroke: #ffffff;
+            stroke-width: 3px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .city-dot {
+            fill: #64748b;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+        }
+        .icon-hover:hover {
+            transform: scale(1.3);
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+        .popup-enter {
+            animation: fadeIn 0.2s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex flex-col h-screen">
+
+        <div class="bg-blue-800 text-white px-6 py-2 text-base font-bold">基础数据概览</div>
+        <div class="flex-1 relative map-container overflow-hidden">
+            <div class="map-border"></div>
+            
+            <!-- 浮动图例面板 -->
+            <div class="absolute top-4 left-4 z-20 bg-white/95 backdrop-blur rounded-xl shadow-lg border border-gray-200 p-3.5 w-48">
+                <div class="text-xs font-bold text-gray-500 mb-2.5 tracking-wide">设施图例</div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between cursor-pointer hover:bg-purple-50 rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="service_area" onclick="filterFacilities('service_area')">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 h-6 bg-purple-500 rounded-full"></div>
+                            <span class="text-xs text-gray-600">服务区</span>
+                        </div>
+                        <span class="text-xs font-bold text-purple-600">20</span>
+                    </div>
+                    <div class="flex items-center justify-between cursor-pointer hover:bg-green-50 rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="toll_station" onclick="filterFacilities('toll_station')">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 h-6 bg-green-500 rounded-full"></div>
+                            <span class="text-xs text-gray-600">收费站</span>
+                        </div>
+                        <span class="text-xs font-bold text-green-600">30</span>
+                    </div>
+                    <div class="flex items-center justify-between cursor-pointer hover:bg-orange-50 rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="petrol_station" onclick="toggleSubBrands('petrol')">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 h-6 bg-orange-500 rounded-full"></div>
+                            <span class="text-xs text-gray-600">石化石油站</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <span class="text-xs font-bold text-orange-600">25</span>
+                        </div>
+                    </div>
+                    <div id="sub-petrol" class="pl-4 space-y-1 overflow-hidden transition-all duration-200" style="max-height: 100px;">
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-orange-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="petrol_station" data-subtype="中石化" onclick="filterFacilities('petrol_station', '中石化')">
+                            <div class="flex items-center space-x-1.5">
+                                <div class="w-3 h-3 bg-orange-400 rounded-full"></div>
+                                <span class="text-xs text-gray-500">中石化</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-orange-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="petrol_station" data-subtype="中石油" onclick="filterFacilities('petrol_station', '中石油')">
+                            <div class="flex items-center space-x-1.5">
+                                <div class="w-3 h-3 bg-orange-400 rounded-full"></div>
+                                <span class="text-xs text-gray-500">中石油</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between cursor-pointer hover:bg-blue-50 rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="charging_station" onclick="toggleSubBrands('charge')">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 h-6 bg-blue-500 rounded-full"></div>
+                            <span class="text-xs text-gray-600">充电站</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <span class="text-xs font-bold text-blue-600">16</span>
+                        </div>
+                    </div>
+                    <div id="sub-charge" class="pl-4 space-y-1 overflow-hidden transition-all duration-200" style="max-height: 200px;">
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="国网" onclick="filterFacilities('charging_station', '国网')">
+                            <div class="flex items-center space-x-1.5">
+                                <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+                                <span class="text-xs text-gray-500">国网</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="理想" onclick="filterFacilities('charging_station', '理想')">
+                            <div class="flex items-center space-x-1.5">
+                                <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+                                <span class="text-xs text-gray-500">理想</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="蔚来" onclick="filterFacilities('charging_station', '蔚来')">
+                            <div class="flex items-center space-x-1.5">
+                                <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+                                <span class="text-xs text-gray-500">蔚来</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="交控" onclick="filterFacilities('charging_station', '交控')">
+                            <div class="flex items-center space-x-1.5">
+                                <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+                                <span class="text-xs text-gray-500">交控</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <main class="w-full h-full relative map-container">
+                <svg id="map-svg" viewBox="0 0 800 650" class="w-full h-full">
+                    <defs>
+                        <filter id="shadow">
+                            <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.3"/>
+                        </filter>
+                        <filter id="outlineShadow">
+                            <feDropShadow dx="1" dy="1" stdDeviation="3" flood-color="#00000020"/>
+                        </filter>
+                    </defs>
+                    
+                    <!-- 纯白色背景 -->
+                    <rect width="800" height="650" fill="#ffffff"/>
+                    
+                    <!-- 安徽省轮廓（灰色省界） -->
+                    <path d="M60,80 L100,30 L150,25 L200,35 L250,25 L300,35 L350,30 L400,35 L450,30 L500,35 L550,30 L600,35 L650,40 L700,50 L730,70 L740,100 L735,130 L725,160 L730,190 L720,220 L710,250 L700,280 L690,310 L695,340 L685,370 L675,400 L665,430 L645,460 L625,490 L605,510 L585,530 L565,550 L545,570 L525,590 L500,610 L470,625 L440,635 L410,640 L380,640 L350,635 L320,625 L290,610 L260,585 L230,550 L200,500 L170,430 L160,380 L160,330 L165,280 L175,230 L180,200 L170,170 L160,140 L155,110 L155,80 Z" fill="none" stroke="#8b95a5" stroke-width="2.5"/>
+                    
+                    <!-- 主要高速公路（橙色实线） -->
+                    <path d="M120,220 Q180,200 240,210 T340,200 T440,210 T540,200 T640,210 L680,220" stroke="#f39c12" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M380,40 Q390,100 380,180 T370,320 T380,460 T390,560" stroke="#f39c12" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M200,120 Q240,160 260,220 T280,320 T300,420 T310,520" stroke="#f39c12" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M560,220 Q580,280 560,340 T520,440 T460,480 L420,500" stroke="#f39c12" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M280,320 Q340,300 400,310 T500,300 T580,310" stroke="#f39c12" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M300,120 Q340,160 380,200 T440,280 T480,360" stroke="#f39c12" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M540,120 Q580,160 600,220 T580,300" stroke="#f39c12" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M460,480 Q500,460 540,470 T600,460 L660,470" stroke="#f39c12" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    
+                    <!-- 次要道路（橙色细实线） -->
+                    <path d="M140,280 Q180,260 220,270 L260,260" stroke="#f5a623" stroke-width="2" fill="none"/>
+                    <path d="M280,160 Q320,140 360,150 L400,140" stroke="#f5a623" stroke-width="2" fill="none"/>
+                    <path d="M440,100 Q480,80 520,90 L560,80" stroke="#f5a623" stroke-width="2" fill="none"/>
+                    <path d="M600,260 Q640,240 680,250 L720,240" stroke="#f5a623" stroke-width="2" fill="none"/>
+                    <path d="M200,380 Q240,360 280,370 L320,360" stroke="#f5a623" stroke-width="2" fill="none"/>
+                    <path d="M340,400 Q380,380 420,390 L460,380" stroke="#f5a623" stroke-width="2" fill="none"/>
+                    <path d="M480,400 Q520,380 560,390 L600,380" stroke="#f5a623" stroke-width="2" fill="none"/>
+                    <path d="M340,480 Q380,460 420,470 L460,460" stroke="#f5a623" stroke-width="2" fill="none"/>
+                    <path d="M200,460 Q240,440 280,450 L320,440" stroke="#f5a623" stroke-width="2" fill="none"/>
+                    <path d="M480,520 Q520,500 560,510 L600,500" stroke="#f5a623" stroke-width="2" fill="none"/>
+                    
+                    <!-- 乡村道路（橙色虚线） -->
+                    <path d="M160,180 Q180,160 200,170 L220,160" stroke="#f7b74f" stroke-width="1.5" fill="none" stroke-dasharray="6,4"/>
+                    <path d="M240,180 Q260,160 280,170 L300,160" stroke="#f7b74f" stroke-width="1.5" fill="none" stroke-dasharray="6,4"/>
+                    <path d="M320,180 Q340,160 360,170 L380,160" stroke="#f7b74f" stroke-width="1.5" fill="none" stroke-dasharray="6,4"/>
+                    <path d="M140,340 Q160,320 180,330 L200,320" stroke="#f7b74f" stroke-width="1.5" fill="none" stroke-dasharray="6,4"/>
+                    <path d="M540,280 Q560,260 580,270 L600,260" stroke="#f7b74f" stroke-width="1.5" fill="none" stroke-dasharray="6,4"/>
+                    <path d="M620,340 Q640,320 660,330 L680,320" stroke="#f7b74f" stroke-width="1.5" fill="none" stroke-dasharray="6,4"/>
+                    <path d="M440,380 Q460,360 480,370 L500,360" stroke="#f7b74f" stroke-width="1.5" fill="none" stroke-dasharray="6,4"/>
+                    <path d="M280,440 Q300,420 320,430 L340,420" stroke="#f7b74f" stroke-width="1.5" fill="none" stroke-dasharray="6,4"/>
+                    
+                    <!-- 长江（蓝色河流） -->
+                    <path d="M80,440 Q140,420 200,430 Q260,420 320,435 Q380,425 440,440 Q500,430 560,445 Q620,435 680,450 L740,460" stroke="#6ab7ff" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.8"/>
+                    <path d="M80,440 Q140,420 200,430 Q260,420 320,435 Q380,425 440,440 Q500,430 560,445 Q620,435 680,450 L740,460" stroke="#9dd4ff" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.6"/>
+                    
+                    <!-- 淮河（北部蓝色河流） -->
+                    <path d="M60,180 Q120,170 180,185 Q240,175 300,190 Q360,185 420,195 Q480,190 540,200" stroke="#6ab7ff" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.7"/>
+                    <path d="M60,180 Q120,170 180,185 Q240,175 300,190 Q360,185 420,195 Q480,190 540,200" stroke="#9dd4ff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+                    
+                    <!-- 支流 -->
+                    <path d="M260,180 Q240,220 260,260 L280,280" stroke="#6ab7ff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+                    <path d="M360,180 Q340,220 360,260 L380,280" stroke="#6ab7ff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+                    <path d="M540,200 Q520,240 540,280 L560,300" stroke="#6ab7ff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+                    
+                    <!-- 巢湖 -->
+                    <ellipse cx="450" cy="350" rx="40" ry="28" fill="#87ceeb" opacity="0.7"/>
+                    <ellipse cx="450" cy="350" rx="32" ry="22" fill="#b0e0e6" opacity="0.5"/>
+                    
+                    <!-- 合肥周边水域 -->
+                    <ellipse cx="390" cy="320" rx="12" ry="8" fill="#87ceeb" opacity="0.5"/>
+                    
+                    <!-- 市级地名标注 -->
+                    <text x="390" y="328" fill="#333333" font-size="14" font-weight="700" text-anchor="middle">合肥</text>
+                    <text x="420" y="168" fill="#333333" font-size="12" font-weight="600" text-anchor="middle">蚌埠</text>
+                    <text x="370" y="208" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">淮南</text>
+                    <text x="260" y="288" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">阜阳</text>
+                    <text x="290" y="158" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">亳州</text>
+                    <text x="490" y="138" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">宿州</text>
+                    <text x="440" y="108" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">淮北</text>
+                    <text x="540" y="208" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">滁州</text>
+                    <text x="240" y="348" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">六安</text>
+                    <text x="600" y="268" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">马鞍山</text>
+                    <text x="580" y="338" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">芜湖</text>
+                    <text x="520" y="408" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">铜陵</text>
+                    <text x="300" y="468" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">安庆</text>
+                    <text x="480" y="328" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">巢湖</text>
+                    <text x="400" y="468" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">池州</text>
+                    <text x="610" y="398" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">宣城</text>
+                    <text x="500" y="528" fill="#333333" font-size="11" font-weight="500" text-anchor="middle">黄山</text>
+                    
+                    <!-- 县级地名标注（灰色小字） -->
+                    <text x="220" y="120" fill="#8b95a5" font-size="9" text-anchor="middle">涡阳县</text>
+                    <text x="560" y="100" fill="#8b95a5" font-size="9" text-anchor="middle">固镇县</text>
+                    <text x="700" y="80" fill="#8b95a5" font-size="9" text-anchor="middle">泗县</text>
+                    <text x="260" y="160" fill="#8b95a5" font-size="9" text-anchor="middle">利辛县</text>
+                    <text x="700" y="160" fill="#8b95a5" font-size="9" text-anchor="middle">五河县</text>
+                    <text x="60" y="280" fill="#8b95a5" font-size="9" text-anchor="middle">阜南县</text>
+                    <text x="300" y="300" fill="#8b95a5" font-size="9" text-anchor="middle">颍上县</text>
+                    <text x="640" y="300" fill="#8b95a5" font-size="9" text-anchor="middle">定远县</text>
+                    <text x="800" y="320" fill="#8b95a5" font-size="9" text-anchor="middle">来安县</text>
+                    <text x="60" y="340" fill="#8b95a5" font-size="9" text-anchor="middle">霍邱县</text>
+                    <text x="260" y="380" fill="#8b95a5" font-size="9" text-anchor="middle">金寨县</text>
+                    <text x="340" y="380" fill="#8b95a5" font-size="9" text-anchor="middle">霍山县</text>
+                    <text x="400" y="380" fill="#8b95a5" font-size="9" text-anchor="middle">舒城县</text>
+                    <text x="720" y="380" fill="#8b95a5" font-size="9" text-anchor="middle">无为市</text>
+                    <text x="420" y="420" fill="#8b95a5" font-size="9" text-anchor="middle">桐城市</text>
+                    <text x="540" y="420" fill="#8b95a5" font-size="9" text-anchor="middle">枞阳县</text>
+                    <text x="280" y="520" fill="#8b95a5" font-size="9" text-anchor="middle">岳西县</text>
+                    <text x="460" y="540" fill="#8b95a5" font-size="9" text-anchor="middle">太湖县</text>
+                    
+                    <!-- 设施图标 -->
+                    <g id="facilities"></g>
+                </svg>
+                
+                <div id="popup" class="hidden absolute z-50 bg-white rounded-lg shadow-2xl border border-gray-300 popup-enter" style="width: 320px;">
+                    <div class="flex items-center justify-between px-4 py-2.5 border-b border-gray-200">
+                        <div class="flex items-center space-x-2">
+                            <span id="popup-badge" class="w-2.5 h-2.5 rounded-full inline-block"></span>
+                            <h3 id="popup-title" class="font-bold text-sm text-gray-800"></h3>
+                        </div>
+                        <button onclick="closePopup()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="popup-content" class="px-4 py-3"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

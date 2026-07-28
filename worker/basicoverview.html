@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>高速公路营运一体化平台 - 基础数据概览</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Noto Sans SC', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
         }
         .map-container svg {
             background: #f2efe6;
@@ -62,86 +60,209 @@
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* ===== Tailwind 替代 CSS ===== */
+
+        /* Layout */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .flex-1 { flex: 1; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .shrink-0 { flex-shrink: 0; }
+        .inline-block { display: inline-block; }
+        .hidden { display: none; }
+        .absolute { position: absolute; }
+        .relative { position: relative; }
+        .overflow-hidden { overflow: hidden; }
+
+        /* Typography */
+        .text-xs { font-size: 12px; }
+        .text-sm { font-size: 14px; }
+        .text-base { font-size: 16px; }
+        .font-medium { font-weight: 500; }
+        .font-bold { font-weight: 700; }
+        .tracking-wide { letter-spacing: 0.025em; }
+
+        /* Text colors */
+        .text-white { color: #ffffff; }
+        .text-gray-400 { color: #9ca3af; }
+        .text-gray-500 { color: #6b7280; }
+        .text-gray-600 { color: #4b5563; }
+        .text-gray-700 { color: #374151; }
+        .text-gray-800 { color: #1f2937; }
+        .text-green-600 { color: #16a34a; }
+        .text-yellow-600 { color: #ca8a04; }
+        .text-red-600 { color: #dc2626; }
+        .text-purple-600 { color: #9333ea; }
+        .text-orange-600 { color: #ea580c; }
+        .text-blue-600 { color: #2563eb; }
+
+        /* Borders */
+        .rounded-full { border-radius: 50%; }
+        .rounded-lg { border-radius: 8px; }
+        .rounded-xl { border-radius: 12px; }
+        .border { border: 1px solid #e5e7eb; }
+        .border-gray-200 { border-color: #e5e7eb; }
+        .border-gray-300 { border-color: #d1d5db; }
+        .border-b { border-bottom: 1px solid #e5e7eb; }
+
+        /* Backgrounds */
+        .bg-white { background-color: #ffffff; }
+        .bg-purple-500 { background-color: #8B5CF6; }
+        .bg-green-500 { background-color: #22C55E; }
+        .bg-orange-500 { background-color: #F97316; }
+        .bg-blue-500 { background-color: #3B82F6; }
+        .bg-orange-400 { background-color: #fb923c; }
+        .bg-blue-400 { background-color: #60a5fa; }
+
+        /* Sizing */
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .w-48 { width: 192px; }
+        .w-24 { width: 96px; }
+        .w-6 { width: 24px; }
+        .h-6 { height: 24px; }
+        .w-3 { width: 12px; }
+        .h-3 { height: 12px; }
+        .w-2\.5 { width: 10px; }
+        .h-2\.5 { height: 10px; }
+        .w-4 { width: 16px; }
+        .h-4 { height: 16px; }
+
+        /* Spacing */
+        .p-3\.5 { padding: 14px; }
+        .px-2 { padding-left: 8px; padding-right: 8px; }
+        .px-4 { padding-left: 16px; padding-right: 16px; }
+        .py-1 { padding-top: 4px; padding-bottom: 4px; }
+        .py-1\.5 { padding-top: 6px; padding-bottom: 6px; }
+        .py-2 { padding-top: 8px; padding-bottom: 8px; }
+        .py-2\.5 { padding-top: 10px; padding-bottom: 10px; }
+        .py-3 { padding-top: 12px; padding-bottom: 12px; }
+        .pl-4 { padding-left: 16px; }
+        .mb-2\.5 { margin-bottom: 10px; }
+
+        /* Flex gap utilities (space-*) */
+        .space-y-2 { gap: 8px; display: flex; flex-direction: column; }
+        .space-y-1 { gap: 4px; display: flex; flex-direction: column; }
+        .space-x-2 { gap: 8px; display: flex; align-items: center; }
+        .space-x-1 { gap: 4px; display: flex; align-items: center; }
+        .space-x-1\.5 { gap: 6px; display: flex; align-items: center; }
+
+        /* Interactive */
+        .cursor-pointer { cursor: pointer; }
+        .transition-colors { transition: background-color 0.2s; }
+        .transition-all { transition: all 0.2s; }
+        .duration-200 { transition-duration: 0.2s; }
+
+        /* Z-index & effects */
+        .z-20 { z-index: 20; }
+        .z-50 { z-index: 50; }
+        .backdrop-blur { backdrop-filter: blur(4px); }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+
+        /* Divide */
+        .divide-y > * + * { border-top: 1px solid #f3f4f6; }
+
+        /* Ring styles used by JS */
+        .ring-2 { box-shadow: 0 0 0 2px; }
+        .ring-purple-400 { box-shadow: 0 0 0 2px #c084fc; }
+        .ring-green-400 { box-shadow: 0 0 0 2px #4ade80; }
+        .ring-orange-400 { box-shadow: 0 0 0 2px #fb923c; }
+        .ring-blue-400 { box-shadow: 0 0 0 2px #60a5fa; }
+
+        /* Hover effects per legend type */
+        .legend-item[data-type="service_area"]:hover,
+        .legend-subitem[data-type="service_area"]:hover { background-color: #faf5ff; }
+        .legend-item[data-type="toll_station"]:hover,
+        .legend-subitem[data-type="toll_station"]:hover { background-color: #f0fdf4; }
+        .legend-item[data-type="petrol_station"]:hover,
+        .legend-subitem[data-type="petrol_station"]:hover { background-color: #fff7ed; }
+        .legend-item[data-type="charging_station"]:hover,
+        .legend-subitem[data-type="charging_station"]:hover { background-color: #eff6ff; }
+
+        .hover\:text-gray-600:hover { color: #4b5563; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="flex flex-col h-screen">
+<body style="background-color: #f9fafb; min-height: 100vh;">
+    <div style="display: flex; flex-direction: column; height: 100vh;">
 
-        <div class="bg-blue-800 text-white px-6 py-2 text-base font-bold">基础数据概览</div>
+        <div style="background-color: #1e40af; color: #ffffff; padding-left: 24px; padding-right: 24px; padding-top: 8px; padding-bottom: 8px; font-size: 16px; font-weight: 700;">基础数据概览</div>
         <div class="flex-1 relative map-container overflow-hidden">
             <div class="map-border"></div>
             
             <!-- 浮动图例面板 -->
-            <div class="absolute top-4 left-4 z-20 bg-white/95 backdrop-blur rounded-xl shadow-lg border border-gray-200 p-3.5 w-48">
+            <div style="position: absolute; top: 16px; left: 16px; z-index: 20; background-color: rgba(255,255,255,0.95); backdrop-filter: blur(4px); border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; padding: 14px; width: 192px;">
                 <div class="text-xs font-bold text-gray-500 mb-2.5 tracking-wide">设施图例</div>
                 <div class="space-y-2">
-                    <div class="flex items-center justify-between cursor-pointer hover:bg-purple-50 rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="service_area" onclick="filterFacilities('service_area')">
-                        <div class="flex items-center space-x-2">
+                    <div class="flex items-center justify-between cursor-pointer rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="service_area" onclick="filterFacilities('service_area')">
+                        <div class="space-x-2">
                             <div class="w-6 h-6 bg-purple-500 rounded-full"></div>
                             <span class="text-xs text-gray-600">服务区</span>
                         </div>
                         <span class="text-xs font-bold text-purple-600">20</span>
                     </div>
-                    <div class="flex items-center justify-between cursor-pointer hover:bg-green-50 rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="toll_station" onclick="filterFacilities('toll_station')">
-                        <div class="flex items-center space-x-2">
+                    <div class="flex items-center justify-between cursor-pointer rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="toll_station" onclick="filterFacilities('toll_station')">
+                        <div class="space-x-2">
                             <div class="w-6 h-6 bg-green-500 rounded-full"></div>
                             <span class="text-xs text-gray-600">收费站</span>
                         </div>
                         <span class="text-xs font-bold text-green-600">30</span>
                     </div>
-                    <div class="flex items-center justify-between cursor-pointer hover:bg-orange-50 rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="petrol_station" onclick="toggleSubBrands('petrol')">
-                        <div class="flex items-center space-x-2">
+                    <div class="flex items-center justify-between cursor-pointer rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="petrol_station" onclick="toggleSubBrands('petrol')">
+                        <div class="space-x-2">
                             <div class="w-6 h-6 bg-orange-500 rounded-full"></div>
                             <span class="text-xs text-gray-600">石化石油站</span>
                         </div>
-                        <div class="flex items-center space-x-1">
+                        <div class="space-x-1">
                             <span class="text-xs font-bold text-orange-600">25</span>
                         </div>
                     </div>
                     <div id="sub-petrol" class="pl-4 space-y-1 overflow-hidden transition-all duration-200" style="max-height: 100px;">
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-orange-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="petrol_station" data-subtype="中石化" onclick="filterFacilities('petrol_station', '中石化')">
-                            <div class="flex items-center space-x-1.5">
+                        <div class="flex items-center justify-between cursor-pointer rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="petrol_station" data-subtype="中石化" onclick="filterFacilities('petrol_station', '中石化')">
+                            <div class="space-x-1.5">
                                 <div class="w-3 h-3 bg-orange-400 rounded-full"></div>
                                 <span class="text-xs text-gray-500">中石化</span>
                             </div>
                         </div>
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-orange-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="petrol_station" data-subtype="中石油" onclick="filterFacilities('petrol_station', '中石油')">
-                            <div class="flex items-center space-x-1.5">
+                        <div class="flex items-center justify-between cursor-pointer rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="petrol_station" data-subtype="中石油" onclick="filterFacilities('petrol_station', '中石油')">
+                            <div class="space-x-1.5">
                                 <div class="w-3 h-3 bg-orange-400 rounded-full"></div>
                                 <span class="text-xs text-gray-500">中石油</span>
                             </div>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between cursor-pointer hover:bg-blue-50 rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="charging_station" onclick="toggleSubBrands('charge')">
-                        <div class="flex items-center space-x-2">
+                    <div class="flex items-center justify-between cursor-pointer rounded-lg px-2 py-1.5 transition-colors legend-item" data-type="charging_station" onclick="toggleSubBrands('charge')">
+                        <div class="space-x-2">
                             <div class="w-6 h-6 bg-blue-500 rounded-full"></div>
                             <span class="text-xs text-gray-600">充电站</span>
                         </div>
-                        <div class="flex items-center space-x-1">
+                        <div class="space-x-1">
                             <span class="text-xs font-bold text-blue-600">16</span>
                         </div>
                     </div>
                     <div id="sub-charge" class="pl-4 space-y-1 overflow-hidden transition-all duration-200" style="max-height: 200px;">
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="国网" onclick="filterFacilities('charging_station', '国网')">
-                            <div class="flex items-center space-x-1.5">
+                        <div class="flex items-center justify-between cursor-pointer rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="国网" onclick="filterFacilities('charging_station', '国网')">
+                            <div class="space-x-1.5">
                                 <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
                                 <span class="text-xs text-gray-500">国网</span>
                             </div>
                         </div>
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="理想" onclick="filterFacilities('charging_station', '理想')">
-                            <div class="flex items-center space-x-1.5">
+                        <div class="flex items-center justify-between cursor-pointer rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="理想" onclick="filterFacilities('charging_station', '理想')">
+                            <div class="space-x-1.5">
                                 <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
                                 <span class="text-xs text-gray-500">理想</span>
                             </div>
                         </div>
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="蔚来" onclick="filterFacilities('charging_station', '蔚来')">
-                            <div class="flex items-center space-x-1.5">
+                        <div class="flex items-center justify-between cursor-pointer rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="蔚来" onclick="filterFacilities('charging_station', '蔚来')">
+                            <div class="space-x-1.5">
                                 <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
                                 <span class="text-xs text-gray-500">蔚来</span>
                             </div>
                         </div>
-                        <div class="flex items-center justify-between cursor-pointer hover:bg-blue-50 rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="交控" onclick="filterFacilities('charging_station', '交控')">
-                            <div class="flex items-center space-x-1.5">
+                        <div class="flex items-center justify-between cursor-pointer rounded-lg px-2 py-1 transition-colors legend-subitem" data-type="charging_station" data-subtype="交控" onclick="filterFacilities('charging_station', '交控')">
+                            <div class="space-x-1.5">
                                 <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
                                 <span class="text-xs text-gray-500">交控</span>
                             </div>
@@ -264,7 +385,7 @@
                 
                 <div id="popup" class="hidden absolute z-50 bg-white rounded-lg shadow-2xl border border-gray-300 popup-enter" style="width: 320px;">
                     <div class="flex items-center justify-between px-4 py-2.5 border-b border-gray-200">
-                        <div class="flex items-center space-x-2">
+                        <div class="space-x-2">
                             <span id="popup-badge" class="w-2.5 h-2.5 rounded-full inline-block"></span>
                             <h3 id="popup-title" class="font-bold text-sm text-gray-800"></h3>
                         </div>
@@ -280,7 +401,1473 @@
         </div>
     </div>
 
-    <script src="data.js"></script>
-    <script src="app.js"></script>
+    <script>
+const facilities = [
+    // ==================== 收费站 (30条) ====================
+    {
+        id: 'ts001',
+        type: 'toll_station',
+        name: '合肥东收费站',
+        x: 378,
+        y: 310,
+        toll_name: '合肥东收费站',
+        toll_code: 'HFESZ001',
+        highway_name: 'G40沪陕高速',
+        pile_number: 'K105+200',
+        status: '正常运营'
+    },
+    {
+        id: 'ts002',
+        type: 'toll_station',
+        name: '合肥西收费站',
+        x: 398,
+        y: 315,
+        toll_name: '合肥西收费站',
+        toll_code: 'HFXSZ002',
+        highway_name: 'G42沪蓉高速',
+        pile_number: 'K395+800',
+        status: '正常运营'
+    },
+    {
+        id: 'ts003',
+        type: 'toll_station',
+        name: '蚌埠收费站',
+        x: 410,
+        y: 152,
+        toll_name: '蚌埠收费站',
+        toll_code: 'BBSZ001',
+        highway_name: 'G3京台高速',
+        pile_number: 'K780+300',
+        status: '正常运营'
+    },
+    {
+        id: 'ts004',
+        type: 'toll_station',
+        name: '蚌埠北收费站',
+        x: 430,
+        y: 165,
+        toll_name: '蚌埠北收费站',
+        toll_code: 'BBSZ002',
+        highway_name: 'G3京台高速',
+        pile_number: 'K790+500',
+        status: '维护中'
+    },
+    {
+        id: 'ts005',
+        type: 'toll_station',
+        name: '淮南收费站',
+        x: 362,
+        y: 190,
+        toll_name: '淮南收费站',
+        toll_code: 'HNSZ001',
+        highway_name: 'G25长深高速',
+        pile_number: 'K180+200',
+        status: '正常运营'
+    },
+    {
+        id: 'ts006',
+        type: 'toll_station',
+        name: '淮南东收费站',
+        x: 380,
+        y: 195,
+        toll_name: '淮南东收费站',
+        toll_code: 'HNSZ002',
+        highway_name: 'S12滁新高速',
+        pile_number: 'K50+300',
+        status: '正常运营'
+    },
+    {
+        id: 'ts007',
+        type: 'toll_station',
+        name: '阜阳收费站',
+        x: 250,
+        y: 272,
+        toll_name: '阜阳收费站',
+        toll_code: 'FYSZ001',
+        highway_name: 'G35济广高速',
+        pile_number: 'K150+700',
+        status: '正常运营'
+    },
+    {
+        id: 'ts008',
+        type: 'toll_station',
+        name: '阜阳南收费站',
+        x: 268,
+        y: 285,
+        toll_name: '阜阳南收费站',
+        toll_code: 'FYSZ002',
+        highway_name: 'G35济广高速',
+        pile_number: 'K140+200',
+        status: '维护中'
+    },
+    {
+        id: 'ts009',
+        type: 'toll_station',
+        name: '亳州收费站',
+        x: 282,
+        y: 138,
+        toll_name: '亳州收费站',
+        toll_code: 'BZSZ001',
+        highway_name: 'G35济广高速',
+        pile_number: 'K80+200',
+        status: '正常运营'
+    },
+    {
+        id: 'ts010',
+        type: 'toll_station',
+        name: '亳州东收费站',
+        x: 300,
+        y: 145,
+        toll_name: '亳州东收费站',
+        toll_code: 'BZSZ002',
+        highway_name: 'G1511日兰高速',
+        pile_number: 'K60+300',
+        status: '正常运营'
+    },
+    {
+        id: 'ts011',
+        type: 'toll_station',
+        name: '宿州收费站',
+        x: 480,
+        y: 122,
+        toll_name: '宿州收费站',
+        toll_code: 'SZSZ001',
+        highway_name: 'G3京台高速',
+        pile_number: 'K820+100',
+        status: '正常运营'
+    },
+    {
+        id: 'ts012',
+        type: 'toll_station',
+        name: '宿州北收费站',
+        x: 498,
+        y: 135,
+        toll_name: '宿州北收费站',
+        toll_code: 'SZSZ002',
+        highway_name: 'G3京台高速',
+        pile_number: 'K830+400',
+        status: '正常运营'
+    },
+    {
+        id: 'ts013',
+        type: 'toll_station',
+        name: '淮北收费站',
+        x: 432,
+        y: 90,
+        toll_name: '淮北收费站',
+        toll_code: 'HBSZ001',
+        highway_name: 'G1511日兰高速',
+        pile_number: 'K650+400',
+        status: '正常运营'
+    },
+    {
+        id: 'ts014',
+        type: 'toll_station',
+        name: '淮北南收费站',
+        x: 450,
+        y: 95,
+        toll_name: '淮北南收费站',
+        toll_code: 'HBSZ002',
+        highway_name: 'G1511日兰高速',
+        pile_number: 'K640+200',
+        status: '正常运营'
+    },
+    {
+        id: 'ts015',
+        type: 'toll_station',
+        name: '滁州收费站',
+        x: 530,
+        y: 192,
+        toll_name: '滁州收费站',
+        toll_code: 'CZSZ001',
+        highway_name: 'G40沪陕高速',
+        pile_number: 'K50+600',
+        status: '正常运营'
+    },
+    {
+        id: 'ts016',
+        type: 'toll_station',
+        name: '滁州西收费站',
+        x: 548,
+        y: 205,
+        toll_name: '滁州西收费站',
+        toll_code: 'CZSZ002',
+        highway_name: 'S12滁新高速',
+        pile_number: 'K10+200',
+        status: '正常运营'
+    },
+    {
+        id: 'ts017',
+        type: 'toll_station',
+        name: '六安收费站',
+        x: 230,
+        y: 332,
+        toll_name: '六安收费站',
+        toll_code: 'LASZ001',
+        highway_name: 'G35济广高速',
+        pile_number: 'K230+500',
+        status: '正常运营'
+    },
+    {
+        id: 'ts018',
+        type: 'toll_station',
+        name: '六安北收费站',
+        x: 248,
+        y: 345,
+        toll_name: '六安北收费站',
+        toll_code: 'LASZ002',
+        highway_name: 'G42沪蓉高速',
+        pile_number: 'K410+200',
+        status: '正常运营'
+    },
+    {
+        id: 'ts019',
+        type: 'toll_station',
+        name: '马鞍山收费站',
+        x: 592,
+        y: 250,
+        toll_name: '马鞍山收费站',
+        toll_code: 'MASSZ001',
+        highway_name: 'G4211宁芜高速',
+        pile_number: 'K120+400',
+        status: '正常运营'
+    },
+    {
+        id: 'ts020',
+        type: 'toll_station',
+        name: '芜湖收费站',
+        x: 570,
+        y: 322,
+        toll_name: '芜湖收费站',
+        toll_code: 'WHSZ001',
+        highway_name: 'G5011芜合高速',
+        pile_number: 'K320+800',
+        status: '正常运营'
+    },
+    {
+        id: 'ts021',
+        type: 'toll_station',
+        name: '铜陵收费站',
+        x: 512,
+        y: 390,
+        toll_name: '铜陵收费站',
+        toll_code: 'TLSZ001',
+        highway_name: 'G50沪渝高速',
+        pile_number: 'K380+500',
+        status: '正常运营'
+    },
+    {
+        id: 'ts022',
+        type: 'toll_station',
+        name: '安庆收费站',
+        x: 290,
+        y: 452,
+        toll_name: '安庆收费站',
+        toll_code: 'AQSZ001',
+        highway_name: 'G42沪蓉高速',
+        pile_number: 'K560+100',
+        status: '正常运营'
+    },
+    {
+        id: 'ts023',
+        type: 'toll_station',
+        name: '安庆北收费站',
+        x: 308,
+        y: 465,
+        toll_name: '安庆北收费站',
+        toll_code: 'AQSZ002',
+        highway_name: 'G50沪渝高速',
+        pile_number: 'K530+200',
+        status: '正常运营'
+    },
+    {
+        id: 'ts024',
+        type: 'toll_station',
+        name: '巢湖收费站',
+        x: 472,
+        y: 310,
+        toll_name: '巢湖收费站',
+        toll_code: 'CHSZ001',
+        highway_name: 'G42沪蓉高速',
+        pile_number: 'K450+800',
+        status: '正常运营'
+    },
+    {
+        id: 'ts025',
+        type: 'toll_station',
+        name: '巢湖南收费站',
+        x: 490,
+        y: 315,
+        toll_name: '巢湖南收费站',
+        toll_code: 'CHSZ002',
+        highway_name: 'G5011芜合高速',
+        pile_number: 'K280+500',
+        status: '正常运营'
+    },
+    {
+        id: 'ts026',
+        type: 'toll_station',
+        name: '池州收费站',
+        x: 392,
+        y: 450,
+        toll_name: '池州收费站',
+        toll_code: 'CZSZ001',
+        highway_name: 'G50沪渝高速',
+        pile_number: 'K450+200',
+        status: '正常运营'
+    },
+    {
+        id: 'ts027',
+        type: 'toll_station',
+        name: '池州西收费站',
+        x: 410,
+        y: 455,
+        toll_name: '池州西收费站',
+        toll_code: 'CZSZ002',
+        highway_name: 'G0321德上高速',
+        pile_number: 'K320+500',
+        status: '维护中'
+    },
+    {
+        id: 'ts028',
+        type: 'toll_station',
+        name: '宣城收费站',
+        x: 600,
+        y: 382,
+        toll_name: '宣城收费站',
+        toll_code: 'XCSZ001',
+        highway_name: 'G50沪渝高速',
+        pile_number: 'K400+600',
+        status: '正常运营'
+    },
+    {
+        id: 'ts029',
+        type: 'toll_station',
+        name: '宣城东收费站',
+        x: 618,
+        y: 395,
+        toll_name: '宣城东收费站',
+        toll_code: 'XCSZ002',
+        highway_name: 'S32溧黄高速',
+        pile_number: 'K50+300',
+        status: '正常运营'
+    },
+    {
+        id: 'ts030',
+        type: 'toll_station',
+        name: '黄山收费站',
+        x: 492,
+        y: 510,
+        toll_name: '黄山收费站',
+        toll_code: 'HSSZ001',
+        highway_name: 'G3京台高速',
+        pile_number: 'K980+300',
+        status: '正常运营'
+    },
+
+    // ==================== 服务区 (20条) ====================
+    {
+        id: 'sa001',
+        type: 'service_area',
+        name: '肥东服务区',
+        x: 385,
+        y: 328,
+        area_name: '肥东服务区',
+        area_code: 'FDQW001',
+        highway_name: 'G40沪陕高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '合肥市'
+    },
+    {
+        id: 'sa002',
+        type: 'service_area',
+        name: '合肥西服务区',
+        x: 390,
+        y: 305,
+        area_name: '合肥西服务区',
+        area_code: 'HFXQW001',
+        highway_name: 'G42沪蓉高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '合肥市'
+    },
+    {
+        id: 'sa003',
+        type: 'service_area',
+        name: '合肥北服务区',
+        x: 402,
+        y: 325,
+        area_name: '合肥北服务区',
+        area_code: 'HFBQW001',
+        highway_name: 'G3京台高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '合肥市'
+    },
+    {
+        id: 'sa004',
+        type: 'service_area',
+        name: '仁和集服务区',
+        x: 415,
+        y: 172,
+        area_name: '仁和集服务区',
+        area_code: 'RHJQW001',
+        highway_name: 'G3京台高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '蚌埠市'
+    },
+    {
+        id: 'sa005',
+        type: 'service_area',
+        name: '淮南服务区',
+        x: 365,
+        y: 210,
+        area_name: '淮南服务区',
+        area_code: 'HNQW001',
+        highway_name: 'G25长深高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '淮南市'
+    },
+    {
+        id: 'sa006',
+        type: 'service_area',
+        name: '颍上服务区',
+        x: 255,
+        y: 292,
+        area_name: '颍上服务区',
+        area_code: 'YSQW001',
+        highway_name: 'G35济广高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '阜阳市'
+    },
+    {
+        id: 'sa007',
+        type: 'service_area',
+        name: '亳州服务区',
+        x: 285,
+        y: 160,
+        area_name: '亳州服务区',
+        area_code: 'BQQW001',
+        highway_name: 'G35济广高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '亳州市'
+    },
+    {
+        id: 'sa008',
+        type: 'service_area',
+        name: '宿州服务区',
+        x: 485,
+        y: 142,
+        area_name: '宿州服务区',
+        area_code: 'SZQW001',
+        highway_name: 'G3京台高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '宿州市'
+    },
+    {
+        id: 'sa009',
+        type: 'service_area',
+        name: '淮北服务区',
+        x: 435,
+        y: 110,
+        area_name: '淮北服务区',
+        area_code: 'HBQW001',
+        highway_name: 'G1511日兰高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '淮北市'
+    },
+    {
+        id: 'sa010',
+        type: 'service_area',
+        name: '吴庄服务区',
+        x: 535,
+        y: 212,
+        area_name: '吴庄服务区',
+        area_code: 'WZQW001',
+        highway_name: 'G40沪陕高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '滁州市'
+    },
+    {
+        id: 'sa011',
+        type: 'service_area',
+        name: '六安服务区',
+        x: 235,
+        y: 352,
+        area_name: '六安服务区',
+        area_code: 'LAQW001',
+        highway_name: 'G35济广高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '六安市'
+    },
+    {
+        id: 'sa012',
+        type: 'service_area',
+        name: '六安东服务区',
+        x: 252,
+        y: 335,
+        area_name: '六安东服务区',
+        area_code: 'LADQW001',
+        highway_name: 'G42沪蓉高速',
+        direction: '双向',
+        status: '维护中',
+        region: '六安市'
+    },
+    {
+        id: 'sa013',
+        type: 'service_area',
+        name: '马鞍山服务区',
+        x: 595,
+        y: 270,
+        area_name: '马鞍山服务区',
+        area_code: 'MASQW001',
+        highway_name: 'G4211宁芜高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '马鞍山市'
+    },
+    {
+        id: 'sa014',
+        type: 'service_area',
+        name: '芜湖服务区',
+        x: 575,
+        y: 342,
+        area_name: '芜湖服务区',
+        area_code: 'WHQW001',
+        highway_name: 'G5011芜合高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '芜湖市'
+    },
+    {
+        id: 'sa015',
+        type: 'service_area',
+        name: '铜陵服务区',
+        x: 515,
+        y: 410,
+        area_name: '铜陵服务区',
+        area_code: 'TLQW001',
+        highway_name: 'G50沪渝高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '铜陵市'
+    },
+    {
+        id: 'sa016',
+        type: 'service_area',
+        name: '安庆服务区',
+        x: 295,
+        y: 472,
+        area_name: '安庆服务区',
+        area_code: 'AQQW001',
+        highway_name: 'G42沪蓉高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '安庆市'
+    },
+    {
+        id: 'sa017',
+        type: 'service_area',
+        name: '巢湖服务区',
+        x: 475,
+        y: 330,
+        area_name: '巢湖服务区',
+        area_code: 'CHQW001',
+        highway_name: 'G5011芜合高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '合肥市'
+    },
+    {
+        id: 'sa018',
+        type: 'service_area',
+        name: '池州服务区',
+        x: 395,
+        y: 470,
+        area_name: '池州服务区',
+        area_code: 'CZQW001',
+        highway_name: 'G50沪渝高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '池州市'
+    },
+    {
+        id: 'sa019',
+        type: 'service_area',
+        name: '宣城服务区',
+        x: 605,
+        y: 402,
+        area_name: '宣城服务区',
+        area_code: 'XCQW001',
+        highway_name: 'G50沪渝高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '宣城市'
+    },
+    {
+        id: 'sa020',
+        type: 'service_area',
+        name: '黄山服务区',
+        x: 495,
+        y: 530,
+        area_name: '黄山服务区',
+        area_code: 'HSQW001',
+        highway_name: 'G3京台高速',
+        direction: '双向',
+        status: '正常运营',
+        region: '黄山市'
+    },
+
+    // ==================== 石化石油站 (25条) ====================
+    {
+        id: 'ps001',
+        type: 'petrol_station',
+        name: '肥东中石化',
+        x: 382,
+        y: 332,
+        station_name: '肥东中石化加油站',
+        station_code: 'FDZSH001',
+        station_type: '中石化',
+        road_section: 'G40沪陕高速K105',
+        service_area_name: '肥东服务区',
+        service_area_location: '东区',
+        service_area_code: 'FDQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps002',
+        type: 'petrol_station',
+        name: '合肥西中石油',
+        x: 400,
+        y: 312,
+        station_name: '合肥西中石油加油站',
+        station_code: 'HFXZSY001',
+        station_type: '中石油',
+        road_section: 'G42沪蓉高速K395',
+        service_area_name: '合肥西服务区',
+        service_area_location: '西区',
+        service_area_code: 'HFXQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps003',
+        type: 'petrol_station',
+        name: '合肥北中石化',
+        x: 387,
+        y: 317,
+        station_name: '合肥北中石化加油站',
+        station_code: 'HFBZSH001',
+        station_type: '中石化',
+        road_section: 'G3京台高速K750',
+        service_area_name: '合肥北服务区',
+        service_area_location: '东区',
+        service_area_code: 'HFBQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps004',
+        type: 'petrol_station',
+        name: '仁和集中石化',
+        x: 428,
+        y: 150,
+        station_name: '仁和集中石化加油站',
+        station_code: 'RHJZSH001',
+        station_type: '中石化',
+        road_section: 'G3京台高速K780',
+        service_area_name: '仁和集服务区',
+        service_area_location: '东区',
+        service_area_code: 'RHJQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps005',
+        type: 'petrol_station',
+        name: '蚌埠中石油',
+        x: 408,
+        y: 160,
+        station_name: '蚌埠中石油加油站',
+        station_code: 'BBZSY001',
+        station_type: '中石油',
+        road_section: 'G3京台高速K775',
+        service_area_name: '仁和集服务区',
+        service_area_location: '西区',
+        service_area_code: 'RHJQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps006',
+        type: 'petrol_station',
+        name: '淮南中石油',
+        x: 382,
+        y: 200,
+        station_name: '淮南中石油加油站',
+        station_code: 'HNZSY001',
+        station_type: '中石油',
+        road_section: 'G25长深高速K180',
+        service_area_name: '淮南服务区',
+        service_area_location: '西区',
+        service_area_code: 'HNQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps007',
+        type: 'petrol_station',
+        name: '颍上中石化',
+        x: 272,
+        y: 275,
+        station_name: '颍上中石化加油站',
+        station_code: 'YSZSH001',
+        station_type: '中石化',
+        road_section: 'G35济广高速K150',
+        service_area_name: '颍上服务区',
+        service_area_location: '东区',
+        service_area_code: 'YSQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps008',
+        type: 'petrol_station',
+        name: '阜阳中石油',
+        x: 252,
+        y: 288,
+        station_name: '阜阳中石油加油站',
+        station_code: 'FYZSY001',
+        station_type: '中石油',
+        road_section: 'G35济广高速K145',
+        service_area_name: '颍上服务区',
+        service_area_location: '西区',
+        service_area_code: 'YSQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps009',
+        type: 'petrol_station',
+        name: '亳州中石化',
+        x: 302,
+        y: 155,
+        station_name: '亳州中石化加油站',
+        station_code: 'BZZSH001',
+        station_type: '中石化',
+        road_section: 'G35济广高速K80',
+        service_area_name: '亳州服务区',
+        service_area_location: '东区',
+        service_area_code: 'BQQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps010',
+        type: 'petrol_station',
+        name: '宿州中石化',
+        x: 502,
+        y: 125,
+        station_name: '宿州中石化加油站',
+        station_code: 'SZZSH001',
+        station_type: '中石化',
+        road_section: 'G3京台高速K820',
+        service_area_name: '宿州服务区',
+        service_area_location: '东区',
+        service_area_code: 'SZQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps011',
+        type: 'petrol_station',
+        name: '淮北中石油',
+        x: 452,
+        y: 105,
+        station_name: '淮北中石油加油站',
+        station_code: 'HBZSY001',
+        station_type: '中石油',
+        road_section: 'G1511日兰高速K650',
+        service_area_name: '淮北服务区',
+        service_area_location: '西区',
+        service_area_code: 'HBQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps012',
+        type: 'petrol_station',
+        name: '吴庄中石油',
+        x: 552,
+        y: 195,
+        station_name: '吴庄中石油加油站',
+        station_code: 'WZZSY001',
+        station_type: '中石油',
+        road_section: 'G40沪陕高速K0',
+        service_area_name: '吴庄服务区',
+        service_area_location: '西区',
+        service_area_code: 'WZQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps013',
+        type: 'petrol_station',
+        name: '滁州中石化',
+        x: 532,
+        y: 208,
+        station_name: '滁州中石化加油站',
+        station_code: 'CZZSH001',
+        station_type: '中石化',
+        road_section: 'G40沪陕高速K50',
+        service_area_name: '吴庄服务区',
+        service_area_location: '东区',
+        service_area_code: 'WZQW001',
+        status: '维护中'
+    },
+    {
+        id: 'ps014',
+        type: 'petrol_station',
+        name: '六安中石化',
+        x: 232,
+        y: 348,
+        station_name: '六安中石化加油站',
+        station_code: 'LAZSH001',
+        station_type: '中石化',
+        road_section: 'G35济广高速K230',
+        service_area_name: '六安服务区',
+        service_area_location: '东区',
+        service_area_code: 'LAQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps015',
+        type: 'petrol_station',
+        name: '马鞍山中石化',
+        x: 612,
+        y: 265,
+        station_name: '马鞍山中石化加油站',
+        station_code: 'MASZSH001',
+        station_type: '中石化',
+        road_section: 'G4211宁芜高速K120',
+        service_area_name: '马鞍山服务区',
+        service_area_location: '东区',
+        service_area_code: 'MASQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps016',
+        type: 'petrol_station',
+        name: '芜湖中石油',
+        x: 592,
+        y: 325,
+        station_name: '芜湖中石油加油站',
+        station_code: 'WHZSY001',
+        station_type: '中石油',
+        road_section: 'G5011芜合高速K320',
+        service_area_name: '芜湖服务区',
+        service_area_location: '西区',
+        service_area_code: 'WHQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps017',
+        type: 'petrol_station',
+        name: '芜湖中石化',
+        x: 572,
+        y: 338,
+        station_name: '芜湖中石化加油站',
+        station_code: 'WHZSH001',
+        station_type: '中石化',
+        road_section: 'G50沪渝高速K320',
+        service_area_name: '芜湖服务区',
+        service_area_location: '东区',
+        service_area_code: 'WHQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps018',
+        type: 'petrol_station',
+        name: '铜陵中石油',
+        x: 532,
+        y: 405,
+        station_name: '铜陵中石油加油站',
+        station_code: 'TLZSY001',
+        station_type: '中石油',
+        road_section: 'G50沪渝高速K380',
+        service_area_name: '铜陵服务区',
+        service_area_location: '西区',
+        service_area_code: 'TLQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps019',
+        type: 'petrol_station',
+        name: '铜陵中石化',
+        x: 510,
+        y: 408,
+        station_name: '铜陵中石化加油站',
+        station_code: 'TLZSH001',
+        station_type: '中石化',
+        road_section: 'G50沪渝高速K375',
+        service_area_name: '铜陵服务区',
+        service_area_location: '东区',
+        service_area_code: 'TLQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps020',
+        type: 'petrol_station',
+        name: '安庆中石化',
+        x: 312,
+        y: 455,
+        station_name: '安庆中石化加油站',
+        station_code: 'AQZSH001',
+        station_type: '中石化',
+        road_section: 'G42沪蓉高速K560',
+        service_area_name: '安庆服务区',
+        service_area_location: '东区',
+        service_area_code: 'AQQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps021',
+        type: 'petrol_station',
+        name: '安庆中石油',
+        x: 292,
+        y: 468,
+        station_name: '安庆中石油加油站',
+        station_code: 'AQZSY001',
+        station_type: '中石油',
+        road_section: 'G50沪渝高速K530',
+        service_area_name: '安庆服务区',
+        service_area_location: '西区',
+        service_area_code: 'AQQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps022',
+        type: 'petrol_station',
+        name: '巢湖中石化',
+        x: 492,
+        y: 325,
+        station_name: '巢湖中石化加油站',
+        station_code: 'CHZSH001',
+        station_type: '中石化',
+        road_section: 'G42沪蓉高速K450',
+        service_area_name: '巢湖服务区',
+        service_area_location: '东区',
+        service_area_code: 'CHQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps023',
+        type: 'petrol_station',
+        name: '池州中石油',
+        x: 412,
+        y: 465,
+        station_name: '池州中石油加油站',
+        station_code: 'CZZSY001',
+        station_type: '中石油',
+        road_section: 'G50沪渝高速K450',
+        service_area_name: '池州服务区',
+        service_area_location: '西区',
+        service_area_code: 'CZQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps024',
+        type: 'petrol_station',
+        name: '宣城中石化',
+        x: 622,
+        y: 395,
+        station_name: '宣城中石化加油站',
+        station_code: 'XCZSH001',
+        station_type: '中石化',
+        road_section: 'G50沪渝高速K400',
+        service_area_name: '宣城服务区',
+        service_area_location: '东区',
+        service_area_code: 'XCQW001',
+        status: '正常运营'
+    },
+    {
+        id: 'ps025',
+        type: 'petrol_station',
+        name: '黄山中石油',
+        x: 512,
+        y: 525,
+        station_name: '黄山中石油加油站',
+        station_code: 'HSZSY001',
+        station_type: '中石油',
+        road_section: 'G3京台高速K980',
+        service_area_name: '黄山服务区',
+        service_area_location: '西区',
+        service_area_code: 'HSQW001',
+        status: '正常运营'
+    },
+
+    // ==================== 充电站 (15条) ====================
+    {
+        id: 'cs001',
+        type: 'charging_station',
+        name: '肥东充电站',
+        x: 396,
+        y: 320,
+        brand: '国网',
+        service_area_name: '肥东服务区',
+        service_area_code: 'FDQW001',
+        highway_name: 'G40沪陕高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs002',
+        type: 'charging_station',
+        name: '合肥西充电站',
+        x: 380,
+        y: 332,
+        brand: '理想',
+        service_area_name: '合肥西服务区',
+        service_area_code: 'HFXQW001',
+        highway_name: 'G42沪蓉高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs003',
+        type: 'charging_station',
+        name: '仁和集充电站',
+        x: 420,
+        y: 155,
+        brand: '蔚来',
+        service_area_name: '仁和集服务区',
+        service_area_code: 'RHJQW001',
+        highway_name: 'G3京台高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs004',
+        type: 'charging_station',
+        name: '淮南充电站',
+        x: 360,
+        y: 208,
+        brand: '国网',
+        service_area_name: '淮南服务区',
+        service_area_code: 'HNQW001',
+        highway_name: 'G25长深高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs005',
+        type: 'charging_station',
+        name: '颍上充电站',
+        x: 260,
+        y: 268,
+        brand: '国网',
+        service_area_name: '颍上服务区',
+        service_area_code: 'YSQW001',
+        highway_name: 'G35济广高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs006',
+        type: 'charging_station',
+        name: '亳州充电站',
+        x: 280,
+        y: 158,
+        brand: '蔚来',
+        service_area_name: '亳州服务区',
+        service_area_code: 'BQQW001',
+        highway_name: 'G35济广高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs007',
+        type: 'charging_station',
+        name: '宿州充电站',
+        x: 482,
+        y: 138,
+        brand: '理想',
+        service_area_name: '宿州服务区',
+        service_area_code: 'SZQW001',
+        highway_name: 'G3京台高速',
+        business_hours: '24小时',
+        station_status: '维护中',
+        app_status: '离线'
+    },
+    {
+        id: 'cs008',
+        type: 'charging_station',
+        name: '淮北充电站',
+        x: 430,
+        y: 108,
+        brand: '国网',
+        service_area_name: '淮北服务区',
+        service_area_code: 'HBQW001',
+        highway_name: 'G1511日兰高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs009',
+        type: 'charging_station',
+        name: '吴庄充电站',
+        x: 540,
+        y: 188,
+        brand: '国网',
+        service_area_name: '吴庄服务区',
+        service_area_code: 'WZQW001',
+        highway_name: 'G40沪陕高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs010',
+        type: 'charging_station',
+        name: '六安充电站',
+        x: 240,
+        y: 328,
+        brand: '理想',
+        service_area_name: '六安服务区',
+        service_area_code: 'LAQW001',
+        highway_name: 'G35济广高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs011',
+        type: 'charging_station',
+        name: '马鞍山充电站',
+        x: 610,
+        y: 255,
+        brand: '蔚来',
+        service_area_name: '马鞍山服务区',
+        service_area_code: 'MASQW001',
+        highway_name: 'G4211宁芜高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs012',
+        type: 'charging_station',
+        name: '芜湖充电站',
+        x: 588,
+        y: 335,
+        brand: '国网',
+        service_area_name: '芜湖服务区',
+        service_area_code: 'WHQW001',
+        highway_name: 'G5011芜合高速',
+        business_hours: '24小时',
+        station_status: '维护中',
+        app_status: '离线'
+    },
+    {
+        id: 'cs013',
+        type: 'charging_station',
+        name: '铜陵充电站',
+        x: 530,
+        y: 395,
+        brand: '理想',
+        service_area_name: '铜陵服务区',
+        service_area_code: 'TLQW001',
+        highway_name: 'G50沪渝高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs014',
+        type: 'charging_station',
+        name: '安庆充电站',
+        x: 300,
+        y: 448,
+        brand: '国网',
+        service_area_name: '安庆服务区',
+        service_area_code: 'AQQW001',
+        highway_name: 'G42沪蓉高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs015',
+        type: 'charging_station',
+        name: '黄山充电站',
+        x: 510,
+        y: 515,
+        brand: '理想',
+        service_area_name: '黄山服务区',
+        service_area_code: 'HSQW001',
+        highway_name: 'G3京台高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    },
+    {
+        id: 'cs016',
+        type: 'charging_station',
+        name: '合肥交控充电站',
+        x: 405,
+        y: 315,
+        brand: '交控',
+        service_area_name: '肥东服务区',
+        service_area_code: 'FDQW001',
+        highway_name: 'G40沪陕高速',
+        business_hours: '24小时',
+        station_status: '正常运营',
+        app_status: '在线'
+    }
+];
+</script>
+<script>
+let currentPopup = null;
+let activeFilter = 'service_area';
+let activeSubtype = null;
+
+function init() {
+    renderMapIcons('service_area');
+    updateLegendActive('service_area');
+}
+
+function updateLegendActive(type, subtype) {
+    document.querySelectorAll('.legend-item, .legend-subitem').forEach(el => {
+        el.classList.remove('ring-2', 'ring-offset-1', 'ring-opacity-60', 'ring-purple-400', 'ring-green-400', 'ring-orange-400', 'ring-blue-400');
+    });
+    
+    if (type === 'service_area') {
+        document.querySelectorAll(`.legend-item[data-type="${type}"]`).forEach(el => {
+            el.classList.add('ring-2', 'ring-offset-1', 'ring-opacity-60', 'ring-purple-400');
+        });
+    } else if (type === 'toll_station') {
+        document.querySelectorAll(`.legend-item[data-type="${type}"]`).forEach(el => {
+            el.classList.add('ring-2', 'ring-offset-1', 'ring-opacity-60', 'ring-green-400');
+        });
+    } else if (type === 'petrol_station') {
+        if (subtype) {
+            document.querySelectorAll(`.legend-subitem[data-type="${type}"][data-subtype="${subtype}"]`).forEach(el => {
+                el.classList.add('ring-2', 'ring-offset-1', 'ring-opacity-60', 'ring-orange-400');
+            });
+        } else {
+            document.querySelectorAll(`.legend-item[data-type="${type}"]`).forEach(el => {
+                el.classList.add('ring-2', 'ring-offset-1', 'ring-opacity-60', 'ring-orange-400');
+            });
+        }
+    } else if (type === 'charging_station') {
+        if (subtype) {
+            document.querySelectorAll(`.legend-subitem[data-type="${type}"][data-subtype="${subtype}"]`).forEach(el => {
+                el.classList.add('ring-2', 'ring-offset-1', 'ring-opacity-60', 'ring-blue-400');
+            });
+        } else {
+            document.querySelectorAll(`.legend-item[data-type="${type}"]`).forEach(el => {
+                el.classList.add('ring-2', 'ring-offset-1', 'ring-opacity-60', 'ring-blue-400');
+            });
+        }
+    }
+}
+
+function renderMapIcons(filterType = 'all', filterSubtype = null) {
+    const container = document.getElementById('facilities');
+    container.innerHTML = '';
+    
+    let filtered;
+    if (filterType === 'all') {
+        filtered = facilities;
+    } else if (filterSubtype) {
+        if (filterType === 'petrol_station') {
+            filtered = facilities.filter(f => f.type === filterType && f.station_type === filterSubtype);
+        } else if (filterType === 'charging_station') {
+            filtered = facilities.filter(f => f.type === filterType && f.brand === filterSubtype);
+        } else {
+            filtered = facilities.filter(f => f.type === filterType);
+        }
+    } else {
+        filtered = facilities.filter(f => f.type === filterType);
+    }
+    
+    filtered.forEach(facility => {
+        const icon = createIcon(facility);
+        container.appendChild(icon);
+    });
+}
+
+function createIcon(facility) {
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.setAttribute('transform', `translate(${facility.x}, ${facility.y})`);
+    group.setAttribute('style', 'cursor: pointer;');
+    group.setAttribute('onclick', `showPopup(event, '${facility.id}')`);
+    
+    const colors = {
+        service_area: '#8B5CF6',
+        toll_station: '#22C55E',
+        petrol_station: '#F97316',
+        charging_station: '#3B82F6'
+    };
+    
+    const color = colors[facility.type];
+    
+    const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    bgCircle.setAttribute('r', '18');
+    bgCircle.setAttribute('fill', color);
+    bgCircle.setAttribute('stroke', '#ffffff');
+    bgCircle.setAttribute('stroke-width', '2.5');
+    bgCircle.setAttribute('filter', 'url(#shadow)');
+    group.appendChild(bgCircle);
+    
+    const hoverCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    hoverCircle.setAttribute('r', '22');
+    hoverCircle.setAttribute('fill', color);
+    hoverCircle.setAttribute('opacity', '0');
+    hoverCircle.setAttribute('style', 'transition: opacity 0.2s;');
+    group.appendChild(hoverCircle);
+    
+    group.addEventListener('mouseenter', () => {
+        hoverCircle.setAttribute('opacity', '0.2');
+    });
+    
+    group.addEventListener('mouseleave', () => {
+        hoverCircle.setAttribute('opacity', '0');
+    });
+    
+    return group;
+}
+
+function showPopup(event, facilityId) {
+    const facility = facilities.find(f => f.id === facilityId);
+    if (!facility) return;
+    
+    closePopup();
+    
+    const popup = document.getElementById('popup');
+    const title = document.getElementById('popup-title');
+    const content = document.getElementById('popup-content');
+    const badge = document.getElementById('popup-badge');
+    
+    title.textContent = facility.name;
+    
+    const colorMap = {
+        service_area: '#8B5CF6',
+        toll_station: '#22C55E',
+        petrol_station: '#F97316',
+        charging_station: '#3B82F6'
+    };
+    badge.style.backgroundColor = colorMap[facility.type];
+    
+    let html = '<div class="divide-y divide-gray-100">';
+    
+    if (facility.type === 'toll_station') {
+        html += `
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">收费站名称</span><span class="text-gray-700 text-sm">${facility.toll_name}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">收费站编码</span><span class="text-gray-700 text-sm">${facility.toll_code}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">所属高速</span><span class="text-gray-700 text-sm">${facility.highway_name}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">桩号</span><span class="text-gray-700 text-sm">${facility.pile_number}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">状态</span><span class="text-sm font-medium ${facility.status === '正常运营' ? 'text-green-600' : 'text-yellow-600'}">${facility.status}</span></div>
+        `;
+    } else if (facility.type === 'service_area') {
+        html += `
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">服务区名称</span><span class="text-gray-700 text-sm">${facility.area_name}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">服务站编码</span><span class="text-gray-700 text-sm">${facility.area_code}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">所属高速</span><span class="text-gray-700 text-sm">${facility.highway_name}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">行车方向</span><span class="text-gray-700 text-sm">${facility.direction}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">服务区状态</span><span class="text-sm font-medium ${facility.status === '正常运营' ? 'text-green-600' : 'text-yellow-600'}">${facility.status}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">区域</span><span class="text-gray-700 text-sm">${facility.region}</span></div>
+        `;
+    } else if (facility.type === 'petrol_station') {
+        html += `
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">油站名称</span><span class="text-gray-700 text-sm">${facility.station_name}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">油站编码</span><span class="text-gray-700 text-sm">${facility.station_code}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">加油站类型</span><span class="text-gray-700 text-sm">${facility.station_type}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">所属路段</span><span class="text-gray-700 text-sm">${facility.road_section}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">服务区名称</span><span class="text-gray-700 text-sm">${facility.service_area_name}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">服务区位置</span><span class="text-gray-700 text-sm">${facility.service_area_location}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">服务区编码</span><span class="text-gray-700 text-sm">${facility.service_area_code}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">加油站状态</span><span class="text-sm font-medium ${facility.status === '正常运营' ? 'text-green-600' : 'text-yellow-600'}">${facility.status}</span></div>
+        `;
+    } else if (facility.type === 'charging_station') {
+        html += `
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">充电站品牌</span><span class="text-gray-700 text-sm">${facility.brand}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">服务区名称</span><span class="text-gray-700 text-sm">${facility.service_area_name}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">服务区编码</span><span class="text-gray-700 text-sm">${facility.service_area_code}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">所属高速</span><span class="text-gray-700 text-sm">${facility.highway_name}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">营业时间</span><span class="text-gray-700 text-sm">${facility.business_hours}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">站点状态</span><span class="text-sm font-medium ${facility.station_status === '正常运营' ? 'text-green-600' : 'text-yellow-600'}">${facility.station_status}</span></div>
+            <div class="flex py-2"><span class="text-gray-400 text-xs w-24 shrink-0">app状态</span><span class="text-sm font-medium ${facility.app_status === '在线' ? 'text-green-600' : 'text-red-600'}">${facility.app_status}</span></div>
+        `;
+    }
+    
+    html += '</div>';
+    content.innerHTML = html;
+    
+    popup.classList.remove('hidden');
+    currentPopup = facility;
+    
+    const mapContainer = document.querySelector('.map-container');
+    const rect = mapContainer.getBoundingClientRect();
+    const xPercent = (facility.x / 800) * rect.width;
+    const yPercent = (facility.y / 650) * rect.height;
+    
+    let popupX = xPercent + rect.left;
+    let popupY = yPercent + rect.top - 20;
+    
+    if (popupX + 280 > window.innerWidth) {
+        popupX = window.innerWidth - 290;
+    }
+    
+    if (popupY < 80) {
+        popupY = yPercent + rect.top + 30;
+    }
+    
+    popup.style.left = `${popupX}px`;
+    popup.style.top = `${popupY}px`;
+    
+    document.addEventListener('click', handleOutsideClick);
+}
+
+function closePopup() {
+    const popup = document.getElementById('popup');
+    popup.classList.add('hidden');
+    currentPopup = null;
+    document.removeEventListener('click', handleOutsideClick);
+}
+
+function handleOutsideClick(event) {
+    const popup = document.getElementById('popup');
+    if (popup && !popup.contains(event.target) && !event.target.closest('svg')) {
+        closePopup();
+    }
+}
+
+function filterFacilities(type, subtype) {
+    if (activeFilter === type && activeSubtype === (subtype || null)) return;
+    activeFilter = type;
+    activeSubtype = subtype || null;
+    renderMapIcons(type, subtype || null);
+    updateLegendActive(type, subtype);
+}
+
+function toggleSubBrands(name) {
+    const sub = document.getElementById('sub-' + name);
+    if (!sub) return;
+    
+    if (sub.style.maxHeight === '0px' || sub.style.maxHeight === '0') {
+        sub.style.maxHeight = name === 'charge' ? '200px' : '100px';
+    } else {
+        sub.style.maxHeight = '0px';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>

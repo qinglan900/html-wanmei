@@ -48,8 +48,8 @@
         .btn-text:hover { text-decoration: underline; }
         .inline-label-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; min-width: 200px; }
         .inline-label-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
-        .inline-label-input input, .inline-label-input select { flex: 1; height: 100%; padding: 0 12px; border: none; outline: none; font-size: 14px; background: transparent; }
-        .inline-label-input select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+        .inline-label-input input { flex: 1; height: 100%; padding: 0 12px; border: none; outline: none; font-size: 14px; background: transparent; }
+        .inline-label-input select { flex: 1; height: 100%; padding: 0 32px 0 12px; border: none; outline: none; font-size: 14px; background: transparent; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; cursor: pointer; }
         .date-range-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; min-width: 280px; }
         .date-range-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
         .date-range-input input { flex: 1; height: 100%; padding: 0 8px; border: none; outline: none; font-size: 13px; background: transparent; min-width: 0; }
@@ -75,7 +75,7 @@
 
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
         /* 可搜索下拉框样式 */
-        .searchable-select { position: relative; min-width: 200px; }
+        .searchable-select { position: relative; min-width: 200px; flex: 1; }
         .searchable-select-input { width: 100%; height: 32px; padding: 0 32px 0 12px; border: 1px solid #E5E7EB; border-radius: 3px; font-size: 14px; outline: none; background: white; box-sizing: border-box; cursor: pointer; }
         .searchable-select-input:focus { border-color: #FF6B35; }
         .searchable-select-arrow { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #9CA3AF; }
@@ -84,6 +84,8 @@
         .searchable-select-option { padding: 8px 12px; cursor: pointer; font-size: 14px; }
         .searchable-select-option:hover { background-color: #FFF7E6; }
         .searchable-select-option.hidden { display: none; }
+        /* inline-label-input 内的 searchable-select 样式 */
+        .inline-label-input .searchable-select-input { border: none; background: transparent; padding: 0 32px 0 12px; }
         /* 趋势图折线点 hover 放大 */
         svg circle { cursor: pointer; transition: r 0.15s ease; }
         svg circle:hover { r: 5; }
@@ -3326,56 +3328,144 @@
                             </div>
                         </div>
                         <div class="px-2 pb-2">
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
-                                <div class="inline-label-input">
-                                    <span class="label">路段名</span>
-                                    <select id="offline-road-filter" onchange="renderOfflineTable(this.value)">
-                                        <option value="all">全部</option>
-                                        <option value="沪蓉高速合肥西枢纽至皖鄂省界段">沪蓉高速合肥西枢纽至皖鄂省界段</option>
-                                        <option value="济广高速周六段">济广高速周六段</option>
-                                        <option value="济广高速六潜段">济广高速六潜段</option>
-                                        <option value="滁新高速阜新段">滁新高速阜新段</option>
-                                        <option value="泗许高速宿州枢纽至皖苏省界">泗许高速宿州枢纽至皖苏省界</option>
-                                        <option value="巢黄高速石涧枢纽至繁昌东枢纽段">巢黄高速石涧枢纽至繁昌东枢纽段</option>
-                                        <option value="溧宁高速宁国互通至呈村降枢纽段">溧宁高速宁国互通至呈村降枢纽段</option>
-                                    </select>
+                            <div class="flex justify-between items-center pt-2">
+                                <div class="flex gap-1">
+                                    <div class="tab-btn active" data-tab="offline-flow" onclick="switchOfflineTab('offline-flow')">车流量</div>
+                                    <div class="tab-btn" data-tab="offline-fee" onclick="switchOfflineTab('offline-fee')">计费额</div>
+                                    <div class="tab-btn" data-tab="offline-dedup" onclick="switchOfflineTab('offline-dedup')">去重车辆数</div>
                                 </div>
                             </div>
-                            <div class="flex justify-end gap-3 mt-3">
-                                <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
-                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                            <div class="flex justify-between items-center mt-3 gap-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="date-range-input">
+                                        <span class="label">日期范围</span>
+                                        <input type="date" id="offline-date-from">
+                                        <span class="separator">~</span>
+                                        <input type="date" id="offline-date-to">
+                                    </div>
+                                    <div class="inline-label-input" style="min-width: 350px;">
+                                        <span class="label">路段名</span>
+                                        <div class="searchable-select">
+                                            <input type="text" class="searchable-select-input" id="offline-road-input" placeholder="全部路段" readonly onclick="toggleSearchableDropdown(this)" />
+                                            <svg class="searchable-select-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 5L6 8L9 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            <div class="searchable-select-dropdown" id="offline-road-dropdown">
+                                                <div class="searchable-select-option" data-value="all" onclick="selectSearchableOption(this)">全部路段</div>
+                                                <div class="searchable-select-option" data-value="沪蓉高速合肥西枢纽至皖鄂省界段" onclick="selectSearchableOption(this)">沪蓉高速合肥西枢纽至皖鄂省界段</div>
+                                                <div class="searchable-select-option" data-value="济广高速周六段" onclick="selectSearchableOption(this)">济广高速周六段</div>
+                                                <div class="searchable-select-option" data-value="济广高速六潜段" onclick="selectSearchableOption(this)">济广高速六潜段</div>
+                                                <div class="searchable-select-option" data-value="滁新高速阜新段" onclick="selectSearchableOption(this)">滁新高速阜新段</div>
+                                                <div class="searchable-select-option" data-value="泗许高速宿州枢纽至皖苏省界" onclick="selectSearchableOption(this)">泗许高速宿州枢纽至皖苏省界</div>
+                                                <div class="searchable-select-option" data-value="巢黄高速石涧枢纽至繁昌东枢纽段" onclick="selectSearchableOption(this)">巢黄高速石涧枢纽至繁昌东枢纽段</div>
+                                                <div class="searchable-select-option" data-value="溧宁高速宁国互通至呈村降枢纽段" onclick="selectSearchableOption(this)">溧宁高速宁国互通至呈村降枢纽段</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="btn btn-secondary btn-md" onclick="resetOfflineFilter()">重 置</button>
+                                    <button class="btn btn-primary btn-md" onclick="renderOfflineTable()">查 询</button>
+                                </div>
                             </div>
                         </div>
-                        <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
-                            <table class="data-table w-full">
-                                <thead>
-                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                        <th class="text-center" rowspan="2">日期</th>
-                                        <th class="text-center" rowspan="2">路段名</th>
-                                        <th class="text-center" colspan="4">车流量</th>
-                                        <th class="text-center" colspan="4">计费额</th>
-                                        <th class="text-center" rowspan="2">去重车辆数<br><span class="font-normal text-neutral-500">货六（当日去重）</span></th>
-                                    </tr>
-                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-9">
-                                        <th class="text-center text-xs">总计</th>
-                                        <th class="text-center text-xs">货六</th>
-                                        <th class="text-center text-xs">其他货车</th>
-                                        <th class="text-center text-xs">已报名货六</th>
-                                        <th class="text-center text-xs">总计</th>
-                                        <th class="text-center text-xs">货六</th>
-                                        <th class="text-center text-xs">其他货车</th>
-                                        <th class="text-center text-xs">已报名货六</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="offline-table-body"><tr class="cumulative-row"><td class="text-center">累计</td><td class="text-center">全部路段</td><td class="text-right tabular-nums">45,070</td><td class="text-right tabular-nums">17,730</td><td class="text-right tabular-nums">27,340</td><td class="text-right tabular-nums">6,212</td><td class="text-right tabular-nums">¥2,814,900</td><td class="text-right tabular-nums">¥1,235,220</td><td class="text-right tabular-nums">¥1,579,680</td><td class="text-right tabular-nums">¥420,140</td><td class="text-right tabular-nums">5,546</td></tr><tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-09</td><td class="text-center">巢黄高速石涧枢纽至繁昌东枢纽段</td><td class="text-right tabular-nums">1,540</td><td class="text-right tabular-nums">610</td><td class="text-right tabular-nums">930</td><td class="text-right tabular-nums">214</td><td class="text-right tabular-nums">¥96,200</td><td class="text-right tabular-nums">¥42,700</td><td class="text-right tabular-nums">¥53,500</td><td class="text-right tabular-nums">¥14,500</td><td class="text-right tabular-nums">190</td></tr><tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-09</td><td class="text-center">滁新高速阜新段</td><td class="text-right tabular-nums">2,180</td><td class="text-right tabular-nums">860</td><td class="text-right tabular-nums">1,320</td><td class="text-right tabular-nums">300</td><td class="text-right tabular-nums">¥136,200</td><td class="text-right tabular-nums">¥60,200</td><td class="text-right tabular-nums">¥76,000</td><td class="text-right tabular-nums">¥20,400</td><td class="text-right tabular-nums">268</td></tr><tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-09</td><td class="text-center">沪蓉高速合肥西枢纽至皖鄂省界段</td><td class="text-right tabular-nums">4,120</td><td class="text-right tabular-nums">1,680</td><td class="text-right tabular-nums">2,440</td><td class="text-right tabular-nums">580</td><td class="text-right tabular-nums">¥256,800</td><td class="text-right tabular-nums">¥112,560</td><td class="text-right tabular-nums">¥144,240</td><td class="text-right tabular-nums">¥38,920</td><td class="text-right tabular-nums">520</td></tr><tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-09</td><td class="text-center">济广高速六潜段</td><td class="text-right tabular-nums">3,240</td><td class="text-right tabular-nums">1,280</td><td class="text-right tabular-nums">1,960</td><td class="text-right tabular-nums">448</td><td class="text-right tabular-nums">¥202,600</td><td class="text-right tabular-nums">¥89,600</td><td class="text-right tabular-nums">¥113,000</td><td class="text-right tabular-nums">¥30,360</td><td class="text-right tabular-nums">396</td></tr><tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-09</td><td class="text-center">济广高速周六段</td><td class="text-right tabular-nums">2,860</td><td class="text-right tabular-nums">1,120</td><td class="text-right tabular-nums">1,740</td><td class="text-right tabular-nums">392</td><td class="text-right tabular-nums">¥178,400</td><td class="text-right tabular-nums">¥78,400</td><td class="text-right tabular-nums">¥100,000</td><td class="text-right tabular-nums">¥26,560</td><td class="text-right tabular-nums">348</td></tr><tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-09</td><td class="text-center">溧宁高速宁国互通至呈村降枢纽段</td><td class="text-right tabular-nums">1,280</td><td class="text-right tabular-nums">500</td><td class="text-right tabular-nums">780</td><td class="text-right tabular-nums">176</td><td class="text-right tabular-nums">¥79,800</td><td class="text-right tabular-nums">¥35,000</td><td class="text-right tabular-nums">¥44,800</td><td class="text-right tabular-nums">¥11,920</td><td class="text-right tabular-nums">156</td></tr><tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-09</td><td class="text-center">泗许高速宿州枢纽至皖苏省界</td><td class="text-right tabular-nums">1,960</td><td class="text-right tabular-nums">770</td><td class="text-right tabular-nums">1,190</td><td class="text-right tabular-nums">270</td><td class="text-right tabular-nums">¥122,500</td><td class="text-right tabular-nums">¥53,900</td><td class="text-right tabular-nums">¥68,600</td><td class="text-right tabular-nums">¥18,300</td><td class="text-right tabular-nums">240</td></tr><tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-08</td><td class="text-center">巢黄高速石涧枢纽至繁昌东枢纽段</td><td class="text-right tabular-nums">1,420</td><td class="text-right tabular-nums">560</td><td class="text-right tabular-nums">860</td><td class="text-right tabular-nums">196</td><td class="text-right tabular-nums">¥88,700</td><td class="text-right tabular-nums">¥39,200</td><td class="text-right tabular-nums">¥49,500</td><td class="text-right tabular-nums">¥13,300</td><td class="text-right tabular-nums">174</td></tr><tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-08</td><td class="text-center">滁新高速阜新段</td><td class="text-right tabular-nums">2,050</td><td class="text-right tabular-nums">810</td><td class="text-right tabular-nums">1,240</td><td class="text-right tabular-nums">284</td><td class="text-right tabular-nums">¥128,100</td><td class="text-right tabular-nums">¥56,700</td><td class="text-right tabular-nums">¥71,400</td><td class="text-right tabular-nums">¥19,260</td><td class="text-right tabular-nums">252</td></tr><tr class="border-b border-neutral-200 table-row"><td class="text-center">2026-06-08</td><td class="text-center">沪蓉高速合肥西枢纽至皖鄂省界段</td><td class="text-right tabular-nums">3,890</td><td class="text-right tabular-nums">1,520</td><td class="text-right tabular-nums">2,370</td><td class="text-right tabular-nums">540</td><td class="text-right tabular-nums">¥242,300</td><td class="text-right tabular-nums">¥105,840</td><td class="text-right tabular-nums">¥136,460</td><td class="text-right tabular-nums">¥36,280</td><td class="text-right tabular-nums">488</td></tr></tbody>
-                            </table>
-                            <div id="offline-pagination" class="flex items-center justify-between px-2 py-3 border-t border-neutral-200">
-                                <span class="text-sm text-neutral-500">共 19 条记录，每页 10 条</span>
-                                <div class="flex items-center gap-1">
-                                    <button class="btn btn-secondary btn-sm" onclick="showToast('已在第一页','info')">&lt;</button>
-                                    <button class="btn btn-primary btn-sm">1</button>
-                                    <button class="btn btn-secondary btn-sm">2</button>
-                                    <button class="btn btn-secondary btn-sm">&gt;</button>
+                        <!-- Tab面板：车流量 -->
+                        <div id="tab-offline-flow" class="tab-panel active">
+                            <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                                <table class="data-table w-full">
+                                    <thead>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                            <th class="text-center" rowspan="2">日期</th>
+                                            <th class="text-center" rowspan="2">路段名</th>
+                                            <th class="text-center" colspan="13">车流量</th>
+                                        </tr>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-9">
+                                            <th class="text-center text-xs">总计</th>
+                                            <th class="text-center text-xs">货1</th>
+                                            <th class="text-center text-xs">货2</th>
+                                            <th class="text-center text-xs">货3</th>
+                                            <th class="text-center text-xs">货4</th>
+                                            <th class="text-center text-xs">货5</th>
+                                            <th class="text-center text-xs">货6</th>
+                                            <th class="text-center text-xs">已报名货1</th>
+                                            <th class="text-center text-xs">已报名货2</th>
+                                            <th class="text-center text-xs">已报名货3</th>
+                                            <th class="text-center text-xs">已报名货4</th>
+                                            <th class="text-center text-xs">已报名货5</th>
+                                            <th class="text-center text-xs">已报名货6</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="offline-flow-body"></tbody>
+                                </table>
+                                <div id="offline-flow-pagination" class="flex items-center justify-between px-2 py-3 border-t border-neutral-200">
+                                    <span class="text-sm text-neutral-500"></span>
+                                    <div class="flex items-center gap-1"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tab面板：计费额 -->
+                        <div id="tab-offline-fee" class="tab-panel">
+                            <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                                <table class="data-table w-full">
+                                    <thead>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                            <th class="text-center" rowspan="2">日期</th>
+                                            <th class="text-center" rowspan="2">路段名</th>
+                                            <th class="text-center" colspan="13">计费额</th>
+                                        </tr>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-9">
+                                            <th class="text-center text-xs">总计</th>
+                                            <th class="text-center text-xs">货1</th>
+                                            <th class="text-center text-xs">货2</th>
+                                            <th class="text-center text-xs">货3</th>
+                                            <th class="text-center text-xs">货4</th>
+                                            <th class="text-center text-xs">货5</th>
+                                            <th class="text-center text-xs">货6</th>
+                                            <th class="text-center text-xs">已报名货1</th>
+                                            <th class="text-center text-xs">已报名货2</th>
+                                            <th class="text-center text-xs">已报名货3</th>
+                                            <th class="text-center text-xs">已报名货4</th>
+                                            <th class="text-center text-xs">已报名货5</th>
+                                            <th class="text-center text-xs">已报名货6</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="offline-fee-body"></tbody>
+                                </table>
+                                <div id="offline-fee-pagination" class="flex items-center justify-between px-2 py-3 border-t border-neutral-200">
+                                    <span class="text-sm text-neutral-500"></span>
+                                    <div class="flex items-center gap-1"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tab面板：去重车辆数 -->
+                        <div id="tab-offline-dedup" class="tab-panel">
+                            <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                                <table class="data-table w-full">
+                                    <thead>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                            <th class="text-center" rowspan="2">日期</th>
+                                            <th class="text-center" rowspan="2">路段名</th>
+                                            <th class="text-center" colspan="13">去重车辆数</th>
+                                        </tr>
+                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-9">
+                                            <th class="text-center text-xs">总计</th>
+                                            <th class="text-center text-xs">货1</th>
+                                            <th class="text-center text-xs">货2</th>
+                                            <th class="text-center text-xs">货3</th>
+                                            <th class="text-center text-xs">货4</th>
+                                            <th class="text-center text-xs">货5</th>
+                                            <th class="text-center text-xs">货6</th>
+                                            <th class="text-center text-xs">已报名货1</th>
+                                            <th class="text-center text-xs">已报名货2</th>
+                                            <th class="text-center text-xs">已报名货3</th>
+                                            <th class="text-center text-xs">已报名货4</th>
+                                            <th class="text-center text-xs">已报名货5</th>
+                                            <th class="text-center text-xs">已报名货6</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="offline-dedup-body"></tbody>
+                                </table>
+                                <div id="offline-dedup-pagination" class="flex items-center justify-between px-2 py-3 border-t border-neutral-200">
+                                    <span class="text-sm text-neutral-500"></span>
+                                    <div class="flex items-center gap-1"></div>
                                 </div>
                             </div>
                         </div>
@@ -3401,11 +3491,40 @@
                             <div class="flex gap-1">
                                 <div class="tab-btn active" data-tab="effect-points" onclick="switchEffectTab('effect-points')">积分维度</div>
                                 <div class="tab-btn" data-tab="effect-vehicle" onclick="switchEffectTab('effect-vehicle')">车辆维度</div>
-                                <div class="tab-btn" data-tab="effect-huo6" onclick="switchEffectTab('effect-huo6')">货六明细</div>
+                                <div class="tab-btn" data-tab="effect-huo6" onclick="switchEffectTab('effect-huo6')">货车明细</div>
                             </div>
                         </div>
                         <div class="px-2 pb-2">
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div id="effect-road-filter" class="inline-label-input hidden">
+                                    <span class="label">路段名</span>
+                                    <div class="searchable-select">
+                                        <input type="text" class="searchable-select-input" id="effect-road-input" placeholder="全部路段" readonly onclick="toggleSearchableDropdown(this)" />
+                                        <svg class="searchable-select-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 5L6 8L9 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        <div class="searchable-select-dropdown" id="effect-road-dropdown">
+                                            <div class="searchable-select-option" data-value="" onclick="selectSearchableOption(this)">全部路段</div>
+                                            <div class="searchable-select-option" data-value="沪蓉高速合肥西枢纽至皖鄂省界段" onclick="selectSearchableOption(this)">沪蓉高速合肥西枢纽至皖鄂省界段</div>
+                                            <div class="searchable-select-option" data-value="济广高速周六段" onclick="selectSearchableOption(this)">济广高速周六段</div>
+                                            <div class="searchable-select-option" data-value="济广高速六潜段" onclick="selectSearchableOption(this)">济广高速六潜段</div>
+                                            <div class="searchable-select-option" data-value="滁新高速阜新段" onclick="selectSearchableOption(this)">滁新高速阜新段</div>
+                                            <div class="searchable-select-option" data-value="泗许高速宿州枢纽至皖苏省界" onclick="selectSearchableOption(this)">泗许高速宿州枢纽至皖苏省界</div>
+                                            <div class="searchable-select-option" data-value="巢黄高速石涧枢纽至繁昌东枢纽段" onclick="selectSearchableOption(this)">巢黄高速石涧枢纽至繁昌东枢纽段</div>
+                                            <div class="searchable-select-option" data-value="溧宁高速宁国互通至呈村降枢纽段" onclick="selectSearchableOption(this)">溧宁高速宁国互通至呈村降枢纽段</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="effect-vehicle-type-filter" class="inline-label-input hidden">
+                                    <span class="label">车型选择</span>
+                                    <select id="effect-vehicle-type">
+                                        <option value="all">全部</option>
+                                        <option value="huo1">货1</option>
+                                        <option value="huo2">货2</option>
+                                        <option value="huo3">货3</option>
+                                        <option value="huo4">货4</option>
+                                        <option value="huo5">货5</option>
+                                        <option value="huo6">货6</option>
+                                    </select>
+                                </div>
                                 <div id="effect-plate-filter" class="inline-label-input hidden">
                                     <span class="label">车牌号</span>
                                     <input type="text" placeholder="请输入车牌号">
@@ -3432,9 +3551,6 @@
                                     <span class="separator">-</span>
                                     <input type="number" placeholder="最大值">
                                 </div>
-                            </div>
-                            <!-- 日期范围筛选（积分维度/车辆维度使用） -->
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
                                 <div id="effect-date-range" class="date-range-input">
                                     <span class="label">日期范围</span>
                                     <input type="date" value="2026-05-20">
@@ -3485,7 +3601,7 @@
                                     <thead>
                                         <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
                                             <th class="text-center">日期</th>
-                                            <th class="text-right">目标路段累计通行车辆数（货六ETC）</th>
+                                            <th class="text-right">目标路段累计通行车辆数（ETC）</th>
                                             <th class="text-right">累计报名人数</th>
                                             <th class="text-right">累计报名车辆数</th>
                                             <th class="text-right">累计有效报名车辆数</th>
@@ -3517,7 +3633,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- 货六明细Tab -->
+                        <!-- 货车明细Tab -->
                         <div id="tab-effect-huo6" class="tab-panel">
                             <div class="mx-2 mb-2 mt-2 overflow-x-auto bg-white rounded border border-neutral-200">
                                 <table class="data-table w-full">
@@ -4618,27 +4734,29 @@
             { date: '2026-05-26', v: [1680,640,780,490,280,240,80] }
         ];
 
-        // 线下数据
+        // 线下数据（路段流量监测）- 按货1~货6拆分
+        // 拆分比例：货1=8%, 货2=10%, 货3=12%, 货4=14%, 货5=16%, 货6=40%
+        // 已报名比例：各车型约35%
         var offlineAllData = [
-            { road: '沪蓉高速合肥西枢纽至皖鄂省界段', date: '2026-06-09', totalFlow: 4120, huo6Flow: 1680, otherFlow: 2440, signedFlow: 580, totalFee: 256800, huo6Fee: 112560, otherFee: 144240, signedFee: 38920, dedupVehicles: 520 },
-            { road: '沪蓉高速合肥西枢纽至皖鄂省界段', date: '2026-06-08', totalFlow: 3890, huo6Flow: 1520, otherFlow: 2370, signedFlow: 540, totalFee: 242300, huo6Fee: 105840, otherFee: 136460, signedFee: 36280, dedupVehicles: 488 },
-            { road: '沪蓉高速合肥西枢纽至皖鄂省界段', date: '2026-06-07', totalFlow: 3650, huo6Flow: 1410, otherFlow: 2240, signedFlow: 498, totalFee: 228600, huo6Fee: 98420, otherFee: 130180, signedFee: 33560, dedupVehicles: 456 },
-            { road: '济广高速六潜段', date: '2026-06-09', totalFlow: 3240, huo6Flow: 1280, otherFlow: 1960, signedFlow: 448, totalFee: 202600, huo6Fee: 89600, otherFee: 113000, signedFee: 30360, dedupVehicles: 396 },
-            { road: '济广高速六潜段', date: '2026-06-08', totalFlow: 3080, huo6Flow: 1210, otherFlow: 1870, signedFlow: 424, totalFee: 192400, huo6Fee: 84700, otherFee: 107700, signedFee: 28720, dedupVehicles: 376 },
-            { road: '济广高速六潜段', date: '2026-06-07', totalFlow: 2920, huo6Flow: 1150, otherFlow: 1770, signedFlow: 402, totalFee: 182500, huo6Fee: 80500, otherFee: 102000, signedFee: 27200, dedupVehicles: 358 },
-            { road: '济广高速周六段', date: '2026-06-09', totalFlow: 2860, huo6Flow: 1120, otherFlow: 1740, signedFlow: 392, totalFee: 178400, huo6Fee: 78400, otherFee: 100000, signedFee: 26560, dedupVehicles: 348 },
-            { road: '济广高速周六段', date: '2026-06-08', totalFlow: 2640, huo6Flow: 1030, otherFlow: 1610, signedFlow: 360, totalFee: 164800, huo6Fee: 72100, otherFee: 92700, signedFee: 24420, dedupVehicles: 320 },
-            { road: '济广高速周六段', date: '2026-06-07', totalFlow: 2480, huo6Flow: 960, otherFlow: 1520, signedFlow: 336, totalFee: 155200, huo6Fee: 67200, otherFee: 88000, signedFee: 22780, dedupVehicles: 298 },
-            { road: '滁新高速阜新段', date: '2026-06-09', totalFlow: 2180, huo6Flow: 860, otherFlow: 1320, signedFlow: 300, totalFee: 136200, huo6Fee: 60200, otherFee: 76000, signedFee: 20400, dedupVehicles: 268 },
-            { road: '滁新高速阜新段', date: '2026-06-08', totalFlow: 2050, huo6Flow: 810, otherFlow: 1240, signedFlow: 284, totalFee: 128100, huo6Fee: 56700, otherFee: 71400, signedFee: 19260, dedupVehicles: 252 },
-            { road: '巢黄高速石涧枢纽至繁昌东枢纽段', date: '2026-06-09', totalFlow: 1540, huo6Flow: 610, otherFlow: 930, signedFlow: 214, totalFee: 96200, huo6Fee: 42700, otherFee: 53500, signedFee: 14500, dedupVehicles: 190 },
-            { road: '巢黄高速石涧枢纽至繁昌东枢纽段', date: '2026-06-08', totalFlow: 1420, huo6Flow: 560, otherFlow: 860, signedFlow: 196, totalFee: 88700, huo6Fee: 39200, otherFee: 49500, signedFee: 13300, dedupVehicles: 174 },
-            { road: '泗许高速宿州枢纽至皖苏省界', date: '2026-06-09', totalFlow: 1960, huo6Flow: 770, otherFlow: 1190, signedFlow: 270, totalFee: 122500, huo6Fee: 53900, otherFee: 68600, signedFee: 18300, dedupVehicles: 240 },
-            { road: '泗许高速宿州枢纽至皖苏省界', date: '2026-06-08', totalFlow: 1820, huo6Flow: 720, otherFlow: 1100, signedFlow: 252, totalFee: 113800, huo6Fee: 50400, otherFee: 63400, signedFee: 17080, dedupVehicles: 224 },
-            { road: '泗许高速宿州枢纽至皖苏省界', date: '2026-06-07', totalFlow: 1680, huo6Flow: 660, otherFlow: 1020, signedFlow: 230, totalFee: 105000, huo6Fee: 46200, otherFee: 58800, signedFee: 15600, dedupVehicles: 206 },
-            { road: '溧宁高速宁国互通至呈村降枢纽段', date: '2026-06-09', totalFlow: 1280, huo6Flow: 500, otherFlow: 780, signedFlow: 176, totalFee: 79800, huo6Fee: 35000, otherFee: 44800, signedFee: 11920, dedupVehicles: 156 },
-            { road: '溧宁高速宁国互通至呈村降枢纽段', date: '2026-06-08', totalFlow: 1180, huo6Flow: 460, otherFlow: 720, signedFlow: 162, totalFee: 73600, huo6Fee: 32200, otherFee: 41400, signedFee: 10960, dedupVehicles: 144 },
-            { road: '溧宁高速宁国互通至呈村降枢纽段', date: '2026-06-07', totalFlow: 1080, huo6Flow: 420, otherFlow: 660, signedFlow: 148, totalFee: 67400, huo6Fee: 29400, otherFee: 38000, signedFee: 10020, dedupVehicles: 132 }
+            { road: '沪蓉高速合肥西枢纽至皖鄂省界段', date: '2026-06-09', totalFlow: 4120, h1Flow: 330, h2Flow: 412, h3Flow: 494, h4Flow: 577, h5Flow: 659, h6Flow: 1648, signedH1Flow: 116, signedH2Flow: 144, signedH3Flow: 173, signedH4Flow: 202, signedH5Flow: 231, signedH6Flow: 577, totalFee: 256800, h1Fee: 20544, h2Fee: 25704, h3Fee: 30845, h4Fee: 35986, h5Fee: 41126, h6Fee: 102600, signedH1Fee: 7200, signedH2Fee: 9000, signedH3Fee: 10800, signedH4Fee: 12600, signedH5Fee: 14400, signedH6Fee: 38920, totalDedup: 520, h1Dedup: 42, h2Dedup: 52, h3Dedup: 62, h4Dedup: 73, h5Dedup: 83, h6Dedup: 208, signedH1Dedup: 15, signedH2Dedup: 18, signedH3Dedup: 22, signedH4Dedup: 26, signedH5Dedup: 29, signedH6Dedup: 73 },
+            { road: '沪蓉高速合肥西枢纽至皖鄂省界段', date: '2026-06-08', totalFlow: 3890, h1Flow: 311, h2Flow: 389, h3Flow: 467, h4Flow: 545, h5Flow: 622, h6Flow: 1556, signedH1Flow: 109, signedH2Flow: 136, signedH3Flow: 163, signedH4Flow: 191, signedH5Flow: 218, signedH6Flow: 544, totalFee: 242300, h1Fee: 19384, h2Fee: 24230, h3Fee: 29076, h4Fee: 33922, h5Fee: 38768, h6Fee: 96920, signedH1Fee: 6800, signedH2Fee: 8500, signedH3Fee: 10200, signedH4Fee: 11900, signedH5Fee: 13600, signedH6Fee: 36280, totalDedup: 488, h1Dedup: 39, h2Dedup: 49, h3Dedup: 59, h4Dedup: 68, h5Dedup: 78, h6Dedup: 195, signedH1Dedup: 14, signedH2Dedup: 17, signedH3Dedup: 21, signedH4Dedup: 24, signedH5Dedup: 27, signedH6Dedup: 68 },
+            { road: '沪蓉高速合肥西枢纽至皖鄂省界段', date: '2026-06-07', totalFlow: 3650, h1Flow: 292, h2Flow: 365, h3Flow: 438, h4Flow: 511, h5Flow: 584, h6Flow: 1460, signedH1Flow: 102, signedH2Flow: 128, signedH3Flow: 153, signedH4Flow: 179, signedH5Flow: 204, signedH6Flow: 511, totalFee: 228600, h1Fee: 18288, h2Fee: 22860, h3Fee: 27432, h4Fee: 32004, h5Fee: 36576, h6Fee: 91440, signedH1Fee: 6400, signedH2Fee: 8000, signedH3Fee: 9600, signedH4Fee: 11200, signedH5Fee: 12800, signedH6Fee: 33560, totalDedup: 456, h1Dedup: 36, h2Dedup: 46, h3Dedup: 55, h4Dedup: 64, h5Dedup: 73, h6Dedup: 182, signedH1Dedup: 13, signedH2Dedup: 16, signedH3Dedup: 19, signedH4Dedup: 22, signedH5Dedup: 26, signedH6Dedup: 64 },
+            { road: '济广高速六潜段', date: '2026-06-09', totalFlow: 3240, h1Flow: 259, h2Flow: 324, h3Flow: 389, h4Flow: 454, h5Flow: 518, h6Flow: 1296, signedH1Flow: 91, signedH2Flow: 113, signedH3Flow: 136, signedH4Flow: 159, signedH5Flow: 181, signedH6Flow: 454, totalFee: 202600, h1Fee: 16208, h2Fee: 20260, h3Fee: 24312, h4Fee: 28364, h5Fee: 32416, h6Fee: 81040, signedH1Fee: 5700, signedH2Fee: 7100, signedH3Fee: 8500, signedH4Fee: 9900, signedH5Fee: 11400, signedH6Fee: 30360, totalDedup: 396, h1Dedup: 32, h2Dedup: 40, h3Dedup: 48, h4Dedup: 55, h5Dedup: 63, h6Dedup: 158, signedH1Dedup: 11, signedH2Dedup: 14, signedH3Dedup: 17, signedH4Dedup: 19, signedH5Dedup: 22, signedH6Dedup: 55 },
+            { road: '济广高速六潜段', date: '2026-06-08', totalFlow: 3080, h1Flow: 246, h2Flow: 308, h3Flow: 370, h4Flow: 431, h5Flow: 493, h6Flow: 1232, signedH1Flow: 86, signedH2Flow: 108, signedH3Flow: 129, signedH4Flow: 151, signedH5Flow: 173, signedH6Flow: 431, totalFee: 192400, h1Fee: 15392, h2Fee: 19240, h3Fee: 23088, h4Fee: 26936, h5Fee: 30784, h6Fee: 76960, signedH1Fee: 5400, signedH2Fee: 6700, signedH3Fee: 8100, signedH4Fee: 9400, signedH5Fee: 10800, signedH6Fee: 28720, totalDedup: 376, h1Dedup: 30, h2Dedup: 38, h3Dedup: 45, h4Dedup: 53, h5Dedup: 60, h6Dedup: 150, signedH1Dedup: 11, signedH2Dedup: 13, signedH3Dedup: 16, signedH4Dedup: 19, signedH5Dedup: 21, signedH6Dedup: 53 },
+            { road: '济广高速六潜段', date: '2026-06-07', totalFlow: 2920, h1Flow: 234, h2Flow: 292, h3Flow: 350, h4Flow: 409, h5Flow: 467, h6Flow: 1168, signedH1Flow: 82, signedH2Flow: 102, signedH3Flow: 123, signedH4Flow: 143, signedH5Flow: 163, signedH6Flow: 409, totalFee: 182500, h1Fee: 14600, h2Fee: 18250, h3Fee: 21900, h4Fee: 25550, h5Fee: 29200, h6Fee: 73000, signedH1Fee: 5100, signedH2Fee: 6400, signedH3Fee: 7700, signedH4Fee: 8900, signedH5Fee: 10200, signedH6Fee: 27200, totalDedup: 358, h1Dedup: 29, h2Dedup: 36, h3Dedup: 43, h4Dedup: 50, h5Dedup: 57, h6Dedup: 143, signedH1Dedup: 10, signedH2Dedup: 13, signedH3Dedup: 15, signedH4Dedup: 18, signedH5Dedup: 20, signedH6Dedup: 50 },
+            { road: '济广高速周六段', date: '2026-06-09', totalFlow: 2860, h1Flow: 229, h2Flow: 286, h3Flow: 343, h4Flow: 400, h5Flow: 458, h6Flow: 1144, signedH1Flow: 80, signedH2Flow: 100, signedH3Flow: 120, signedH4Flow: 140, signedH5Flow: 160, signedH6Flow: 400, totalFee: 178400, h1Fee: 14272, h2Fee: 17840, h3Fee: 21408, h4Fee: 24976, h5Fee: 28544, h6Fee: 71360, signedH1Fee: 5000, signedH2Fee: 6200, signedH3Fee: 7500, signedH4Fee: 8700, signedH5Fee: 10000, signedH6Fee: 26560, totalDedup: 348, h1Dedup: 28, h2Dedup: 35, h3Dedup: 42, h4Dedup: 49, h5Dedup: 56, h6Dedup: 138, signedH1Dedup: 10, signedH2Dedup: 12, signedH3Dedup: 15, signedH4Dedup: 17, signedH5Dedup: 20, signedH6Dedup: 49 },
+            { road: '济广高速周六段', date: '2026-06-08', totalFlow: 2640, h1Flow: 211, h2Flow: 264, h3Flow: 317, h4Flow: 370, h5Flow: 422, h6Flow: 1056, signedH1Flow: 74, signedH2Flow: 92, signedH3Flow: 111, signedH4Flow: 129, signedH5Flow: 148, signedH6Flow: 370, totalFee: 164800, h1Fee: 13184, h2Fee: 16480, h3Fee: 19776, h4Fee: 23072, h5Fee: 26368, h6Fee: 65920, signedH1Fee: 4600, signedH2Fee: 5800, signedH3Fee: 6900, signedH4Fee: 8100, signedH5Fee: 9200, signedH6Fee: 24420, totalDedup: 320, h1Dedup: 26, h2Dedup: 32, h3Dedup: 38, h4Dedup: 45, h5Dedup: 51, h6Dedup: 128, signedH1Dedup: 9, signedH2Dedup: 11, signedH3Dedup: 13, signedH4Dedup: 16, signedH5Dedup: 18, signedH6Dedup: 45 },
+            { road: '济广高速周六段', date: '2026-06-07', totalFlow: 2480, h1Flow: 198, h2Flow: 248, h3Flow: 298, h4Flow: 347, h5Flow: 397, h6Flow: 992, signedH1Flow: 69, signedH2Flow: 87, signedH3Flow: 104, signedH4Flow: 121, signedH5Flow: 139, signedH6Flow: 347, totalFee: 155200, h1Fee: 12416, h2Fee: 15520, h3Fee: 18624, h4Fee: 21728, h5Fee: 24832, h6Fee: 62080, signedH1Fee: 4300, signedH2Fee: 5400, signedH3Fee: 6500, signedH4Fee: 7600, signedH5Fee: 8700, signedH6Fee: 22780, totalDedup: 298, h1Dedup: 24, h2Dedup: 30, h3Dedup: 36, h4Dedup: 42, h5Dedup: 48, h6Dedup: 118, signedH1Dedup: 8, signedH2Dedup: 11, signedH3Dedup: 13, signedH4Dedup: 15, signedH5Dedup: 17, signedH6Dedup: 42 },
+            { road: '滁新高速阜新段', date: '2026-06-09', totalFlow: 2180, h1Flow: 174, h2Flow: 218, h3Flow: 262, h4Flow: 305, h5Flow: 349, h6Flow: 872, signedH1Flow: 61, signedH2Flow: 76, signedH3Flow: 92, signedH4Flow: 107, signedH5Flow: 122, signedH6Flow: 305, totalFee: 136200, h1Fee: 10896, h2Fee: 13620, h3Fee: 16344, h4Fee: 19068, h5Fee: 21792, h6Fee: 54480, signedH1Fee: 3800, signedH2Fee: 4800, signedH3Fee: 5700, signedH4Fee: 6600, signedH5Fee: 7600, signedH6Fee: 20400, totalDedup: 268, h1Dedup: 21, h2Dedup: 27, h3Dedup: 32, h4Dedup: 38, h5Dedup: 43, h6Dedup: 107, signedH1Dedup: 7, signedH2Dedup: 9, signedH3Dedup: 11, signedH4Dedup: 13, signedH5Dedup: 15, signedH6Dedup: 38 },
+            { road: '滁新高速阜新段', date: '2026-06-08', totalFlow: 2050, h1Flow: 164, h2Flow: 205, h3Flow: 246, h4Flow: 287, h5Flow: 328, h6Flow: 820, signedH1Flow: 57, signedH2Flow: 72, signedH3Flow: 86, signedH4Flow: 100, signedH5Flow: 115, signedH6Flow: 287, totalFee: 128100, h1Fee: 10248, h2Fee: 12810, h3Fee: 15372, h4Fee: 17934, h5Fee: 20496, h6Fee: 51240, signedH1Fee: 3600, signedH2Fee: 4500, signedH3Fee: 5400, signedH4Fee: 6300, signedH5Fee: 7200, signedH6Fee: 19260, totalDedup: 252, h1Dedup: 20, h2Dedup: 25, h3Dedup: 30, h4Dedup: 35, h5Dedup: 40, h6Dedup: 102, signedH1Dedup: 7, signedH2Dedup: 9, signedH3Dedup: 11, signedH4Dedup: 12, signedH5Dedup: 14, signedH6Dedup: 36 },
+            { road: '巢黄高速石涧枢纽至繁昌东枢纽段', date: '2026-06-09', totalFlow: 1540, h1Flow: 123, h2Flow: 154, h3Flow: 185, h4Flow: 216, h5Flow: 246, h6Flow: 616, signedH1Flow: 43, signedH2Flow: 54, signedH3Flow: 65, signedH4Flow: 76, signedH5Flow: 86, signedH6Flow: 216, totalFee: 96200, h1Fee: 7696, h2Fee: 9620, h3Fee: 11544, h4Fee: 13468, h5Fee: 15392, h6Fee: 38480, signedH1Fee: 2700, signedH2Fee: 3400, signedH3Fee: 4000, signedH4Fee: 4700, signedH5Fee: 5400, signedH6Fee: 14500, totalDedup: 190, h1Dedup: 15, h2Dedup: 19, h3Dedup: 23, h4Dedup: 27, h5Dedup: 30, h6Dedup: 76, signedH1Dedup: 5, signedH2Dedup: 7, signedH3Dedup: 8, signedH4Dedup: 9, signedH5Dedup: 11, signedH6Dedup: 27 },
+            { road: '巢黄高速石涧枢纽至繁昌东枢纽段', date: '2026-06-08', totalFlow: 1420, h1Flow: 114, h2Flow: 142, h3Flow: 170, h4Flow: 199, h5Flow: 227, h6Flow: 568, signedH1Flow: 40, signedH2Flow: 50, signedH3Flow: 60, signedH4Flow: 70, signedH5Flow: 79, signedH6Flow: 199, totalFee: 88700, h1Fee: 7096, h2Fee: 8870, h3Fee: 10644, h4Fee: 12418, h5Fee: 14192, h6Fee: 35480, signedH1Fee: 2500, signedH2Fee: 3100, signedH3Fee: 3700, signedH4Fee: 4300, signedH5Fee: 5000, signedH6Fee: 13300, totalDedup: 174, h1Dedup: 14, h2Dedup: 17, h3Dedup: 21, h4Dedup: 24, h5Dedup: 28, h6Dedup: 70, signedH1Dedup: 5, signedH2Dedup: 6, signedH3Dedup: 7, signedH4Dedup: 8, signedH5Dedup: 10, signedH6Dedup: 25 },
+            { road: '泗许高速宿州枢纽至皖苏省界', date: '2026-06-09', totalFlow: 1960, h1Flow: 157, h2Flow: 196, h3Flow: 235, h4Flow: 274, h5Flow: 314, h6Flow: 784, signedH1Flow: 55, signedH2Flow: 69, signedH3Flow: 82, signedH4Flow: 96, signedH5Flow: 110, signedH6Flow: 274, totalFee: 122500, h1Fee: 9800, h2Fee: 12250, h3Fee: 14700, h4Fee: 17150, h5Fee: 19600, h6Fee: 49000, signedH1Fee: 3400, signedH2Fee: 4300, signedH3Fee: 5100, signedH4Fee: 6000, signedH5Fee: 6800, signedH6Fee: 18300, totalDedup: 240, h1Dedup: 19, h2Dedup: 24, h3Dedup: 29, h4Dedup: 34, h5Dedup: 38, h6Dedup: 96, signedH1Dedup: 7, signedH2Dedup: 8, signedH3Dedup: 10, signedH4Dedup: 12, signedH5Dedup: 13, signedH6Dedup: 34 },
+            { road: '泗许高速宿州枢纽至皖苏省界', date: '2026-06-08', totalFlow: 1820, h1Flow: 146, h2Flow: 182, h3Flow: 218, h4Flow: 255, h5Flow: 291, h6Flow: 728, signedH1Flow: 51, signedH2Flow: 64, signedH3Flow: 76, signedH4Flow: 89, signedH5Flow: 102, signedH6Flow: 255, totalFee: 113800, h1Fee: 9104, h2Fee: 11380, h3Fee: 13656, h4Fee: 15932, h5Fee: 18208, h6Fee: 45520, signedH1Fee: 3200, signedH2Fee: 4000, signedH3Fee: 4800, signedH4Fee: 5600, signedH5Fee: 6400, signedH6Fee: 17080, totalDedup: 224, h1Dedup: 18, h2Dedup: 22, h3Dedup: 27, h4Dedup: 31, h5Dedup: 36, h6Dedup: 90, signedH1Dedup: 6, signedH2Dedup: 8, signedH3Dedup: 9, signedH4Dedup: 11, signedH5Dedup: 13, signedH6Dedup: 32 },
+            { road: '泗许高速宿州枢纽至皖苏省界', date: '2026-06-07', totalFlow: 1680, h1Flow: 134, h2Flow: 168, h3Flow: 202, h4Flow: 235, h5Flow: 269, h6Flow: 672, signedH1Flow: 47, signedH2Flow: 59, signedH3Flow: 71, signedH4Flow: 82, signedH5Flow: 94, signedH6Flow: 235, totalFee: 105000, h1Fee: 8400, h2Fee: 10500, h3Fee: 12600, h4Fee: 14700, h5Fee: 16800, h6Fee: 42000, signedH1Fee: 2900, signedH2Fee: 3700, signedH3Fee: 4400, signedH4Fee: 5100, signedH5Fee: 5900, signedH6Fee: 15600, totalDedup: 206, h1Dedup: 16, h2Dedup: 21, h3Dedup: 25, h4Dedup: 29, h5Dedup: 33, h6Dedup: 82, signedH1Dedup: 6, signedH2Dedup: 7, signedH3Dedup: 9, signedH4Dedup: 10, signedH5Dedup: 12, signedH6Dedup: 29 },
+            { road: '溧宁高速宁国互通至呈村降枢纽段', date: '2026-06-09', totalFlow: 1280, h1Flow: 102, h2Flow: 128, h3Flow: 154, h4Flow: 179, h5Flow: 205, h6Flow: 512, signedH1Flow: 36, signedH2Flow: 45, signedH3Flow: 54, signedH4Flow: 63, signedH5Flow: 72, signedH6Flow: 179, totalFee: 79800, h1Fee: 6384, h2Fee: 7980, h3Fee: 9576, h4Fee: 11172, h5Fee: 12768, h6Fee: 31920, signedH1Fee: 2200, signedH2Fee: 2800, signedH3Fee: 3300, signedH4Fee: 3900, signedH5Fee: 4400, signedH6Fee: 11920, totalDedup: 156, h1Dedup: 12, h2Dedup: 16, h3Dedup: 19, h4Dedup: 22, h5Dedup: 25, h6Dedup: 62, signedH1Dedup: 4, signedH2Dedup: 6, signedH3Dedup: 7, signedH4Dedup: 8, signedH5Dedup: 9, signedH6Dedup: 22 },
+            { road: '溧宁高速宁国互通至呈村降枢纽段', date: '2026-06-08', totalFlow: 1180, h1Flow: 94, h2Flow: 118, h3Flow: 142, h4Flow: 165, h5Flow: 189, h6Flow: 472, signedH1Flow: 33, signedH2Flow: 41, signedH3Flow: 50, signedH4Flow: 58, signedH5Flow: 66, signedH6Flow: 165, totalFee: 73600, h1Fee: 5888, h2Fee: 7360, h3Fee: 8832, h4Fee: 10304, h5Fee: 11776, h6Fee: 29440, signedH1Fee: 2100, signedH2Fee: 2600, signedH3Fee: 3100, signedH4Fee: 3600, signedH5Fee: 4100, signedH6Fee: 10960, totalDedup: 144, h1Dedup: 12, h2Dedup: 14, h3Dedup: 17, h4Dedup: 20, h5Dedup: 23, h6Dedup: 58, signedH1Dedup: 4, signedH2Dedup: 5, signedH3Dedup: 6, signedH4Dedup: 7, signedH5Dedup: 8, signedH6Dedup: 20 },
+            { road: '溧宁高速宁国互通至呈村降枢纽段', date: '2026-06-07', totalFlow: 1080, h1Flow: 86, h2Flow: 108, h3Flow: 130, h4Flow: 151, h5Flow: 173, h6Flow: 432, signedH1Flow: 30, signedH2Flow: 38, signedH3Flow: 45, signedH4Flow: 53, signedH5Flow: 61, signedH6Flow: 151, totalFee: 67400, h1Fee: 5392, h2Fee: 6740, h3Fee: 8088, h4Fee: 9436, h5Fee: 10784, h6Fee: 26960, signedH1Fee: 1900, signedH2Fee: 2400, signedH3Fee: 2800, signedH4Fee: 3300, signedH5Fee: 3800, signedH6Fee: 10020, totalDedup: 132, h1Dedup: 11, h2Dedup: 13, h3Dedup: 16, h4Dedup: 18, h5Dedup: 21, h6Dedup: 53, signedH1Dedup: 4, signedH2Dedup: 5, signedH3Dedup: 6, signedH4Dedup: 6, signedH5Dedup: 7, signedH6Dedup: 18 }
         ];
         // 按日期倒序，同日期按路段名拼音首字母排序
         offlineAllData.sort(function(a, b) {
@@ -4752,6 +4870,17 @@
             // 切换到资源监控/集群监控时默认显示列表视图
             showResourceList();
             showClusterList();
+
+            // 路段流量监测页面初始化
+            if (pageName === 'offline') {
+                switchOfflineTab('offline-flow');
+                renderOfflineTable();
+            }
+
+            // 活动效果页面初始化
+            if (pageName === 'effect') {
+                switchEffectTab('effect-points');
+            }
         }
 
         // ========== 运营分析：筛选重置 ==========
@@ -4927,8 +5056,9 @@
             if (input) {
                 input.value = optionEl.textContent;
                 input.readOnly = true;
+                input.setAttribute('data-selected-value', optionEl.getAttribute('data-value'));
                 if (optionEl.getAttribute('data-value') === '') {
-                    input.setAttribute('placeholder', '全部服务区');
+                    input.setAttribute('placeholder', '全部');
                 } else {
                     input.setAttribute('placeholder', optionEl.textContent);
                 }
@@ -5169,85 +5299,227 @@
             tableBody.innerHTML = html;
         }
 
-        // ========== 线下数据渲染 ==========
-        function renderOfflineTable(selectedRoad) {
-            var tbody = document.getElementById('offline-table-body');
-            if (!tbody) return;
+        // ========== 路段流量监测 Tab切换 ==========
+        function switchOfflineTab(tabName) {
+            var tabs = document.querySelectorAll('#page-offline .tab-btn');
+            var panels = document.querySelectorAll('#page-offline .tab-panel');
+            var i;
+            for (i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+                if (tabs[i].getAttribute('data-tab') === tabName) {
+                    tabs[i].classList.add('active');
+                }
+            }
+            for (i = 0; i < panels.length; i++) {
+                panels[i].classList.remove('active');
+            }
+            var target = document.getElementById('tab-' + tabName);
+            if (target) target.classList.add('active');
+        }
+
+        // ========== 路段流量监测 筛选重置 ==========
+        function resetOfflineFilter() {
+            var fromInput = document.getElementById('offline-date-from');
+            var toInput = document.getElementById('offline-date-to');
+            var roadInput = document.getElementById('offline-road-input');
+            if (fromInput) fromInput.value = '';
+            if (toInput) toInput.value = '';
+            if (roadInput) {
+                roadInput.value = '';
+                roadInput.setAttribute('data-selected-value', 'all');
+                roadInput.setAttribute('placeholder', '全部路段');
+            }
+            renderOfflineTable();
+        }
+
+        // ========== 路段流量监测 渲染 ==========
+        function renderOfflineTable() {
+            var roadInput = document.getElementById('offline-road-input');
+            var fromInput = document.getElementById('offline-date-from');
+            var toInput = document.getElementById('offline-date-to');
+            var selectedRoad = roadInput ? (roadInput.getAttribute('data-selected-value') || 'all') : 'all';
+            var dateFrom = fromInput ? fromInput.value : '';
+            var dateTo = toInput ? toInput.value : '';
 
             var filteredData = offlineAllData;
             if (selectedRoad && selectedRoad !== 'all') {
-                filteredData = offlineAllData.filter(function(d) { return d.road === selectedRoad; });
+                filteredData = filteredData.filter(function(d) { return d.road === selectedRoad; });
+            }
+            if (dateFrom) {
+                filteredData = filteredData.filter(function(d) { return d.date >= dateFrom; });
+            }
+            if (dateTo) {
+                filteredData = filteredData.filter(function(d) { return d.date <= dateTo; });
             }
 
             // 计算累计
-            var cum = { totalFlow: 0, huo6Flow: 0, otherFlow: 0, signedFlow: 0, totalFee: 0, huo6Fee: 0, otherFee: 0, signedFee: 0, dedupVehicles: 0 };
-            var i, d, html, roadLabel, pagination, countSpan;
-
+            var cum = {
+                totalFlow: 0, h1Flow: 0, h2Flow: 0, h3Flow: 0, h4Flow: 0, h5Flow: 0, h6Flow: 0,
+                signedH1Flow: 0, signedH2Flow: 0, signedH3Flow: 0, signedH4Flow: 0, signedH5Flow: 0, signedH6Flow: 0,
+                totalFee: 0, h1Fee: 0, h2Fee: 0, h3Fee: 0, h4Fee: 0, h5Fee: 0, h6Fee: 0,
+                signedH1Fee: 0, signedH2Fee: 0, signedH3Fee: 0, signedH4Fee: 0, signedH5Fee: 0, signedH6Fee: 0,
+                totalDedup: 0, h1Dedup: 0, h2Dedup: 0, h3Dedup: 0, h4Dedup: 0, h5Dedup: 0, h6Dedup: 0,
+                signedH1Dedup: 0, signedH2Dedup: 0, signedH3Dedup: 0, signedH4Dedup: 0, signedH5Dedup: 0, signedH6Dedup: 0
+            };
+            var i, d;
             for (i = 0; i < filteredData.length; i++) {
-                cum.totalFlow += filteredData[i].totalFlow;
-                cum.huo6Flow += filteredData[i].huo6Flow;
-                cum.otherFlow += filteredData[i].otherFlow;
-                cum.signedFlow += filteredData[i].signedFlow;
-                cum.totalFee += filteredData[i].totalFee;
-                cum.huo6Fee += filteredData[i].huo6Fee;
-                cum.otherFee += filteredData[i].otherFee;
-                cum.signedFee += filteredData[i].signedFee;
-                cum.dedupVehicles += filteredData[i].dedupVehicles;
+                d = filteredData[i];
+                cum.totalFlow += d.totalFlow; cum.h1Flow += d.h1Flow; cum.h2Flow += d.h2Flow;
+                cum.h3Flow += d.h3Flow; cum.h4Flow += d.h4Flow; cum.h5Flow += d.h5Flow; cum.h6Flow += d.h6Flow;
+                cum.signedH1Flow += d.signedH1Flow; cum.signedH2Flow += d.signedH2Flow;
+                cum.signedH3Flow += d.signedH3Flow; cum.signedH4Flow += d.signedH4Flow;
+                cum.signedH5Flow += d.signedH5Flow; cum.signedH6Flow += d.signedH6Flow;
+                cum.totalFee += d.totalFee; cum.h1Fee += d.h1Fee; cum.h2Fee += d.h2Fee;
+                cum.h3Fee += d.h3Fee; cum.h4Fee += d.h4Fee; cum.h5Fee += d.h5Fee; cum.h6Fee += d.h6Fee;
+                cum.signedH1Fee += d.signedH1Fee; cum.signedH2Fee += d.signedH2Fee;
+                cum.signedH3Fee += d.signedH3Fee; cum.signedH4Fee += d.signedH4Fee;
+                cum.signedH5Fee += d.signedH5Fee; cum.signedH6Fee += d.signedH6Fee;
+                cum.totalDedup += d.totalDedup; cum.h1Dedup += d.h1Dedup; cum.h2Dedup += d.h2Dedup;
+                cum.h3Dedup += d.h3Dedup; cum.h4Dedup += d.h4Dedup; cum.h5Dedup += d.h5Dedup; cum.h6Dedup += d.h6Dedup;
+                cum.signedH1Dedup += d.signedH1Dedup; cum.signedH2Dedup += d.signedH2Dedup;
+                cum.signedH3Dedup += d.signedH3Dedup; cum.signedH4Dedup += d.signedH4Dedup;
+                cum.signedH5Dedup += d.signedH5Dedup; cum.signedH6Dedup += d.signedH6Dedup;
             }
 
-            roadLabel = (!selectedRoad || selectedRoad === 'all') ? '全部路段' : selectedRoad;
+            var roadLabel = (!selectedRoad || selectedRoad === 'all') ? '全部路段' : selectedRoad;
+            var dataLimit = Math.min(filteredData.length, 10);
 
-            html = '';
-            // 累计行放第一行
+            // 渲染车流量Tab
+            renderOfflineFlowBody('offline-flow-body', filteredData, cum, roadLabel, dataLimit, 'flow');
+            // 渲染计费额Tab
+            renderOfflineFlowBody('offline-fee-body', filteredData, cum, roadLabel, dataLimit, 'fee');
+            // 渲染去重车辆数Tab
+            renderOfflineFlowBody('offline-dedup-body', filteredData, cum, roadLabel, dataLimit, 'dedup');
+
+            // 更新分页
+            updateOfflinePagination('offline-flow-pagination', filteredData.length);
+            updateOfflinePagination('offline-fee-pagination', filteredData.length);
+            updateOfflinePagination('offline-dedup-pagination', filteredData.length);
+        }
+
+        function renderOfflineFlowBody(tbodyId, data, cum, roadLabel, dataLimit, type) {
+            var tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            var html = '';
+            var i, d;
+
+            // 累计行
             html += '<tr class="cumulative-row">';
             html += '<td class="text-center">累计</td>';
             html += '<td class="text-center">' + roadLabel + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(cum.totalFlow) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(cum.huo6Flow) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(cum.otherFlow) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(cum.signedFlow) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatFee(cum.totalFee) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatFee(cum.huo6Fee) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatFee(cum.otherFee) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatFee(cum.signedFee) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(cum.dedupVehicles) + '</td>';
+            if (type === 'flow') {
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.totalFlow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h1Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h2Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h3Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h4Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h5Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h6Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH1Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH2Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH3Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH4Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH5Flow) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH6Flow) + '</td>';
+            } else if (type === 'fee') {
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.totalFee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.h1Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.h2Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.h3Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.h4Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.h5Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.h6Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.signedH1Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.signedH2Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.signedH3Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.signedH4Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.signedH5Fee) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatFee(cum.signedH6Fee) + '</td>';
+            } else {
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.totalDedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h1Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h2Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h3Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h4Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h5Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.h6Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH1Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH2Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH3Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH4Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH5Dedup) + '</td>';
+                html += '<td class="text-right tabular-nums">' + formatNum(cum.signedH6Dedup) + '</td>';
+            }
             html += '</tr>';
 
-            // 数据行（最多显示10行）
-            var dataLimit = Math.min(filteredData.length, 10);
+            // 数据行
             for (i = 0; i < dataLimit; i++) {
-                d = filteredData[i];
+                d = data[i];
                 html += '<tr class="border-b border-neutral-200 table-row">';
                 html += '<td class="text-center">' + d.date + '</td>';
                 html += '<td class="text-center">' + d.road + '</td>';
-                html += '<td class="text-right tabular-nums">' + formatNum(d.totalFlow) + '</td>';
-                html += '<td class="text-right tabular-nums">' + formatNum(d.huo6Flow) + '</td>';
-                html += '<td class="text-right tabular-nums">' + formatNum(d.otherFlow) + '</td>';
-                html += '<td class="text-right tabular-nums">' + formatNum(d.signedFlow) + '</td>';
-                html += '<td class="text-right tabular-nums">' + formatFee(d.totalFee) + '</td>';
-                html += '<td class="text-right tabular-nums">' + formatFee(d.huo6Fee) + '</td>';
-                html += '<td class="text-right tabular-nums">' + formatFee(d.otherFee) + '</td>';
-                html += '<td class="text-right tabular-nums">' + formatFee(d.signedFee) + '</td>';
-                html += '<td class="text-right tabular-nums">' + formatNum(d.dedupVehicles) + '</td>';
+                if (type === 'flow') {
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.totalFlow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h1Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h2Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h3Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h4Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h5Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h6Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH1Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH2Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH3Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH4Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH5Flow) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH6Flow) + '</td>';
+                } else if (type === 'fee') {
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.totalFee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.h1Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.h2Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.h3Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.h4Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.h5Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.h6Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.signedH1Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.signedH2Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.signedH3Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.signedH4Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.signedH5Fee) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatFee(d.signedH6Fee) + '</td>';
+                } else {
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.totalDedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h1Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h2Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h3Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h4Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h5Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.h6Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH1Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH2Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH3Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH4Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH5Dedup) + '</td>';
+                    html += '<td class="text-right tabular-nums">' + formatNum(d.signedH6Dedup) + '</td>';
+                }
                 html += '</tr>';
             }
-
             tbody.innerHTML = html;
+        }
 
-            // 更新分页信息
-            pagination = document.getElementById('offline-pagination');
-            if (pagination) {
-                countSpan = pagination.querySelector('span');
-                if (countSpan) {
-                    countSpan.textContent = '共 ' + filteredData.length + ' 条记录，每页 10 条';
-                }
+        function updateOfflinePagination(paginationId, totalCount) {
+            var pagination = document.getElementById(paginationId);
+            if (!pagination) return;
+            var countSpan = pagination.querySelector('span');
+            if (countSpan) {
+                countSpan.textContent = '共 ' + totalCount + ' 条记录，每页 10 条';
             }
         }
 
         // ========== 活动效果 Tab切换 ==========
         function switchEffectTab(tabName) {
             var effectTabs = document.querySelectorAll('#page-effect .tab-btn');
-            var i, effectPanels, targetPanel, isHuo6, plateFilter, signupFilter, etcFilter, pointsRangeRow, dateRange;
+            var i, effectPanels, targetPanel, isPoints, isVehicle, isHuo6;
+            var plateFilter, signupFilter, etcFilter, pointsRangeRow, dateRange, roadFilter, vehicleTypeFilter;
             for (i = 0; i < effectTabs.length; i++) {
                 effectTabs[i].classList.remove('active');
                 if (effectTabs[i].getAttribute('data-tab') === tabName) {
@@ -5261,14 +5533,27 @@
             targetPanel = document.getElementById('tab-' + tabName);
             if (targetPanel) targetPanel.classList.add('active');
 
-            // 货六明细Tab时显示额外筛选器
+            isPoints = (tabName === 'effect-points');
+            isVehicle = (tabName === 'effect-vehicle');
             isHuo6 = (tabName === 'effect-huo6');
+
+            roadFilter = document.getElementById('effect-road-filter');
+            vehicleTypeFilter = document.getElementById('effect-vehicle-type-filter');
             plateFilter = document.getElementById('effect-plate-filter');
             signupFilter = document.getElementById('effect-signup-filter');
             etcFilter = document.getElementById('effect-etc-filter');
             pointsRangeRow = document.getElementById('effect-points-range-row');
             dateRange = document.getElementById('effect-date-range');
 
+            // 路段名：积分维度和车辆维度显示
+            if (roadFilter) {
+                if (isPoints || isVehicle) { roadFilter.classList.remove('hidden'); } else { roadFilter.classList.add('hidden'); }
+            }
+            // 车型选择：仅车辆维度显示
+            if (vehicleTypeFilter) {
+                if (isVehicle) { vehicleTypeFilter.classList.remove('hidden'); } else { vehicleTypeFilter.classList.add('hidden'); }
+            }
+            // 车牌号/是否报名/是否安徽ETC/累计兑换积分：货车明细显示
             if (plateFilter) {
                 if (isHuo6) { plateFilter.classList.remove('hidden'); } else { plateFilter.classList.add('hidden'); }
             }
@@ -5281,8 +5566,9 @@
             if (pointsRangeRow) {
                 if (isHuo6) { pointsRangeRow.classList.remove('hidden'); } else { pointsRangeRow.classList.add('hidden'); }
             }
+            // 日期范围：积分维度和车辆维度显示
             if (dateRange) {
-                if (!isHuo6) { dateRange.classList.remove('hidden'); } else { dateRange.classList.add('hidden'); }
+                if (isPoints || isVehicle) { dateRange.classList.remove('hidden'); } else { dateRange.classList.add('hidden'); }
             }
         }
 
@@ -5451,9 +5737,14 @@
 
         // ========== 初始化 ==========
         document.addEventListener('DOMContentLoaded', function() {
+            // 初始化路段名选择器默认值
+            var roadInput = document.getElementById('offline-road-input');
+            if (roadInput) {
+                roadInput.setAttribute('data-selected-value', 'all');
+            }
             renderPVTable();
             renderUVTable();
-            renderOfflineTable('all');
+            renderOfflineTable();
             renderPointsTable();
             renderVehicleTable();
             renderHuo6Table();

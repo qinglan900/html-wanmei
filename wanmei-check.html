@@ -91,6 +91,23 @@
             }
             showModal('modal-tripartite');
         }
+        function openListerTripartiteModal(billIds) {
+            if (!billIds || billIds.length === 0) { showToast('请至少选择一笔账单', 'warning'); return; }
+            var info = document.getElementById('lister-tripartite-info');
+            if (info) {
+                if (billIds.length === 1) {
+                    info.innerHTML = '<p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为结算单预览样例，实际功能为直接下载 Excel 文件。</p>';
+                } else {
+                    info.innerHTML = '<p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为结算单预览样例（第 1 个 Sheet），实际功能为直接下载 Excel 文件，每笔账单将分别展示到多个 Sheet 页（共 ' + billIds.length + ' 个 Sheet）。</p>';
+                }
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+            var title = document.getElementById('lister-tripartite-title');
+            if (title) {
+                title.textContent = billIds.length === 1 ? '结算单明细' : '结算单明细（批量下载 ' + billIds.length + ' 笔）';
+            }
+            showModal('modal-lister-tripartite');
+        }
         function handleExportCouponSummary() { showModal('modal-coupon-summary'); }
         function handleExportCashCouponSummary() { showModal('modal-cash-coupon-summary'); }
         function handleAppealSubmit() { showToast('账单复核提交成功', 'success'); setTimeout(function() { showPage('appeal'); switchSubnav('appeal'); }, 1000); }
@@ -375,6 +392,10 @@
         var merchantBillData = [
             { id: 'JS-20260514-001', merchant: '石化公司', lister: '数科公司', date: '2026-05-13', genTime: '2026-05-14 02:35', coupons: 156, positive: '¥17,550.00', negative: '¥0.00', original: '¥17,550.00', originalNum: 17550, adjust: '+¥500.00', adjustNum: 500, final: '¥18,050.00', finalNum: 18050,
               adjustRecords: [{ appealNo: 'SS-20260514-001', amount: '+¥500.00', reason: '商品金额核算差异', time: '2026-05-14 15:30' }],
+              listers: [
+                  { name: '数科公司', amount: '¥11,250.00' },
+                  { name: '石化公司', amount: '¥6,300.00' }
+              ],
               distributors: [
                   { name: '皖通公司', activity: '皖通春日加油活动', amount: '¥6,142.50', ratio: '35.00%' },
                   { name: '皖通公司', activity: '皖通高速出行活动', amount: '¥4,387.50', ratio: '25.00%' },
@@ -383,9 +404,10 @@
                   { name: '皖通公司', activity: '皖通交控能源活动', amount: '¥1,755.00', ratio: '10.00%' }
               ],
               details: [
-                  { seq: 1, time: '2026-05-13 10:23', plate: '皖AF61291', points: 1000, amt: '50.00', provider: '石化公司', type: '加油', orderNo: 'PO20260114000001', status: '已核销', statusCls: 'status-success', couponType: '积分券', couponCode: '8943ce9ef83c7283a46dcbf84ddf4fcf', couponName: '50元加油代金券红包' },
-                  { seq: 2, time: '2026-05-13 11:45', plate: '皖AF81291', points: 400, amt: '20.00', provider: '石化公司', type: '尿素加注', orderNo: 'PO20260114000002', status: '已核销', statusCls: 'status-success', couponType: '积分券', couponCode: '245520cc223ac35b23d0bc65158124ca', couponName: '20元高速石化尿素代金券红包' },
-                  { seq: 3, time: '2026-05-12 16:30', plate: '皖AFB3597', points: 1000, amt: '-50.00', provider: '石化公司', type: '加油', orderNo: 'PO20260114000003', status: '已退货', statusCls: 'status-error', couponType: '积分券', couponCode: 'f9d97642f6de3fd0a3b780a0d50f3ae5', couponName: '50元加油代金券红包' }
+                  { seq: 1, time: '2026-05-13 10:23', plate: '皖AF61291', points: 1000, amt: '50.00', provider: '石化公司', type: '加油', orderNo: 'PO20260114000001', status: '已核销', statusCls: 'status-success', couponType: '积分券', couponCode: '8943ce9ef83c7283a46dcbf84ddf4fcf', couponName: '50元加油代金券红包', lister: '数科公司' },
+                  { seq: 2, time: '2026-05-13 11:45', plate: '皖AF81291', points: 400, amt: '20.00', provider: '石化公司', type: '尿素加注', orderNo: 'PO20260114000002', status: '已核销', statusCls: 'status-success', couponType: '积分券', couponCode: '245520cc223ac35b23d0bc65158124ca', couponName: '20元高速石化尿素代金券红包', lister: '数科公司' },
+                  { seq: 3, time: '2026-05-13 14:20', plate: '皖AD56231', points: 0, amt: '19.90', provider: '石化公司', type: '加油', orderNo: 'PO20260114000004', status: '已核销', statusCls: 'status-success', couponType: '现金券', couponCode: 'a1b2c3d4e5f6789012345678abcdef01', couponName: '9.9元秒杀50元加油券', lister: '石化公司' },
+                  { seq: 4, time: '2026-05-12 16:30', plate: '皖AFB3597', points: 1000, amt: '-50.00', provider: '石化公司', type: '加油', orderNo: 'PO20260114000003', status: '已退货', statusCls: 'status-error', couponType: '积分券', couponCode: 'f9d97642f6de3fd0a3b780a0d50f3ae5', couponName: '50元加油代金券红包', lister: '数科公司' }
               ]
             },
             { id: 'JS-20260514-002', merchant: '石化公司', lister: '数科公司', date: '2026-05-14', genTime: '2026-05-15 02:36', coupons: 89, positive: '¥8,900.00', negative: '¥0.00', original: '¥8,900.00', originalNum: 8900, adjust: '¥0.00', adjustNum: 0, final: '¥8,900.00', finalNum: 8900,
@@ -530,7 +552,13 @@
             var tbody = document.getElementById('mb-detail-dist-tbody');
             if (tbody) {
                 tbody.innerHTML = '';
-                tbody.innerHTML = '<tr class="border-b border-neutral-200 h-10 table-row"><td class="text-left">' + bill.lister + '</td><td class="text-right font-semibold tabular-nums">' + bill.positive + '</td></tr>';
+                var listers = bill.listers;
+                if (!listers || listers.length === 0) {
+                    listers = [{ name: bill.lister, amount: bill.positive }];
+                }
+                for (var li = 0; li < listers.length; li++) {
+                    tbody.innerHTML += '<tr class="border-b border-neutral-200 h-10 table-row"><td class="text-left">' + listers[li].name + '</td><td class="text-right font-semibold tabular-nums">' + listers[li].amount + '</td></tr>';
+                }
                 var tfoot = document.getElementById('mb-detail-dist-tfoot');
                 if (tfoot) tfoot.innerHTML = '';
             }
@@ -541,7 +569,7 @@
                 for (var m = 0; m < bill.details.length; m++) {
                     var dt = bill.details[m];
                     var amtCls = dt.amt.indexOf('-') >= 0 ? 'text-error' : '';
-                    detailTbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row"><td class="text-center text-neutral-600">' + dt.seq + '</td><td class="text-left">' + dt.provider + '</td><td class="text-left">' + dt.type + '</td><td class="text-left">' + dt.orderNo + '</td><td class="text-left">' + dt.time + '</td><td class="text-left">' + dt.couponName + '</td><td class="text-left text-xs font-mono">' + dt.couponCode + '</td><td class="text-left">' + (dt.couponType || '积分券') + '</td><td class="text-right tabular-nums">' + dt.points + '</td><td class="text-right tabular-nums ' + amtCls + '">' + dt.amt + '</td><td class="text-left"><span class="status-badge ' + dt.statusCls + '">' + dt.status + '</span></td></tr>';
+                    detailTbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row"><td class="text-center text-neutral-600">' + dt.seq + '</td><td class="text-left">' + (dt.lister || '数科公司') + '</td><td class="text-left">' + dt.type + '</td><td class="text-left">' + dt.orderNo + '</td><td class="text-left">' + dt.time + '</td><td class="text-left">' + dt.couponName + '</td><td class="text-left text-xs font-mono">' + dt.couponCode + '</td><td class="text-left">' + (dt.couponType || '积分券') + '</td><td class="text-right tabular-nums">' + dt.points + '</td><td class="text-right tabular-nums ' + amtCls + '">' + dt.amt + '</td><td class="text-left"><span class="status-badge ' + dt.statusCls + '">' + dt.status + '</span></td></tr>';
                 }
             }
 
@@ -1165,7 +1193,7 @@
             for (var i = 0; i < listerBillData.length; i++) {
                 var bill = listerBillData[i];
                 var diffCls = bill.diffNum === 0 ? '' : ' text-warning';
-                tbody.innerHTML += '<tr class="border-b border-neutral-200 table-row"><td class="text-center text-neutral-600">' + (i + 1) + '</td><td class="text-left">' + bill.id + '</td><td class="text-left">' + bill.lister + '</td><td class="text-left">' + bill.date + '</td><td class="text-right font-semibold tabular-nums">' + bill.payable + '</td><td class="text-right font-semibold tabular-nums">' + bill.receivable + '</td><td class="text-right tabular-nums text-neutral-500">' + bill.userPaid + '</td><td class="text-right font-semibold tabular-nums' + diffCls + '">' + bill.diff + '</td><td class="text-left text-neutral-500">' + bill.genTime + '</td><td class="text-right"><button class="btn btn-text" onclick="showListerBillDetail(\'' + bill.id + '\')">查 看</button></td></tr>';
+                tbody.innerHTML += '<tr class="border-b border-neutral-200 table-row"><td class="text-center text-neutral-600">' + (i + 1) + '</td><td class="text-left">' + bill.id + '</td><td class="text-left">' + bill.lister + '</td><td class="text-left">' + bill.date + '</td><td class="text-right font-semibold tabular-nums">' + bill.payable + '</td><td class="text-right font-semibold tabular-nums">' + bill.receivable + '</td><td class="text-right tabular-nums text-neutral-500">' + bill.userPaid + '</td><td class="text-right font-semibold tabular-nums' + diffCls + '">' + bill.diff + '</td><td class="text-left text-neutral-500">' + bill.genTime + '</td><td class="text-right"><button class="btn btn-text" onclick="showListerBillDetail(\'' + bill.id + '\')">查 看</button><button class="btn btn-text ml-2" onclick="openListerTripartiteModal([\'' + bill.id + '\'])">下载</button></td></tr>';
             }
         }
     </script>
@@ -1190,7 +1218,7 @@
         .btn-batch-action:focus-visible { outline: 2px solid #FF6B35; outline-offset: 2px; }
         .btn-danger { background-color: #EF4444; color: white; }
         .btn-danger:hover { opacity: 0.9; }
-        .btn-text { background: transparent; border: none; color: #FF6B35; padding: 0; height: auto; font-size: 14px; cursor: pointer; }
+        .btn-text { background: transparent; border: none; color: #FF6B35; padding: 0; height: auto; font-size: 14px; cursor: pointer; white-space: nowrap; }
         .btn-text:hover { text-decoration: underline; }
         .btn-text:focus-visible { outline: 2px solid #FF6B35; outline-offset: 2px; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -1234,11 +1262,11 @@
         <aside class="w-36 bg-[#e8e8e8] fixed left-0 top-0 bottom-0 overflow-y-auto border-r border-[#d8d8d8]" role="navigation" aria-label="侧边导航">
             <nav class="py-4">
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">结算管理</div>
-                <a onclick="switchSubnav('lister-bill'); showPage('lister-bill')" id="subnav-lister-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 上架方账单</span></a>
-                <a onclick="switchSubnav('merchant-bill'); showPage('merchant-bill')" id="subnav-merchant-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 商户账单</span></a>
+                <a onclick="switchSubnav('lister-bill'); showPage('lister-bill')" id="subnav-lister-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 产品提供方账单</span></a>
+                <a onclick="switchSubnav('merchant-bill'); showPage('merchant-bill')" id="subnav-merchant-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 服务提供方账单</span></a>
                 <!-- 现金券账单已废弃，隐藏 -->
                 <!-- <a onclick="switchSubnav('cash-coupon-bill'); showPage('cash-coupon-bill')" id="subnav-cash-coupon-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 现金券账单</span></a> -->
-                <a onclick="switchSubnav('activity-bill'); showPage('activity-bill')" id="subnav-activity-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 活动方账单</span></a>
+                <a onclick="switchSubnav('activity-bill'); showPage('activity-bill')" id="subnav-activity-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 营销活动方账单</span></a>
                 <a onclick="switchSubnav('summary-bill'); showPage('summary-bill')" id="subnav-summary-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 汇总账单</span></a>
                 <a onclick="switchSubnav('appeal'); showPage('appeal')" id="subnav-appeal" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 账单复核管理</span></a>
                 <a onclick="switchSubnav('yima-recon'); showPage('yima-recon')" id="subnav-yima-recon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 翼码对账</span></a>
@@ -1821,13 +1849,13 @@
                 </div>
             </div>
 
-            <!-- ========== 商户账单列表 ========== -->
-            <div id="page-merchant-bill" class="page active">
+            <!-- ========== 服务提供方账单列表 ========== -->
+            <div id="page-merchant-bill" class="page">
                 <div class="bg-white rounded border border-neutral-200">
                     <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold text-neutral-900">商户账单</h1>
+                            <h1 class="text-base font-bold text-neutral-900">服务提供方账单</h1>
                         </div>
                         <div class="flex gap-3">
                             <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
@@ -1836,11 +1864,11 @@
                     <div class="px-2 pb-2">
                         <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
                             <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                            <span class="text-sm text-neutral-600">温馨提示：结算单每日凌晨自动生成，默认"已生效"状态。如对账单有异议，请勾选账单后点击发起账单复核。调账金额不参与活动发行方分摊计算。</span>
+                            <span class="text-sm text-neutral-600">温馨提示：结算单每日凌晨自动生成，默认"已生效"状态。如对账单有异议，请勾选账单后点击发起账单复核。调账金额不参与营销活动方分摊计算。</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
                             <div class="inline-label-input">
-                                <span class="label">商户名称</span>
+                                <span class="label">服务提供方名称</span>
                                 <select><option value="">全部</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
                             </div>
                             <div class="inline-label-input">
@@ -1865,7 +1893,7 @@
                     </div>
                     <div id="merchant-bill-batch-bar" class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
                         <button class="btn btn-batch-action btn-md" id="merchant-bill-review-btn" onclick="openBatchReviewDrawer()" disabled><i data-lucide="file-search" class="w-4 h-4"></i>发起账单复核</button>
-                        <button class="btn btn-batch-action btn-md" id="merchant-bill-tripartite-btn" onclick="openTripartiteModal(getSelectedMerchantBillIds())" disabled><i data-lucide="file-text" class="w-4 h-4"></i>批量下载结算单</button>
+                        <button class="btn btn-batch-action btn-md" id="merchant-bill-tripartite-btn" onclick="openTripartiteModal(getSelectedMerchantBillIds())" disabled><i data-lucide="file-text" class="w-4 h-4"></i>批量下载</button>
                     </div>
                     <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
                         <table class="data-table w-full">
@@ -1874,7 +1902,7 @@
                                     <th class="w-10 text-center"><input type="checkbox" id="merchant-bill-select-all" class="cursor-pointer"></th>
                                     <th class="w-12 text-center">序号</th>
                                     <th class="text-left">账单号</th>
-                                    <th class="text-left">商户名称</th>
+                                    <th class="text-left">服务提供方名称</th>
                                     <th class="text-left">账单日期</th>
                                     <th class="text-right">核销券数</th>
                                     <th class="text-right">正向结算金额</th>
@@ -1898,7 +1926,7 @@
                                     <td class="text-right tabular-nums text-success">+¥500.00</td>
                                     <td class="text-right font-semibold tabular-nums">¥18,050.00</td>
                                     <td class="text-left text-neutral-500">2026-05-14 02:35</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-001')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260514-001'])">下载结算单</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260514-001'])">账单复核</button></td>
+                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-001')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260514-001'])">下载</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260514-001'])">账单复核</button></td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 table-row">
                                     <td class="text-center"><input type="checkbox" class="merchant-bill-checkbox cursor-pointer" data-id="JS-20260514-002"></td>
@@ -1912,7 +1940,7 @@
                                     <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
                                     <td class="text-right font-semibold tabular-nums">¥8,900.00</td>
                                     <td class="text-left text-neutral-500">2026-05-15 02:36</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-002')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260514-002'])">下载结算单</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260514-002'])">账单复核</button></td>
+                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-002')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260514-002'])">下载</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260514-002'])">账单复核</button></td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 table-row">
                                     <td class="text-center"><input type="checkbox" class="merchant-bill-checkbox cursor-pointer" data-id="JS-20260514-003"></td>
@@ -1926,7 +1954,7 @@
                                     <td class="text-right tabular-nums text-error">-¥300.00</td>
                                     <td class="text-right font-semibold tabular-nums">¥3,600.00</td>
                                     <td class="text-left text-neutral-500">2026-05-14 02:37</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-003')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260514-003'])">下载结算单</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260514-003'])">账单复核</button></td>
+                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260514-003')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260514-003'])">下载</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260514-003'])">账单复核</button></td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
                                     <td class="text-center"><input type="checkbox" class="merchant-bill-checkbox cursor-pointer" data-id="JS-20260513-001"></td>
@@ -1940,7 +1968,7 @@
                                     <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
                                     <td class="text-right font-semibold tabular-nums">¥6,700.00</td>
                                     <td class="text-left text-neutral-500">2026-05-13 02:33</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260513-001')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260513-001'])">下载结算单</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260513-001'])">账单复核</button></td>
+                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260513-001')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260513-001'])">下载</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260513-001'])">账单复核</button></td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
                                     <td class="text-center"><input type="checkbox" class="merchant-bill-checkbox cursor-pointer" data-id="JS-20260513-002"></td>
@@ -1954,7 +1982,7 @@
                                     <td class="text-right tabular-nums text-success">+¥1,200.00</td>
                                     <td class="text-right font-semibold tabular-nums">¥21,500.00</td>
                                     <td class="text-left text-neutral-500">2026-05-13 02:34</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260513-002')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260513-002'])">下载结算单</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260513-002'])">账单复核</button></td>
+                                    <td class="text-right"><button class="btn btn-text" onclick="showMerchantBillDetail('JS-20260513-002')">查 看</button><button class="btn btn-text ml-2" onclick="openTripartiteModal(['JS-20260513-002'])">下载</button><button class="btn btn-text ml-2" onclick="openReviewDrawer(['JS-20260513-002'])">账单复核</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1974,13 +2002,13 @@
                 </div>
             </div>
 
-            <!-- ========== 商户账单详情 ========== -->
+            <!-- ========== 服务提供方账单详情 ========== -->
             <div id="page-merchant-bill-detail" class="page">
                 <div class="bg-white rounded border border-neutral-200 mb-3">
                     <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
                         <div class="flex items-center gap-2">
                             <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold">商户账单详情</h1>
+                            <h1 class="text-base font-bold">服务提供方账单详情</h1>
                         </div>
                         <div class="flex gap-3">
                             <button class="btn btn-secondary btn-md" onclick="showPage('merchant-bill'); switchSubnav('merchant-bill')"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
@@ -1989,7 +2017,7 @@
                     <div class="px-5 py-4">
                         <div class="grid grid-cols-4 gap-4">
                             <div><span class="text-sm text-neutral-500">账单号</span><p class="text-sm font-medium mt-1" id="mb-detail-id">JS-20260514-001</p></div>
-                            <div><span class="text-sm text-neutral-500">商户名称</span><p class="text-sm font-medium mt-1" id="mb-detail-merchant">石化公司</p></div>
+                            <div><span class="text-sm text-neutral-500">服务提供方名称</span><p class="text-sm font-medium mt-1" id="mb-detail-merchant">石化公司</p></div>
                             <div><span class="text-sm text-neutral-500">账单日期</span><p class="text-sm font-medium mt-1" id="mb-detail-date">2026-05-13</p></div>
                             <div><span class="text-sm text-neutral-500">生成时间</span><p class="text-sm font-medium mt-1" id="mb-detail-genTime">2026-05-14 02:35</p></div>
                         </div>
@@ -2042,12 +2070,12 @@
                     </div>
                     <hr class="mx-6 border-t border-neutral-200">
                     <div class="px-5 py-4">
-                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">上架方信息区</h2>
+                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">产品提供方信息区</h2>
                         <div class="overflow-x-auto">
                             <table class="data-table w-full">
                                 <thead>
                                     <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                        <th class="text-left">上架方名称</th>
+                                        <th class="text-left">产品提供方名称</th>
                                         <th class="text-right">应付金额</th>
                                     </tr>
                                 </thead>
@@ -2097,7 +2125,7 @@
                             <thead>
                                 <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
                                     <th class="w-12 text-center">序号</th>
-                                    <th class="text-left">服务产品提供方</th>
+                                    <th class="text-left">产品提供方</th>
                                     <th class="text-left">服务类型</th>
                                     <th class="text-left">订单号</th>
                                     <th class="text-left">核销时间</th>
@@ -2143,7 +2171,7 @@
                     <div class="px-2 pb-2">
                         <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
                             <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                            <span class="text-sm text-neutral-600">温馨提示：现金券账单每日凌晨自动生成，记录用户现金购买券后商户核销的结算数据。核销面额 = 用户实付金额 + 商家补贴金额。仅支持查看和导出，不支持账单复核和调账。「导出现金券核销汇总报表」已移至活动方账单页面。</span>
+                            <span class="text-sm text-neutral-600">温馨提示：现金券账单每日凌晨自动生成，记录用户现金购买券后商户核销的结算数据。核销面额 = 用户实付金额 + 商家补贴金额。仅支持查看和导出，不支持账单复核和调账。「导出现金券核销汇总报表」已移至营销活动方账单页面。</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-3 pt-2">
                             <div class="inline-label-input">
@@ -2345,7 +2373,7 @@
                             <thead>
                                 <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
                                     <th class="w-12 text-center">序号</th>
-                                    <th class="text-left">服务产品提供方</th>
+                                    <th class="text-left">服务提供方</th>
                                     <th class="text-left">服务类型</th>
                                     <th class="text-left">订单号</th>
                                     <th class="text-left">核销时间</th>
@@ -2379,26 +2407,25 @@
                 </div>
             </div>
 
-            <!-- ========== 上架方账单列表 ========== -->
-            <div id="page-lister-bill" class="page">
+            <!-- ========== 产品提供方账单列表 ========== -->
+            <div id="page-lister-bill" class="page active">
                 <div class="bg-white rounded border border-neutral-200">
                     <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold text-neutral-900">上架方账单</h1>
+                            <h1 class="text-base font-bold text-neutral-900">产品提供方账单</h1>
                         </div>
                         <div class="flex gap-3">
-                            <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
                         </div>
                     </div>
                     <div class="px-2 pb-2">
                         <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
                             <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                            <span class="text-sm text-neutral-600">温馨提示：上架方账单每日凌晨自动生成，展示上架方应付核销商户的金额和应收发行方的分摊金额。积分券应收=应付，差额为0；现金券差额=应付-用户实付（上架方净支出）。</span>
+                            <span class="text-sm text-neutral-600">温馨提示：产品提供方账单每日凌晨自动生成，展示产品提供方应付服务提供方的金额和应收营销活动方的分摊金额。积分券应收=应付，差额为0；现金券差额=应付-用户实付（产品提供方净支出）。</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
                             <div class="inline-label-input">
-                                <span class="label">上架方名称</span>
+                                <span class="label">产品提供方名称</span>
                                 <select><option value="">全部</option><option>数科公司</option><option>皖通公司</option><option>石化公司</option><option>交控石油公司</option><option>驿达集团</option></select>
                             </div>
                             <div class="inline-label-input">
@@ -2423,10 +2450,10 @@
                                 <tr class="bg-neutral-50 border-b border-neutral-200">
                                     <th class="w-12 text-center">序号</th>
                                     <th class="text-left">账单号</th>
-                                    <th class="text-left">上架方名称</th>
+                                    <th class="text-left">产品提供方名称</th>
                                     <th class="text-left">账单日期</th>
-                                    <th class="text-right">应付核销商户金额</th>
-                                    <th class="text-right">应收发行方金额</th>
+                                    <th class="text-right">应付服务提供方金额</th>
+                                    <th class="text-right">应收营销活动方金额</th>
                                     <th class="text-right">用户实付（现金券）</th>
                                     <th class="text-right">差额（净支出）</th>
                                     <th class="text-left">生成时间</th>
@@ -2451,13 +2478,13 @@
                 </div>
             </div>
 
-            <!-- ========== 上架方账单详情 ========== -->
+            <!-- ========== 产品提供方账单详情 ========== -->
             <div id="page-lister-bill-detail" class="page">
                 <div class="bg-white rounded border border-neutral-200 mb-3">
                     <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
                         <div class="flex items-center gap-2">
                             <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold">上架方账单详情</h1>
+                            <h1 class="text-base font-bold">产品提供方账单详情</h1>
                         </div>
                         <div class="flex gap-3">
                             <button class="btn btn-secondary btn-md" onclick="showPage('lister-bill'); switchSubnav('lister-bill')"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
@@ -2466,7 +2493,7 @@
                     <div class="px-5 py-4">
                         <div class="grid grid-cols-4 gap-4">
                             <div><span class="text-sm text-neutral-500">账单号</span><p class="text-sm font-medium mt-1" id="lb-detail-id">ZJ-SK-20260801</p></div>
-                            <div><span class="text-sm text-neutral-500">上架方名称</span><p class="text-sm font-medium mt-1" id="lb-detail-lister">数科公司</p></div>
+                            <div><span class="text-sm text-neutral-500">产品提供方名称</span><p class="text-sm font-medium mt-1" id="lb-detail-lister">数科公司</p></div>
                             <div><span class="text-sm text-neutral-500">账单日期</span><p class="text-sm font-medium mt-1" id="lb-detail-date">2026-08-01</p></div>
                             <div><span class="text-sm text-neutral-500">生成时间</span><p class="text-sm font-medium mt-1" id="lb-detail-genTime">2026-08-02 02:35</p></div>
                         </div>
@@ -2476,11 +2503,11 @@
                         <h2 class="text-sm font-semibold text-neutral-700 mb-3">金额汇总</h2>
                         <div class="grid grid-cols-4 gap-4">
                             <div class="bg-green-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500">应付核销商户金额</span>
+                                <span class="text-sm text-neutral-500">应付服务提供方金额</span>
                                 <p class="text-xl font-bold tabular-nums mt-1 text-success" id="lb-detail-payable">¥180.00</p>
                             </div>
                             <div class="bg-blue-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500">应收发行方金额</span>
+                                <span class="text-sm text-neutral-500">应收营销活动方金额</span>
                                 <p class="text-xl font-bold tabular-nums mt-1 text-info" id="lb-detail-receivable">¥150.00</p>
                             </div>
                             <div class="bg-neutral-50 rounded p-4 text-center">
@@ -2492,19 +2519,18 @@
                                 <p class="text-xl font-bold tabular-nums mt-1 text-warning" id="lb-detail-diff">¥10.10</p>
                             </div>
                         </div>
-                        <p class="text-xs text-neutral-400 mt-2">差额 = 应付核销商户金额 - 应收发行方金额 - 用户实付（现金券），即上架方实际净支出金额</p>
+                        <p class="text-xs text-neutral-400 mt-2">差额 = 应付服务提供方金额 - 应收营销活动方金额 - 用户实付（现金券），即产品提供方实际净支出金额</p>
                     </div>
                 </div>
                 <div class="bg-white rounded border border-neutral-200 p-6 mb-3">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-sm font-semibold text-neutral-700">应付区（按核销商户汇总）</h2>
-                        <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                        <h2 class="text-sm font-semibold text-neutral-700">应付区（按服务提供方汇总）</h2>
                     </div>
                     <div class="overflow-x-auto bg-white rounded border border-neutral-200">
                         <table class="data-table w-full">
                             <thead>
                                 <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                    <th class="text-left">核销商户</th>
+                                    <th class="text-left">服务提供方</th>
                                     <th class="text-left">券码类型</th>
                                     <th class="text-right">券码数</th>
                                     <th class="text-right">面额合计</th>
@@ -2519,14 +2545,13 @@
                 </div>
                 <div class="bg-white rounded border border-neutral-200 p-6 mb-3">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-sm font-semibold text-neutral-700">应收区（按发行方+积分活动，仅积分券）</h2>
-                        <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                        <h2 class="text-sm font-semibold text-neutral-700">应收区（按营销活动方+积分活动，仅积分券）</h2>
                     </div>
                     <div class="overflow-x-auto bg-white rounded border border-neutral-200">
                         <table class="data-table w-full">
                             <thead>
                                 <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                    <th class="text-left">发行方</th>
+                                    <th class="text-left">营销活动方</th>
                                     <th class="text-left">积分活动</th>
                                     <th class="text-right">消耗积分</th>
                                     <th class="text-right">分摊金额</th>
@@ -2542,16 +2567,16 @@
                 </div>
             </div>
 
-            <!-- ========== 活动方账单列表 ========== -->
+            <!-- ========== 营销活动方账单列表 ========== -->
             <div id="page-activity-bill" class="page">
                 <div class="bg-white rounded border border-neutral-200">
                     <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold text-neutral-900">活动方账单</h1>
+                            <h1 class="text-base font-bold text-neutral-900">营销活动方账单</h1>
                         </div>
                         <div class="flex gap-3">
-                            <button class="btn btn-secondary btn-md" onclick="showModal('modal-activity-bill-export')"><i data-lucide="download" class="w-4 h-4"></i>导出活动方账单</button>
+                            <button class="btn btn-secondary btn-md" onclick="showModal('modal-activity-bill-export')"><i data-lucide="download" class="w-4 h-4"></i>导出营销活动方账单</button>
                             <button class="btn btn-secondary btn-md" onclick="handleExportCouponSummary()"><i data-lucide="download" class="w-4 h-4"></i>导出积分券活动汇总表</button>
                         </div>
                     </div>
@@ -2586,8 +2611,8 @@
                                     <th class="text-left">营销活动方</th>
                                     <th class="text-left">积分活动名称</th>
                                     <th class="text-left">账单日期</th>
-                                    <th class="text-right">上架方数</th>
-                                    <th class="text-right">应付结算金额</th>
+                                    <th class="text-right">产品提供方数</th>
+                                    <th class="text-right">核销积分</th>
                                     <th class="text-left">生成时间</th>
                                     <th class="text-right w-40">操作 <button class="btn btn-text text-xs ml-1" id="toggle-all-expand-btn" onclick="toggleAllActivityExpand()" style="font-size:12px;"><i data-lucide="chevrons-down" class="w-3 h-3 inline-block"></i>全部</button></th>
                                 </tr>
@@ -2605,22 +2630,20 @@
         <td class="text-left">皖通春日加油活动</td>
         <td class="text-left">2026-07-13</td>
         <td class="text-right">3</td>
-        <td class="text-right font-semibold tabular-nums">¥6,380.00</td>
+        <td class="text-right font-semibold tabular-nums">610,000</td>
         <td class="text-left text-neutral-500">2026-07-14 02:38</td>
         <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-ab-1')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
     </tr>
     <tr id="expand-ab-1" class="hidden">
         <td colspan="9" class="bg-neutral-50 px-4 py-3">
-            <div class="text-sm text-neutral-500 mb-2">积分活动：<span class="font-semibold text-neutral-700">皖通春日加油活动</span> — 以下为上架方使用该活动积分的明细</div>
+            <div class="text-sm text-neutral-500 mb-2">积分活动：<span class="font-semibold text-neutral-700">皖通春日加油活动</span> — 以下为产品提供方使用该活动积分的明细</div>
             <table class="data-table w-full mb-0">
                 <thead>
                     <tr class="bg-white border-b border-neutral-200 h-9">
-                        <th class="text-left text-xs font-medium text-neutral-500">上架方</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">产品提供方</th>
                         <th class="text-left text-xs font-medium text-neutral-500">券码名称</th>
-                        <th class="text-left text-xs font-medium text-neutral-500 w-24">服务类型</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">核销量</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">券码类型</th>
                         <th class="text-right text-xs font-medium text-neutral-500">核销积分</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">核销净值</th>
                         <th class="text-right text-xs font-medium text-neutral-500 w-16">占比</th>
                     </tr>
                 </thead>
@@ -2628,35 +2651,34 @@
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">石化公司</td>
                         <td class="text-left text-sm">50积分兑50元加油券</td>
-                        <td class="text-left text-sm">加油</td>
-                        <td class="text-right text-sm tabular-nums">98</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">245,000</td>
-                        <td class="text-right text-sm tabular-nums">¥3,860.00</td>
-                        <td class="text-right text-sm">60.5%</td>
+                        <td class="text-right text-sm">40.2%</td>
+                    </tr>
+                    <tr class="border-b border-neutral-200 h-9">
+                        <td class="text-left text-sm">石化公司</td>
+                        <td class="text-left text-sm">100积分兑100元加油券</td>
+                        <td class="text-left text-sm">积分券</td>
+                        <td class="text-right text-sm tabular-nums">200,000</td>
+                        <td class="text-right text-sm">32.8%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">驿达集团</td>
                         <td class="text-left text-sm">20积分兑20元便利店券</td>
-                        <td class="text-left text-sm">便利店消费</td>
-                        <td class="text-right text-sm tabular-nums">30</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">60,000</td>
-                        <td class="text-right text-sm tabular-nums">¥1,200.00</td>
-                        <td class="text-right text-sm">18.8%</td>
+                        <td class="text-right text-sm">9.8%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">交控石油公司</td>
                         <td class="text-left text-sm">50积分兑50元充电券</td>
-                        <td class="text-left text-sm">充电</td>
-                        <td class="text-right text-sm tabular-nums">42</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">105,000</td>
-                        <td class="text-right text-sm tabular-nums">¥1,320.00</td>
-                        <td class="text-right text-sm">20.7%</td>
+                        <td class="text-right text-sm">17.2%</td>
                     </tr>
                     <tr class="h-9 font-semibold text-sm bg-neutral-50">
                         <td class="text-left" colspan="3">活动合计</td>
-                        <td class="text-right tabular-nums">170</td>
-                        <td class="text-right tabular-nums">410,000</td>
-                        <td class="text-right tabular-nums font-semibold">¥6,380.00</td>
+                        <td class="text-right tabular-nums">610,000</td>
                         <td class="text-right">100%</td>
                     </tr>
                 </tbody>
@@ -2671,22 +2693,20 @@
         <td class="text-left">皖通高速出行活动</td>
         <td class="text-left">2026-07-13</td>
         <td class="text-right">2</td>
-        <td class="text-right font-semibold tabular-nums">¥2,520.00</td>
+        <td class="text-right font-semibold tabular-nums">300,000</td>
         <td class="text-left text-neutral-500">2026-07-14 02:39</td>
         <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-ab-2')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
     </tr>
     <tr id="expand-ab-2" class="hidden">
         <td colspan="9" class="bg-neutral-50 px-4 py-3">
-            <div class="text-sm text-neutral-500 mb-2">积分活动：<span class="font-semibold text-neutral-700">皖通高速出行活动</span> — 以下为上架方使用该活动积分的明细</div>
+            <div class="text-sm text-neutral-500 mb-2">积分活动：<span class="font-semibold text-neutral-700">皖通高速出行活动</span> — 以下为产品提供方使用该活动积分的明细</div>
             <table class="data-table w-full mb-0">
                 <thead>
                     <tr class="bg-white border-b border-neutral-200 h-9">
-                        <th class="text-left text-xs font-medium text-neutral-500">上架方</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">产品提供方</th>
                         <th class="text-left text-xs font-medium text-neutral-500">券码名称</th>
-                        <th class="text-left text-xs font-medium text-neutral-500 w-24">服务类型</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">核销量</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">券码类型</th>
                         <th class="text-right text-xs font-medium text-neutral-500">核销积分</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">核销净值</th>
                         <th class="text-right text-xs font-medium text-neutral-500 w-16">占比</th>
                     </tr>
                 </thead>
@@ -2694,26 +2714,20 @@
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">石化公司</td>
                         <td class="text-left text-sm">30积分兑30元加油券</td>
-                        <td class="text-left text-sm">加油</td>
-                        <td class="text-right text-sm tabular-nums">52</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">156,000</td>
-                        <td class="text-right text-sm tabular-nums">¥1,860.00</td>
                         <td class="text-right text-sm">73.8%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">交控石油公司</td>
                         <td class="text-left text-sm">30积分兑30元充电券</td>
-                        <td class="text-left text-sm">充电</td>
-                        <td class="text-right text-sm tabular-nums">48</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">144,000</td>
-                        <td class="text-right text-sm tabular-nums">¥660.00</td>
                         <td class="text-right text-sm">26.2%</td>
                     </tr>
                     <tr class="h-9 font-semibold text-sm bg-neutral-50">
                         <td class="text-left" colspan="3">活动合计</td>
-                        <td class="text-right tabular-nums">100</td>
                         <td class="text-right tabular-nums">300,000</td>
-                        <td class="text-right tabular-nums font-semibold">¥2,520.00</td>
                         <td class="text-right">100%</td>
                     </tr>
                 </tbody>
@@ -2728,22 +2742,20 @@
         <td class="text-left">皖通新能源充电活动</td>
         <td class="text-left">2026-07-13</td>
         <td class="text-right">2</td>
-        <td class="text-right font-semibold tabular-nums">¥1,000.00</td>
+        <td class="text-right font-semibold tabular-nums">110,000</td>
         <td class="text-left text-neutral-500">2026-07-14 02:40</td>
         <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-ab-3')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
     </tr>
     <tr id="expand-ab-3" class="hidden">
         <td colspan="9" class="bg-neutral-50 px-4 py-3">
-            <div class="text-sm text-neutral-500 mb-2">积分活动：<span class="font-semibold text-neutral-700">皖通新能源充电活动</span> — 以下为上架方使用该活动积分的明细</div>
+            <div class="text-sm text-neutral-500 mb-2">积分活动：<span class="font-semibold text-neutral-700">皖通新能源充电活动</span> — 以下为产品提供方使用该活动积分的明细</div>
             <table class="data-table w-full mb-0">
                 <thead>
                     <tr class="bg-white border-b border-neutral-200 h-9">
-                        <th class="text-left text-xs font-medium text-neutral-500">上架方</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">产品提供方</th>
                         <th class="text-left text-xs font-medium text-neutral-500">券码名称</th>
-                        <th class="text-left text-xs font-medium text-neutral-500 w-24">服务类型</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">核销量</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">券码类型</th>
                         <th class="text-right text-xs font-medium text-neutral-500">核销积分</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">核销净值</th>
                         <th class="text-right text-xs font-medium text-neutral-500 w-16">占比</th>
                     </tr>
                 </thead>
@@ -2751,26 +2763,20 @@
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">石化公司</td>
                         <td class="text-left text-sm">20积分兑20元充电券</td>
-                        <td class="text-left text-sm">充电</td>
-                        <td class="text-right text-sm tabular-nums">30</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">60,000</td>
-                        <td class="text-right text-sm tabular-nums">¥400.00</td>
                         <td class="text-right text-sm">40.0%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">交控石油公司</td>
                         <td class="text-left text-sm">20积分兑20元充电券</td>
-                        <td class="text-left text-sm">充电</td>
-                        <td class="text-right text-sm tabular-nums">25</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">50,000</td>
-                        <td class="text-right text-sm tabular-nums">¥600.00</td>
                         <td class="text-right text-sm">60.0%</td>
                     </tr>
                     <tr class="h-9 font-semibold text-sm bg-neutral-50">
                         <td class="text-left" colspan="3">活动合计</td>
-                        <td class="text-right tabular-nums">55</td>
                         <td class="text-right tabular-nums">110,000</td>
-                        <td class="text-right tabular-nums font-semibold">¥1,000.00</td>
                         <td class="text-right">100%</td>
                     </tr>
                 </tbody>
@@ -2789,22 +2795,20 @@
         <td class="text-left">联网新用户积分活动</td>
         <td class="text-left">2026-07-12</td>
         <td class="text-right">3</td>
-        <td class="text-right font-semibold tabular-nums">¥4,500.00</td>
+        <td class="text-right font-semibold tabular-nums">352,500</td>
         <td class="text-left text-neutral-500">2026-07-13 02:36</td>
         <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-ab-4')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
     </tr>
     <tr id="expand-ab-4" class="hidden">
         <td colspan="9" class="bg-neutral-50 px-4 py-3">
-            <div class="text-sm text-neutral-500 mb-2">积分活动：<span class="font-semibold text-neutral-700">联网新用户积分活动</span> — 以下为上架方使用该活动积分的明细</div>
+            <div class="text-sm text-neutral-500 mb-2">积分活动：<span class="font-semibold text-neutral-700">联网新用户积分活动</span> — 以下为产品提供方使用该活动积分的明细</div>
             <table class="data-table w-full mb-0">
                 <thead>
                     <tr class="bg-white border-b border-neutral-200 h-9">
-                        <th class="text-left text-xs font-medium text-neutral-500">上架方</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">产品提供方</th>
                         <th class="text-left text-xs font-medium text-neutral-500">券码名称</th>
-                        <th class="text-left text-xs font-medium text-neutral-500 w-24">服务类型</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">核销量</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">券码类型</th>
                         <th class="text-right text-xs font-medium text-neutral-500">核销积分</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">核销净值</th>
                         <th class="text-right text-xs font-medium text-neutral-500 w-16">占比</th>
                     </tr>
                 </thead>
@@ -2812,35 +2816,27 @@
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">石化公司</td>
                         <td class="text-left text-sm">50积分兑50元加油券</td>
-                        <td class="text-left text-sm">加油</td>
-                        <td class="text-right text-sm tabular-nums">58</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">145,000</td>
-                        <td class="text-right text-sm tabular-nums">¥2,300.00</td>
                         <td class="text-right text-sm">51.1%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">驿达集团</td>
                         <td class="text-left text-sm">30积分兑30元便利店券</td>
-                        <td class="text-left text-sm">便利店消费</td>
-                        <td class="text-right text-sm tabular-nums">40</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">120,000</td>
-                        <td class="text-right text-sm tabular-nums">¥1,500.00</td>
                         <td class="text-right text-sm">33.3%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">交控石油公司</td>
                         <td class="text-left text-sm">30积分兑30元加油券</td>
-                        <td class="text-left text-sm">加油</td>
-                        <td class="text-right text-sm tabular-nums">35</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">87,500</td>
-                        <td class="text-right text-sm tabular-nums">¥700.00</td>
                         <td class="text-right text-sm">15.6%</td>
                     </tr>
                     <tr class="h-9 font-semibold text-sm bg-neutral-50">
                         <td class="text-left" colspan="3">活动合计</td>
-                        <td class="text-right tabular-nums">133</td>
                         <td class="text-right tabular-nums">352,500</td>
-                        <td class="text-right tabular-nums font-semibold">¥4,500.00</td>
                         <td class="text-right">100%</td>
                     </tr>
                 </tbody>
@@ -2855,22 +2851,20 @@
         <td class="text-left">联网春季加油活动</td>
         <td class="text-left">2026-07-12</td>
         <td class="text-right">2</td>
-        <td class="text-right font-semibold tabular-nums">¥2,120.00</td>
+        <td class="text-right font-semibold tabular-nums">332,500</td>
         <td class="text-left text-neutral-500">2026-07-13 02:37</td>
         <td class="text-right"><button class="btn btn-text" onclick="toggleActivityExpand(this, 'expand-ab-5')"><i data-lucide="chevron-down" class="w-4 h-4 inline-block"></i>展 开</button></td>
     </tr>
     <tr id="expand-ab-5" class="hidden">
         <td colspan="9" class="bg-neutral-50 px-4 py-3">
-            <div class="text-sm text-neutral-500 mb-2">积分活动：<span class="font-semibold text-neutral-700">联网春季加油活动</span> — 以下为上架方使用该活动积分的明细</div>
+            <div class="text-sm text-neutral-500 mb-2">积分活动：<span class="font-semibold text-neutral-700">联网春季加油活动</span> — 以下为产品提供方使用该活动积分的明细</div>
             <table class="data-table w-full mb-0">
                 <thead>
                     <tr class="bg-white border-b border-neutral-200 h-9">
-                        <th class="text-left text-xs font-medium text-neutral-500">上架方</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">产品提供方</th>
                         <th class="text-left text-xs font-medium text-neutral-500">券码名称</th>
-                        <th class="text-left text-xs font-medium text-neutral-500 w-24">服务类型</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">核销量</th>
+                        <th class="text-left text-xs font-medium text-neutral-500">券码类型</th>
                         <th class="text-right text-xs font-medium text-neutral-500">核销积分</th>
-                        <th class="text-right text-xs font-medium text-neutral-500">核销净值</th>
                         <th class="text-right text-xs font-medium text-neutral-500 w-16">占比</th>
                     </tr>
                 </thead>
@@ -2878,26 +2872,20 @@
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">石化公司</td>
                         <td class="text-left text-sm">50积分兑50元加油券</td>
-                        <td class="text-left text-sm">加油</td>
-                        <td class="text-right text-sm tabular-nums">83</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">207,500</td>
-                        <td class="text-right text-sm tabular-nums">¥1,500.00</td>
                         <td class="text-right text-sm">70.8%</td>
                     </tr>
                     <tr class="border-b border-neutral-200 h-9">
                         <td class="text-left text-sm">交控石油公司</td>
                         <td class="text-left text-sm">30积分兑30元加油券</td>
-                        <td class="text-left text-sm">加油</td>
-                        <td class="text-right text-sm tabular-nums">40</td>
+                        <td class="text-left text-sm">积分券</td>
                         <td class="text-right text-sm tabular-nums">125,000</td>
-                        <td class="text-right text-sm tabular-nums">¥620.00</td>
                         <td class="text-right text-sm">29.2%</td>
                     </tr>
                     <tr class="h-9 font-semibold text-sm bg-neutral-50">
                         <td class="text-left" colspan="3">活动合计</td>
-                        <td class="text-right tabular-nums">123</td>
                         <td class="text-right tabular-nums">332,500</td>
-                        <td class="text-right tabular-nums font-semibold">¥2,120.00</td>
                         <td class="text-right">100%</td>
                     </tr>
                 </tbody>
@@ -3013,10 +3001,10 @@
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">242,553.95</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">242,553.95</td>
-                                    <td class="p-2 text-xs text-neutral-500 border border-neutral-200">向服务产品提供方收取对应服务发票，按实际核销金额与服务提供方结算</td>
+                                    <td class="p-2 text-xs text-neutral-500 border border-neutral-200">向服务提供方收取对应服务发票，按实际核销金额与服务提供方结算</td>
                                 </tr>
                                 <tr class="bg-white">
-                                    <td class="p-2 text-sm border border-neutral-200">上架方</td>
+                                    <td class="p-2 text-sm border border-neutral-200">产品提供方</td>
                                     <td class="p-2 font-medium text-sm border border-neutral-200">数科公司</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 text-neutral-400">0.00</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 text-neutral-400">0.00</td>
@@ -3024,10 +3012,10 @@
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">242,553.95</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">242,553.95</td>
-                                    <td class="p-2 text-xs text-neutral-500 border border-neutral-200">向上游发行方收取积分消耗费用，向下游核销商户支付券码面额</td>
+                                    <td class="p-2 text-xs text-neutral-500 border border-neutral-200">向上游营销活动方收取积分消耗费用，向下游服务提供方支付券码面额</td>
                                 </tr>
                                 <tr class="bg-white">
-                                    <td class="p-2 text-sm border border-neutral-200">服务产品提供方</td>
+                                    <td class="p-2 text-sm border border-neutral-200">服务提供方</td>
                                     <td class="p-2 font-medium text-sm border border-neutral-200">石化公司</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">88,470.00</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
@@ -3038,7 +3026,7 @@
                                     <td class="p-2 text-xs text-neutral-500 border border-neutral-200" rowspan="3">向营销活动方开具对应服务增值税发票，按积分核销金额结算</td>
                                 </tr>
                                 <tr class="bg-white">
-                                    <td class="p-2 text-sm border border-neutral-200">服务产品提供方</td>
+                                    <td class="p-2 text-sm border border-neutral-200">服务提供方</td>
                                     <td class="p-2 font-medium text-sm border border-neutral-200">驿达集团</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">150,683.95</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
@@ -3048,7 +3036,7 @@
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
                                 </tr>
                                 <tr class="bg-white">
-                                    <td class="p-2 text-sm border border-neutral-200">服务产品提供方</td>
+                                    <td class="p-2 text-sm border border-neutral-200">服务提供方</td>
                                     <td class="p-2 font-medium text-sm border border-neutral-200">交控石油公司</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">3,400.00</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
@@ -4514,7 +4502,7 @@
             <div class="p-5">
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div><span class="text-sm text-neutral-500">商户</span><p class="text-sm font-medium mt-1">石化公司</p></div>
-                    <div><span class="text-sm text-neutral-500">活动发行方</span><p class="text-sm font-medium mt-1">皖通公司</p></div>
+                    <div><span class="text-sm text-neutral-500">营销活动方</span><p class="text-sm font-medium mt-1">皖通公司</p></div>
                 </div>
                 <table class="data-table w-full">
                     <thead>
@@ -4587,6 +4575,106 @@
     </div>
 
     <!-- ========== 三方对账确认单弹窗 ========== -->
+    <div id="modal-lister-tripartite" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-lister-tripartite')">
+        <div class="modal-content max-w-5xl w-full my-8">
+            <div class="flex justify-between items-center px-5 py-4 border-b border-neutral-200">
+                <h3 class="text-base font-bold text-neutral-900" id="lister-tripartite-title">结算单明细</h3>
+                <button onclick="hideModal('modal-lister-tripartite')" class="text-neutral-500 hover:text-neutral-700 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="px-5 py-5">
+                <div id="lister-tripartite-info" class="bg-amber-50 border border-amber-200 rounded px-4 py-3 mb-4">
+                    <p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为结算单预览样例，实际功能为直接下载 Excel 文件。</p>
+                </div>
+                <div class="text-center mb-4">
+                    <h4 class="text-lg font-bold text-neutral-900">产品提供方结算单明细</h4>
+                    <div class="flex justify-between mt-2 text-sm text-neutral-500">
+                        <span>账单号：ZJ-SK-20260801</span>
+                        <span>产品提供方：数科公司</span>
+                        <span>账单日期：2026-08-01</span>
+                    </div>
+                </div>
+                <!-- 应付区：应付服务提供方 -->
+                <div class="mb-5">
+                    <h5 class="text-sm font-semibold text-neutral-700 mb-2">应付明细（支付给服务提供方）</h5>
+                    <table class="w-full border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-neutral-50">
+                                <th class="p-2 text-left font-medium text-neutral-600 border border-neutral-200">服务提供方</th>
+                                <th class="p-2 text-left font-medium text-neutral-600 border border-neutral-200">券码类型</th>
+                                <th class="p-2 text-right font-medium text-neutral-600 border border-neutral-200">核销量</th>
+                                <th class="p-2 text-right font-medium text-neutral-600 border border-neutral-200">应付金额(元)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white">
+                                <td class="p-2 text-left border border-neutral-200">石化公司</td>
+                                <td class="p-2 text-left border border-neutral-200">积分券</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">1</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥50.00</td>
+                            </tr>
+                            <tr class="bg-neutral-50/50">
+                                <td class="p-2 text-left border border-neutral-200">驿达集团</td>
+                                <td class="p-2 text-left border border-neutral-200">积分券</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">1</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥100.00</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="p-2 text-left border border-neutral-200">交控石油公司</td>
+                                <td class="p-2 text-left border border-neutral-200">现金券</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">1</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥30.00</td>
+                            </tr>
+                            <tr class="bg-neutral-50 font-semibold text-sm">
+                                <td class="p-2 text-left border border-neutral-200" colspan="3">应付合计</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥180.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 应收区：应收营销活动方 -->
+                <div class="mb-5">
+                    <h5 class="text-sm font-semibold text-neutral-700 mb-2">应收明细（向营销活动方收取）</h5>
+                    <table class="w-full border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-neutral-50">
+                                <th class="p-2 text-left font-medium text-neutral-600 border border-neutral-200">营销活动方</th>
+                                <th class="p-2 text-left font-medium text-neutral-600 border border-neutral-200">积分活动</th>
+                                <th class="p-2 text-right font-medium text-neutral-600 border border-neutral-200">积分消耗</th>
+                                <th class="p-2 text-right font-medium text-neutral-600 border border-neutral-200">应收金额(元)</th>
+                                <th class="p-2 text-right font-medium text-neutral-600 border border-neutral-200">占比</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white">
+                                <td class="p-2 text-left border border-neutral-200">皖通公司</td>
+                                <td class="p-2 text-left border border-neutral-200">货车积分活动</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">110</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥110.00</td>
+                                <td class="p-2 text-right border border-neutral-200">73.3%</td>
+                            </tr>
+                            <tr class="bg-neutral-50/50">
+                                <td class="p-2 text-left border border-neutral-200">联网公司</td>
+                                <td class="p-2 text-left border border-neutral-200">新用户注册活动</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">40</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥40.00</td>
+                                <td class="p-2 text-right border border-neutral-200">26.7%</td>
+                            </tr>
+                            <tr class="bg-neutral-50 font-semibold text-sm">
+                                <td class="p-2 text-left border border-neutral-200" colspan="2">应收合计</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">150</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥150.00</td>
+                                <td class="p-2 text-right border border-neutral-200">100%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="px-5 py-4 border-t border-neutral-200 flex justify-end gap-3">
+                <button class="btn btn-primary btn-md" onclick="hideModal('modal-lister-tripartite')">关 闭</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-tripartite" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-tripartite')">
         <div class="modal-content max-w-5xl w-full my-8">
             <div class="flex justify-between items-center px-5 py-4 border-b border-neutral-200">
@@ -4598,9 +4686,9 @@
                     <p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为结算单预览样例，实际功能为直接下载 Excel 文件。</p>
                 </div>
                 <div class="text-center mb-4">
-                    <h4 class="text-lg font-bold text-neutral-900">2026年货车积分试点活动三方对账确认单</h4>
+                    <h4 class="text-lg font-bold text-neutral-900">石化公司结算确认单</h4>
                     <div class="flex justify-between mt-2 text-sm text-neutral-500">
-                        <span>账单号：SETT-2026-06-003</span>
+                        <span>账单号：JS-20260514-001</span>
                         <span>账单日期：2026-05-13</span>
                     </div>
                 </div>
@@ -4615,14 +4703,24 @@
                         </thead>
                         <tbody>
                             <tr class="bg-white">
-                                <td class="p-2 text-center border border-neutral-200">皖通公司(营销活动方)</td>
+                                <td class="p-2 text-center border border-neutral-200">数科公司(产品提供方)</td>
                                 <td class="p-2 text-right tabular-nums border border-neutral-200">¥0.00</td>
-                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥3,400.00</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥11,250.00</td>
                             </tr>
                             <tr class="bg-neutral-50/50">
-                                <td class="p-2 text-center border border-neutral-200">交控石油公司(服务提供方)</td>
-                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥3,400.00</td>
+                                <td class="p-2 text-center border border-neutral-200">石化公司(产品提供方)</td>
                                 <td class="p-2 text-right tabular-nums border border-neutral-200">¥0.00</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥6,300.00</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="p-2 text-center border border-neutral-200">石化公司(服务提供方)</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥17,550.00</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥0.00</td>
+                            </tr>
+                            <tr class="bg-neutral-100 font-medium">
+                                <td class="p-2 text-center border border-neutral-200">合 计</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥17,550.00</td>
+                                <td class="p-2 text-right tabular-nums border border-neutral-200">¥17,550.00</td>
                             </tr>
                         </tbody>
                     </table>
@@ -4651,7 +4749,7 @@
                         <table class="w-full">
                             <tr class="bg-neutral-50">
                                 <td class="p-2 border-b border-neutral-200 text-center font-medium text-neutral-700">乙方（服务提供方）</td>
-                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-500">交控石油公司</td>
+                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-500">石化公司</td>
                             </tr>
                             <tr>
                                 <td class="p-2 border-b border-neutral-200 text-center text-neutral-600">服务提供方（乙方）签字</td>
@@ -4666,11 +4764,11 @@
                     <div class="border border-neutral-200 rounded">
                         <table class="w-full">
                             <tr class="bg-neutral-50">
-                                <td class="p-2 border-b border-neutral-200 text-center font-medium text-neutral-700">丙方（营销活动方）</td>
-                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-500">皖通公司</td>
+                                <td class="p-2 border-b border-neutral-200 text-center font-medium text-neutral-700">丙方（产品提供方）</td>
+                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-500">数科公司</td>
                             </tr>
                             <tr>
-                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-600">营销活动方（丙方）签字</td>
+                                <td class="p-2 border-b border-neutral-200 text-center text-neutral-600">产品提供方（丙方）签字</td>
                                 <td class="p-2 border-b border-neutral-200 text-center">________________</td>
                             </tr>
                             <tr>
@@ -5025,21 +5123,23 @@
         </div>
     </div>
 
-    <!-- ========== 活动方账单导出弹窗 ========== -->
+    <!-- ========== 营销活动方账单导出弹窗 ========== -->
     <div id="modal-activity-bill-export" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-activity-bill-export')">
         <div class="modal-content max-w-5xl w-full my-8">
             <div class="flex justify-between items-center px-5 py-4 border-b border-neutral-200">
-                <h3 class="text-base font-bold text-neutral-900">活动方账单导出预览</h3>
+                <h3 class="text-base font-bold text-neutral-900">营销活动方账单导出预览</h3>
                 <button onclick="hideModal('modal-activity-bill-export')" class="text-neutral-500 hover:text-neutral-700 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <div class="px-5 py-5">
                 <div class="bg-amber-50 border border-amber-200 rounded px-4 py-3 mb-4">
-                    <p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为报表预览样例（第 1 个 Sheet），实际功能为直接下载 Excel 文件，不同的商户名称/结算日期会展示在不同的 Sheet 页。</p>
+                    <p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为报表预览样例（第 1 个 Sheet），实际功能为直接下载 Excel 文件，不同的活动名称/结算日期会展示在不同的 Sheet 页。</p>
                 </div>
                 <div class="text-center pb-3 border-b border-neutral-200 mb-4">
-                    <h2 class="text-lg font-bold text-neutral-900 mb-2">2026年货车积分试点活动-活动方账单（按商户维度）</h2>
+                    <h2 class="text-lg font-bold text-neutral-900 mb-2">皖通春日加油活动-营销活动方账单</h2>
                     <div class="flex justify-center items-center gap-6 text-sm text-neutral-600">
-                        <span>商户名称：<span class="font-medium">交控石油公司</span></span>
+                        <span>营销活动方：<span class="font-medium">皖通公司</span></span>
+                        <span>|</span>
+                        <span>积分活动：<span class="font-medium">皖通春日加油活动</span></span>
                         <span>|</span>
                         <span>账单号：<span class="font-medium">HF-20260714-001</span></span>
                         <span>|</span>
@@ -5048,77 +5148,51 @@
                         <span>生成时间：<span class="font-medium">2026-07-14 02:38</span></span>
                     </div>
                 </div>
-                <!-- 积分活动明细 -->
+                <!-- 积分券核销明细 -->
                 <div class="overflow-x-auto">
                     <table class="w-full border-collapse text-xs">
                         <thead>
                             <tr class="bg-neutral-50">
-                                <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200">业务类型</th>
-                                <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200">业务名称</th>
-                                <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200">服务产品提供方</th>
-                                <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200">服务类型</th>
-                                <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">当日核销量</th>
+                                <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200">产品提供方</th>
+                                <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200">券码名称</th>
+                                <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200">券码类型</th>
                                 <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">核销积分</th>
-                                <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">核销净值</th>
                                 <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">占比</th>
                             </tr>
                         </thead>
                         <tbody>
-        
                             <tr class="bg-white">
-                                <td class="p-2 text-sm border border-neutral-200"><span class="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">积分活动</span></td>
-                                <td class="p-2 text-sm border border-neutral-200">皖通春日加油活动</td>
                                 <td class="p-2 text-sm border border-neutral-200">石化公司</td>
-                                <td class="p-2 text-sm border border-neutral-200">加油</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">98</td>
+                                <td class="p-2 text-sm border border-neutral-200">50积分兑50元加油券</td>
+                                <td class="p-2 text-sm border border-neutral-200">积分券</td>
                                 <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">245,000</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">3,860.00</td>
-                                <td class="p-2 text-right text-sm border border-neutral-200">60.50%</td>
+                                <td class="p-2 text-right text-sm border border-neutral-200">40.2%</td>
                             </tr>
                             <tr class="bg-neutral-50/50">
-                                <td class="p-2 text-sm border border-neutral-200"><span class="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">积分活动</span></td>
-                                <td class="p-2 text-sm border border-neutral-200">皖通高速出行活动</td>
-                                <td class="p-2 text-sm border border-neutral-200">交控石油公司</td>
-                                <td class="p-2 text-sm border border-neutral-200">充电</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">42</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">105,000</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">2,520.00</td>
-                                <td class="p-2 text-right text-sm border border-neutral-200">39.50%</td>
+                                <td class="p-2 text-sm border border-neutral-200">石化公司</td>
+                                <td class="p-2 text-sm border border-neutral-200">100积分兑100元加油券</td>
+                                <td class="p-2 text-sm border border-neutral-200">积分券</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">200,000</td>
+                                <td class="p-2 text-right text-sm border border-neutral-200">32.8%</td>
                             </tr>
-                            <tr class="bg-neutral-50 font-semibold text-sm">
-                                <td class="p-2 text-sm border border-neutral-200" colspan="4">积分活动合计</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">140</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">350,000</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">6,380.00</td>
-                                <td class="p-2 text-right text-sm border border-neutral-200">100%</td>
-                            </tr>
-        
                             <tr class="bg-white">
-                                <td class="p-2 text-sm border border-neutral-200"><span class="inline-block px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">现金券</span></td>
-                                <td class="p-2 text-sm border border-neutral-200">9.9元秒杀100元交控石油加油券</td>
-                                <td class="p-2 text-sm border border-neutral-200">交控石油公司</td>
-                                <td class="p-2 text-sm border border-neutral-200">加油</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">85</td>
-                                <td class="p-2 text-right text-sm text-neutral-400 border border-neutral-200">--</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">841.50</td>
-                                <td class="p-2 text-right text-sm text-neutral-400 border border-neutral-200">--</td>
+                                <td class="p-2 text-sm border border-neutral-200">驿达集团</td>
+                                <td class="p-2 text-sm border border-neutral-200">20积分兑20元便利店券</td>
+                                <td class="p-2 text-sm border border-neutral-200">积分券</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">60,000</td>
+                                <td class="p-2 text-right text-sm border border-neutral-200">9.8%</td>
                             </tr>
                             <tr class="bg-neutral-50/50">
-                                <td class="p-2 text-sm border border-neutral-200"><span class="inline-block px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">现金券</span></td>
-                                <td class="p-2 text-sm border border-neutral-200">19.9元秒杀200元交控石油加油券</td>
                                 <td class="p-2 text-sm border border-neutral-200">交控石油公司</td>
-                                <td class="p-2 text-sm border border-neutral-200">加油</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">63</td>
-                                <td class="p-2 text-right text-sm text-neutral-400 border border-neutral-200">--</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">1,253.70</td>
-                                <td class="p-2 text-right text-sm text-neutral-400 border border-neutral-200">--</td>
+                                <td class="p-2 text-sm border border-neutral-200">50积分兑50元充电券</td>
+                                <td class="p-2 text-sm border border-neutral-200">积分券</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">105,000</td>
+                                <td class="p-2 text-right text-sm border border-neutral-200">17.2%</td>
                             </tr>
                             <tr class="bg-neutral-50 font-semibold text-sm">
-                                <td class="p-2 text-sm border border-neutral-200" colspan="4">现金券业务合计</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">228</td>
-                                <td class="p-2 text-right text-sm text-neutral-400 border border-neutral-200">--</td>
-                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">2,563.20</td>
-                                <td class="p-2 text-right text-sm text-neutral-400 border border-neutral-200">--</td>
+                                <td class="p-2 text-sm border border-neutral-200" colspan="3">活动合计</td>
+                                <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">610,000</td>
+                                <td class="p-2 text-right text-sm border border-neutral-200">100%</td>
                             </tr>
                         </tbody>
                     </table>
@@ -5130,6 +5204,6 @@
         </div>
     </div>
 
-    <script>lucide.createIcons(); initBillDropdown(); initMerchantBillSelectAll(); renderListerBillList(); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
+    <script>lucide.createIcons(); initBillDropdown(); initMerchantBillSelectAll(); renderListerBillList(); switchSubnav('lister-bill'); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
 </body>
 </html>

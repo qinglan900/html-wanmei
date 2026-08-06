@@ -331,60 +331,6 @@
             if (drawer) drawer.classList.remove('active');
         }
 
-        var adjustDrawerData = {
-            '石化公司': {
-                merchant: '石化公司',
-                total: '+¥500.00',
-                records: [
-                    { no: 'SS-20260514-001', amount: '+¥500.00', reason: '商品金额核算差异', date: '2026-05-14', auditor: '李四' }
-                ]
-            },
-            '驿达集团': {
-                merchant: '驿达集团',
-                total: '-¥300.00',
-                records: [
-                    { no: 'SS-20260513-001', amount: '-¥300.00', reason: '部分订单重复结算，申请扣减', date: '2026-05-14', auditor: '李四' }
-                ]
-            }
-        };
-
-        function openAdjustDrawer(tdEl) {
-            var row = tdEl.parentElement;
-            var merchantCell = row.querySelector('td:first-child');
-            var merchantName = merchantCell ? merchantCell.textContent.trim() : '';
-            var data = adjustDrawerData[merchantName];
-
-            var merchantEl = document.getElementById('adjust-drawer-merchant');
-            var totalEl = document.getElementById('adjust-drawer-total');
-            var tbody = document.getElementById('adjust-drawer-tbody');
-
-            if (merchantEl) merchantEl.textContent = merchantName;
-
-            if (data) {
-                if (totalEl) totalEl.textContent = data.total;
-                if (tbody) {
-                    tbody.innerHTML = '';
-                    for (var i = 0; i < data.records.length; i++) {
-                        var r = data.records[i];
-                        var amtCls = r.amount.indexOf('-') >= 0 ? 'text-error' : 'text-success';
-                        tbody.innerHTML += '<tr class="border-b border-neutral-200 h-10 table-row"><td class="text-left"><a class="text-primary cursor-pointer hover:underline" onclick="openAppealDrawer(\'approved\')">' + r.no + '</a></td><td class="text-right font-semibold tabular-nums ' + amtCls + '">' + r.amount + '</td><td class="text-left">' + r.reason + '</td><td class="text-left">' + r.date + '</td><td class="text-left">' + r.auditor + '</td></tr>';
-                    }
-                }
-            } else {
-                if (totalEl) totalEl.textContent = '¥0.00';
-                if (tbody) tbody.innerHTML = '<tr class="border-b border-neutral-200 h-10"><td colspan="5" class="text-center text-neutral-400">无调账记录</td></tr>';
-            }
-
-            var drawer = document.getElementById('adjust-drawer');
-            if (drawer) drawer.style.display = 'flex';
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-
-        function closeAdjustDrawer() {
-            var drawer = document.getElementById('adjust-drawer');
-            if (drawer) drawer.style.display = 'none';
-        }
-
         function submitAppealAudit() {
             closeAppealDrawer();
             showToast('复核审核提交成功', 'success');
@@ -2961,10 +2907,10 @@
                                     <th class="p-2 text-center text-sm font-medium text-neutral-600 border border-neutral-200 w-28">主体名称</th>
                                     <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">应收总金额</th>
                                     <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">应收减免金额</th>
-                                    <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">实收金额</th>
+                                    <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">合计应收金额</th>
                                     <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">应付总金额</th>
                                     <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">应付减免金额</th>
-                                    <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">实付金额</th>
+                                    <th class="p-2 text-right text-sm font-medium text-neutral-600 border border-neutral-200">合计应付金额</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2992,7 +2938,7 @@
                                     <td class="p-2 text-xs text-neutral-500 border border-neutral-200">向平台运营方收取平台运营发票</td>
                                 </tr>
                                 <tr class="bg-white">
-                                    <td class="p-2 text-sm border border-neutral-200" rowspan="5">营销活动费用</td>
+                                    <td class="p-2 text-sm border border-neutral-200" rowspan="8">营销活动费用</td>
                                     <td class="p-2 text-sm border border-neutral-200">营销活动方</td>
                                     <td class="p-2 font-medium text-sm border border-neutral-200">皖通公司</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
@@ -3006,13 +2952,46 @@
                                 <tr class="bg-white">
                                     <td class="p-2 text-sm border border-neutral-200">产品提供方</td>
                                     <td class="p-2 font-medium text-sm border border-neutral-200">数科公司</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 text-neutral-400">0.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 text-neutral-400">0.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 text-neutral-400">0.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">242,553.95</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">40,000.00</td>
                                     <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">242,553.95</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">40,000.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">40,000.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">40,000.00</td>
                                     <td class="p-2 text-xs text-neutral-500 border border-neutral-200">向上游营销活动方收取积分消耗费用，向下游服务提供方支付券码面额</td>
+                                </tr>
+                                <tr class="bg-white">
+                                    <td class="p-2 text-sm border border-neutral-200">产品提供方</td>
+                                    <td class="p-2 font-medium text-sm border border-neutral-200">石化公司</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">88,470.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">88,470.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">88,470.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">88,470.00</td>
+                                    <td class="p-2 text-xs text-neutral-500 border border-neutral-200">自营券码，向上游营销活动方收取积分消耗费用，向下游服务提供方（含自身）支付券码面额</td>
+                                </tr>
+                                <tr class="bg-white">
+                                    <td class="p-2 text-sm border border-neutral-200">产品提供方</td>
+                                    <td class="p-2 font-medium text-sm border border-neutral-200">驿达集团</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">110,683.95</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">110,683.95</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">110,683.95</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">110,683.95</td>
+                                    <td class="p-2 text-xs text-neutral-500 border border-neutral-200">自营券码，向上游营销活动方收取积分消耗费用，向下游服务提供方（含自身）支付券码面额</td>
+                                </tr>
+                                <tr class="bg-white">
+                                    <td class="p-2 text-sm border border-neutral-200">产品提供方</td>
+                                    <td class="p-2 font-medium text-sm border border-neutral-200">交控石油公司</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">3,400.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">3,400.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">3,400.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">0.00</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200 font-semibold">3,400.00</td>
+                                    <td class="p-2 text-xs text-neutral-500 border border-neutral-200">自营券码，向上游营销活动方收取积分消耗费用，向下游服务提供方（含自身）支付券码面额</td>
                                 </tr>
                                 <tr class="bg-white">
                                     <td class="p-2 text-sm border border-neutral-200">服务提供方</td>
@@ -3049,46 +3028,15 @@
                             <tfoot>
                                 <tr class="bg-green-50 font-semibold">
                                     <td class="p-2 text-sm border border-neutral-200" colspan="3">合计</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200" colspan="3">242,553.95</td>
-                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200" colspan="3">242,553.95</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200" colspan="3">485,107.90</td>
+                                    <td class="p-2 text-right text-sm tabular-nums border border-neutral-200" colspan="3">485,107.90</td>
                                     <td class="p-2 text-sm border border-neutral-200">-</td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
                 </div>
-                    <!-- 调账单明细抽屉 -->
-                    <div id="adjust-drawer" class="drawer-overlay fixed inset-0 bg-black/50 z-[999]" style="display:none;" onclick="closeAdjustDrawer()">
-                        <div class="fixed top-0 right-0 h-full bg-white shadow-2xl w-[600px]" onclick="event.stopPropagation()">
-                            <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
-                                <h2 class="text-base font-bold text-neutral-900">调账单明细</h2>
-                                <button class="text-neutral-500 hover:text-neutral-700 cursor-pointer" onclick="closeAdjustDrawer()">
-                                    <i data-lucide="x" class="w-5 h-5"></i>
-                                </button>
-                            </div>
-                            <div class="overflow-y-auto px-5 py-4" style="max-height: calc(100vh - 80px);">
-                                <div class="mb-4">
-                                    <span class="text-sm text-neutral-500">商户：</span>
-                                    <span id="adjust-drawer-merchant" class="text-sm font-medium"></span>
-                                    <span class="text-sm text-neutral-500 ml-4">调账金额合计：</span>
-                                    <span id="adjust-drawer-total" class="text-sm font-semibold"></span>
-                                </div>
-                                <table class="data-table w-full">
-                                    <thead>
-                                        <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                            <th class="text-left">复核单号</th>
-                                            <th class="text-right">调账金额</th>
-                                            <th class="text-left">调账原因</th>
-                                            <th class="text-left">计入账单日期</th>
-                                            <th class="text-left">审核人</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="adjust-drawer-tbody">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+
             </div>
             <div id="page-appeal" class="page">
                 <div class="bg-white rounded border border-neutral-200">

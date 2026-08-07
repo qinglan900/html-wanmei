@@ -117,6 +117,7 @@
                 <div id="subnav-funnel" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('funnel')"><span class="font-semibold">·</span><span> 运营活动监测</span></div>
                 <div id="subnav-offline" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('offline')"><span class="font-semibold">·</span><span> 路段流量监测</span></div>
                 <div id="subnav-effect" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('effect')"><span class="font-semibold">·</span><span> 活动效果</span></div>
+                <div id="subnav-coupon-summary" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('coupon-summary')"><span class="font-semibold">·</span><span> 券活动汇总表</span></div>
             </nav>
 
         </aside>
@@ -3664,6 +3665,183 @@
                             </div>
                         </div>
 
+                    </div>
+                </main>
+            </div>
+
+            <!-- ==================== 页面：券活动汇总表 ==================== -->
+            <div id="page-coupon-summary" class="page">
+                <main class="p-2">
+                    <div class="bg-white rounded border border-neutral-200">
+                        <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                                <h1 class="text-base font-bold text-neutral-900">积分券活动汇总表</h1>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="btn btn-secondary btn-md" onclick="showToast('导出功能开发中','info')"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                            </div>
+                        </div>
+                        <div class="px-2 pb-2">
+                            <div class="bg-amber-50 border border-amber-200 rounded px-4 py-3 -mx-0 mt-2 mb-3">
+                                <p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：按券活动汇总表为历史累计数据统计（非单日数据），实际功能为直接下载 Excel 文件，不同的活动名称/结算日期会展示在不同的 Sheet 页。</p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="inline-label-input">
+                                    <span class="label">活动名称</span>
+                                    <select><option value="">全部</option><option>皖通春日加油活动</option><option>联网高速畅行活动</option></select>
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">商户分组</span>
+                                    <select><option value="">全部</option><option>驿达服务区消费</option><option>高速石化加油</option></select>
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">券名称</span>
+                                    <select><option value="">全部</option><option>50元驿达便利店代金券红包</option><option>20元驿达便利店代金券红包</option><option>50元高速石化加油尿素代金券红包</option><option>20元高速石化加油尿素代金券红包</option></select>
+                                </div>
+                                <div class="date-range-input">
+                                    <span class="label">结算日期</span>
+                                    <input type="date" value="2026-05-13">
+                                    <span class="separator">→</span>
+                                    <input type="date" value="2026-05-14">
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="showToast('筛选条件已重置','success')">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                            </div>
+                        </div>
+                        <!-- 报表头 -->
+                        <div class="text-center pb-3 border-b border-neutral-200 px-2">
+                            <h2 class="text-lg font-bold text-neutral-900 mb-2">2026年货车积分试点结算汇总表-按券活动名称</h2>
+                            <div class="flex justify-center items-center gap-6 text-sm text-neutral-600">
+                                <span>活动名称：<span class="font-medium">皖通春日加油活动</span></span>
+                                <span>|</span>
+                                <span>账单号：<span class="font-medium">HF-20260514-001</span></span>
+                                <span>|</span>
+                                <span>账单日期：<span class="font-medium">2026-05-13</span></span>
+                                <span>|</span>
+                                <span>生成时间：<span class="font-medium">2026-05-14 02:38</span></span>
+                            </div>
+                        </div>
+                        <!-- 汇总表格 -->
+                        <div class="overflow-x-auto mx-2 mb-2 mt-2 bg-white rounded border border-neutral-200">
+                            <table class="w-full border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-neutral-50">
+                                        <th class="p-2 text-left text-sm font-medium text-neutral-600 border border-neutral-200" rowspan="2">券名称</th>
+                                        <th class="p-2 text-center text-sm font-medium text-neutral-600 border border-neutral-200" colspan="2">总订单</th>
+                                        <th class="p-2 text-center text-sm font-medium text-neutral-600 border border-neutral-200" colspan="2">已核销</th>
+                                        <th class="p-2 text-center text-sm font-medium text-neutral-600 border border-neutral-200" colspan="2">未核销</th>
+                                        <th class="p-2 text-center text-sm font-medium text-neutral-600 border border-neutral-200" colspan="2">核销率</th>
+                                    </tr>
+                                    <tr class="bg-neutral-50">
+                                        <th class="p-2 text-right text-xs font-medium text-neutral-600 border border-neutral-200">数量</th>
+                                        <th class="p-2 text-right text-xs font-medium text-neutral-600 border border-neutral-200">金额</th>
+                                        <th class="p-2 text-right text-xs font-medium text-neutral-600 border border-neutral-200">数量</th>
+                                        <th class="p-2 text-right text-xs font-medium text-neutral-600 border border-neutral-200">金额</th>
+                                        <th class="p-2 text-right text-xs font-medium text-neutral-600 border border-neutral-200">数量</th>
+                                        <th class="p-2 text-right text-xs font-medium text-neutral-600 border border-neutral-200">金额</th>
+                                        <th class="p-2 text-right text-xs font-medium text-neutral-600 border border-neutral-200">数量</th>
+                                        <th class="p-2 text-right text-xs font-medium text-neutral-600 border border-neutral-200">金额</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-neutral-100">
+                                        <td class="p-2 font-semibold text-sm border border-neutral-200" colspan="9">驿达服务区消费合计</td>
+                                    </tr>
+                                    <tr class="bg-white">
+                                        <td class="p-2 text-sm border border-neutral-200">50元驿达便利店代金券红包</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">12,580</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥629,000.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">8,456</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥422,800.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">4,124</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥206,200.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">67.22%</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">67.22%</td>
+                                    </tr>
+                                    <tr class="bg-neutral-50/50">
+                                        <td class="p-2 text-sm border border-neutral-200">20元驿达便利店代金券红包</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">8,320</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥166,400.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">5,102</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥102,040.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">3,218</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥64,360.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">61.32%</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">61.32%</td>
+                                    </tr>
+                                    <tr class="bg-neutral-100 font-semibold">
+                                        <td class="p-2 text-sm border border-neutral-200">驿达服务区消费合计</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">20,900</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥795,400.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">13,558</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥524,840.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">7,342</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥270,560.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">64.87%</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">65.86%</td>
+                                    </tr>
+                                    <tr class="bg-neutral-100">
+                                        <td class="p-2 font-semibold text-sm border border-neutral-200" colspan="9">高速石化加油合计</td>
+                                    </tr>
+                                    <tr class="bg-white">
+                                        <td class="p-2 text-sm border border-neutral-200">50元高速石化加油尿素代金券红包</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">15,680</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥784,000.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">11,234</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥561,700.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">4,446</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥222,300.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">71.64%</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">71.64%</td>
+                                    </tr>
+                                    <tr class="bg-neutral-50/50">
+                                        <td class="p-2 text-sm border border-neutral-200">20元高速石化加油尿素代金券红包</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">6,420</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥128,400.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">4,890</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥97,800.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">1,530</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥30,600.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">76.17%</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">76.17%</td>
+                                    </tr>
+                                    <tr class="bg-neutral-100 font-semibold">
+                                        <td class="p-2 text-sm border border-neutral-200">高速石化加油合计</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">22,100</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥912,400.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">16,124</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥659,500.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">5,976</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥252,900.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">72.96%</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">72.28%</td>
+                                    </tr>
+                                    <tr class="bg-green-50 font-semibold">
+                                        <td class="p-2 text-sm border border-neutral-200">活动合计</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">43,000</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥1,707,800.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">29,682</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥1,184,340.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">13,318</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">¥523,460.00</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">69.03%</td>
+                                        <td class="p-2 text-right text-sm tabular-nums border border-neutral-200">69.35%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="flex items-center justify-between px-2 py-3 border-t border-neutral-200">
+                                <span class="text-sm text-neutral-500">共 12 条记录，每页 10 条</span>
+                                <div class="flex items-center gap-1">
+                                    <button class="btn btn-secondary btn-sm" onclick="showToast('已在第一页','info')">&lt;</button>
+                                    <button class="btn btn-primary btn-sm">1</button>
+                                    <button class="btn btn-secondary btn-sm">2</button>
+                                    <button class="btn btn-secondary btn-sm">&gt;</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </main>
             </div>

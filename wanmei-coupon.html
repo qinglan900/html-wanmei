@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>皖美e行 - 运营管理平台 - 卡券管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#FF6B35', light: '#FFF7E6', dark: '#E55A2B' },
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                        neutral: {
+                            50: '#F9FAFB', 100: '#F3F4F6', 200: '#E5E7EB', 300: '#D1D5DB',
+                            400: '#9CA3AF', 500: '#6B7280', 600: '#4B5563', 700: '#374151',
+                            800: '#1F2937', 900: '#111827'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* 按钮 */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500; border-radius: 0.25rem; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .btn-md { height: 32px; padding: 0 1rem; font-size: 14px; }
+        .btn-sm { height: 28px; padding: 0 0.75rem; font-size: 12px; }
+        .btn-primary { background-color: #FF6B35; color: white; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { background-color: white; border-color: #D1D5DB; color: #6B7280; }
+        .btn-secondary:hover { background-color: #F3F4F6; }
+        .btn-batch-action { background-color: white; border-color: #FF6B35; color: #FF6B35; }
+        .btn-batch-action:hover { opacity: 0.9; }
+        .btn-danger { background-color: #EF4444; color: white; }
+        .btn-text { background: transparent; border: none; color: #FF6B35; padding: 0; height: auto; }
+        .btn-text:hover { text-decoration: underline; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* 状态标签 */
+        .status-badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .status-success { background-color: #ECFDF5; color: #10B981; }
+        .status-error { background-color: #FEF2F2; color: #EF4444; }
+
+        /* 内联标签输入框 */
+        .inline-label-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; min-width: 200px; }
+        .inline-label-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
+        .inline-label-input input, .inline-label-input select { flex: 1; height: 100%; padding: 0 12px; border: none; outline: none; font-size: 14px; background: transparent; }
+        .inline-label-input select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+
+        /* 日期范围 */
+        .date-range-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; min-width: 280px; }
+        .date-range-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
+        .date-range-input input { flex: 1; height: 100%; padding: 0 8px; border: none; outline: none; font-size: 13px; background: transparent; min-width: 0; }
+        .date-range-input .separator { padding: 0 6px; color: #9CA3AF; font-size: 13px; }
+
+        /* 表格 */
+        .data-table th { font-size: 13px; font-weight: 500; color: #6B7280; padding: 12px; white-space: nowrap; vertical-align: middle; }
+        .data-table td { font-size: 14px; color: #1F2937; padding: 12px; vertical-align: middle; }
+        .table-row { transition: background-color 0.2s ease; }
+        .table-row:hover { background-color: #FFF7E6 !important; }
+
+        /* 开关 */
+        .toggle-switch { width: 40px; height: 20px; border-radius: 20px; display: inline-block; position: relative; cursor: pointer; transition: background-color 0.3s; background-color: #D1D5DB; }
+        .toggle-switch.on { background-color: #FF6B35; }
+        .toggle-switch .dot { width: 16px; height: 16px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: left 0.3s; }
+        .toggle-switch.on .dot { left: 22px; }
+        .toggle-switch-text { font-size: 12px; margin-left: 6px; color: #6B7280; }
+
+        /* 抽屉 */
+        .drawer-overlay { display: none; }
+        .drawer-overlay.active { display: flex; }
+        .drawer-panel { transform: translateX(100%); transition: transform 0.3s ease; }
+        .drawer-overlay.active .drawer-panel { transform: translateX(0); }
+
+        /* 抽屉内表单样式 */
+        .drawer-section-title { font-size: 14px; font-weight: 600; color: #1F2937; padding-bottom: 10px; border-bottom: 1px solid #E5E7EB; margin-bottom: 16px; }
+        .drawer-form-item { display: flex; margin-bottom: 16px; align-items: flex-start; }
+        .drawer-form-label { width: 120px; text-align: right; padding-right: 12px; line-height: 32px; color: #1F2937; font-size: 14px; flex-shrink: 0; }
+        .drawer-form-label .req { color: #EF4444; margin-right: 2px; }
+        .drawer-form-control { flex: 1; position: relative; display: flex; align-items: center; flex-wrap: wrap; }
+
+        .drawer-input, .drawer-select, .drawer-textarea {
+            width: 100%; padding: 4px 11px; border: 1px solid #D1D5DB; border-radius: 3px;
+            color: #1F2937; font-size: 14px; line-height: 1.5; transition: all 0.2s; background: #fff; outline: none;
+        }
+        .drawer-input, .drawer-select { height: 32px; }
+        .drawer-input:focus, .drawer-select:focus, .drawer-textarea:focus { border-color: #FF6B35; box-shadow: 0 0 0 2px rgba(255,107,53,0.15); }
+
+        .drawer-radio-group, .drawer-checkbox-group { line-height: 32px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .drawer-radio-wrapper, .drawer-checkbox-wrapper { display: flex; align-items: center; cursor: pointer; font-size: 14px; color: #1F2937; }
+        .drawer-radio-wrapper input, .drawer-checkbox-wrapper input { margin-right: 8px; cursor: pointer; accent-color: #FF6B35; }
+
+        .drawer-char-counter { position: absolute; right: 11px; bottom: 6px; color: #9CA3AF; font-size: 12px; pointer-events: none; }
+        .drawer-textarea { resize: vertical; min-height: 80px; padding-bottom: 30px; }
+        .drawer-input-group { display: flex; align-items: center; }
+        .drawer-input-group .addon { color: #1F2937; background: #F9FAFB; border: 1px solid #D1D5DB; padding: 0 11px; height: 32px; line-height: 30px; font-size: 14px; flex-shrink: 0; }
+        .drawer-input-group .addon-left { border-right: 0; border-radius: 3px 0 0 3px; }
+        .drawer-input-group .addon-right { border-left: 0; border-radius: 0 3px 3px 0; }
+        .drawer-helper-text { width: 100%; font-size: 12px; color: #9CA3AF; margin-top: 4px; }
+
+        .drawer-sub-form-item { width: 100%; margin-top: 4px; margin-bottom: 2px; display: none; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .drawer-sub-form-item.active { display: flex; }
+        .drawer-sub-form-label { font-size: 14px; color: #1F2937; white-space: nowrap; }
+        .drawer-sub-form-control { flex: 1; }
+        .drawer-btn-select-store { width: 100%; height: 32px; border: 1px solid #FF6B35; background: transparent; color: #FF6B35; border-radius: 3px; cursor: pointer; font-size: 14px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .drawer-btn-select-store:hover { background: rgba(255,107,53,0.05); }
+    </style>
+</head>
+<body class="bg-neutral-100 min-h-screen">
+
+    <!-- ===== 卡券管理列表页 ===== -->
+    <div id="page-coupon" class="page active">
+        <main class="p-2">
+            <div class="bg-white rounded border border-neutral-200">
+                <!-- 标题区 -->
+                <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                        <h1 class="text-base font-bold text-neutral-900">卡券管理</h1>
+                    </div>
+
+                </div>
+
+                <!-- 筛选区 -->
+                <div class="px-2 pb-2">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                        <div class="inline-label-input">
+                            <span class="label">优惠券ID</span>
+                            <input type="text" placeholder="请输入">
+                        </div>
+                        <div class="inline-label-input">
+                            <span class="label">名称</span>
+                            <input type="text" placeholder="请输入">
+                        </div>
+                        <div class="inline-label-input">
+                            <span class="label">优惠券类型</span>
+                            <select>
+                                <option value="">全部</option>
+                                <option value="1">满减券</option>
+                                <option value="2">代金券</option>
+                                <option value="3">加油券</option>
+                            </select>
+                        </div>
+                        <div class="inline-label-input">
+                            <span class="label">状态</span>
+                            <select>
+                                <option value="">全部</option>
+                                <option value="enabled">启用</option>
+                                <option value="disabled">禁用</option>
+                            </select>
+                        </div>
+                        <div class="inline-label-input">
+                            <span class="label">业务范围</span>
+                            <select>
+                                <option value="">全部</option>
+                                <option value="gas">加油业务</option>
+                                <option value="charging">充电业务</option>
+                                <option value="mall">商城业务</option>
+                                <option value="catering">餐饮业务</option>
+                            </select>
+                        </div>
+                        <div class="date-range-input">
+                            <span class="label">创建时间</span>
+                            <input type="date" placeholder="开始日期">
+                            <span class="separator">→</span>
+                            <input type="date" placeholder="结束日期">
+                        </div>
+                        <div class="inline-label-input">
+                            <span class="label">使用范围</span>
+                            <select>
+                                <option value="">全部</option>
+                                <option value="online">线上使用</option>
+                                <option value="offline">线下使用</option>
+                                <option value="both">线上线下</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3 mt-3">
+                        <button class="btn btn-secondary btn-md" onclick="resetFilters()">重 置</button>
+                        <button class="btn btn-primary btn-md" onclick="handleSearch()">查 询</button>
+                    </div>
+                </div>
+
+                <!-- 操作区 -->
+                <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
+                    <button class="btn btn-primary btn-md" onclick="openDrawer()">
+                        <i data-lucide="plus" class="w-4 h-4"></i>新 增
+                    </button>
+                </div>
+
+                <!-- 表格 -->
+                <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                    <table class="data-table w-full">
+                        <thead>
+                            <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                <th class="w-12 text-center">序号</th>
+                                <th class="text-left">优惠券ID</th>
+                                <th class="text-left">优惠券名称</th>
+                                <th class="text-center">优惠券类型</th>
+                                <th class="text-center">获取方式</th>
+                                <th class="text-center">使用范围</th>
+                                <th class="text-left">业务范围</th>
+                                <th class="text-right">券面额</th>
+                                <th class="text-center w-24">启用/禁用</th>
+                                <th class="text-right w-32">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-neutral-200 h-12 table-row">
+                                <td class="text-center text-neutral-600">1</td>
+                                <td class="text-left font-mono">90</td>
+                                <td class="text-left">测试代金券-线上交控石油-指定商户</td>
+                                <td class="text-center"><span class="status-badge status-success">代金券</span></td>
+                                <td class="text-center">积分兑换</td>
+                                <td class="text-center">线上使用</td>
+                                <td class="text-left">商城业务, 加油业务</td>
+                                <td class="text-right font-semibold tabular-nums">¥10.00</td>
+                                <td class="text-center">
+                                    <span class="toggle-switch" onclick="toggleSwitch(this)"><span class="dot"></span></span>
+                                    <span class="toggle-switch-text">禁用</span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-text btn-sm">查 看</button>
+                                    <button class="btn btn-text btn-sm ml-2" onclick="openDrawer()">编 辑</button>
+                                    <button class="btn btn-text btn-sm ml-2" style="color:#EF4444;" onclick="handleDelete()">删 除</button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-neutral-200 h-12 table-row">
+                                <td class="text-center text-neutral-600">2</td>
+                                <td class="text-left font-mono">88</td>
+                                <td class="text-left">新人活动优惠券石油公司08-11</td>
+                                <td class="text-center"><span class="status-badge status-success">代金券</span></td>
+                                <td class="text-center">积分兑换</td>
+                                <td class="text-center">线上使用, 线下使用</td>
+                                <td class="text-left">餐饮业务, 充电业务, 商城业务, 加油业务</td>
+                                <td class="text-right font-semibold tabular-nums">¥10.00</td>
+                                <td class="text-center">
+                                    <span class="toggle-switch on" onclick="toggleSwitch(this)"><span class="dot"></span></span>
+                                    <span class="toggle-switch-text">启用</span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-text btn-sm">查 看</button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-neutral-200 h-12 table-row">
+                                <td class="text-center text-neutral-600">3</td>
+                                <td class="text-left font-mono">87</td>
+                                <td class="text-left">测试满减券-线上(石化)-所有商户</td>
+                                <td class="text-center"><span class="status-badge status-success">满减券</span></td>
+                                <td class="text-center">积分兑换</td>
+                                <td class="text-center">线上使用, 线下使用</td>
+                                <td class="text-left">全部业务</td>
+                                <td class="text-right font-semibold tabular-nums">¥10.00</td>
+                                <td class="text-center">
+                                    <span class="toggle-switch on" onclick="toggleSwitch(this)"><span class="dot"></span></span>
+                                    <span class="toggle-switch-text">启用</span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-text btn-sm">查 看</button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-neutral-200 h-12 table-row">
+                                <td class="text-center text-neutral-600">4</td>
+                                <td class="text-left font-mono">86</td>
+                                <td class="text-left">石油公司加油券</td>
+                                <td class="text-center"><span class="status-badge status-success">代金券</span></td>
+                                <td class="text-center">积分兑换</td>
+                                <td class="text-center">线上使用, 线下使用</td>
+                                <td class="text-left">商城业务, 加油业务</td>
+                                <td class="text-right font-semibold tabular-nums">¥10.00</td>
+                                <td class="text-center">
+                                    <span class="toggle-switch on" onclick="toggleSwitch(this)"><span class="dot"></span></span>
+                                    <span class="toggle-switch-text">启用</span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-text btn-sm">查 看</button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-neutral-200 h-12 table-row">
+                                <td class="text-center text-neutral-600">5</td>
+                                <td class="text-left font-mono">85</td>
+                                <td class="text-left">高速石化柴油券-200升满减</td>
+                                <td class="text-center"><span class="status-badge status-success">加油券</span></td>
+                                <td class="text-center">活动赠送</td>
+                                <td class="text-center">线下使用</td>
+                                <td class="text-left">加油业务</td>
+                                <td class="text-right font-semibold tabular-nums">¥40.00</td>
+                                <td class="text-center">
+                                    <span class="toggle-switch on" onclick="toggleSwitch(this)"><span class="dot"></span></span>
+                                    <span class="toggle-switch-text">启用</span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-text btn-sm">查 看</button>
+                                    <button class="btn btn-text btn-sm ml-2" onclick="openDrawer()">编 辑</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页 -->
+                <div class="mx-2 mb-2 flex justify-between items-center py-2">
+                    <span class="text-sm text-neutral-600">共 <span class="font-semibold">5</span> 条记录</span>
+                    <div class="flex items-center gap-2">
+                        <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white">
+                            <option>10条/页</option>
+                            <option selected>20条/页</option>
+                            <option>50条/页</option>
+                        </select>
+                        <div class="flex items-center gap-1">
+                            <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页">
+                                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                            </button>
+                            <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+                            <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页">
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ===== 新增/编辑卡券抽屉 ===== -->
+    <div id="coupon-drawer" class="drawer-overlay fixed inset-0 bg-black/50 z-[999]" onclick="closeDrawer()">
+        <div class="drawer-panel fixed top-0 right-0 h-full bg-white shadow-2xl w-[780px] transform transition-transform duration-300 ease-in-out translate-x-0" onclick="event.stopPropagation()">
+            <!-- 标题区 -->
+            <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
+                <h2 class="text-base font-bold text-neutral-900" id="drawer-title">新增卡券</h2>
+                <button class="text-neutral-500 hover:text-neutral-700 cursor-pointer" onclick="closeDrawer()">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- 表单内容区 -->
+            <div class="flex-1 overflow-y-auto px-5 py-4" style="max-height: calc(100vh - 140px);">
+
+                <!-- 基本信息 -->
+                <div class="drawer-section-title">基本信息</div>
+                <div class="drawer-form-item">
+                    <label class="drawer-form-label"><span class="req">*</span>优惠券类型</label>
+                    <div class="drawer-form-control">
+                        <div class="drawer-radio-group">
+                            <label class="drawer-radio-wrapper"><input type="radio" name="couponType" value="1" checked> 满减券</label>
+                            <label class="drawer-radio-wrapper"><input type="radio" name="couponType" value="2"> 代金券</label>
+                            <label class="drawer-radio-wrapper"><input type="radio" name="couponType" value="3"> 加油券</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-form-item">
+                    <label class="drawer-form-label"><span class="req">*</span>优惠券名称</label>
+                    <div class="drawer-form-control">
+                        <input type="text" class="drawer-input" id="couponName" placeholder="请输入优惠券名称" maxlength="20">
+                        <span class="drawer-char-counter" id="nameCounter">0 / 20</span>
+                    </div>
+                </div>
+                <div class="drawer-form-item">
+                    <label class="drawer-form-label"><span class="req">*</span>发放总量</label>
+                    <div class="drawer-form-control" style="flex-direction: column; align-items: flex-start;">
+                        <input type="number" class="drawer-input" placeholder="请输入发放总量">
+                        <div class="drawer-helper-text">最多100000000张，修改优惠券总量时只能增加不能减少，请谨慎设置</div>
+                    </div>
+                </div>
+                <div class="drawer-form-item">
+                    <label class="drawer-form-label"><span class="req">*</span>面额</label>
+                    <div class="drawer-form-control">
+                        <input type="number" class="drawer-input" placeholder="请输入面额" style="flex: 0 0 auto;">
+                        <span style="margin-left: 10px; color: #1F2937; font-size: 14px;">元</span>
+                    </div>
+                </div>
+                <div class="drawer-form-item">
+                    <label class="drawer-form-label"><span class="req">*</span>获取方式</label>
+                    <div class="drawer-form-control">
+                        <div class="drawer-radio-group">
+                            <label class="drawer-radio-wrapper"><input type="radio" name="getMethod" value="1"> 积分兑换</label>
+                            <label class="drawer-radio-wrapper"><input type="radio" name="getMethod" value="2" checked> 活动赠送</label>
+                            <label class="drawer-radio-wrapper"><input type="radio" name="getMethod" value="3"> 商城购买</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-form-item">
+                    <label class="drawer-form-label"><span class="req">*</span>运营主体</label>
+                    <div class="drawer-form-control">
+                        <select class="drawer-select">
+                            <option value="" disabled selected hidden>请选择运营主体</option>
+                            <option value="1">数科公司</option>
+                            <option value="2">联网公司</option>
+                            <option value="3">高速石化</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 有效时间 -->
+                <div class="drawer-section-title" style="margin-top: 24px;">优惠券有效时间</div>
+                <div class="drawer-form-item">
+                    <label class="drawer-form-label">时间类型</label>
+                    <div class="drawer-form-control">
+                        <div class="drawer-radio-group" id="timeTypeGroup">
+                            <label class="drawer-radio-wrapper"><input type="radio" name="timeType" value="fixed" checked> 固定使用时间</label>
+                            <label class="drawer-radio-wrapper"><input type="radio" name="timeType" value="flexible"> 灵活使用时间</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-form-item" id="fixedTimeGroup">
+                    <label class="drawer-form-label"><span class="req">*</span>固定时间</label>
+                    <div class="drawer-form-control">
+                        <div class="drawer-input" style="display: flex; justify-content: space-between; align-items: center; color: #9CA3AF; padding: 0 11px;">
+                            <span>开始时间 → 结束时间</span>
+                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-form-item" id="flexibleTimeGroup" style="display:none;">
+                    <label class="drawer-form-label"><span class="req">*</span>灵活时间</label>
+                    <div class="drawer-form-control">
+                        <div class="drawer-input-group">
+                            <span class="addon addon-left">领券当日起</span>
+                            <input type="number" class="drawer-input" style="border-radius: 0; width: 140px; text-align: center; flex-shrink: 0;" placeholder="请输入天数">
+                            <span class="addon addon-right">天</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 使用条件 -->
+                <div class="drawer-section-title" style="margin-top: 24px;">使用条件</div>
+                <!-- 满减券/代金券：金额门槛 -->
+                <div class="drawer-form-item" id="amountThresholdRow">
+                    <label class="drawer-form-label"><span class="req">*</span>使用门槛</label>
+                    <div class="drawer-form-control">
+                        <div class="drawer-input-group">
+                            <span class="addon addon-left">线上订单满</span>
+                            <input type="number" class="drawer-input" style="border-radius: 0; width: 140px; text-align: center; flex-shrink: 0;" placeholder="请输入金额">
+                            <span class="addon addon-right">元可用</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 加油券：油品类别 + 升数门槛 -->
+                <div class="drawer-form-item" id="oilTypeRow" style="display:none;">
+                    <label class="drawer-form-label"><span class="req">*</span>油品类别</label>
+                    <div class="drawer-form-control">
+                        <select class="drawer-select" style="width: 100%;">
+                            <option value="" disabled selected hidden>请选择油品类别</option>
+                            <option value="diesel">柴油</option>
+                            <option value="gas92">92号汽油</option>
+                            <option value="gas95">95号汽油</option>
+                            <option value="gas98">98号汽油</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="drawer-form-item" id="oilThresholdRow" style="display:none;">
+                    <label class="drawer-form-label"><span class="req">*</span>加油门槛</label>
+                    <div class="drawer-form-control">
+                        <div class="drawer-input-group">
+                            <span class="addon addon-left">单次加油满</span>
+                            <input type="number" class="drawer-input" style="border-radius: 0; width: 140px; text-align: center; flex-shrink: 0;" placeholder="请输入升数">
+                            <span class="addon addon-right">升可用</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 使用范围 -->
+                <div class="drawer-section-title" style="margin-top: 24px;">使用范围</div>
+                <div class="drawer-form-item">
+                    <label class="drawer-form-label"><span class="req">*</span>业务范围</label>
+                    <div class="drawer-form-control">
+                        <select class="drawer-select">
+                            <option value="" disabled selected hidden>请选择使用业务范围</option>
+                            <option value="all">全部业务</option>
+                            <option value="urea">尿素业务</option>
+                            <option value="charging">充电业务</option>
+                            <option value="catering">餐饮业务</option>
+                            <option value="mall">商城业务</option>
+                            <option value="gas">加油业务</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="drawer-form-item">
+                    <label class="drawer-form-label" style="visibility: hidden;">占位</label>
+                    <div class="drawer-form-control">
+                        <div class="drawer-checkbox-group" style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
+                            <label class="drawer-checkbox-wrapper"><input type="checkbox" id="onlineUse" checked> 线上使用</label>
+                            <div class="drawer-sub-form-item active" id="onlineMerchantConfig">
+                                <label class="drawer-sub-form-label">适用商户</label>
+                                <div class="drawer-sub-form-control">
+                                    <div class="drawer-radio-group">
+                                        <label class="drawer-radio-wrapper"><input type="radio" name="onlineScope" value="all" checked> 所有商户</label>
+                                        <label class="drawer-radio-wrapper"><input type="radio" name="onlineScope" value="designated"> 指定商户</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="drawer-checkbox-wrapper"><input type="checkbox" id="offlineUse" checked> 线下门店使用</label>
+                            <div class="drawer-sub-form-item active" id="storeConfig">
+                                <label class="drawer-sub-form-label">门店范围</label>
+                                <div class="drawer-sub-form-control">
+                                    <div class="drawer-radio-group" style="margin-bottom: 6px;">
+                                        <label class="drawer-radio-wrapper"><input type="radio" name="storeScope" value="all" checked> 所有门店</label>
+                                        <label class="drawer-radio-wrapper"><input type="radio" name="storeScope" value="designated"> 指定门店</label>
+                                    </div>
+                                    <div id="storeSelectBtn" style="display:none;">
+                                        <button class="drawer-btn-select-store" onclick="showToast('选择门店功能待实现', 'info')">
+                                            <i data-lucide="store" class="w-4 h-4 mr-1"></i>选择门店
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 领取和使用规则 -->
+                <div class="drawer-section-title" style="margin-top: 24px;">领取和使用规则</div>
+                <div class="drawer-form-item">
+                    <label class="drawer-form-label">使用说明</label>
+                    <div class="drawer-form-control">
+                        <textarea class="drawer-textarea" id="usageDesc" placeholder="请输入使用说明" maxlength="500"></textarea>
+                        <span class="drawer-char-counter" id="descCounter">0 / 500</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部按钮区 -->
+            <div class="px-5 py-4 border-t border-neutral-200 bg-neutral-50 flex justify-end gap-3">
+                <button class="btn btn-secondary btn-md" onclick="closeDrawer()">取 消</button>
+                <button class="btn btn-primary btn-md" onclick="handleSave()">保 存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[1000] flex flex-col gap-2"></div>
+
+    <script>
+        // ===== Toast =====
+        function showToast(message, type) {
+            type = type || 'success';
+            var container = document.getElementById('toast-container');
+            var toast = document.createElement('div');
+            var bgClass = type === 'success' ? 'bg-success/10 border-success/30' : (type === 'error' ? 'bg-error/10 border-error/30' : 'bg-info/10 border-info/30');
+            var textClass = type === 'success' ? 'text-success' : (type === 'error' ? 'text-error' : 'text-info');
+            var iconName = type === 'success' ? 'check-circle' : (type === 'error' ? 'x-circle' : 'info');
+            toast.className = 'bg-white rounded border border-neutral-200 shadow-lg px-4 py-3 flex items-center gap-3 transform transition-all duration-200';
+            toast.innerHTML = '<i data-lucide="' + iconName + '" class="w-5 h-5 ' + textClass + ' flex-shrink-0"></i><span class="text-sm text-neutral-800">' + message + '</span>';
+            container.appendChild(toast);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(function() { toast.remove(); }, 200);
+            }, 2500);
+        }
+
+        // ===== 抽屉 =====
+        function openDrawer() {
+            var overlay = document.getElementById('coupon-drawer');
+            if (overlay) overlay.classList.add('active');
+            // 重置表单
+            resetDrawerForm();
+            setTimeout(function() { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
+        }
+
+        function closeDrawer() {
+            var overlay = document.getElementById('coupon-drawer');
+            if (overlay) overlay.classList.remove('active');
+        }
+
+        // Esc 关闭
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDrawer();
+        });
+
+        // ===== 抽屉表单逻辑 =====
+        function resetDrawerForm() {
+            var el;
+            el = document.getElementById('couponName'); if (el) el.value = '';
+            el = document.getElementById('nameCounter'); if (el) el.textContent = '0 / 20';
+            el = document.getElementById('usageDesc'); if (el) el.value = '';
+            el = document.getElementById('descCounter'); if (el) el.textContent = '0 / 500';
+            // 重置券种为满减券
+            var typeRadio = document.querySelector('input[name="couponType"][value="1"]');
+            if (typeRadio) typeRadio.checked = true;
+            // 触发联动（重置为满减券状态）
+            var couponTypeRadios = document.getElementsByName('couponType');
+            var changeEvent = new Event('change', { bubbles: true });
+            if (couponTypeRadios[0]) couponTypeRadios[0].dispatchEvent(changeEvent);
+        }
+
+        // 字数统计
+        (function() {
+            var nameInput = document.getElementById('couponName');
+            var nameCounter = document.getElementById('nameCounter');
+            if (nameInput && nameCounter) {
+                nameInput.addEventListener('input', function() { nameCounter.textContent = this.value.length + ' / 20'; });
+            }
+            var descInput = document.getElementById('usageDesc');
+            var descCounter = document.getElementById('descCounter');
+            if (descInput && descCounter) {
+                descInput.addEventListener('input', function() { descCounter.textContent = this.value.length + ' / 500'; });
+            }
+        })();
+
+        // 时间类型联动
+        (function() {
+            var timeRadios = document.getElementsByName('timeType');
+            var fixedTimeGroup = document.getElementById('fixedTimeGroup');
+            var flexibleTimeGroup = document.getElementById('flexibleTimeGroup');
+            function toggleTimeType() {
+                var checked = document.querySelector('input[name="timeType"]:checked');
+                if (!checked) return;
+                if (checked.value === 'fixed') {
+                    if (fixedTimeGroup) fixedTimeGroup.style.display = 'flex';
+                    if (flexibleTimeGroup) flexibleTimeGroup.style.display = 'none';
+                } else {
+                    if (fixedTimeGroup) fixedTimeGroup.style.display = 'none';
+                    if (flexibleTimeGroup) flexibleTimeGroup.style.display = 'flex';
+                }
+            }
+            toggleTimeType();
+            if (timeRadios) {
+                timeRadios.forEach(function(r) { r.addEventListener('change', toggleTimeType); });
+            }
+        })();
+
+        // 线上使用联动
+        (function() {
+            var onlineCheckbox = document.getElementById('onlineUse');
+            var onlineMerchantConfig = document.getElementById('onlineMerchantConfig');
+            function toggleOnlineMerchant() {
+                if (onlineCheckbox && onlineMerchantConfig) {
+                    if (onlineCheckbox.checked) {
+                        onlineMerchantConfig.classList.add('active');
+                    } else {
+                        onlineMerchantConfig.classList.remove('active');
+                    }
+                }
+            }
+            toggleOnlineMerchant();
+            if (onlineCheckbox) onlineCheckbox.addEventListener('change', toggleOnlineMerchant);
+        })();
+
+        // 线下门店联动
+        (function() {
+            var offlineCheckbox = document.getElementById('offlineUse');
+            var storeConfig = document.getElementById('storeConfig');
+            function toggleStoreConfig() {
+                if (offlineCheckbox && storeConfig) {
+                    if (offlineCheckbox.checked) {
+                        storeConfig.classList.add('active');
+                    } else {
+                        storeConfig.classList.remove('active');
+                    }
+                }
+            }
+            toggleStoreConfig();
+            if (offlineCheckbox) offlineCheckbox.addEventListener('change', toggleStoreConfig);
+
+            // 门店范围切换：仅"指定门店"时显示选择门店按钮
+            var storeScopes = document.getElementsByName('storeScope');
+            var storeSelectBtn = document.getElementById('storeSelectBtn');
+            function toggleStoreSelectBtn() {
+                var checked = document.querySelector('input[name="storeScope"]:checked');
+                if (storeSelectBtn && checked) {
+                    storeSelectBtn.style.display = checked.value === 'designated' ? 'block' : 'none';
+                }
+            }
+            toggleStoreSelectBtn();
+            if (storeScopes) {
+                storeScopes.forEach(function(r) { r.addEventListener('change', toggleStoreSelectBtn); });
+            }
+        })();
+
+        // ===== 券种切换联动 =====
+        (function() {
+            var couponTypeRadios = document.getElementsByName('couponType');
+            var getMethodRadios = document.getElementsByName('getMethod');
+            var operatorSelect = document.querySelector('.drawer-select'); // 第一个 drawer-select 就是运营主体
+            var amountThresholdRow = document.getElementById('amountThresholdRow');
+            var oilTypeRow = document.getElementById('oilTypeRow');
+            var oilThresholdRow = document.getElementById('oilThresholdRow');
+            var onlineCheckbox = document.getElementById('onlineUse');
+            var offlineCheckbox = document.getElementById('offlineUse');
+            var onlineMerchantConfig = document.getElementById('onlineMerchantConfig');
+            var storeConfig = document.getElementById('storeConfig');
+            // 业务范围：找包含"请选择使用业务范围"的 select
+            var bizScopeSelect = document.querySelector('.drawer-select option[value="all"]') ? document.querySelector('.drawer-select option[value="all"]').parentElement : null;
+
+            function toggleCouponType() {
+                var checked = document.querySelector('input[name="couponType"]:checked');
+                if (!checked) return;
+                var isGas = checked.value === '3';
+
+                // 获取方式
+                if (isGas) {
+                    // 锁定为活动赠送
+                    getMethodRadios.forEach(function(r) {
+                        r.disabled = true;
+                        if (r.value === '2') r.checked = true;
+                    });
+                } else {
+                    getMethodRadios.forEach(function(r) { r.disabled = false; });
+                }
+
+                // 运营主体：加油券默认高速石化
+                if (operatorSelect && isGas) {
+                    operatorSelect.value = '3';
+                }
+
+                // 使用条件切换
+                if (amountThresholdRow) amountThresholdRow.style.display = isGas ? 'none' : 'flex';
+                if (oilTypeRow) oilTypeRow.style.display = isGas ? 'flex' : 'none';
+                if (oilThresholdRow) oilThresholdRow.style.display = isGas ? 'flex' : 'none';
+
+                // 使用范围
+                if (onlineCheckbox && offlineCheckbox) {
+                    if (isGas) {
+                        onlineCheckbox.checked = false;
+                        onlineCheckbox.disabled = true;
+                        offlineCheckbox.checked = true;
+                        offlineCheckbox.disabled = true;
+                    } else {
+                        onlineCheckbox.checked = true;
+                        onlineCheckbox.disabled = false;
+                        offlineCheckbox.checked = true;
+                        offlineCheckbox.disabled = false;
+                    }
+                }
+                // 刷新线上使用子项
+                if (onlineMerchantConfig) {
+                    onlineMerchantConfig.classList.toggle('active', onlineCheckbox && onlineCheckbox.checked);
+                }
+                if (storeConfig) {
+                    storeConfig.classList.toggle('active', offlineCheckbox && offlineCheckbox.checked);
+                }
+
+                // 业务范围：加油券锁定加油业务
+                if (bizScopeSelect) {
+                    if (isGas) {
+                        bizScopeSelect.value = 'gas';
+                        bizScopeSelect.disabled = true;
+                    } else {
+                        bizScopeSelect.disabled = false;
+                    }
+                }
+            }
+
+            if (couponTypeRadios) {
+                couponTypeRadios.forEach(function(r) { r.addEventListener('change', toggleCouponType); });
+            }
+        })();
+
+        function handleSave() {
+            var name = document.getElementById('couponName');
+            if (name && !name.value.trim()) {
+                showToast('请输入优惠券名称', 'error');
+                return;
+            }
+            showToast('保存成功', 'success');
+        }
+
+        // ===== 表格操作 =====
+        function toggleSwitch(sw) {
+            var isOn = sw.classList.contains('on');
+            if (isOn) {
+                sw.classList.remove('on');
+                sw.nextElementSibling.textContent = '禁用';
+            } else {
+                sw.classList.add('on');
+                sw.nextElementSibling.textContent = '启用';
+            }
+        }
+
+        function handleDelete() {
+            if (confirm('确认删除该卡券？')) {
+                showToast('删除成功', 'success');
+            }
+        }
+
+        function resetFilters() {
+            showToast('筛选条件已重置', 'success');
+        }
+
+        function handleSearch() {
+            showToast('查询完成', 'success');
+        }
+
+        // ===== 图标初始化 =====
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

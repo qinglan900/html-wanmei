@@ -257,7 +257,7 @@
                                     <div class="text-xs text-neutral-400 mt-1">最多100000000张，修改时只能增加不能减少</div>
                                 </div>
                                 <div class="col-span-2">
-                                    <label class="text-sm text-neutral-600 mb-1 block">适用商品 <span class="text-error">*</span> <span class="text-xs text-neutral-400 font-normal">（请选择其中一类）</span></label>
+                                    <label class="text-sm text-neutral-600 mb-1 block">适用场景 <span class="text-error">*</span> <span class="text-xs text-neutral-400 font-normal">（请选择其中一类）</span></label>
                                     <!-- 线上商城 -->
                                     <div class="border border-neutral-200 rounded px-3 py-2 bg-neutral-50">
                                         <div class="flex items-center gap-4 flex-wrap">
@@ -472,7 +472,7 @@
             showList();
         }
 
-        // 根据「适用商品」切换使用门槛的展示模式（多业务类别）
+        // 根据「适用场景」切换使用门槛的展示模式（多业务类别）
         function toggleThresholdMode() {
             const scopeRadio = document.querySelector('input[name="scope"]:checked');
             const scope = scopeRadio ? scopeRadio.value : 'all';

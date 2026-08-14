@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>活动中心 - 皖美e行</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --primary: #FF6B35;
+      --primary-light: #FFF7E6;
+      --primary-dark: #E85A2A;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --neutral-50: #F9FAFB;
+      --neutral-100: #F3F4F6;
+      --neutral-200: #E5E7EB;
+      --neutral-300: #D1D5DB;
+      --neutral-500: #6B7280;
+      --neutral-600: #4B5563;
+      --neutral-700: #374151;
+      --neutral-900: #111827;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #E5E7EB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px 0;
+    }
+
+    /* ===== 手机模拟器 ===== */
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      background: #F5F6F8;
+      border-radius: 44px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25), 0 0 0 12px #1F2937, 0 0 0 14px #374151;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .phone-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      background: #F5F6F8;
+    }
+
+    /* ===== 状态栏 ===== */
+    .status-bar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #111827;
+      background: transparent;
+      flex-shrink: 0;
+    }
+
+    /* ===== 页面容器 ===== */
+    .page {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .page.active { display: flex; }
+    .page::-webkit-scrollbar { display: none; }
+
+    /* ===== 顶部导航栏 ===== */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .nav-bar .nav-back {
+      position: absolute;
+      left: 16px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #111827;
+      background: rgba(255,255,255,0.6);
+    }
+    .nav-bar .nav-title { font-size: 17px; font-weight: 600; color: #111827; }
+
+    /* ===== Banner ===== */
+    .hero-banner {
+      margin: 0 16px 16px;
+      border-radius: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #FF6B35 0%, #FF8A50 55%, #FFA26B 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 140px;
+      height: 140px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+    }
+    .hero-banner .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .hero-banner .hero-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-banner .hero-subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== 分区标题 ===== */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px 12px;
+      flex-shrink: 0;
+    }
+    .section-title .bar { width: 4px; height: 16px; background: #FF6B35; border-radius: 2px; }
+    .section-title .text { font-size: 16px; font-weight: 700; color: #111827; }
+
+    /* ===== 活动卡片（通用框架） ===== */
+    .activity-list { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
+    .activity-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      flex-shrink: 0;
+    }
+    .activity-card:active { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+    /* 加油券活动卡片 */
+    .gas-card .gas-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px dashed #E5E7EB;
+    }
+    .gas-card .gas-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .gas-card .gas-brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #FFF7E6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FF6B35;
+    }
+    .gas-card .gas-brand-name { font-size: 16px; font-weight: 700; color: #111827; }
+    .gas-card .gas-brand-desc { font-size: 12px; color: #6B7280; margin-top: 2px; }
+    .gas-card .gas-type-tag {
+      background: #FFF7E6;
+      color: #FF6B35;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .gas-card .gas-face-row {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+    }
+    .gas-face-chip {
+      flex: 1;
+      background: linear-gradient(135deg, #FFF7E6 0%, #FFF0E0 100%);
+      border: 1px solid #FFE0C2;
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .gas-face-chip .face-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: #FF6B35;
+      line-height: 1;
+    }
+    .gas-face-chip .face-value .yen { font-size: 13px; font-weight: 700; }
+    .gas-face-chip .face-threshold {
+      font-size: 11px;
+      color: #6B7280;
+      margin-top: 5px;
+      line-height: 1.3;
+    }
+    .gas-card .gas-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px 14px;
+    }
+    .gas-card .gas-oil-tag {
+      font-size: 12px;
+      color: #4B5563;
+      background: #F3F4F6;
+      border-radius: 6px;
+      padding: 4px 8px;
+    }
+    .gas-card .gas-arrow { color: #9CA3AF; display: flex; align-items: center; gap: 2px; font-size: 13px; color: #6B7280; }
+
+    /* 占位活动卡片 */
+    .placeholder-card {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .placeholder-card .ph-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .placeholder-card .ph-icon.green { background: #ECFDF5; color: #10B981; }
+    .placeholder-card .ph-icon.blue { background: #EFF6FF; color: #3B82F6; }
+    .placeholder-card .ph-icon.purple { background: #F5F3FF; color: #8B5CF6; }
+    .placeholder-card .ph-body { flex: 1; }
+    .placeholder-card .ph-title { font-size: 15px; font-weight: 600; color: #111827; }
+    .placeholder-card .ph-desc { font-size: 12px; color: #6B7280; margin-top: 3px; }
+    .placeholder-card .ph-tag {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .placeholder-card .ph-tag.soon { background: #F3F4F6; color: #9CA3AF; }
+
+    /* ===== 底部 Tab ===== */
+    .bottom-tab {
+      display: flex;
+      border-top: 1px solid #E5E7EB;
+      background: white;
+      flex-shrink: 0;
+    }
+    .bottom-tab .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 8px 0 10px;
+      cursor: pointer;
+      color: #9CA3AF;
+      font-size: 11px;
+      transition: color 0.15s;
+    }
+    .bottom-tab .tab-item.active { color: #FF6B35; }
+
+    /* ===== 详情页 ===== */
+    .detail-hero {
+      margin: 0 16px 16px;
+      border-radius: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #FF6B35 0%, #FF8A50 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .detail-hero::after {
+      content: '';
+      position: absolute;
+      right: -20px;
+      bottom: -40px;
+      width: 160px;
+      height: 160px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 50%;
+    }
+    .detail-hero .dh-org {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .detail-hero .dh-title {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .detail-hero .dh-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+    .detail-hero .dh-tag {
+      background: rgba(255,255,255,0.22);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+
+    /* 券卡片（详情页） */
+    .coupon-list { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
+    .coupon-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      flex-shrink: 0;
+      display: flex;
+    }
+    .coupon-card .coupon-left {
+      width: 108px;
+      background: linear-gradient(160deg, #FF7A45 0%, #FF6B35 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .coupon-card .coupon-left::before,
+    .coupon-card .coupon-left::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      width: 12px;
+      height: 12px;
+      background: #F5F6F8;
+      border-radius: 50%;
+    }
+    .coupon-card .coupon-left::before { top: -6px; }
+    .coupon-card .coupon-left::after { bottom: -6px; }
+    .coupon-card .coupon-value {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .coupon-card .coupon-value .yen { font-size: 16px; font-weight: 700; }
+    .coupon-card .coupon-oil { font-size: 12px; opacity: 0.9; margin-top: 6px; }
+    .coupon-card .coupon-right {
+      flex: 1;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .coupon-card .coupon-threshold {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+    }
+    .coupon-card .coupon-desc { font-size: 12px; color: #6B7280; margin-top: 4px; }
+    .coupon-card .coupon-claim {
+      margin-top: 12px;
+      align-self: flex-start;
+      background: #FF6B35;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 22px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .coupon-card .coupon-claim:active { transform: scale(0.96); opacity: 0.9; }
+    .coupon-card .coupon-claim.claimed { background: #D1D5DB; }
+
+    /* 规则说明 */
+    .rules-block {
+      margin: 16px;
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      flex-shrink: 0;
+    }
+    .rules-block .rules-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rules-block .rules-item {
+      display: flex;
+      gap: 8px;
+      font-size: 13px;
+      color: #4B5563;
+      line-height: 1.6;
+      padding: 4px 0;
+    }
+    .rules-block .rules-item .dot {
+      width: 4px;
+      height: 4px;
+      background: #FF6B35;
+      border-radius: 50%;
+      margin-top: 8px;
+      flex-shrink: 0;
+    }
+
+    /* ===== Toast ===== */
+    .toast-wrap {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      background: rgba(17,24,39,0.92);
+      color: white;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      animation: toastIn 0.25s ease;
+      white-space: nowrap;
+    }
+    .toast .toast-icon { color: #34D399; }
+    @keyframes toastIn {
+      from { transform: translateY(-12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .toast.hide { animation: toastOut 0.25s ease forwards; }
+    @keyframes toastOut {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-12px); opacity: 0; }
+    }
+
+    /* ===== 支付页面（参考交控加油订单页） ===== */
+    .pay-station-header {
+      margin: 0 16px 12px;
+      padding: 16px;
+      background: linear-gradient(180deg, #FFF3EB 0%, #FFFFFF 100%);
+      border-radius: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-shrink: 0;
+    }
+    .pay-station-header .psh-name { font-size: 18px; font-weight: 700; color: #111827; }
+    .pay-station-header .psh-distance { font-size: 12px; color: #6B7280; margin: 4px 0; }
+    .pay-station-header .psh-address { font-size: 12px; color: #9CA3AF; }
+    .pay-station-header .psh-img {
+      width: 56px; height: 56px; border-radius: 8px; flex-shrink: 0;
+      background: #FFF0E0;
+      background-image: radial-gradient(circle at 10px 10px, #FFD9BF 2px, transparent 2px),
+                        radial-gradient(circle at 40px 40px, #FFE4CC 3px, transparent 3px);
+      background-size: 30px 30px, 40px 40px;
+    }
+
+    .pay-order-card {
+      margin: 0 16px 12px;
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      flex-shrink: 0;
+    }
+    .pay-card-title { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+    .pay-order-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 0; font-size: 14px;
+    }
+    .pay-order-row .p-label { color: #6B7280; }
+    .pay-order-row .p-value { color: #111827; }
+    .pay-order-row .p-value.discount { color: #10B981; }
+
+    .pay-coupon-select-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-top: 1px solid #F3F4F6;
+    }
+    .pay-coupon-select-row .p-label { font-size: 14px; color: #6B7280; }
+    .pay-coupon-select-row .p-action {
+      font-size: 14px; color: #FF6B35;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .pay-coupon-select-row .p-action-text {
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pay-amount-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0 2px; border-top: 1px solid #F3F4F6;
+    }
+    .pay-amount-row .p-label { font-size: 15px; font-weight: 700; color: #111827; }
+    .pay-amount-row .p-value { font-size: 22px; font-weight: 800; color: #FF6B35; }
+
+    .pay-method-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 14px;
+    }
+    .pay-method-left { display: flex; align-items: center; gap: 12px; }
+    .pay-method-left .pm-icon {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #07C160; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; flex-shrink: 0;
+    }
+    .pay-method-left .pm-text { font-size: 15px; font-weight: 500; color: #111827; }
+    .pay-method-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #FF6B35; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .pay-method-check svg { fill: #fff; width: 12px; height: 12px; }
+
+    .pay-footer {
+      margin-top: auto;
+      background: white;
+      border-top: 1px solid #E5E7EB;
+      padding: 12px 16px;
+      flex-shrink: 0;
+    }
+    .pay-btn {
+      width: 100%; height: 48px;
+      background: linear-gradient(135deg, #FF6B35, #FF8A50);
+      color: #fff; border: none; border-radius: 24px;
+      font-size: 17px; font-weight: 700; letter-spacing: 1px;
+      cursor: pointer; box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+      transition: transform 0.15s;
+    }
+    .pay-btn:active { transform: scale(0.98); }
+
+    /* ===== 选择优惠券页面 ===== */
+    .coupon-group.hidden { display: none; }
+    .coupon-list-wrap {
+      padding: 0 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .coupon-list-card {
+      background: linear-gradient(135deg, #FF7A45 0%, #FF6B35 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 14px 0;
+      min-height: 96px;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
+      flex-shrink: 0;
+    }
+    .coupon-list-card:active { transform: scale(0.98); }
+    .coupon-list-card .cl-left {
+      width: 100px; flex-shrink: 0;
+      display: flex; justify-content: center; align-items: center;
+      padding: 0 10px;
+    }
+    .coupon-list-card .cl-amount { font-size: 32px; font-weight: 600; }
+    .coupon-list-card .cl-currency { font-size: 16px; font-weight: 500; margin-right: 2px; }
+    .coupon-list-card .cl-divider {
+      width: 0; flex-shrink: 0; height: 80%; align-self: center;
+      border-left: 1px dashed rgba(255,255,255,0.4);
+      position: relative;
+    }
+    .coupon-list-card .cl-right {
+      flex: 1; padding: 0 14px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .coupon-list-card .cl-title {
+      font-size: 16px; font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .coupon-list-card .cl-subtitle { font-size: 14px; font-weight: 400; }
+    .coupon-list-card .cl-date { font-size: 11px; opacity: 0.8; }
+    .coupon-list-card .cl-select {
+      width: 50px; flex-shrink: 0;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .coupon-list-card .cl-select .radio-empty {
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 1.5px solid #fff;
+    }
+    .coupon-list-card.disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      filter: grayscale(0.6);
+    }
+    .coupon-list-card.disabled:active { transform: none; }
+    .coupon-list-card.selected .radio-empty {
+      position: relative;
+      background: #fff;
+      border-color: #fff;
+    }
+    .coupon-list-card.selected .radio-empty::after {
+      content: '';
+      position: absolute;
+      left: 7px; top: 3px;
+      width: 7px; height: 12px;
+      border: solid #FF6B35;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .coupon-confirm-bar {
+      padding: 16px;
+      flex-shrink: 0;
+    }
+    .coupon-confirm-btn {
+      width: 100%;
+      height: 44px;
+      background: #FF6B35;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .coupon-confirm-btn:active { transform: scale(0.98); }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <!-- 状态栏 -->
+      <div class="status-bar">
+        <span>9:41</span>
+        <span style="display:flex; gap:6px; align-items:center;">
+          <i data-lucide="signal" class="w-4 h-4"></i>
+          <i data-lucide="wifi" class="w-4 h-4"></i>
+          <i data-lucide="battery-full" class="w-4 h-4"></i>
+        </span>
+      </div>
+
+      <!-- Toast 容器 -->
+      <div class="toast-wrap" id="toastWrap"></div>
+
+      <!-- ===== 首页 ===== -->
+      <div class="page active" id="pageHome">
+        <!-- 顶部导航 -->
+        <div class="nav-bar">
+          <span class="nav-title">活动中心</span>
+        </div>
+
+        <!-- Banner -->
+        <div class="hero-banner">
+          <div class="hero-tag"><i data-lucide="gift" class="w-3.5 h-3.5"></i> 限时福利</div>
+          <div class="hero-title">高速石化<br>加油券免费领</div>
+          <div class="hero-subtitle">柴油加满即享优惠，出行更省心</div>
+        </div>
+
+        <!-- 加油券活动 -->
+        <div class="section-title">
+          <span class="bar"></span>
+          <span class="text">热门活动</span>
+        </div>
+        <div class="activity-list">
+          <!-- 加油券活动卡片 -->
+          <div class="activity-card gas-card" onclick="openDetail()">
+            <div class="gas-card-top">
+              <div class="gas-brand">
+                <div class="gas-brand-icon"><i data-lucide="fuel" class="w-5 h-5"></i></div>
+                <div>
+                  <div class="gas-brand-name">高速石化加油券</div>
+                  <div class="gas-brand-desc">货车积分试点路段沿线站点可用</div>
+                </div>
+              </div>
+              <span class="gas-type-tag">加油券</span>
+            </div>
+            <div class="gas-face-row">
+              <div class="gas-face-chip">
+                <div class="face-value"><span class="yen">¥</span>20</div>
+                <div class="face-threshold">满150升可用</div>
+              </div>
+              <div class="gas-face-chip">
+                <div class="face-value"><span class="yen">¥</span>40</div>
+                <div class="face-threshold">满200升可用</div>
+              </div>
+              <div class="gas-face-chip">
+                <div class="face-value"><span class="yen">¥</span>75</div>
+                <div class="face-threshold">满300升可用</div>
+              </div>
+            </div>
+            <div class="gas-card-footer">
+              <span class="gas-oil-tag">柴油</span>
+              <span class="gas-arrow">查看详情 <i data-lucide="chevron-right" class="w-4 h-4"></i></span>
+            </div>
+          </div>
+
+          <!-- 签到活动占位 -->
+          <div class="activity-card placeholder-card">
+            <div class="ph-icon green"><i data-lucide="calendar-check" class="w-6 h-6"></i></div>
+            <div class="ph-body">
+              <div class="ph-title">每日签到</div>
+              <div class="ph-desc">签到领成长值，连续签到更多奖励</div>
+            </div>
+            <span class="ph-tag soon">敬请期待</span>
+          </div>
+
+          <!-- 抽奖活动占位 -->
+          <div class="activity-card placeholder-card">
+            <div class="ph-icon blue"><i data-lucide="ticket" class="w-6 h-6"></i></div>
+            <div class="ph-body">
+              <div class="ph-title">幸运抽奖</div>
+              <div class="ph-desc">消耗积分参与抽奖，赢取好礼</div>
+            </div>
+            <span class="ph-tag soon">敬请期待</span>
+          </div>
+
+          <!-- 消费返积分占位 -->
+          <div class="activity-card placeholder-card">
+            <div class="ph-icon purple"><i data-lucide="coins" class="w-6 h-6"></i></div>
+            <div class="ph-body">
+              <div class="ph-title">消费返积分</div>
+              <div class="ph-desc">服务区消费返积分，积分兑好礼</div>
+            </div>
+            <span class="ph-tag soon">敬请期待</span>
+          </div>
+
+          <div style="height: 8px;"></div>
+        </div>
+
+        <!-- 底部 Tab -->
+        <div class="bottom-tab">
+          <div class="tab-item active" data-page="pageHome">
+            <i data-lucide="layout-grid" class="w-5 h-5"></i>
+            <span>活动</span>
+          </div>
+          <div class="tab-item" data-page="pagePay">
+            <i data-lucide="credit-card" class="w-5 h-5"></i>
+            <span>支付</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 详情页 ===== -->
+      <div class="page" id="pageDetail">
+        <!-- 顶部导航 -->
+        <div class="nav-bar">
+          <div class="nav-back" onclick="backHome()"><i data-lucide="chevron-left" class="w-5 h-5"></i></div>
+          <span class="nav-title">活动详情</span>
+        </div>
+
+        <!-- 活动头图 -->
+        <div class="detail-hero">
+          <div class="dh-org"><i data-lucide="building-2" class="w-4 h-4"></i> 高速石化 · 活动赠送</div>
+          <div class="dh-title">高速石化加油券<br>免费领取</div>
+          <div class="dh-tags">
+            <span class="dh-tag">加油券</span>
+            <span class="dh-tag">柴油</span>
+            <span class="dh-tag">线下门店使用</span>
+          </div>
+        </div>
+
+        <!-- 券列表 -->
+        <div class="section-title">
+          <span class="bar"></span>
+          <span class="text">可领取的券</span>
+        </div>
+        <div class="coupon-list">
+          <!-- 20元券 -->
+          <div class="coupon-card">
+            <div class="coupon-left">
+              <div class="coupon-value"><span class="yen">¥</span>20</div>
+              <div class="coupon-oil">柴油券</div>
+            </div>
+            <div class="coupon-right">
+              <div class="coupon-threshold">单次加油满 150 升可用</div>
+              <div class="coupon-desc">有效期内使用，逾期自动作废</div>
+              <button class="coupon-claim" onclick="claimCoupon(this, '20元加油券')">立即领取</button>
+            </div>
+          </div>
+          <!-- 40元券 -->
+          <div class="coupon-card">
+            <div class="coupon-left">
+              <div class="coupon-value"><span class="yen">¥</span>40</div>
+              <div class="coupon-oil">柴油券</div>
+            </div>
+            <div class="coupon-right">
+              <div class="coupon-threshold">单次加油满 200 升可用</div>
+              <div class="coupon-desc">有效期内使用，逾期自动作废</div>
+              <button class="coupon-claim" onclick="claimCoupon(this, '40元加油券')">立即领取</button>
+            </div>
+          </div>
+          <!-- 75元券 -->
+          <div class="coupon-card">
+            <div class="coupon-left">
+              <div class="coupon-value"><span class="yen">¥</span>75</div>
+              <div class="coupon-oil">柴油券</div>
+            </div>
+            <div class="coupon-right">
+              <div class="coupon-threshold">单次加油满 300 升可用</div>
+              <div class="coupon-desc">有效期内使用，逾期自动作废</div>
+              <button class="coupon-claim" onclick="claimCoupon(this, '75元加油券')">立即领取</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 活动规则 -->
+        <div class="rules-block">
+          <div class="rules-title"><i data-lucide="info" class="w-4 h-4"></i> 活动规则</div>
+          <div class="rules-item"><span class="dot"></span><span>活动期间每人可多次领取，不限量不限次</span></div>
+          <div class="rules-item"><span class="dot"></span><span>领取成功后，请在有效期内到高速石化加油站使用</span></div>
+          <div class="rules-item"><span class="dot"></span><span>仅限货车积分试点路段沿线站点使用</span></div>
+          <div class="rules-item"><span class="dot"></span><span>单次加油达到对应升数门槛方可使用对应面额券</span></div>
+          <div class="rules-item"><span class="dot"></span><span>本活动最终解释权归高速石化所有</span></div>
+        </div>
+
+        <div style="height: 20px;"></div>
+      </div>
+
+      <!-- ===== 支付页面 ===== -->
+      <div class="page" id="pagePay">
+        <!-- 顶部导航 -->
+        <div class="nav-bar">
+          <span class="nav-title">加油订单</span>
+        </div>
+
+        <!-- 加油站信息 -->
+        <div class="pay-station-header">
+          <div>
+            <div class="psh-name">庐江站</div>
+            <div class="psh-distance">距您 55.5km</div>
+            <div class="psh-address">合肥市庐江县周瑜大道</div>
+          </div>
+          <div class="psh-img"></div>
+        </div>
+
+        <!-- 订单信息 -->
+        <div class="pay-order-card">
+          <div class="pay-card-title">订单信息</div>
+          <div class="pay-order-row"><span class="p-label">商品</span><span class="p-value">柴油</span></div>
+          <div class="pay-order-row"><span class="p-label">商品数量</span><span class="p-value">250L</span></div>
+          <div class="pay-order-row"><span class="p-label">油枪</span><span class="p-value">3号枪</span></div>
+          <div class="pay-order-row"><span class="p-label">油品单价</span><span class="p-value">7.63元/L</span></div>
+          <div class="pay-order-row"><span class="p-label">加油金额</span><span class="p-value">1907.50元</span></div>
+          <div class="pay-order-row"><span class="p-label">商户优惠</span><span class="p-value discount">-¥0</span></div>
+          <div class="pay-coupon-select-row" onclick="openCoupon('gas')">
+            <span class="p-label">商户优惠券</span>
+            <span class="p-action" id="payMerchantCoupon">
+              <span class="p-action-text">请选择</span>
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </span>
+          </div>
+          <div class="pay-coupon-select-row" onclick="openCoupon('platform')">
+            <span class="p-label">平台优惠券</span>
+            <span class="p-action" id="payPlatformCoupon">
+              <span class="p-action-text">请选择</span>
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </span>
+          </div>
+          <div class="pay-amount-row">
+            <span class="p-label">实付金额</span>
+            <span class="p-value" id="payTotalAmount">¥1907.50</span>
+          </div>
+        </div>
+
+        <!-- 支付方式 -->
+        <div class="pay-order-card">
+          <div class="pay-card-title">支付方式</div>
+          <div class="pay-method-item">
+            <div class="pay-method-left">
+              <div class="pm-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 11.5c-.7-1.3-2-2.2-3.5-2.2-2.2 0-4 1.8-4 4 0 2.2 1.8 4 4 4 .9 0 1.8-.3 2.5-.9l-1.2-2c-.4.3-.8.4-1.3.4-.8 0-1.5-.7-1.5-1.5 0-.8.7-1.5 1.5-1.5.5 0 1 .2 1.3.7l2.2-1c0-.1 0-.1 0-.1zM18.5 9.5c-1 0-1.9.5-2.5 1.2l-1.3-1.5c.9-1.2 2.3-2 3.8-2 2.8 0 5 2.2 5 5 0 2.8-2.2 5-5 5-1 0-2-.3-2.8-1l1.3-2.2c.4.3.9.4 1.5.4 1.4 0 2.5-1.1 2.5-2.5 0-1.4-1.1-2.4-2.5-2.4z"/></svg>
+              </div>
+              <span class="pm-text">微信支付</span>
+            </div>
+            <div class="pay-method-check">
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部按钮 -->
+        <div class="pay-footer">
+          <button class="pay-btn" onclick="confirmPay()">支付订单</button>
+        </div>
+
+        <!-- 底部 Tab -->
+        <div class="bottom-tab">
+          <div class="tab-item" data-page="pageHome">
+            <i data-lucide="layout-grid" class="w-5 h-5"></i>
+            <span>活动</span>
+          </div>
+          <div class="tab-item active" data-page="pagePay">
+            <i data-lucide="credit-card" class="w-5 h-5"></i>
+            <span>支付</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 选择优惠券页面 ===== -->
+      <div class="page" id="pageCoupon">
+        <div class="nav-bar">
+          <div class="nav-back" onclick="backToPay()"><i data-lucide="chevron-left" class="w-5 h-5"></i></div>
+          <span class="nav-title">选择优惠券</span>
+        </div>
+
+        <!-- 商户优惠券 -->
+        <div class="coupon-group" id="couponGroupGas">
+        <div class="section-title">
+          <span class="bar"></span>
+          <span class="text">商户优惠券</span>
+        </div>
+        <div class="coupon-list-wrap">
+          <div class="coupon-list-card" data-type="gas" data-threshold="150" data-amount="20" data-name="20元高速石化柴油券" onclick="selectCoupon(this)">
+            <div class="cl-left">
+              <span class="cl-currency">¥</span><span class="cl-amount">20</span>
+            </div>
+            <div class="cl-divider"></div>
+            <div class="cl-right">
+              <div class="cl-title">20元高速石化柴油券</div>
+              <div class="cl-subtitle">满150升可用</div>
+              <div class="cl-date">2026.07.01-2026.09.30</div>
+            </div>
+            <div class="cl-select"><div class="radio-empty"></div></div>
+          </div>
+
+          <div class="coupon-list-card" data-type="gas" data-threshold="200" data-amount="40" data-name="40元高速石化柴油券" onclick="selectCoupon(this)">
+            <div class="cl-left">
+              <span class="cl-currency">¥</span><span class="cl-amount">40</span>
+            </div>
+            <div class="cl-divider"></div>
+            <div class="cl-right">
+              <div class="cl-title">40元高速石化柴油券</div>
+              <div class="cl-subtitle">满200升可用</div>
+              <div class="cl-date">2026.07.01-2026.09.30</div>
+            </div>
+            <div class="cl-select"><div class="radio-empty"></div></div>
+          </div>
+
+          <div class="coupon-list-card" data-type="gas" data-threshold="300" data-amount="75" data-name="75元高速石化柴油券" onclick="selectCoupon(this)">
+            <div class="cl-left">
+              <span class="cl-currency">¥</span><span class="cl-amount">75</span>
+            </div>
+            <div class="cl-divider"></div>
+            <div class="cl-right">
+              <div class="cl-title">75元高速石化柴油券</div>
+              <div class="cl-subtitle">满300升可用</div>
+              <div class="cl-date">2026.07.01-2026.09.30</div>
+            </div>
+            <div class="cl-select"><div class="radio-empty"></div></div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 平台优惠券 -->
+        <div class="coupon-group" id="couponGroupPlatform">
+        <div class="section-title">
+          <span class="bar"></span>
+          <span class="text">平台优惠券</span>
+        </div>
+        <div class="coupon-list-wrap">
+          <div class="coupon-list-card" data-type="platform" data-threshold="0" data-amount="200" data-name="200元高速石化加油代金券" onclick="selectCoupon(this)">
+            <div class="cl-left">
+              <span class="cl-currency">¥</span><span class="cl-amount">200</span>
+            </div>
+            <div class="cl-divider"></div>
+            <div class="cl-right">
+              <div class="cl-title">200元高速石化加油代金券</div>
+              <div class="cl-subtitle">无门槛使用</div>
+              <div class="cl-date">2026.07.18-2026.08.17</div>
+            </div>
+            <div class="cl-select"><div class="radio-empty"></div></div>
+          </div>
+
+          <div class="coupon-list-card disabled" data-type="platform" data-threshold="0" data-amount="10" data-name="10元驿达便利店代金券" onclick="selectCoupon(this)">
+            <div class="cl-left">
+              <span class="cl-currency">¥</span><span class="cl-amount">10</span>
+            </div>
+            <div class="cl-divider"></div>
+            <div class="cl-right">
+              <div class="cl-title">10元驿达便利店代金券</div>
+              <div class="cl-subtitle">无门槛使用</div>
+              <div class="cl-date">2026.07.20-2026.08.19</div>
+            </div>
+            <div class="cl-select"><div class="radio-empty"></div></div>
+          </div>
+        </div>
+        </div>
+
+        <div class="coupon-confirm-bar">
+          <button class="coupon-confirm-btn" onclick="confirmCouponSelect()">确认选择</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== 图标渲染 =====
+    if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+
+    // ===== 页面切换 =====
+    var pageHome = document.getElementById('pageHome');
+    var pageDetail = document.getElementById('pageDetail');
+    var pagePay = document.getElementById('pagePay');
+    var pageCoupon = document.getElementById('pageCoupon');
+
+    function openDetail() {
+      if (pageHome) pageHome.classList.remove('active');
+      if (pageDetail) pageDetail.classList.add('active');
+      if (pageDetail) pageDetail.scrollTop = 0;
+    }
+
+    function backHome() {
+      if (pageDetail) pageDetail.classList.remove('active');
+      if (pageHome) pageHome.classList.add('active');
+      if (pageHome) pageHome.scrollTop = 0;
+    }
+
+    // ===== 领取券 =====
+    var toastWrap = document.getElementById('toastWrap');
+    var toastTimer = null;
+
+    function showToast(msg) {
+      if (!toastWrap) return;
+      var toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 toast-icon"></i>' + msg;
+      toastWrap.appendChild(toast);
+      if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function() {
+        toast.classList.add('hide');
+        setTimeout(function() {
+          if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 250);
+      }, 1800);
+    }
+
+    function claimCoupon(btn, name) {
+      if (!btn) return;
+      showToast(name + ' 领取成功');
+      btn.classList.add('claimed');
+      btn.textContent = '已领取';
+      btn.disabled = true;
+      setTimeout(function() {
+        if (btn) {
+          btn.classList.remove('claimed');
+          btn.textContent = '立即领取';
+          btn.disabled = false;
+        }
+      }, 1500);
+    }
+
+    // ===== 底部 Tab 切换 =====
+    var tabItems = document.querySelectorAll('.bottom-tab .tab-item');
+
+    function switchTab(pageId) {
+      var mainPages = ['pageHome', 'pagePay'];
+      mainPages.forEach(function(id) {
+        var p = document.getElementById(id);
+        if (p) p.classList.remove('active');
+      });
+      var target = document.getElementById(pageId);
+      if (target) {
+        target.classList.add('active');
+        target.scrollTop = 0;
+      }
+      tabItems.forEach(function(t) {
+        if (t.getAttribute('data-page') === pageId) {
+          t.classList.add('active');
+        } else {
+          t.classList.remove('active');
+        }
+      });
+    }
+
+    tabItems.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var pid = tab.getAttribute('data-page');
+        if (pid) switchTab(pid);
+      });
+    });
+
+    // ===== 选择优惠券 =====
+    function openCoupon(type) {
+      var gasGroup = document.getElementById('couponGroupGas');
+      var platformGroup = document.getElementById('couponGroupPlatform');
+      if (gasGroup) gasGroup.classList.toggle('hidden', type !== 'gas');
+      if (platformGroup) platformGroup.classList.toggle('hidden', type !== 'platform');
+
+      if (pagePay) pagePay.classList.remove('active');
+      if (pageCoupon) {
+        pageCoupon.classList.add('active');
+        pageCoupon.scrollTop = 0;
+      }
+    }
+
+    function backToPay() {
+      if (pageCoupon) pageCoupon.classList.remove('active');
+      if (pagePay) {
+        pagePay.classList.add('active');
+        pagePay.scrollTop = 0;
+      }
+    }
+
+    var orderOilLiters = 250;
+    var payBaseAmount = 1907.50;
+
+    function initCoupons() {
+      var cards = document.querySelectorAll('.coupon-list-card');
+      cards.forEach(function(card) {
+        var type = card.getAttribute('data-type');
+        var threshold = parseInt(card.getAttribute('data-threshold')) || 0;
+        if (type === 'gas' && orderOilLiters < threshold) {
+          card.classList.add('disabled');
+        }
+      });
+    }
+
+    function selectCoupon(card) {
+      if (!card) return;
+      if (card.classList.contains('disabled')) return;
+      var type = card.getAttribute('data-type');
+
+      if (card.classList.contains('selected')) {
+        card.classList.remove('selected');
+        return;
+      }
+
+      var siblings = document.querySelectorAll('.coupon-list-card[data-type="' + type + '"]');
+      siblings.forEach(function(el) { el.classList.remove('selected'); });
+      card.classList.add('selected');
+    }
+
+    function confirmCouponSelect() {
+      var merchantDiscount = 0;
+      var platformDiscount = 0;
+
+      document.querySelectorAll('.coupon-list-card[data-type="gas"].selected').forEach(function(card) {
+        merchantDiscount += parseFloat(card.getAttribute('data-amount')) || 0;
+      });
+      document.querySelectorAll('.coupon-list-card[data-type="platform"].selected').forEach(function(card) {
+        platformDiscount += parseFloat(card.getAttribute('data-amount')) || 0;
+      });
+
+      var merchantAction = document.getElementById('payMerchantCoupon');
+      if (merchantAction) {
+        var merchantLabel = merchantDiscount > 0 ? ('-¥' + merchantDiscount) : '请选择';
+        merchantAction.innerHTML = '<span class="p-action-text">' + merchantLabel + '</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>';
+      }
+
+      var platformAction = document.getElementById('payPlatformCoupon');
+      if (platformAction) {
+        var platformLabel = platformDiscount > 0 ? ('-¥' + platformDiscount) : '请选择';
+        platformAction.innerHTML = '<span class="p-action-text">' + platformLabel + '</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>';
+      }
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      var totalDiscount = merchantDiscount + platformDiscount;
+      var total = document.getElementById('payTotalAmount');
+      if (total) {
+        total.textContent = '¥' + (payBaseAmount - totalDiscount).toFixed(2);
+      }
+
+      backToPay();
+    }
+
+    initCoupons();
+
+    // ===== 确认支付 =====
+    function confirmPay() {
+      showToast('支付成功');
+    }
+  </script>
+</body>
+</html>

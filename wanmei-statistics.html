@@ -114,9 +114,9 @@
                 <div id="subnav-resource" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('resource')"><span class="font-semibold">·</span><span> 资源监控</span></div>
                 <!-- 货车积分数据监测 -->
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">货车积分 数据监测</div>
-                <div id="subnav-funnel" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('funnel')"><span class="font-semibold">·</span><span> 运营活动监测</span></div>
-                <div id="subnav-offline" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('offline')"><span class="font-semibold">·</span><span> 路段流量监测</span></div>
-                <div id="subnav-effect" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('effect')"><span class="font-semibold">·</span><span> 活动效果</span></div>
+                <div id="subnav-funnel" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('funnel')"><span class="font-semibold">·</span><span> 活动页转化</span></div>
+                <div id="subnav-offline" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('offline')"><span class="font-semibold">·</span><span> 线下路段通行数据</span></div>
+                <div id="subnav-effect" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('effect')"><span class="font-semibold">·</span><span> 运营效果数据</span></div>
                 <div id="subnav-coupon-summary" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchPage('coupon-summary')"><span class="font-semibold">·</span><span> 券订单汇总表</span></div>
             </nav>
 
@@ -3203,14 +3203,14 @@
                 </main>
             </div>
 
-            <!-- ==================== 页面：运营活动监测 ==================== -->
+            <!-- ==================== 页面：活动页转化 ==================== -->
             <div id="page-funnel" class="page">
                 <main class="p-2">
                     <div class="bg-white rounded border border-neutral-200">
                         <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                                <h1 class="text-base font-bold text-neutral-900">运营活动监测</h1>
+                                <h1 class="text-base font-bold text-neutral-900">活动页转化</h1>
                             </div>
                             <div class="flex gap-3">
                                 <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
@@ -3383,14 +3383,14 @@
                 </main>
             </div>
 
-            <!-- ==================== 页面2：路段流量监测 ==================== -->
+            <!-- ==================== 页面2：线下路段通行数据 ==================== -->
             <div id="page-offline" class="page">
                 <main class="p-2">
                     <div class="bg-white rounded border border-neutral-200">
                         <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                                <h1 class="text-base font-bold text-neutral-900">路段流量监测</h1>
+                                <h1 class="text-base font-bold text-neutral-900">线下路段通行数据</h1>
                             </div>
                             <div class="flex gap-3">
                                 <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
@@ -3543,14 +3543,14 @@
                 </main>
             </div>
 
-            <!-- ==================== 页面3：活动效果 ==================== -->
+            <!-- ==================== 页面3：运营效果数据 ==================== -->
             <div id="page-effect" class="page">
                 <main class="p-2">
                     <div class="bg-white rounded border border-neutral-200">
                         <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                                <h1 class="text-base font-bold text-neutral-900">活动效果</h1>
+                                <h1 class="text-base font-bold text-neutral-900">运营效果数据</h1>
                             </div>
                             <div class="flex gap-3">
                                 <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
@@ -5040,7 +5040,7 @@
             { date: '2026-05-26', v: [4620,1760,2150,1340,770,660,260] }
         ];
 
-        // 线下数据（路段流量监测）- 按货1~货6拆分
+        // 线下路段通行数据 - 按货1~货6拆分
         // 拆分比例：货1=8%, 货2=10%, 货3=12%, 货4=14%, 货5=16%, 货6=40%
         // 已报名比例：各车型约35%
         var offlineAllData = [
@@ -5178,13 +5178,13 @@
             showClusterList();
             showCouponSummaryList();
 
-            // 路段流量监测页面初始化
+            // 线下路段通行数据页面初始化
             if (pageName === 'offline') {
                 switchOfflineTab('offline-flow');
                 renderOfflineTable();
             }
 
-            // 活动效果页面初始化
+            // 运营效果数据页面初始化
             if (pageName === 'effect') {
                 switchEffectTab('effect-points');
             }
@@ -5557,7 +5557,7 @@
             if (targetPanel) targetPanel.classList.add('active');
         }
 
-        // ========== 路段流量监测 Tab切换 ==========
+        // ========== 线下路段通行数据 Tab切换 ==========
         function switchOfflineTab(tabName) {
             var tabs = document.querySelectorAll('#page-offline .tab-btn');
             var panels = document.querySelectorAll('#page-offline .tab-panel');
@@ -5575,7 +5575,7 @@
             if (target) target.classList.add('active');
         }
 
-        // ========== 路段流量监测 筛选重置 ==========
+        // ========== 线下路段通行数据 筛选重置 ==========
         function resetOfflineFilter() {
             var fromInput = document.getElementById('offline-date-from');
             var toInput = document.getElementById('offline-date-to');
@@ -5590,7 +5590,7 @@
             renderOfflineTable();
         }
 
-        // ========== 路段流量监测 渲染 ==========
+        // ========== 线下路段通行数据 渲染 ==========
         function renderOfflineTable() {
             var roadInput = document.getElementById('offline-road-input');
             var fromInput = document.getElementById('offline-date-from');
@@ -5774,7 +5774,7 @@
             }
         }
 
-        // ========== 活动效果 Tab切换 ==========
+        // ========== 运营效果数据 Tab切换 ==========
         function switchEffectTab(tabName) {
             var effectTabs = document.querySelectorAll('#page-effect .tab-btn');
             var i, effectPanels, targetPanel, isPoints, isVehicle, isHuo6;
@@ -5887,15 +5887,31 @@
             if (!tbody) return;
             var html = '';
             var limit = Math.min(pvData.length, 10);
-            for (var i = 0; i < limit; i++) {
-                var row = pvData[i];
+            var totals = [];
+            var i, j, k, row;
+
+            for (j = 0; j < pvData[0].v.length; j++) {
+                totals.push(0);
+            }
+
+            for (i = 0; i < limit; i++) {
+                row = pvData[i];
                 html += '<tr class="border-b border-neutral-200 table-row">';
                 html += '<td class="text-center">' + row.date + '</td>';
-                for (var j = 0; j < row.v.length; j++) {
+                for (j = 0; j < row.v.length; j++) {
                     html += '<td class="text-right tabular-nums">' + formatNum(row.v[j]) + '</td>';
+                    totals[j] += row.v[j];
                 }
                 html += '</tr>';
             }
+
+            html += '<tr class="border-t border-neutral-200 table-row bg-neutral-50">';
+            html += '<td class="text-center font-medium">合计</td>';
+            for (k = 0; k < totals.length; k++) {
+                html += '<td class="text-right tabular-nums font-medium">' + formatNum(totals[k]) + '</td>';
+            }
+            html += '</tr>';
+
             tbody.innerHTML = html;
         }
 
@@ -5923,19 +5939,22 @@
         }
 
         // 渲染关键漏斗行（7列基础值 → 10列：基础值 + 3个计算率列）
-        function renderFunnelRow(label, v) {
-            var html = '<tr class="border-b border-neutral-200 table-row">';
-            html += '<td class="text-center">' + label + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(v[0]) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(v[1]) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(v[2]) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatPercent(v[2], v[0]) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(v[3]) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(v[4]) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatPercent(v[4], v[0]) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(v[5]) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatNum(v[6]) + '</td>';
-            html += '<td class="text-right tabular-nums">' + formatPercent(v[6], v[4]) + '</td>';
+        function renderFunnelRow(label, v, isTotal) {
+            var rowCls = isTotal ? 'border-t border-neutral-200 table-row bg-neutral-50' : 'border-b border-neutral-200 table-row';
+            var numCls = isTotal ? 'text-right tabular-nums font-medium' : 'text-right tabular-nums';
+            var labCls = isTotal ? 'text-center font-medium' : 'text-center';
+            var html = '<tr class="' + rowCls + '">';
+            html += '<td class="' + labCls + '">' + label + '</td>';
+            html += '<td class="' + numCls + '">' + formatNum(v[0]) + '</td>';
+            html += '<td class="' + numCls + '">' + formatNum(v[1]) + '</td>';
+            html += '<td class="' + numCls + '">' + formatNum(v[2]) + '</td>';
+            html += '<td class="' + numCls + '">' + formatPercent(v[2], v[0]) + '</td>';
+            html += '<td class="' + numCls + '">' + formatNum(v[3]) + '</td>';
+            html += '<td class="' + numCls + '">' + formatNum(v[4]) + '</td>';
+            html += '<td class="' + numCls + '">' + formatPercent(v[4], v[0]) + '</td>';
+            html += '<td class="' + numCls + '">' + formatNum(v[5]) + '</td>';
+            html += '<td class="' + numCls + '">' + formatNum(v[6]) + '</td>';
+            html += '<td class="' + numCls + '">' + formatPercent(v[6], v[4]) + '</td>';
             html += '</tr>';
             return html;
         }
@@ -5959,8 +5978,9 @@
             var tbody = document.getElementById('pv-funnel-table-body');
             if (!tbody) return;
             var html = '';
-            var i, p, v;
+            var i, j, p, v;
             var limit = Math.min(pvData.length, 10);
+            var totals = [0, 0, 0, 0, 0, 0, 0];
 
             for (i = 0; i < limit; i++) {
                 p = pvData[i].v;
@@ -5974,7 +5994,12 @@
                     p[15]
                 ];
                 html += renderFunnelRow(pvData[i].date, v);
+                for (j = 0; j < 7; j++) {
+                    totals[j] += v[j];
+                }
             }
+
+            html += renderFunnelRow('合计', totals, true);
             tbody.innerHTML = html;
         }
 

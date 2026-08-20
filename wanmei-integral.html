@@ -100,15 +100,15 @@
         <!-- 左侧导航 -->
         <aside class="w-40 bg-[#e8e8e8] flex-shrink-0 flex flex-col border-r border-[#d8d8d8]">
             <nav class="flex-1 py-2">
-                <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">充值管理</div>
-                <div id="subnav-points-recharge" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('points-recharge');showPage('points-recharge')"><span class="font-semibold">·</span><span> 积分充值</span></div>
-                <div id="subnav-deposit-payment" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('deposit-payment');showPage('deposit-payment')"><span class="font-semibold">·</span><span> 保证金缴纳</span></div>
-                <div id="subnav-recharge-review" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('recharge-review');showPage('recharge-review')"><span class="font-semibold">·</span><span> 充值审核</span></div>
-                <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">活动方积分管理</div>
+                <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">积分运营</div>
+                <div id="subnav-truck-activity" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer active" onclick="switchSubnav('truck-activity');showPage('truck-activity')"><span class="font-semibold">·</span><span> 货车积分活动</span></div>
                 <div id="subnav-merchant-points" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('merchant-points');showPage('merchant-points')"><span class="font-semibold">·</span><span> 活动方积分发放</span></div>
-                <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">用户积分管理</div>
                 <div id="subnav-points-issue" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('points-issue');showPage('points-issue')"><span class="font-semibold">·</span><span> 用户积分发放</span></div>
-                <div id="subnav-points-query" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer active" onclick="switchSubnav('points-query');showPage('points-query')"><span class="font-semibold">·</span><span> 用户积分查询</span></div>
+                <div id="subnav-points-query" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('points-query');showPage('points-query')"><span class="font-semibold">·</span><span> 用户积分查询</span></div>
+                <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">积分额度</div>
+                <div id="subnav-points-recharge" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('points-recharge');showPage('points-recharge')"><span class="font-semibold">·</span><span> 额度申请</span></div>
+                <div id="subnav-deposit-payment" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('deposit-payment');showPage('deposit-payment')"><span class="font-semibold">·</span><span> 保证金缴纳</span></div>
+                <div id="subnav-recharge-review" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="switchSubnav('recharge-review');showPage('recharge-review')"><span class="font-semibold">·</span><span> 额度调整审核</span></div>
             </nav>
             <!-- 全局规则提示开关 -->
             <div class="px-3 py-2 border-t border-[#d8d8d8]">
@@ -125,7 +125,7 @@
 
         <div class="flex-1 overflow-auto">
 
-            <!-- 页面1: 积分充值 -->
+            <!-- 页面1: 额度申请 -->
             <div id="page-points-recharge" class="page">
                 <main class="p-2">
                     <div class="bg-white rounded border border-neutral-200">
@@ -133,7 +133,7 @@
                         <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                                <h1 class="text-base font-bold text-neutral-900">积分充值</h1>
+                                <h1 class="text-base font-bold text-neutral-900">额度申请</h1>
                             </div>
                             <div class="flex gap-3">
                                 <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
@@ -255,10 +255,10 @@
                         <button class="btn btn-secondary btn-sm" onclick="startEditRule('points-recharge')" title="编辑规则">编辑</button>
                     </div>
                     <div class="rule-view-container">
-                        <ul class="rule-tip-list"><li>积分充值，不涉及活动发行方的积分池数量更新，仅做记录；</li><li>不涉及实际资金划拨操作，仅记录充值申请和审核结果</li></ul>
+                        <ul class="rule-tip-list"><li>额度申请，不涉及活动发行方的积分池数量更新，仅做记录；</li><li>不涉及实际资金划拨操作，仅记录充值申请和审核结果</li></ul>
                     </div>
                     <div class="rule-edit-container">
-                        <textarea class="rule-edit-textarea" id="rule-textarea-points-recharge" placeholder="输入业务规则，每行一条...">充值审核通过后，按"充值金额 × 兑换比例"自动计算积分数量并发放到活动发行方账户
+                        <textarea class="rule-edit-textarea" id="rule-textarea-points-recharge" placeholder="输入业务规则，每行一条...">额度调整审核通过后，按"充值金额 × 兑换比例"自动计算积分数量并发放到活动发行方账户
 兑换比例由系统配置（如 1元 = 1积分），具体定义见系统配置模块
 不涉及实际资金划拨操作，仅记录充值申请和审核结果</textarea>
                         <div class="rule-edit-actions">
@@ -411,7 +411,7 @@
                 </div>
             </div>
 
-            <!-- 页面3: 充值审核 -->
+            <!-- 页面3: 额度调整审核 -->
             <div id="page-recharge-review" class="page">
                 <main class="p-2">
                     <div class="bg-white rounded border border-neutral-200">
@@ -419,7 +419,7 @@
                         <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                                <h1 class="text-base font-bold text-neutral-900">充值审核</h1>
+                                <h1 class="text-base font-bold text-neutral-900">额度调整审核</h1>
                             </div>
                         </div>
                         <!-- 筛选区 -->
@@ -427,7 +427,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
                                 <div class="inline-label-input">
                                     <span class="label">类型</span>
-                                    <select id="review-filter-type"><option>全部</option><option>积分充值</option><option>保证金缴纳</option></select>
+                                    <select id="review-filter-type"><option>全部</option><option>额度申请</option><option>保证金缴纳</option></select>
                                 </div>
                                 <div class="inline-label-input">
                                     <span class="label">关联活动</span>
@@ -473,7 +473,7 @@
                                         <td class="text-left">CZ20260603001</td>
                                         <td class="text-left">皖通公司</td>
                                         <td class="text-left">皖通春日活动</td>
-                                        <td class="text-center">积分充值</td>
+                                        <td class="text-center">额度申请</td>
                                         <td class="text-right font-semibold tabular-nums">¥50,000</td>
                                         <td class="text-right tabular-nums">¥50,000</td>
                                         <td class="text-center"><span class="status-badge status-success">审核通过</span></td>
@@ -499,7 +499,7 @@
                                         <td class="text-left">CZ20260530001</td>
                                         <td class="text-left">皖通公司</td>
                                         <td class="text-left">数科加油活动</td>
-                                        <td class="text-center">积分充值</td>
+                                        <td class="text-center">额度申请</td>
                                         <td class="text-right font-semibold tabular-nums">¥45,000</td>
                                         <td class="text-right tabular-nums">¥45,000</td>
                                         <td class="text-center"><span class="status-badge status-success">审核通过</span></td>
@@ -536,11 +536,11 @@
                         <button class="btn btn-secondary btn-sm" onclick="startEditRule('recharge-review')" title="编辑规则">编辑</button>
                     </div>
                     <div class="rule-view-container">
-                        <ul class="rule-tip-list"><li>审核通过后，不涉及活动发行方的积分池数量更新，仅做记录；</li><li>充值审核与保证金缴纳统一在此模块审核，用类型字段区分</li><li>仅平台管理员可进行审核操作</li></ul>
+                        <ul class="rule-tip-list"><li>审核通过后，不涉及活动发行方的积分池数量更新，仅做记录；</li><li>额度调整审核与保证金缴纳统一在此模块审核，用类型字段区分</li><li>仅平台管理员可进行审核操作</li></ul>
                     </div>
                     <div class="rule-edit-container">
                         <textarea class="rule-edit-textarea" id="rule-textarea-recharge-review" placeholder="输入业务规则，每行一条...">审核通过后，积分自动发放到活动发行方账户
-充值审核与保证金缴纳统一在此模块审核，用类型字段区分
+额度调整审核与保证金缴纳统一在此模块审核，用类型字段区分
 仅平台管理员可进行审核操作</textarea>
                         <div class="rule-edit-actions">
                             <button class="btn btn-secondary btn-sm" onclick="cancelEditRule('recharge-review')">取消</button>
@@ -651,7 +651,7 @@
                         <ul class="rule-tip-list"><li>数据来源：用户参与活动，积分活动规则自动触发，发给用户。</li><li>发放主体为活动发行方出资（与结算管理中的活动发行方一致）</li><li>发放记录只读展示，不支持手动操作</li></ul>
                     </div>
                     <div class="rule-edit-container">
-                        <textarea class="rule-edit-textarea" id="rule-textarea-merchant-points" placeholder="输入业务规则，每行一条...">积分来源：充值审核自动发放、积分活动规则自动触发
+                        <textarea class="rule-edit-textarea" id="rule-textarea-merchant-points" placeholder="输入业务规则，每行一条...">积分来源：额度调整审核自动发放、积分活动规则自动触发
 发放主体为活动发行方出资（与结算管理中的活动发行方一致）
 发放记录只读展示，不支持手动操作</textarea>
                         <div class="rule-edit-actions">
@@ -942,7 +942,7 @@
                     </div>
                     <div class="rule-edit-container">
                         <textarea class="rule-edit-textarea" id="rule-textarea-merchant-points-detail" placeholder="输入业务规则，每行一条...">展示活动发行方维度的积分发放流水
-积分来源：充值审核自动发放、积分活动规则自动触发
+积分来源：额度调整审核自动发放、积分活动规则自动触发
 支持按关联活动、发放ID、手机号、发放时间筛选</textarea>
                         <div class="rule-edit-actions">
                             <button class="btn btn-secondary btn-sm" onclick="cancelEditRule('merchant-points-detail')">取消</button>
@@ -1122,7 +1122,7 @@
             </div>
 
             <!-- 页面6: 用户积分查询 -->
-            <div id="page-points-query" class="page active">
+            <div id="page-points-query" class="page">
                 <main class="p-2">
                     <div class="bg-white rounded border border-neutral-200">
                         <!-- 标题区 -->
@@ -1524,6 +1524,502 @@
                 </div>
             </div>
 
+            <!-- 页面8: 货车积分活动 -->
+            <div id="page-truck-activity" class="page active">
+                <main class="p-2">
+                    <div class="bg-white rounded border border-neutral-200">
+                        <!-- 标题区 -->
+                        <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                                <h1 class="text-base font-bold text-neutral-900">货车积分活动</h1>
+                            </div>
+                        </div>
+                        <!-- Tab 切换 -->
+                        <div class="px-4 pt-3 flex gap-6 border-b border-neutral-200">
+                            <button id="truck-tab-all" class="pb-2 -mb-px text-sm font-medium text-primary border-b-2 border-primary" onclick="switchTruckActivityTab('all')">全部活动列表</button>
+                            <button id="truck-tab-pending" class="pb-2 -mb-px text-sm text-neutral-500 border-b-2 border-transparent" onclick="switchTruckActivityTab('pending')">待审核列表</button>
+                        </div>
+                        <!-- 筛选区 -->
+                        <div class="px-2 pb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="inline-label-input">
+                                    <span class="label">活动名称</span>
+                                    <input type="text" placeholder="请输入">
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">运营主体</span>
+                                    <select><option>全部</option><option>安徽省皖通公司</option><option>安徽数科公司</option></select>
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">活动状态</span>
+                                    <select><option>全部</option><option>进行中</option><option>待审核</option><option>已终止</option></select>
+                                </div>
+                                <div class="date-range-input">
+                                    <span class="label">活动时间</span>
+                                    <input type="date" placeholder="开始日期">
+                                    <span class="separator">→</span>
+                                    <input type="date" placeholder="结束日期">
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="resetTruckActivityFilter()">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                            </div>
+                        </div>
+                        <!-- 批量操作区 -->
+                        <div id="truck-batch-area" class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
+                            <button class="btn btn-batch-action btn-md" onclick="openTruckActivityCreateDrawer()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" aria-hidden="true" class="lucide lucide-plus w-4 h-4"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>创建活动</button>
+                            <span class="text-xs text-neutral-500">创建货车积分活动，审核通过后发布</span>
+                        </div>
+                        <div id="truck-table-all">
+                        <!-- 表格 -->
+                        <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                        <th class="w-12 text-center">序号</th>
+                                        <th class="text-left">活动名称</th>
+                                        <th class="text-left">运营主体</th>
+                                        <th class="text-left">活动时间</th>
+                                        <th class="text-left">权益兑换时间</th>
+                                        <th class="text-center">活动状态</th>
+                                        <th class="text-center">创建人</th>
+                                        <th class="text-center">创建时间</th>
+                                        <th class="text-center w-56">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">1</td>
+                                        <td class="text-left text-primary font-medium">货车积分抽奖活动</td>
+                                        <td class="text-left">安徽省皖通公司</td>
+                                        <td class="text-left text-neutral-600">2026-08-18 16:38:00 ~ 2027-01-21 16:38:00</td>
+                                        <td class="text-left text-neutral-500">--</td>
+                                        <td class="text-center"><span class="status-badge status-success">进行中</span></td>
+                                        <td class="text-center">admin</td>
+                                        <td class="text-center text-neutral-600">2026-08-18 16:40:08</td>
+                                        <td class="text-center">
+                                            <div class="flex items-center justify-center gap-3">
+                                                <button class="btn btn-text btn-sm" onclick="openTruckActivityViewDrawer()">查看</button>
+                                                <button class="btn btn-text btn-sm" onclick="showTruckActivityRanking()">积分排名</button>
+                                                <button class="btn btn-text btn-sm" onclick="openTruckTerminateModal()">终止</button>
+                                                <button class="btn btn-text btn-sm" onclick="showTruckActivityRegistration()">报名记录</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">2</td>
+                                        <td class="text-left text-primary font-medium">8月份货车积分活动</td>
+                                        <td class="text-left">安徽省皖通公司</td>
+                                        <td class="text-left text-neutral-600">2026-08-15 00:00:00 ~ 2026-08-31 20:30:00</td>
+                                        <td class="text-left text-neutral-500">2026-09-10 ~ 2026-09-30</td>
+                                        <td class="text-center"><span class="status-badge status-warning">待审核</span></td>
+                                        <td class="text-center">admin</td>
+                                        <td class="text-center text-neutral-600">2026-08-15 15:44:05</td>
+                                        <td class="text-center">
+                                            <div class="flex items-center justify-center gap-3">
+                                                <button class="btn btn-text btn-sm" onclick="openTruckActivityViewDrawer()">查看</button>
+                                                <button class="btn btn-text btn-sm" onclick="showTruckActivityRegistration()">报名记录</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">3</td>
+                                        <td class="text-left text-primary font-medium">8月积分活动</td>
+                                        <td class="text-left">安徽皖通公司</td>
+                                        <td class="text-left text-neutral-600">2026-08-14 00:03:00 ~ 2026-08-31 17:00:00</td>
+                                        <td class="text-left text-neutral-500">2026-08-21 ~ 2026-09-05</td>
+                                        <td class="text-center"><span class="status-badge status-success">进行中</span></td>
+                                        <td class="text-center">admin</td>
+                                        <td class="text-center text-neutral-600">2026-08-15 15:04:34</td>
+                                        <td class="text-center">
+                                            <div class="flex items-center justify-center gap-3">
+                                                <button class="btn btn-text btn-sm" onclick="openTruckActivityViewDrawer()">查看</button>
+                                                <button class="btn btn-text btn-sm" onclick="showTruckActivityRanking()">积分排名</button>
+                                                <button class="btn btn-text btn-sm" onclick="openTruckTerminateModal()">终止</button>
+                                                <button class="btn btn-text btn-sm" onclick="showTruckActivityRegistration()">报名记录</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- 分页 -->
+                        <div class="mx-2 mb-2">
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-sm text-neutral-600">共 <span class="font-semibold">3</span> 条记录</span>
+                                <div class="flex items-center gap-2">
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
+                                    <div class="flex items-center gap-1">
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <!-- 待审核列表 -->
+                        <div id="truck-table-pending" class="hidden">
+                        <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                        <th class="w-12 text-center">序号</th>
+                                        <th class="text-left">活动名称</th>
+                                        <th class="text-left">运营主体</th>
+                                        <th class="text-left">活动时间</th>
+                                        <th class="text-left">权益兑换时间</th>
+                                        <th class="text-center">活动状态</th>
+                                        <th class="text-center">创建人</th>
+                                        <th class="text-center">创建时间</th>
+                                        <th class="text-center w-56">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">1</td>
+                                        <td class="text-left text-primary font-medium">8月份货车积分活动</td>
+                                        <td class="text-left">安徽省皖通公司</td>
+                                        <td class="text-left text-neutral-600">2026-08-15 00:00:00 ~ 2026-08-31 20:30:00</td>
+                                        <td class="text-left text-neutral-500">2026-09-10 ~ 2026-09-30</td>
+                                        <td class="text-center"><span class="status-badge status-warning">待审核</span></td>
+                                        <td class="text-center">admin</td>
+                                        <td class="text-center text-neutral-600">2026-08-15 15:44:05</td>
+                                        <td class="text-center">
+                                            <div class="flex items-center justify-center gap-3">
+                                                <button class="btn btn-text btn-sm" onclick="openTruckActivityViewDrawer()">查看</button>
+                                                <button class="btn btn-text btn-sm" onclick="openTruckReviewPassModal()">审核通过</button>
+                                                <button class="btn btn-text btn-sm" style="color:#EF4444" onclick="openTruckReviewRejectModal()">审核拒绝</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">2</td>
+                                        <td class="text-left text-primary font-medium">货车积分新客礼活动</td>
+                                        <td class="text-left">安徽省皖通公司</td>
+                                        <td class="text-left text-neutral-600">2026-08-20 00:00:00 ~ 2026-09-20 23:59:59</td>
+                                        <td class="text-left text-neutral-500">2026-09-25 ~ 2026-10-15</td>
+                                        <td class="text-center"><span class="status-badge status-warning">待审核</span></td>
+                                        <td class="text-center">admin</td>
+                                        <td class="text-center text-neutral-600">2026-08-20 10:22:16</td>
+                                        <td class="text-center">
+                                            <div class="flex items-center justify-center gap-3">
+                                                <button class="btn btn-text btn-sm" onclick="openTruckActivityViewDrawer()">查看</button>
+                                                <button class="btn btn-text btn-sm" onclick="openTruckReviewPassModal()">审核通过</button>
+                                                <button class="btn btn-text btn-sm" style="color:#EF4444" onclick="openTruckReviewRejectModal()">审核拒绝</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">3</td>
+                                        <td class="text-left text-primary font-medium">9月货车积分抽奖活动</td>
+                                        <td class="text-left">安徽数科公司</td>
+                                        <td class="text-left text-neutral-600">2026-09-01 00:00:00 ~ 2026-09-30 23:59:59</td>
+                                        <td class="text-left text-neutral-500">--</td>
+                                        <td class="text-center"><span class="status-badge status-warning">待审核</span></td>
+                                        <td class="text-center">admin</td>
+                                        <td class="text-center text-neutral-600">2026-08-19 14:35:02</td>
+                                        <td class="text-center">
+                                            <div class="flex items-center justify-center gap-3">
+                                                <button class="btn btn-text btn-sm" onclick="openTruckActivityViewDrawer()">查看</button>
+                                                <button class="btn btn-text btn-sm" onclick="openTruckReviewPassModal()">审核通过</button>
+                                                <button class="btn btn-text btn-sm" style="color:#EF4444" onclick="openTruckReviewRejectModal()">审核拒绝</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mx-2 mb-2">
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-sm text-neutral-600">共 <span class="font-semibold">3</span> 条记录</span>
+                                <div class="flex items-center gap-2">
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
+                                    <div class="flex items-center gap-1">
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- 页面8-1: 货车积分活动报名记录 -->
+            <div id="page-truck-activity-registration" class="page">
+                <main class="p-2">
+                    <div class="bg-white rounded border border-neutral-200 mb-3">
+                        <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                                <h1 class="text-base font-bold">货车积分活动 - 报名记录</h1>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
+                                <button class="btn btn-secondary btn-md" onclick="backFromTruckActivityRegistration()">返回上级页面</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 统计卡片 -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-value">1115</div>
+                            <div class="stat-label">总报名人数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">1399</div>
+                            <div class="stat-label">总报名车辆数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">1112</div>
+                            <div class="stat-label">报名成功人数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">1399</div>
+                            <div class="stat-label">报名成功车辆数</div>
+                        </div>
+                    </div>
+                    <!-- 筛选区 + 表格 -->
+                    <div class="bg-white rounded border border-neutral-200">
+                        <div class="px-2 pb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="inline-label-input">
+                                    <span class="label">车牌</span>
+                                    <input type="text" placeholder="请输入">
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">用户姓名</span>
+                                    <input type="text" placeholder="请输入">
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">报名状态</span>
+                                    <select><option>全部</option><option>已参与</option><option>报名失败</option></select>
+                                </div>
+                                <div class="date-range-input">
+                                    <span class="label">报名时间</span>
+                                    <input type="date" placeholder="开始日期">
+                                    <span class="separator">→</span>
+                                    <input type="date" placeholder="结束日期">
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="resetTruckRegistrationFilter()">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                            </div>
+                        </div>
+                        <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                        <th class="w-12 text-center">序号</th>
+                                        <th class="text-left">用户姓名</th>
+                                        <th class="text-center">手机号码</th>
+                                        <th class="text-left">报名车牌</th>
+                                        <th class="text-center">报名时间</th>
+                                        <th class="text-center">报名状态</th>
+                                        <th class="text-left">失败原因</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">1</td>
+                                        <td class="text-left">武汉</td>
+                                        <td class="text-center">173****8160</td>
+                                        <td class="text-left">皖LEK075</td>
+                                        <td class="text-center text-neutral-600">2026-08-20 17:33:09</td>
+                                        <td class="text-center"><span class="status-badge status-success">已参与</span></td>
+                                        <td class="text-left text-neutral-500">--</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">2</td>
+                                        <td class="text-left">甘田</td>
+                                        <td class="text-center">188****2095</td>
+                                        <td class="text-left">皖A525GD</td>
+                                        <td class="text-center text-neutral-600">2026-08-20 17:26:42</td>
+                                        <td class="text-center"><span class="status-badge status-success">已参与</span></td>
+                                        <td class="text-left text-neutral-500">--</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">3</td>
+                                        <td class="text-left">何宗山</td>
+                                        <td class="text-center">139****9492</td>
+                                        <td class="text-left">皖A6162D</td>
+                                        <td class="text-center text-neutral-600">2026-08-20 17:21:54</td>
+                                        <td class="text-center"><span class="status-badge status-error">报名失败</span></td>
+                                        <td class="text-left text-neutral-500">该车牌号已参与过该活动</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">4</td>
+                                        <td class="text-left">胡琦</td>
+                                        <td class="text-center">181****6919</td>
+                                        <td class="text-left">皖DLK328</td>
+                                        <td class="text-center text-neutral-600">2026-08-20 17:19:46</td>
+                                        <td class="text-center"><span class="status-badge status-success">已参与</span></td>
+                                        <td class="text-left text-neutral-500">--</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">5</td>
+                                        <td class="text-left">胡巍</td>
+                                        <td class="text-center">180****7273</td>
+                                        <td class="text-left">皖EF19996</td>
+                                        <td class="text-center text-neutral-600">2026-08-20 17:16:22</td>
+                                        <td class="text-center"><span class="status-badge status-success">已参与</span></td>
+                                        <td class="text-left text-neutral-500">--</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">6</td>
+                                        <td class="text-left">高兴</td>
+                                        <td class="text-center">183****8377</td>
+                                        <td class="text-left">皖AXX577</td>
+                                        <td class="text-center text-neutral-600">2026-08-20 16:28:48</td>
+                                        <td class="text-center"><span class="status-badge status-error">报名失败</span></td>
+                                        <td class="text-left text-neutral-500">同一批次中车牌号重复</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mx-2 mb-2">
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-sm text-neutral-600">共 <span class="font-semibold">1755</span> 条记录</span>
+                                <div class="flex items-center gap-2">
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
+                                    <div class="flex items-center gap-1">
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">2</button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- 页面8-2: 货车积分活动积分排名 -->
+            <div id="page-truck-activity-ranking" class="page">
+                <main class="p-2">
+                    <div class="bg-white rounded border border-neutral-200 mb-3">
+                        <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                                <h1 class="text-base font-bold">货车积分活动 - 积分排名</h1>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="btn btn-secondary btn-md" onclick="handleExport()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download w-4 h-4"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>导 出</button>
+                                <button class="btn btn-secondary btn-md" onclick="backFromTruckActivityRanking()">返回上级页面</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 月份筛选 -->
+                    <div class="bg-white rounded border border-neutral-200 mb-3">
+                        <div class="px-2 pb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="inline-label-input">
+                                    <span class="label">月份</span>
+                                    <select><option selected>2026年8月</option><option>2026年7月</option><option>2026年6月</option></select>
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="resetTruckRankingFilter()">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="showToast('查询完成','success')">查 询</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded border border-neutral-200">
+                        <div class="mx-2 my-2 overflow-x-auto">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                        <th class="w-20 text-center">排名</th>
+                                        <th class="text-left">用户姓名</th>
+                                        <th class="text-center">手机号码</th>
+                                        <th class="text-center">月份</th>
+                                        <th class="text-center">本月积分数量</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold">1</span></td>
+                                        <td class="text-left">王强</td>
+                                        <td class="text-center">139****3456</td>
+                                        <td class="text-center text-neutral-600">2026年8月</td>
+                                        <td class="text-center font-semibold text-neutral-900">15,800</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-400 text-white text-xs font-bold">2</span></td>
+                                        <td class="text-left">李明</td>
+                                        <td class="text-center">188****1023</td>
+                                        <td class="text-center text-neutral-600">2026年8月</td>
+                                        <td class="text-center font-semibold text-neutral-900">14,920</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-orange-400 text-white text-xs font-bold">3</span></td>
+                                        <td class="text-left">张伟</td>
+                                        <td class="text-center">181****7788</td>
+                                        <td class="text-center text-neutral-600">2026年8月</td>
+                                        <td class="text-center font-semibold text-neutral-900">13,850</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">4</td>
+                                        <td class="text-left">刘洋</td>
+                                        <td class="text-center">139****9021</td>
+                                        <td class="text-center text-neutral-600">2026年8月</td>
+                                        <td class="text-center font-semibold text-neutral-900">12,600</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">5</td>
+                                        <td class="text-left">陈静</td>
+                                        <td class="text-center">183****4567</td>
+                                        <td class="text-center text-neutral-600">2026年8月</td>
+                                        <td class="text-center font-semibold text-neutral-900">11,540</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">6</td>
+                                        <td class="text-left">杨帆</td>
+                                        <td class="text-center">180****2233</td>
+                                        <td class="text-center text-neutral-600">2026年8月</td>
+                                        <td class="text-center font-semibold text-neutral-900">10,230</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">7</td>
+                                        <td class="text-left">赵磊</td>
+                                        <td class="text-center">137****8899</td>
+                                        <td class="text-center text-neutral-600">2026年8月</td>
+                                        <td class="text-center font-semibold text-neutral-900">9,870</td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">8</td>
+                                        <td class="text-left">孙悦</td>
+                                        <td class="text-center">159****6677</td>
+                                        <td class="text-center text-neutral-600">2026年8月</td>
+                                        <td class="text-center font-semibold text-neutral-900">9,210</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mx-2 mb-2">
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-sm text-neutral-600">共 <span class="font-semibold">100</span> 条记录</span>
+                                <div class="flex items-center gap-2">
+                                    <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
+                                    <div class="flex items-center gap-1">
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" aria-hidden="true" class="lucide lucide-chevron-left w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg></button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+                                        <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-4 h-4"><path d="m9 18 6-6-6-6"></path></svg></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
         </div>
     </div>
 
@@ -1664,12 +2160,12 @@
         </div>
     </div>
 
-    <!-- 积分充值申请抽屉 -->
+    <!-- 额度申请抽屉 -->
     <div id="drawer-recharge-apply" class="drawer-overlay" onclick="if(event.target===this)closeRechargeApplyDrawer()">
         <div class="drawer-container w-[600px]" onclick="event.stopPropagation()">
             <!-- 标题区 -->
             <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
-                <h2 class="text-base font-bold text-neutral-900">发起积分充值申请</h2>
+                <h2 class="text-base font-bold text-neutral-900">发起额度申请</h2>
                 <button class="close-drawer text-neutral-500 hover:text-neutral-700" onclick="closeRechargeApplyDrawer()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                 </button>
@@ -1840,12 +2336,12 @@
         </div>
     </div>
 
-    <!-- 充值审核详情抽屉 -->
+    <!-- 额度调整审核详情抽屉 -->
     <div id="drawer-review-detail" class="drawer-overlay" onclick="if(event.target===this)closeReviewDetailDrawer()">
         <div class="drawer-container w-[800px]" onclick="event.stopPropagation()">
             <!-- 标题区 -->
             <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
-                <h2 class="text-base font-bold text-neutral-900" id="review-detail-title">充值审核详情</h2>
+                <h2 class="text-base font-bold text-neutral-900" id="review-detail-title">额度调整审核详情</h2>
                 <button class="close-drawer text-neutral-500 hover:text-neutral-700" onclick="closeReviewDetailDrawer()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                 </button>
@@ -1860,7 +2356,7 @@
                             <div><div class="text-xs text-neutral-500 mb-1">单号</div><div class="text-sm text-neutral-800" id="review-detail-id">CZ20260603001</div></div>
                             <div><div class="text-xs text-neutral-500 mb-1">活动发行方</div><div class="text-sm text-neutral-800" id="review-detail-org">皖通公司</div></div>
                             <div><div class="text-xs text-neutral-500 mb-1">关联活动</div><div class="text-sm text-neutral-800" id="review-detail-activity">皖通春日活动</div></div>
-                            <div><div class="text-xs text-neutral-500 mb-1">类型</div><div class="text-sm text-neutral-800" id="review-detail-type">积分充值</div></div>
+                            <div><div class="text-xs text-neutral-500 mb-1">类型</div><div class="text-sm text-neutral-800" id="review-detail-type">额度申请</div></div>
                             <div><div class="text-xs text-neutral-500 mb-1">申请金额</div><div class="text-sm text-neutral-800" id="review-detail-amount">¥50,000</div></div>
                             <div><div class="text-xs text-neutral-500 mb-1">转账凭证</div><div class="text-sm" id="review-detail-voucher"><a href="#" class="text-primary hover:underline">凭证1.jpg</a></div></div>
                             <div><div class="text-xs text-neutral-500 mb-1">申请人</div><div class="text-sm text-neutral-800" id="review-detail-applicant">王建国</div></div>
@@ -1969,6 +2465,161 @@
                         </tfoot>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建货车积分活动抽屉 -->
+    <div id="drawer-truck-activity-create" class="drawer-overlay" onclick="if(event.target===this)closeTruckActivityCreateDrawer()">
+        <div class="drawer-container w-[600px]" onclick="event.stopPropagation()">
+            <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
+                <h2 class="text-base font-bold text-neutral-900">创建活动</h2>
+                <button class="close-drawer text-neutral-500 hover:text-neutral-700" onclick="closeTruckActivityCreateDrawer()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-5 py-4" style="max-height: calc(100vh - 140px);">
+                <div class="space-y-4">
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">活动名称 <span class="text-error">*</span></div>
+                        <input type="text" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm" placeholder="请输入活动名称">
+                        <div class="text-xs text-neutral-400 mt-1">最多输入16个字</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">活动描述</div>
+                        <textarea class="w-full h-16 px-3 py-2 border border-neutral-200 rounded text-sm resize-none" placeholder="请输入活动描述"></textarea>
+                        <div class="text-xs text-neutral-400 mt-1">最多输入100个字</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">活动时间 <span class="text-error">*</span></div>
+                        <div class="flex items-center gap-2">
+                            <input type="text" class="flex-1 h-8 px-3 border border-neutral-200 rounded text-sm" placeholder="开始时间">
+                            <span class="text-neutral-400">-</span>
+                            <input type="text" class="flex-1 h-8 px-3 border border-neutral-200 rounded text-sm" placeholder="结束时间">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">权益兑换时间</div>
+                        <div class="flex items-center gap-2">
+                            <input type="text" class="flex-1 h-8 px-3 border border-neutral-200 rounded text-sm" placeholder="开始时间">
+                            <span class="text-neutral-400">-</span>
+                            <input type="text" class="flex-1 h-8 px-3 border border-neutral-200 rounded text-sm" placeholder="结束时间">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">活动规则 <span class="text-error">*</span></div>
+                        <textarea class="w-full h-20 px-3 py-2 border border-neutral-200 rounded text-sm resize-none" placeholder="请输入活动规则"></textarea>
+                        <div class="text-xs text-neutral-400 mt-1">最多输入200个字</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">活动类型 <span class="text-error">*</span></div>
+                        <select class="w-full h-8 px-3 border border-neutral-200 rounded text-sm"><option value="">请选择活动类型</option><option>积分抽奖活动</option><option>积分兑换活动</option></select>
+                    </div>
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">运营主体 <span class="text-error">*</span></div>
+                        <select class="w-full h-8 px-3 border border-neutral-200 rounded text-sm"><option value="">请选择运营主体</option><option>安徽省皖通公司</option><option>安徽数科公司</option></select>
+                    </div>
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">活动发布 <span class="text-error">*</span></div>
+                        <div class="flex gap-6 flex-wrap">
+                            <label class="flex items-center gap-1 text-sm text-neutral-700"><input type="radio" name="truck-publish" checked> 审核通过后发布</label>
+                            <label class="flex items-center gap-1 text-sm text-neutral-700"><input type="radio" name="truck-publish"> 活动开始时间发布</label>
+                            <label class="flex items-center gap-1 text-sm text-neutral-700"><input type="radio" name="truck-publish"> 固定时间发布</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">积分过期类型 <span class="text-error">*</span></div>
+                        <div class="flex gap-6 flex-wrap">
+                            <label class="flex items-center gap-1 text-sm text-neutral-700"><input type="radio" name="truck-expire-type" checked> 指定过期时间</label>
+                            <label class="flex items-center gap-1 text-sm text-neutral-700"><input type="radio" name="truck-expire-type"> 领取n天后过期</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">积分过期时间 <span class="text-error">*</span></div>
+                        <input type="text" class="w-full h-8 px-3 border border-neutral-200 rounded text-sm" placeholder="请选择积分过期时间">
+                    </div>
+                    <div>
+                        <div class="text-xs text-neutral-500 mb-1">活动风控控制 <span class="text-error">*</span></div>
+                        <div class="flex gap-6">
+                            <label class="flex items-center gap-1 text-sm text-neutral-700"><input type="radio" name="truck-risk" checked> 开启</label>
+                            <label class="flex items-center gap-1 text-sm text-neutral-700"><input type="radio" name="truck-risk"> 关闭</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="px-5 py-4 border-t border-neutral-200 bg-neutral-50 flex justify-end gap-3">
+                <button class="btn btn-secondary btn-md" onclick="closeTruckActivityCreateDrawer()">取 消</button>
+                <button class="btn btn-primary btn-md" onclick="handleTruckActivityCreateSubmit()">提 交</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 查看货车积分活动抽屉 -->
+    <div id="drawer-truck-activity-view" class="drawer-overlay" onclick="if(event.target===this)closeTruckActivityViewDrawer()">
+        <div class="drawer-container w-[800px]" onclick="event.stopPropagation()">
+            <div class="px-5 py-4 border-b border-neutral-200 flex justify-between items-center">
+                <h2 class="text-base font-bold text-neutral-900">查看活动</h2>
+                <button class="close-drawer text-neutral-500 hover:text-neutral-700" onclick="closeTruckActivityViewDrawer()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-5 py-4" style="max-height: calc(100vh - 140px);">
+                <div class="mb-4">
+                    <div class="text-sm font-semibold text-neutral-800 mb-3">基本信息</div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div><div class="text-xs text-neutral-500 mb-1">活动名称</div><div class="text-sm text-neutral-800">货车积分抽奖活动</div></div>
+                        <div><div class="text-xs text-neutral-500 mb-1">活动类型</div><div class="text-sm text-neutral-800">积分抽奖活动</div></div>
+                        <div><div class="text-xs text-neutral-500 mb-1">运营主体</div><div class="text-sm text-neutral-800">安徽省皖通公司</div></div>
+                        <div class="col-span-3"><div class="text-xs text-neutral-500 mb-1">活动描述</div><div class="text-sm text-neutral-800">用于货车积分抽奖的积分发放</div></div>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="text-sm font-semibold text-neutral-800 mb-3">活动配置</div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="col-span-3"><div class="text-xs text-neutral-500 mb-1">活动时间</div><div class="text-sm text-neutral-800">2026-08-18 16:38:00 ~ 2027-01-21 16:38:00</div></div>
+                        <div><div class="text-xs text-neutral-500 mb-1">活动发布</div><div class="text-sm text-neutral-800">审核通过后发布</div></div>
+                        <div><div class="text-xs text-neutral-500 mb-1">发布时间</div><div class="text-sm text-neutral-800">2026-08-18 16:41:30</div></div>
+                        <div><div class="text-xs text-neutral-500 mb-1">权益兑换时间</div><div class="text-sm text-neutral-800">--</div></div>
+                        <div class="col-span-3"><div class="text-xs text-neutral-500 mb-1">活动规则</div><div class="text-sm text-neutral-800">每月根据通行获得积分最多的人员计算抽奖名额，抽取积分奖品</div></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-sm font-semibold text-neutral-800 mb-3">积分设置</div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div><div class="text-xs text-neutral-500 mb-1">积分过期类型</div><div class="text-sm text-neutral-800">指定过期时间</div></div>
+                        <div><div class="text-xs text-neutral-500 mb-1">积分过期时间</div><div class="text-sm text-neutral-800">2027-02-28 16:39:48</div></div>
+                        <div><div class="text-xs text-neutral-500 mb-1">积分过期天数</div><div class="text-sm text-neutral-800">--</div></div>
+                        <div><div class="text-xs text-neutral-500 mb-1">活动风控控制</div><div class="text-sm text-neutral-800">开启</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 终止活动确认弹窗 -->
+    <div id="modal-truck-terminate" class="modal-overlay hidden" onclick="if(event.target===this)closeTruckTerminateModal()">
+        <div class="modal-container mt-24 w-[400px] p-6" onclick="event.stopPropagation()">
+            <div class="flex items-start gap-3 mb-4">
+                <div class="w-8 h-8 flex items-center justify-center rounded-full border border-warning text-warning flex-shrink-0 font-bold">!</div>
+                <div class="text-sm text-neutral-800 pt-1">是否确认终止该活动？</div>
+            </div>
+            <div class="flex justify-end gap-3">
+                <button class="btn btn-secondary btn-md" onclick="closeTruckTerminateModal()">取 消</button>
+                <button class="btn btn-primary btn-md" onclick="handleTruckTerminate()">确 认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 待审核活动审核确认弹窗 -->
+    <div id="modal-truck-review" class="modal-overlay hidden" onclick="if(event.target===this)closeTruckReviewModal()">
+        <div class="modal-container mt-24 w-[400px] p-6" onclick="event.stopPropagation()">
+            <div class="flex items-start gap-3 mb-4">
+                <div class="w-8 h-8 flex items-center justify-center rounded-full border border-warning text-warning flex-shrink-0 font-bold">!</div>
+                <div id="truck-review-text" class="text-sm text-neutral-800 pt-1">是否确认审核通过该活动？</div>
+            </div>
+            <div class="flex justify-end gap-3">
+                <button class="btn btn-secondary btn-md" onclick="closeTruckReviewModal()">取 消</button>
+                <button class="btn btn-primary btn-md" onclick="confirmTruckReview()">确 认</button>
             </div>
         </div>
     </div>
@@ -2095,6 +2746,9 @@
             closeRechargeDetailDrawer();
             closeDepositDetailDrawer();
             closeReviewDetailDrawer();
+            closeTruckActivityCreateDrawer();
+            closeTruckActivityViewDrawer();
+            closeTruckTerminateModal();
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
@@ -2381,7 +3035,7 @@
             showToast('导出任务已提交，请稍后查看', 'success');
         }
 
-        // ===== 积分充值申请抽屉 =====
+        // ===== 额度申请抽屉 =====
         var rechargeUploadedFiles = [];
 
         function openRechargeApplyDrawer() {
@@ -2551,7 +3205,7 @@
             showToast('缴纳申请已提交', 'success');
         }
 
-        // ===== 充值审核筛选重置 =====
+        // ===== 额度调整审核筛选重置 =====
         function resetReviewFilter() {
             var typeFilter = document.getElementById('review-filter-type');
             var activity = document.getElementById('review-filter-activity');
@@ -2562,12 +3216,12 @@
             showToast('筛选条件已重置', 'success');
         }
 
-        // ===== 充值审核详情抽屉 =====
+        // ===== 额度调整审核详情抽屉 =====
 
         // 审核详情数据
         var reviewDetailData = {
-            'CZ20260603001': { // 审核通过 - 积分充值
-                id: 'CZ20260603001', org: '皖通公司', activity: '皖通春日活动', type: '积分充值',
+            'CZ20260603001': { // 审核通过 - 额度申请
+                id: 'CZ20260603001', org: '皖通公司', activity: '皖通春日活动', type: '额度申请',
                 amount: '¥50,000', amountNum: 50000, points: '50,000',
                 voucher: '<a href="#" class="text-primary hover:underline">凭证1.jpg</a>',
                 applicant: '王建国', applyTime: '2026-06-03 10:15:30', remark: '首次充值',
@@ -2585,8 +3239,8 @@
                 actualAmount: '', actualPoints: '',
                 auditVoucher: '', auditRemark: '', auditor: '', auditTime: ''
             },
-            'CZ20260530001': { // 审核通过 - 积分充值
-                id: 'CZ20260530001', org: '皖通公司', activity: '数科加油活动', type: '积分充值',
+            'CZ20260530001': { // 审核通过 - 额度申请
+                id: 'CZ20260530001', org: '皖通公司', activity: '数科加油活动', type: '额度申请',
                 amount: '¥45,000', amountNum: 45000, points: '45,000',
                 voucher: '<a href="#" class="text-primary hover:underline">银行流水.pdf</a>',
                 applicant: '王建国', applyTime: '2026-05-30 08:23:45', remark: '补充充值',
@@ -2943,6 +3597,129 @@
         function closeDepositDetailDrawer() {
             var drawer = document.getElementById('drawer-deposit-detail');
             if (drawer) drawer.classList.remove('active');
+        }
+
+        // ===== 货车积分活动 =====
+
+        // Tab 切换
+        function switchTruckActivityTab(tab) {
+            var allBtn = document.getElementById('truck-tab-all');
+            var pendingBtn = document.getElementById('truck-tab-pending');
+            var allTable = document.getElementById('truck-table-all');
+            var pendingTable = document.getElementById('truck-table-pending');
+            var batchArea = document.getElementById('truck-batch-area');
+            if (!allBtn || !pendingBtn) return;
+            var activeCls = 'pb-2 -mb-px text-sm font-medium text-primary border-b-2 border-primary';
+            var inactiveCls = 'pb-2 -mb-px text-sm text-neutral-500 border-b-2 border-transparent';
+            allBtn.className = tab === 'all' ? activeCls : inactiveCls;
+            pendingBtn.className = tab === 'pending' ? activeCls : inactiveCls;
+            if (allTable) allTable.classList.toggle('hidden', tab !== 'all');
+            if (pendingTable) pendingTable.classList.toggle('hidden', tab !== 'pending');
+            if (batchArea) batchArea.classList.toggle('hidden', tab !== 'all');
+        }
+
+        // 筛选重置
+        function resetTruckActivityFilter() {
+            showToast('筛选条件已重置', 'success');
+        }
+
+        // 待审核活动审核确认弹窗
+        var truckReviewAction = '';
+        function openTruckReviewPassModal() {
+            truckReviewAction = 'pass';
+            var text = document.getElementById('truck-review-text');
+            if (text) text.textContent = '是否确认审核通过该活动？';
+            var modal = document.getElementById('modal-truck-review');
+            if (modal) modal.classList.remove('hidden');
+        }
+        function openTruckReviewRejectModal() {
+            truckReviewAction = 'reject';
+            var text = document.getElementById('truck-review-text');
+            if (text) text.textContent = '是否确认审核拒绝该活动？';
+            var modal = document.getElementById('modal-truck-review');
+            if (modal) modal.classList.remove('hidden');
+        }
+        function closeTruckReviewModal() {
+            var modal = document.getElementById('modal-truck-review');
+            if (modal) modal.classList.add('hidden');
+        }
+        function confirmTruckReview() {
+            closeTruckReviewModal();
+            if (truckReviewAction === 'reject') {
+                showToast('已拒绝该活动', 'success');
+            } else {
+                showToast('审核已通过', 'success');
+            }
+        }
+
+        // 创建活动抽屉
+        function openTruckActivityCreateDrawer() {
+            var drawer = document.getElementById('drawer-truck-activity-create');
+            if (drawer) drawer.classList.add('active');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeTruckActivityCreateDrawer() {
+            var drawer = document.getElementById('drawer-truck-activity-create');
+            if (drawer) drawer.classList.remove('active');
+        }
+        function handleTruckActivityCreateSubmit() {
+            closeTruckActivityCreateDrawer();
+            showToast('活动已提交，等待审核', 'success');
+        }
+
+        // 查看活动抽屉
+        function openTruckActivityViewDrawer() {
+            var drawer = document.getElementById('drawer-truck-activity-view');
+            if (drawer) drawer.classList.add('active');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeTruckActivityViewDrawer() {
+            var drawer = document.getElementById('drawer-truck-activity-view');
+            if (drawer) drawer.classList.remove('active');
+        }
+
+        // 终止活动确认弹窗
+        function openTruckTerminateModal() {
+            var modal = document.getElementById('modal-truck-terminate');
+            if (modal) modal.classList.remove('hidden');
+        }
+        function closeTruckTerminateModal() {
+            var modal = document.getElementById('modal-truck-terminate');
+            if (modal) modal.classList.add('hidden');
+        }
+        function handleTruckTerminate() {
+            closeTruckTerminateModal();
+            showToast('活动已终止', 'success');
+        }
+
+        // 报名记录页跳转
+        function showTruckActivityRegistration() {
+            showPage('truck-activity-registration');
+            switchSubnav('truck-activity');
+        }
+        function backFromTruckActivityRegistration() {
+            showPage('truck-activity');
+            switchSubnav('truck-activity');
+        }
+
+        // 积分排名页跳转
+        function showTruckActivityRanking() {
+            showPage('truck-activity-ranking');
+            switchSubnav('truck-activity');
+        }
+        function backFromTruckActivityRanking() {
+            showPage('truck-activity');
+            switchSubnav('truck-activity');
+        }
+
+        // 报名记录筛选重置
+        function resetTruckRegistrationFilter() {
+            showToast('筛选条件已重置', 'success');
+        }
+
+        // 积分排名筛选重置
+        function resetTruckRankingFilter() {
+            showToast('筛选条件已重置', 'success');
         }
 
         // 初始化图标

@@ -280,6 +280,73 @@
     }
     .placeholder-card .ph-tag.soon { background: #F3F4F6; color: #9CA3AF; }
 
+    /* 图片广告卡片（通用布局） */
+    .ad-card {
+      position: relative;
+      padding: 18px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      overflow: hidden;
+      min-height: 96px;
+    }
+    .ad-card::before {
+      content: '';
+      position: absolute;
+      right: -28px;
+      top: -42px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.14);
+    }
+    .ad-card::after {
+      content: '';
+      position: absolute;
+      right: 46px;
+      bottom: -56px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.10);
+    }
+    .ad-card .ad-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ad-card .ad-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+    .ad-card .ad-desc {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .ad-card .ad-btn {
+      position: relative;
+      z-index: 1;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 9px 18px;
+      border-radius: 22px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    /* 颜色主题 */
+    .ad-card.ad-orange { background: linear-gradient(120deg, #FF9A5C 0%, #FF6B35 50%, #F25A1F 100%); }
+    .ad-card.ad-orange .ad-btn { color: #FF6B35; }
+    .ad-card.ad-blue { background: linear-gradient(120deg, #818CF8 0%, #6366F1 50%, #4F46E5 100%); }
+    .ad-card.ad-blue .ad-btn { color: #4F46E5; }
+    .ad-card.ad-green { background: linear-gradient(120deg, #34D399 0%, #10B981 50%, #059669 100%); }
+    .ad-card.ad-green .ad-btn { color: #059669; }
+
     /* ===== 底部 Tab ===== */
     .bottom-tab {
       display: flex;
@@ -751,34 +818,31 @@
             </div>
           </div>
 
-          <!-- 签到活动占位 -->
-          <div class="activity-card placeholder-card">
-            <div class="ph-icon green"><i data-lucide="calendar-check" class="w-6 h-6"></i></div>
-            <div class="ph-body">
-              <div class="ph-title">每日签到</div>
-              <div class="ph-desc">签到领成长值，连续签到更多奖励</div>
+          <!-- 每日签到广告 -->
+          <div class="activity-card ad-card ad-orange">
+            <div class="ad-content">
+              <div class="ad-title">每日签到</div>
+              <div class="ad-desc">签到领成长值，连续签到更多奖励</div>
             </div>
-            <span class="ph-tag soon">敬请期待</span>
+            <span class="ad-btn">立即参与</span>
           </div>
 
-          <!-- 抽奖活动占位 -->
-          <div class="activity-card placeholder-card">
-            <div class="ph-icon blue"><i data-lucide="ticket" class="w-6 h-6"></i></div>
-            <div class="ph-body">
-              <div class="ph-title">幸运抽奖</div>
-              <div class="ph-desc">消耗积分参与抽奖，赢取好礼</div>
+          <!-- 幸运抽奖广告 -->
+          <div class="activity-card ad-card ad-blue">
+            <div class="ad-content">
+              <div class="ad-title">幸运抽奖</div>
+              <div class="ad-desc">消耗积分参与抽奖，赢取好礼</div>
             </div>
-            <span class="ph-tag soon">敬请期待</span>
+            <span class="ad-btn">立即参与</span>
           </div>
 
-          <!-- 消费返积分占位 -->
-          <div class="activity-card placeholder-card">
-            <div class="ph-icon purple"><i data-lucide="coins" class="w-6 h-6"></i></div>
-            <div class="ph-body">
-              <div class="ph-title">消费返积分</div>
-              <div class="ph-desc">服务区消费返积分，积分兑好礼</div>
+          <!-- 消费返积分广告 -->
+          <div class="activity-card ad-card ad-green">
+            <div class="ad-content">
+              <div class="ad-title">消费返积分</div>
+              <div class="ad-desc">服务区消费返积分，积分兑好礼</div>
             </div>
-            <span class="ph-tag soon">敬请期待</span>
+            <span class="ad-btn">立即参与</span>
           </div>
 
           <div style="height: 8px;"></div>

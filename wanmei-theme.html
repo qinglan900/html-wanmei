@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活动中心 - 主题配置</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #E5E7EB;
+            margin: 0;
+            padding: 24px;
+        }
+
+        /* ===== 整体布局 ===== */
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 1280px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+
+        /* ===== 左侧手机预览区 ===== */
+        .preview-area {
+            width: 440px;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 手机模拟器 */
+        .phone-frame {
+            width: 390px;
+            height: 844px;
+            background: #F5F6F8;
+            border-radius: 44px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25), 0 0 0 12px #1F2937, 0 0 0 14px #374151;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .phone-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            background: #F5F6F8;
+        }
+
+        /* 状态栏 */
+        .status-bar {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            flex-shrink: 0;
+        }
+        .status-bar .status-icons { display: flex; gap: 6px; align-items: center; }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .page.active { display: flex; }
+        .page::-webkit-scrollbar { display: none; }
+
+        /* 顶部导航 */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .nav-bar .nav-title { font-size: 17px; font-weight: 600; color: #111827; }
+
+        /* Banner */
+        .hero-banner {
+            margin: 0 16px 16px;
+            border-radius: 16px;
+            padding: 20px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8A50 55%, #FFA26B 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            right: -30px;
+            top: -30px;
+            width: 140px;
+            height: 140px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+        }
+        .hero-banner .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        .hero-banner .hero-title {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-banner .hero-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 分区标题 */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 16px 12px;
+            flex-shrink: 0;
+        }
+        .section-title .bar { width: 4px; height: 16px; background: #FF6B35; border-radius: 2px; }
+        .section-title .text { font-size: 16px; font-weight: 700; color: #111827; }
+
+        /* 活动列表 */
+        .activity-list { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+        .activity-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            flex-shrink: 0;
+        }
+        .activity-card:active { transform: scale(0.98); }
+        .activity-card.selected { box-shadow: 0 0 0 3px #FF6B35; }
+
+        /* 柴油券卡片 */
+        .gas-card .gas-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px dashed #E5E7EB;
+        }
+        .gas-card .gas-brand { display: flex; align-items: center; gap: 8px; }
+        .gas-card .gas-brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8A50 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .gas-card .gas-brand-name { font-size: 16px; font-weight: 700; color: #111827; }
+        .gas-card .gas-brand-desc { font-size: 12px; color: #6B7280; margin-top: 2px; }
+        .gas-card .gas-type-tag {
+            background: #FF6B35;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+        .gas-card .gas-face-row { display: flex; gap: 10px; padding: 12px 16px; }
+        .gas-face-chip {
+            flex: 1;
+            background: linear-gradient(135deg, #FFF7E6 0%, #FFF0E0 100%);
+            border: 1px solid #FFE0C2;
+            border-radius: 12px;
+            padding: 10px 8px;
+            text-align: center;
+        }
+        .gas-face-chip .face-value { font-size: 20px; font-weight: 800; color: #FF6B35; line-height: 1; }
+        .gas-face-chip .face-value .yen { font-size: 13px; font-weight: 700; }
+        .gas-face-chip .face-threshold { font-size: 11px; color: #6B7280; margin-top: 5px; line-height: 1.3; }
+        .gas-card .gas-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px 14px;
+        }
+        .gas-card .gas-oil-tag {
+            font-size: 12px;
+            color: #FF6B35;
+            background: #FFF7E6;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-weight: 600;
+        }
+        .gas-card .gas-arrow { color: #6B7280; display: flex; align-items: center; gap: 2px; font-size: 13px; }
+
+        /* 广告卡片 */
+        .ad-card {
+            position: relative;
+            padding: 18px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            min-height: 96px;
+        }
+        .ad-card::before {
+            content: '';
+            position: absolute;
+            right: -28px;
+            top: -42px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.14);
+        }
+        .ad-card::after {
+            content: '';
+            position: absolute;
+            right: 46px;
+            bottom: -56px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+        }
+        .ad-card .ad-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .ad-card .ad-title { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+        .ad-card .ad-desc { font-size: 12px; color: rgba(255, 255, 255, 0.92); }
+        .ad-card .ad-btn {
+            position: relative;
+            z-index: 1;
+            background: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 9px 18px;
+            border-radius: 22px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+        }
+
+        /* Toast */
+        .toast-wrap {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            background: rgba(17,24,39,0.92);
+            color: white;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            animation: toastIn 0.25s ease;
+            white-space: nowrap;
+        }
+        @keyframes toastIn {
+            from { transform: translateY(-12px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast.hide { animation: toastOut 0.25s ease forwards; }
+        @keyframes toastOut {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-12px); opacity: 0; }
+        }
+
+        /* ===== 右侧配置区 ===== */
+        .config-area {
+            flex-grow: 1;
+            background: #fff;
+            padding: 28px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .config-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .config-title { font-size: 18px; font-weight: bold; border-left: 4px solid #FF6B35; padding-left: 10px; }
+        .btn-add {
+            background: #fff;
+            color: #FF6B35;
+            border: 1px solid #FF6B35;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-add:hover { background: #FFF7E6; }
+        .current-edit { font-size: 13px; color: #6B7280; margin-bottom: 20px; }
+        .current-edit span { color: #FF6B35; font-weight: 700; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; }
+        .form-group label .req { color: red; }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+            background: #fff;
+        }
+        input:focus, select:focus { outline: none; border-color: #FF6B35; }
+
+        .form-row { display: flex; gap: 15px; }
+        .form-row .form-group { flex: 1; }
+
+        .upload-box {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            text-align: center;
+            border-radius: 4px;
+            color: #888;
+            cursor: pointer;
+        }
+        .upload-box:hover { border-color: #FF6B35; color: #FF6B35; }
+
+        /* 开关样式 */
+        .switch-group { display: flex; align-items: center; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #FF6B35; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .switch-tip { margin-left: 10px; color: #666; font-size: 13px; }
+
+        /* 面额配置 */
+        .faces-list { margin-bottom: 10px; }
+        .face-item { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 10px; }
+        .face-field { flex: 1; }
+        .face-field label { font-weight: normal; font-size: 12px; color: #666; margin-bottom: 4px; }
+        .face-del {
+            background: #fff;
+            border: 1px solid #EF4444;
+            color: #EF4444;
+            border-radius: 4px;
+            padding: 9px 14px;
+            cursor: pointer;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .face-del:hover { background: #FEF2F2; }
+        .btn-add-face {
+            background: #fff;
+            color: #FF6B35;
+            border: 1px dashed #FF6B35;
+            border-radius: 4px;
+            padding: 8px 0;
+            width: 100%;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-add-face:hover { background: #FFF7E6; }
+
+        /* 图片预览占位 */
+        #iconPreview {
+            width: 50px; height: 50px; border-radius: 8px; margin-bottom: 10px;
+            background-size: cover;
+            background-position: center;
+            display: none;
+        }
+
+        /* 底部按钮 */
+        .btn-group { margin-top: 26px; display: flex; gap: 15px; }
+        .btn-save { background: #FF6B35; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        .btn-save:hover { background: #E85A2A; }
+        .btn-delete { background: #fff; color: #EF4444; border: 1px solid #EF4444; padding: 12px 30px; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        .btn-delete:hover { background: #FEF2F2; }
+        .btn-cancel { background: #eee; color: #333; border: none; padding: 12px 30px; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        .btn-cancel:hover { background: #e0e0e0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 左侧手机预览区 -->
+    <div class="preview-area">
+        <div class="phone-frame">
+            <div class="phone-screen">
+                <!-- 状态栏 -->
+                <div class="status-bar">
+                    <span>9:41</span>
+                    <span class="status-icons">
+                        <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+                        <svg width="18" height="12" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4a16 16 0 0 1 20 0"/><path d="M6 8a10 10 0 0 1 12 0"/><path d="M10 12a4 4 0 0 1 4 0"/></svg>
+                        <svg width="24" height="12" viewBox="0 0 26 12"><rect x="0" y="0" width="22" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="2" width="16" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="3" width="2" height="6" rx="1" fill="currentColor"/></svg>
+                    </span>
+                </div>
+
+                <!-- Toast 容器 -->
+                <div class="toast-wrap" id="toastWrap"></div>
+
+                <!-- 首页 -->
+                <div class="page active" id="pageHome">
+                    <div class="nav-bar">
+                        <span class="nav-title">活动中心</span>
+                    </div>
+
+                    <div class="hero-banner">
+                        <div class="hero-tag">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M5 12v9h14v-9"/><path d="M12 8c-3 0-5-2-5-4 0-1 1-2 2-2 2 0 3 2 3 4zM12 8c3 0 5-2 5-4 0-1-1-2-2-2-2 0-3 2-3 4z"/></svg>
+                            精选活动
+                        </div>
+                        <div class="hero-title">缤纷活动<br>好礼领不停</div>
+                        <div class="hero-subtitle">签到、抽奖、返积分，福利天天享</div>
+                    </div>
+
+                    <div class="section-title">
+                        <span class="bar"></span>
+                        <span class="text">热门活动</span>
+                    </div>
+                    <div class="activity-list" id="activityList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧配置区 -->
+    <div class="config-area">
+        <div class="config-head">
+            <div class="config-title">活动模块配置</div>
+            <button class="btn-add" onclick="addActivity()">+ 新增活动</button>
+        </div>
+        <div class="current-edit">当前配置：<span id="currentEditName">未选择</span></div>
+
+        <div class="form-group">
+            <label><span class="req">*</span> 模块名称</label>
+            <input type="text" id="actName" placeholder="如：每日签到">
+        </div>
+
+        <div class="form-group">
+            <label>副标题</label>
+            <input type="text" id="actSubtitle" placeholder="如：签到领成长值，连续签到更多奖励">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>卡片类型</label>
+                <select id="actType" onchange="onTypeChange()">
+                    <option value="ad">广告卡片</option>
+                    <option value="gas">柴油券卡片</option>
+                </select>
+            </div>
+            <div class="form-group" id="themeGroup">
+                <label>颜色主题</label>
+                <select id="actTheme" onchange="onThemeChange()">
+                    <option value="orange">活力橙</option>
+                    <option value="blue">天空蓝</option>
+                    <option value="green">翡翠绿</option>
+                    <option value="purple">魅力紫</option>
+                    <option value="pink">雅致粉</option>
+                    <option value="yellow">经典黄</option>
+                    <option value="black">雅酷黑</option>
+                    <option value="cyan">湖青蓝</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>关联模块</label>
+            <select id="actModule">
+                <option value="H5">H5</option>
+                <option value="Native">原生页面</option>
+                <option value="MiniProgram">小程序内页</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>访问地址</label>
+            <input type="text" id="actUrl" placeholder="请输入活动跳转链接">
+        </div>
+
+        <div class="form-group">
+            <label>是否登录</label>
+            <div class="switch-group">
+                <label class="switch">
+                    <input type="checkbox" id="actLogin">
+                    <span class="slider"></span>
+                </label>
+                <span class="switch-tip">开启后需用户登录才能参加</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>推广</label>
+            <input type="text" id="actPromo" placeholder="特殊标注类，三字以内，如满减">
+        </div>
+
+        <div class="form-group" id="btnTextGroup">
+            <label>按钮文字</label>
+            <input type="text" id="actBtnText" placeholder="如：立即参与">
+        </div>
+
+        <div class="form-group" id="tagGroup">
+            <label>类型标签</label>
+            <input type="text" id="actTag" placeholder="如：柴油券">
+        </div>
+
+        <div class="form-group" id="facesGroup">
+            <label>面额配置</label>
+            <div class="faces-list" id="facesList"></div>
+            <button type="button" class="btn-add-face" onclick="addFace()">+ 新增面额</button>
+        </div>
+
+        <div class="form-group">
+            <label>应用图标 (入口图片)</label>
+            <div id="iconPreview"></div>
+            <div class="upload-box" onclick="document.getElementById('iconUpload').click()">
+                <input type="file" id="iconUpload" accept="image/*" style="display: none;" onchange="previewIcon(this)">
+                <strong>点击上传图片</strong><br>
+                <span style="font-size: 12px;">建议尺寸: 124px * 85px (支持JPG/PNG)</span>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="btn-group">
+            <button class="btn-save" onclick="saveActivity()">保 存</button>
+            <button class="btn-delete" onclick="deleteActivity()">删 除</button>
+            <button class="btn-cancel" onclick="cancelEdit()">取 消</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ===== 颜色主题映射 =====
+    var AD_THEMES = {
+        orange: { bg: 'linear-gradient(120deg, #FF9A5C 0%, #FF6B35 50%, #F25A1F 100%)', btn: '#FF6B35' },
+        blue:   { bg: 'linear-gradient(120deg, #818CF8 0%, #6366F1 50%, #4F46E5 100%)', btn: '#4F46E5' },
+        green:  { bg: 'linear-gradient(120deg, #34D399 0%, #10B981 50%, #059669 100%)', btn: '#059669' },
+        purple: { bg: 'linear-gradient(120deg, #C4B5FD 0%, #8B5CF6 50%, #7C3AED 100%)', btn: '#7C3AED' },
+        pink:   { bg: 'linear-gradient(120deg, #FBCFE8 0%, #EC4899 50%, #DB2777 100%)', btn: '#DB2777' },
+        yellow: { bg: 'linear-gradient(120deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%)', btn: '#D97706' },
+        black:  { bg: 'linear-gradient(120deg, #6B7280 0%, #374151 50%, #111827 100%)', btn: '#111827' },
+        cyan:   { bg: 'linear-gradient(120deg, #67E8F9 0%, #06B6D4 50%, #0891B2 100%)', btn: '#0891B2' }
+    };
+
+    // ===== 图标 =====
+    var ICONS = {
+        truck: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h13v11H1z"/><path d="M14 8h4l4 4v4h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
+        chevronRight: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'
+    };
+
+    // ===== 初始活动数据（已配置好的活动） =====
+    var activities = [
+        {
+            id: 'act-gas',
+            name: '高速石化柴油券',
+            subtitle: '货车专享 · 高速沿线站点通用',
+            type: 'gas',
+            theme: 'orange',
+            module: 'MiniProgram',
+            url: 'https://example.com/gas',
+            needLogin: true,
+            promo: '货车专享',
+            tag: '柴油券',
+            btnText: '',
+            icon: null,
+            faces: [
+                { value: 20, threshold: 150 },
+                { value: 40, threshold: 200 },
+                { value: 75, threshold: 300 }
+            ]
+        },
+        {
+            id: 'act-signin',
+            name: '每日签到',
+            subtitle: '签到领成长值，连续签到更多奖励',
+            type: 'ad',
+            theme: 'orange',
+            module: 'H5',
+            url: 'https://example.com/signin',
+            needLogin: true,
+            promo: '',
+            tag: '',
+            btnText: '立即参与',
+            icon: null,
+            faces: []
+        },
+        {
+            id: 'act-lottery',
+            name: '幸运抽奖',
+            subtitle: '消耗积分参与抽奖，赢取好礼',
+            type: 'ad',
+            theme: 'blue',
+            module: 'H5',
+            url: 'https://example.com/lottery',
+            needLogin: true,
+            promo: '',
+            tag: '',
+            btnText: '立即参与',
+            icon: null,
+            faces: []
+        },
+        {
+            id: 'act-points',
+            name: '消费返积分',
+            subtitle: '服务区消费返积分，积分兑好礼',
+            type: 'ad',
+            theme: 'green',
+            module: 'MiniProgram',
+            url: 'https://example.com/points',
+            needLogin: false,
+            promo: '',
+            tag: '',
+            btnText: '立即参与',
+            icon: null,
+            faces: []
+        }
+    ];
+
+    // ===== 状态 =====
+    var currentId = null;      // 当前选中的活动 id
+    var editFaces = [];        // 面额编辑态
+    var editIcon = null;       // 图标编辑态（base64）
+    var editTheme = 'orange';  // 主题编辑态（用于实时预览）
+
+    // ===== 工具函数 =====
+    function escapeHtml(s) {
+        if (s === null || s === undefined) return '';
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function getValue(id, def) {
+        var el = document.getElementById(id);
+        return el ? el.value : def;
+    }
+
+    function findActivity(id) {
+        for (var i = 0; i < activities.length; i++) {
+            if (activities[i].id === id) return activities[i];
+        }
+        return null;
+    }
+
+    // ===== 手机预览渲染 =====
+    function renderPhone() {
+        var list = document.getElementById('activityList');
+        if (!list) return;
+        var html = '';
+        for (var i = 0; i < activities.length; i++) {
+            var a = activities[i];
+            var theme = a.theme;
+            if (a.id === currentId && a.type === 'ad') {
+                theme = editTheme;
+            }
+            html += buildActivityCard(a, a.id === currentId, theme);
+        }
+        list.innerHTML = html;
+    }
+
+    function buildActivityCard(a, selected, theme) {
+        if (a.type === 'gas') {
+            return buildGasCard(a, selected);
+        }
+        return buildAdCard(a, selected, theme);
+    }
+
+    function buildGasCard(a, selected) {
+        var chips = '';
+        for (var i = 0; i < a.faces.length; i++) {
+            var f = a.faces[i];
+            chips += '<div class="gas-face-chip"><div class="face-value"><span class="yen">¥</span>' + escapeHtml(f.value) + '</div><div class="face-threshold">满' + escapeHtml(f.threshold) + '升可用</div></div>';
+        }
+        var iconHtml = a.icon
+            ? '<img src="' + a.icon + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
+            : ICONS.truck;
+
+        return '<div class="activity-card gas-card' + (selected ? ' selected' : '') + '" data-id="' + a.id + '" onclick="selectActivity(\'' + a.id + '\')">'
+            + '<div class="gas-card-top">'
+            + '<div class="gas-brand"><div class="gas-brand-icon">' + iconHtml + '</div>'
+            + '<div><div class="gas-brand-name">' + escapeHtml(a.name) + '</div><div class="gas-brand-desc">' + escapeHtml(a.subtitle) + '</div></div></div>'
+            + '<span class="gas-type-tag">' + escapeHtml(a.tag || '柴油券') + '</span></div>'
+            + '<div class="gas-face-row">' + chips + '</div>'
+            + '<div class="gas-card-footer"><span class="gas-oil-tag">' + escapeHtml(a.promo || '') + '</span>'
+            + '<span class="gas-arrow">点击配置 ' + ICONS.chevronRight + '</span></div>'
+            + '</div>';
+    }
+
+    function buildAdCard(a, selected, theme) {
+        var t = AD_THEMES[theme] || AD_THEMES[a.theme] || AD_THEMES.orange;
+        return '<div class="activity-card ad-card' + (selected ? ' selected' : '') + '" style="background:' + t.bg + '" data-id="' + a.id + '" onclick="selectActivity(\'' + a.id + '\')">'
+            + '<div class="ad-content"><div class="ad-title">' + escapeHtml(a.name) + '</div><div class="ad-desc">' + escapeHtml(a.subtitle) + '</div></div>'
+            + '<span class="ad-btn" style="color:' + t.btn + '">' + escapeHtml(a.btnText || '立即参与') + '</span>'
+            + '</div>';
+    }
+
+    // ===== 选择活动 =====
+    function selectActivity(id) {
+        currentId = id;
+        renderPhone();
+        var a = findActivity(id);
+        if (a) loadConfigForm(a);
+    }
+
+    // ===== 配置表单 =====
+    function loadConfigForm(a) {
+        var nameEl = document.getElementById('actName');
+        var subEl = document.getElementById('actSubtitle');
+        var typeEl = document.getElementById('actType');
+        var themeEl = document.getElementById('actTheme');
+        var moduleEl = document.getElementById('actModule');
+        var urlEl = document.getElementById('actUrl');
+        var loginEl = document.getElementById('actLogin');
+        var promoEl = document.getElementById('actPromo');
+        var btnEl = document.getElementById('actBtnText');
+        var tagEl = document.getElementById('actTag');
+        var editNameEl = document.getElementById('currentEditName');
+
+        if (nameEl) nameEl.value = a.name;
+        if (subEl) subEl.value = a.subtitle || '';
+        if (typeEl) typeEl.value = a.type || 'ad';
+        if (themeEl) themeEl.value = a.theme || 'orange';
+        editTheme = a.theme || 'orange';
+        if (moduleEl) moduleEl.value = a.module || 'H5';
+        if (urlEl) urlEl.value = a.url || '';
+        if (loginEl) loginEl.checked = !!a.needLogin;
+        if (promoEl) promoEl.value = a.promo || '';
+        if (btnEl) btnEl.value = a.btnText || '';
+        if (tagEl) tagEl.value = a.tag || '';
+        if (editNameEl) editNameEl.textContent = a.name;
+
+        editFaces = a.faces ? JSON.parse(JSON.stringify(a.faces)) : [];
+        editIcon = a.icon || null;
+
+        renderFaces();
+        renderIconPreview();
+        updateTypeFields(a.type || 'ad');
+    }
+
+    function updateTypeFields(type) {
+        var themeGroup = document.getElementById('themeGroup');
+        var btnGroup = document.getElementById('btnTextGroup');
+        var tagGroup = document.getElementById('tagGroup');
+        var facesGroup = document.getElementById('facesGroup');
+
+        if (themeGroup) themeGroup.style.display = (type === 'ad') ? 'block' : 'none';
+        if (btnGroup) btnGroup.style.display = (type === 'ad') ? 'block' : 'none';
+        if (tagGroup) tagGroup.style.display = (type === 'gas') ? 'block' : 'none';
+        if (facesGroup) facesGroup.style.display = (type === 'gas') ? 'block' : 'none';
+    }
+
+    function renderFaces() {
+        var list = document.getElementById('facesList');
+        if (!list) return;
+        var html = '';
+        for (var i = 0; i < editFaces.length; i++) {
+            var f = editFaces[i];
+            html += '<div class="face-item">'
+                + '<div class="face-field"><label>面额 (元)</label><input type="number" class="face-value-input" value="' + escapeHtml(f.value) + '"></div>'
+                + '<div class="face-field"><label>门槛 (升)</label><input type="number" class="face-threshold-input" value="' + escapeHtml(f.threshold) + '"></div>'
+                + '<button type="button" class="face-del" onclick="removeFace(' + i + ')">删 除</button>'
+                + '</div>';
+        }
+        list.innerHTML = html;
+    }
+
+    function renderIconPreview() {
+        var preview = document.getElementById('iconPreview');
+        if (!preview) return;
+        if (editIcon) {
+            preview.style.display = 'block';
+            preview.style.backgroundImage = 'url(' + editIcon + ')';
+        } else {
+            preview.style.display = 'none';
+            preview.style.backgroundImage = '';
+        }
+    }
+
+    function addFace() {
+        editFaces.push({ value: 20, threshold: 100 });
+        renderFaces();
+    }
+
+    function removeFace(idx) {
+        editFaces.splice(idx, 1);
+        renderFaces();
+    }
+
+    function readFacesFromDom() {
+        var valueInputs = document.querySelectorAll('.face-value-input');
+        var thresholdInputs = document.querySelectorAll('.face-threshold-input');
+        var faces = [];
+        for (var i = 0; i < valueInputs.length; i++) {
+            var v = parseFloat(valueInputs[i].value);
+            var t = parseFloat(thresholdInputs[i].value);
+            faces.push({ value: isNaN(v) ? 0 : v, threshold: isNaN(t) ? 0 : t });
+        }
+        return faces;
+    }
+
+    // ===== 类型/主题切换 =====
+    function onTypeChange() {
+        var typeEl = document.getElementById('actType');
+        if (typeEl) updateTypeFields(typeEl.value);
+    }
+
+    function onThemeChange() {
+        var themeEl = document.getElementById('actTheme');
+        if (!themeEl) return;
+        editTheme = themeEl.value;
+        renderPhone();
+    }
+
+    // ===== 图片上传预览 =====
+    function previewIcon(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                editIcon = e.target.result;
+                renderIconPreview();
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // ===== 保存 / 新增 / 删除 / 取消 =====
+    function saveActivity() {
+        var a = findActivity(currentId);
+        if (!a) return;
+
+        var nameEl = document.getElementById('actName');
+        if (nameEl && !nameEl.value.trim()) {
+            showToast('模块名称不能为空');
+            return;
+        }
+
+        a.name = getValue('actName', a.name);
+        a.subtitle = getValue('actSubtitle', '');
+        a.type = getValue('actType', 'ad');
+        a.theme = getValue('actTheme', 'orange');
+        editTheme = a.theme;
+        a.module = getValue('actModule', 'H5');
+        a.url = getValue('actUrl', '');
+        a.needLogin = document.getElementById('actLogin') ? document.getElementById('actLogin').checked : true;
+        a.promo = getValue('actPromo', '');
+        a.btnText = getValue('actBtnText', '立即参与');
+        a.tag = getValue('actTag', '');
+        a.icon = editIcon;
+        a.faces = readFacesFromDom();
+
+        renderPhone();
+        var editNameEl = document.getElementById('currentEditName');
+        if (editNameEl) editNameEl.textContent = a.name;
+        showToast('保存成功：' + a.name);
+    }
+
+    function addActivity() {
+        var id = 'act-' + Date.now();
+        var newAct = {
+            id: id,
+            name: '新活动',
+            subtitle: '',
+            type: 'ad',
+            theme: 'orange',
+            module: 'H5',
+            url: '',
+            needLogin: true,
+            promo: '',
+            tag: '',
+            btnText: '立即参与',
+            icon: null,
+            faces: []
+        };
+        activities.push(newAct);
+        currentId = id;
+        renderPhone();
+        loadConfigForm(newAct);
+        showToast('已新增活动，请配置');
+    }
+
+    function deleteActivity() {
+        var a = findActivity(currentId);
+        if (!a) return;
+        if (!confirm('确定删除活动【' + a.name + '】吗？')) return;
+
+        var idx = -1;
+        for (var i = 0; i < activities.length; i++) {
+            if (activities[i].id === currentId) { idx = i; break; }
+        }
+        if (idx >= 0) activities.splice(idx, 1);
+
+        if (activities.length > 0) {
+            currentId = activities[0].id;
+            renderPhone();
+            loadConfigForm(activities[0]);
+        } else {
+            currentId = null;
+            editFaces = [];
+            editIcon = null;
+            renderPhone();
+            clearConfigForm();
+        }
+        showToast('已删除活动');
+    }
+
+    function cancelEdit() {
+        var a = findActivity(currentId);
+        if (a) {
+            loadConfigForm(a);
+            showToast('已取消修改');
+        }
+    }
+
+    function clearConfigForm() {
+        var ids = ['actName', 'actSubtitle', 'actUrl', 'actPromo', 'actBtnText', 'actTag'];
+        for (var i = 0; i < ids.length; i++) {
+            var el = document.getElementById(ids[i]);
+            if (el) el.value = '';
+        }
+        var editNameEl = document.getElementById('currentEditName');
+        if (editNameEl) editNameEl.textContent = '未选择';
+        editFaces = [];
+        editIcon = null;
+        renderFaces();
+        renderIconPreview();
+        updateTypeFields('ad');
+    }
+
+    // ===== Toast =====
+    var toastWrap = document.getElementById('toastWrap');
+    var toastTimer = null;
+
+    function showToast(msg) {
+        if (!toastWrap) return;
+        var toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = msg;
+        toastWrap.appendChild(toast);
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function() {
+            toast.classList.add('hide');
+            setTimeout(function() {
+                if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
+            }, 250);
+        }, 1800);
+    }
+
+    // ===== 初始化 =====
+    function init() {
+        if (activities.length > 0) {
+            currentId = activities[0].id;
+            renderPhone();
+            loadConfigForm(activities[0]);
+        } else {
+            renderPhone();
+        }
+    }
+
+    init();
+</script>
+
+</body>
+</html>

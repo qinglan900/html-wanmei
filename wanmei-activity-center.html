@@ -192,17 +192,17 @@
       width: 40px;
       height: 40px;
       border-radius: 12px;
-      background: #FFF7E6;
+      background: linear-gradient(135deg, #FF6B35 0%, #FF8A50 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #FF6B35;
+      color: #fff;
     }
     .gas-card .gas-brand-name { font-size: 16px; font-weight: 700; color: #111827; }
     .gas-card .gas-brand-desc { font-size: 12px; color: #6B7280; margin-top: 2px; }
     .gas-card .gas-type-tag {
-      background: #FFF7E6;
-      color: #FF6B35;
+      background: #FF6B35;
+      color: #fff;
       font-size: 12px;
       font-weight: 600;
       padding: 4px 10px;
@@ -242,10 +242,11 @@
     }
     .gas-card .gas-oil-tag {
       font-size: 12px;
-      color: #4B5563;
-      background: #F3F4F6;
+      color: #FF6B35;
+      background: #FFF7E6;
       border-radius: 6px;
       padding: 4px 8px;
+      font-weight: 600;
     }
     .gas-card .gas-arrow { color: #9CA3AF; display: flex; align-items: center; gap: 2px; font-size: 13px; color: #6B7280; }
 
@@ -775,9 +776,9 @@
 
         <!-- Banner -->
         <div class="hero-banner">
-          <div class="hero-tag"><i data-lucide="gift" class="w-3.5 h-3.5"></i> 限时福利</div>
-          <div class="hero-title">高速石化<br>加油券免费领</div>
-          <div class="hero-subtitle">柴油加满即享优惠，出行更省心</div>
+          <div class="hero-tag"><i data-lucide="gift" class="w-3.5 h-3.5"></i> 精选活动</div>
+          <div class="hero-title">缤纷活动<br>好礼领不停</div>
+          <div class="hero-subtitle">签到、抽奖、返积分，福利天天享</div>
         </div>
 
         <!-- 加油券活动 -->
@@ -790,13 +791,13 @@
           <div class="activity-card gas-card" onclick="openDetail()">
             <div class="gas-card-top">
               <div class="gas-brand">
-                <div class="gas-brand-icon"><i data-lucide="fuel" class="w-5 h-5"></i></div>
+                <div class="gas-brand-icon"><i data-lucide="truck" class="w-5 h-5"></i></div>
                 <div>
-                  <div class="gas-brand-name">高速石化加油券</div>
-                  <div class="gas-brand-desc">货车积分试点路段沿线站点可用</div>
+                  <div class="gas-brand-name">高速石化柴油券</div>
+                  <div class="gas-brand-desc">货车专享 · 高速沿线站点通用</div>
                 </div>
               </div>
-              <span class="gas-type-tag">加油券</span>
+              <span class="gas-type-tag">柴油券</span>
             </div>
             <div class="gas-face-row">
               <div class="gas-face-chip">
@@ -813,7 +814,7 @@
               </div>
             </div>
             <div class="gas-card-footer">
-              <span class="gas-oil-tag">柴油</span>
+              <span class="gas-oil-tag">货车专享</span>
               <span class="gas-arrow">查看详情 <i data-lucide="chevron-right" class="w-4 h-4"></i></span>
             </div>
           </div>

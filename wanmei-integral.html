@@ -1553,7 +1553,7 @@
                                 </div>
                                 <div class="inline-label-input">
                                     <span class="label">活动状态</span>
-                                    <select><option>全部</option><option>进行中</option><option>待审核</option><option>已终止</option></select>
+                                    <select><option>全部</option><option>待审核</option><option>审核通过</option><option>审核失败</option><option>已发布</option><option>已结束</option></select>
                                 </div>
                                 <div class="date-range-input">
                                     <span class="label">活动时间</span>
@@ -1596,7 +1596,7 @@
                                         <td class="text-left">安徽省皖通公司</td>
                                         <td class="text-left text-neutral-600">2026-08-18 16:38:00 ~ 2027-01-21 16:38:00</td>
                                         <td class="text-left text-neutral-500">--</td>
-                                        <td class="text-center"><span class="status-badge status-success">进行中</span></td>
+                                        <td class="text-center"><span class="status-badge status-success">已发布</span></td>
                                         <td class="text-center">admin</td>
                                         <td class="text-center text-neutral-600">2026-08-18 16:40:08</td>
                                         <td class="text-center">
@@ -1630,7 +1630,7 @@
                                         <td class="text-left">安徽皖通公司</td>
                                         <td class="text-left text-neutral-600">2026-08-14 00:03:00 ~ 2026-08-31 17:00:00</td>
                                         <td class="text-left text-neutral-500">2026-08-21 ~ 2026-09-05</td>
-                                        <td class="text-center"><span class="status-badge status-success">进行中</span></td>
+                                        <td class="text-center"><span class="status-badge status-success">已发布</span></td>
                                         <td class="text-center">admin</td>
                                         <td class="text-center text-neutral-600">2026-08-15 15:04:34</td>
                                         <td class="text-center">
@@ -1642,13 +1642,60 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">4</td>
+                                        <td class="text-left text-primary font-medium">9月份货车加油积分活动</td>
+                                        <td class="text-left">安徽数科公司</td>
+                                        <td class="text-left text-neutral-600">2026-09-01 00:00:00 ~ 2026-09-30 23:59:59</td>
+                                        <td class="text-left text-neutral-500">2026-09-05 ~ 2026-09-20</td>
+                                        <td class="text-center"><span class="status-badge status-info">审核通过</span></td>
+                                        <td class="text-center">admin</td>
+                                        <td class="text-center text-neutral-600">2026-08-20 10:12:30</td>
+                                        <td class="text-center">
+                                            <div class="flex items-center justify-center gap-3">
+                                                <button class="btn btn-text btn-sm" onclick="openTruckActivityViewDrawer()">查看</button>
+                                                <button class="btn btn-text btn-sm" onclick="showTruckActivityRegistration()">报名记录</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">5</td>
+                                        <td class="text-left text-primary font-medium">7月份货车洗车积分活动</td>
+                                        <td class="text-left">安徽省皖通公司</td>
+                                        <td class="text-left text-neutral-600">2026-07-01 00:00:00 ~ 2026-07-31 23:59:59</td>
+                                        <td class="text-left text-neutral-500">--</td>
+                                        <td class="text-center"><span class="status-badge status-error">审核失败</span></td>
+                                        <td class="text-center">admin</td>
+                                        <td class="text-center text-neutral-600">2026-07-02 09:20:11</td>
+                                        <td class="text-center">
+                                            <div class="flex items-center justify-center gap-3">
+                                                <button class="btn btn-text btn-sm" onclick="openTruckActivityViewDrawer()">查看</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-neutral-200 table-row">
+                                        <td class="text-center text-neutral-600">6</td>
+                                        <td class="text-left text-primary font-medium">6月份货车积分活动</td>
+                                        <td class="text-left">安徽皖通公司</td>
+                                        <td class="text-left text-neutral-600">2026-06-01 00:00:00 ~ 2026-06-30 23:59:59</td>
+                                        <td class="text-left text-neutral-500">2026-06-05 ~ 2026-06-20</td>
+                                        <td class="text-center"><span class="status-badge status-neutral">已结束</span></td>
+                                        <td class="text-center">admin</td>
+                                        <td class="text-center text-neutral-600">2026-06-01 08:00:00</td>
+                                        <td class="text-center">
+                                            <div class="flex items-center justify-center gap-3">
+                                                <button class="btn btn-text btn-sm" onclick="openTruckActivityViewDrawer()">查看</button>
+                                                <button class="btn btn-text btn-sm" onclick="showTruckActivityRegistration()">报名记录</button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                         <!-- 分页 -->
                         <div class="mx-2 mb-2">
                             <div class="flex justify-between items-center py-2">
-                                <span class="text-sm text-neutral-600">共 <span class="font-semibold">3</span> 条记录</span>
+                                <span class="text-sm text-neutral-600">共 <span class="font-semibold">6</span> 条记录</span>
                                 <div class="flex items-center gap-2">
                                     <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected="">20条/页</option><option>50条/页</option></select>
                                     <div class="flex items-center gap-1">
@@ -3689,7 +3736,7 @@
         }
         function handleTruckTerminate() {
             closeTruckTerminateModal();
-            showToast('活动已终止', 'success');
+            showToast('活动已结束', 'success');
         }
 
         // 报名记录页跳转

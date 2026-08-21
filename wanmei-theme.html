@@ -206,16 +206,8 @@
         .gas-card .gas-card-footer {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
             padding: 10px 16px 14px;
-        }
-        .gas-card .gas-oil-tag {
-            font-size: 12px;
-            color: #FF6B35;
-            background: #FFF7E6;
-            border-radius: 6px;
-            padding: 4px 8px;
-            font-weight: 600;
         }
         .gas-card .gas-arrow { color: #6B7280; display: flex; align-items: center; gap: 2px; font-size: 13px; }
 
@@ -528,11 +520,6 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label>推广</label>
-            <input type="text" id="actPromo" placeholder="特殊标注类，三字以内，如满减">
-        </div>
-
         <div class="form-group" id="btnTextGroup">
             <label>按钮文字</label>
             <input type="text" id="actBtnText" placeholder="如：立即参与">
@@ -598,7 +585,6 @@
             module: 'MiniProgram',
             url: 'https://example.com/gas',
             needLogin: true,
-            promo: '货车专享',
             tag: '柴油券',
             btnText: '',
             icon: null,
@@ -617,7 +603,6 @@
             module: 'H5',
             url: 'https://example.com/signin',
             needLogin: true,
-            promo: '',
             tag: '',
             btnText: '立即参与',
             icon: null,
@@ -632,7 +617,6 @@
             module: 'H5',
             url: 'https://example.com/lottery',
             needLogin: true,
-            promo: '',
             tag: '',
             btnText: '立即参与',
             icon: null,
@@ -647,7 +631,6 @@
             module: 'MiniProgram',
             url: 'https://example.com/points',
             needLogin: false,
-            promo: '',
             tag: '',
             btnText: '立即参与',
             icon: null,
@@ -723,8 +706,7 @@
             + '<div><div class="gas-brand-name">' + escapeHtml(a.name) + '</div><div class="gas-brand-desc">' + escapeHtml(a.subtitle) + '</div></div></div>'
             + '<span class="gas-type-tag">' + escapeHtml(a.tag || '柴油券') + '</span></div>'
             + '<div class="gas-face-row">' + chips + '</div>'
-            + '<div class="gas-card-footer"><span class="gas-oil-tag">' + escapeHtml(a.promo || '') + '</span>'
-            + '<span class="gas-arrow">点击配置 ' + ICONS.chevronRight + '</span></div>'
+            + '<div class="gas-card-footer"><span class="gas-arrow">点击配置 ' + ICONS.chevronRight + '</span></div>'
             + '</div>';
     }
 
@@ -753,7 +735,6 @@
         var moduleEl = document.getElementById('actModule');
         var urlEl = document.getElementById('actUrl');
         var loginEl = document.getElementById('actLogin');
-        var promoEl = document.getElementById('actPromo');
         var btnEl = document.getElementById('actBtnText');
         var tagEl = document.getElementById('actTag');
         var editNameEl = document.getElementById('currentEditName');
@@ -766,7 +747,6 @@
         if (moduleEl) moduleEl.value = a.module || 'H5';
         if (urlEl) urlEl.value = a.url || '';
         if (loginEl) loginEl.checked = !!a.needLogin;
-        if (promoEl) promoEl.value = a.promo || '';
         if (btnEl) btnEl.value = a.btnText || '';
         if (tagEl) tagEl.value = a.tag || '';
         if (editNameEl) editNameEl.textContent = a.name;
@@ -884,7 +864,6 @@
         a.module = getValue('actModule', 'H5');
         a.url = getValue('actUrl', '');
         a.needLogin = document.getElementById('actLogin') ? document.getElementById('actLogin').checked : true;
-        a.promo = getValue('actPromo', '');
         a.btnText = getValue('actBtnText', '立即参与');
         a.tag = getValue('actTag', '');
         a.icon = editIcon;
@@ -907,7 +886,6 @@
             module: 'H5',
             url: '',
             needLogin: true,
-            promo: '',
             tag: '',
             btnText: '立即参与',
             icon: null,
@@ -954,7 +932,7 @@
     }
 
     function clearConfigForm() {
-        var ids = ['actName', 'actSubtitle', 'actUrl', 'actPromo', 'actBtnText', 'actTag'];
+        var ids = ['actName', 'actSubtitle', 'actUrl', 'actBtnText', 'actTag'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
             if (el) el.value = '';

@@ -90,7 +90,8 @@
 
         function openTripartiteModal(billIds) {
             if (!billIds || billIds.length === 0) { showToast('请至少选择一笔账单', 'warning'); return; }
-            var data = merchantTripartiteData[billIds[0]] || merchantTripartiteData['JS-20260514-001'];
+            currentMerchantTripartite = merchantTripartiteData[billIds[0]] || currentMerchantTripartite;
+            var data = currentMerchantTripartite;
             var providerCount = data.providers.length;
             var info = document.getElementById('tripartite-info');
             if (info) {
@@ -131,7 +132,7 @@
         }
 
         function showMerchantDetailConfirm(index) {
-            var data = merchantTripartiteData['JS-20260514-001'];
+            var data = currentMerchantTripartite;
             var p = data.providers[index];
             if (!p) return;
             var summaryView = document.getElementById('tripartite-summary-view');
@@ -163,6 +164,8 @@
                     '<td class="p-2 text-right tabular-nums border border-neutral-200">¥' + p.amount + '</td>' +
                     '</tr>';
             }
+            var partyBName = document.getElementById('tripartite-detail-party-b-name');
+            if (partyBName) partyBName.textContent = data.serviceProvider;
             var partyCName = document.getElementById('tripartite-detail-party-c-name');
             if (partyCName) partyCName.textContent = p.name;
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -181,9 +184,14 @@
             }
         };
 
+        // 当前三方确认单数据（供下载弹窗动态使用）
+        var currentMerchantTripartite = merchantTripartiteData['JS-20260514-001'];
+        var currentListerTripartite = listerTripartiteData['ZJ-SK-20260801'];
+
         function openListerTripartiteModal(billIds) {
             if (!billIds || billIds.length === 0) { showToast('请至少选择一笔账单', 'warning'); return; }
-            var data = listerTripartiteData[billIds[0]] || listerTripartiteData['ZJ-SK-20260801'];
+            currentListerTripartite = listerTripartiteData[billIds[0]] || currentListerTripartite;
+            var data = currentListerTripartite;
             var count = data.receivables.length;
             var info = document.getElementById('lister-tripartite-info');
             if (info) {
@@ -204,8 +212,12 @@
             var tbody = document.getElementById('lister-receivable-tbody');
             if (tbody) {
                 var html = '';
+                var totalPoints = 0;
+                var totalAmount = 0;
                 for (var i = 0; i < data.receivables.length; i++) {
                     var r = data.receivables[i];
+                    totalPoints += parseInt(r.points) || 0;
+                    totalAmount += parseFloat(r.amount) || 0;
                     html += '<tr class="' + (i % 2 === 0 ? 'bg-white' : 'bg-neutral-50/50') + '">' +
                         '<td class="p-2 text-left border border-neutral-200">' + r.name + '</td>' +
                         '<td class="p-2 text-left border border-neutral-200">' + r.activity + '</td>' +
@@ -216,11 +228,23 @@
                         '</tr>';
                 }
                 tbody.innerHTML = html;
+                var ptsEl = document.getElementById('lister-receivable-points-total');
+                if (ptsEl) ptsEl.textContent = totalPoints;
+                var amtEl = document.getElementById('lister-receivable-amount-total');
+                if (amtEl) amtEl.textContent = '¥' + totalAmount.toFixed(2);
             }
+            var billEl = document.getElementById('lister-summary-billno');
+            if (billEl) billEl.textContent = data.billNo;
+            var provEl = document.getElementById('lister-summary-provider');
+            if (provEl) provEl.textContent = data.productProvider;
+            var dateEl = document.getElementById('lister-summary-date');
+            if (dateEl) dateEl.textContent = data.billDate;
+            var paySection = document.getElementById('lister-pay-section');
+            if (paySection) paySection.classList.add('hidden');
         }
 
         function showListerDetailConfirm(index) {
-            var data = listerTripartiteData['ZJ-SK-20260801'];
+            var data = currentListerTripartite;
             var r = data.receivables[index];
             if (!r) return;
             var summaryView = document.getElementById('lister-summary-view');
@@ -231,6 +255,8 @@
             if (title) title.textContent = '三方对账确认单';
             var h4 = document.getElementById('lister-detail-h4');
             if (h4) h4.textContent = data.productProvider + ' × ' + r.name + ' 三方对账确认单';
+            var meta = document.getElementById('lister-detail-meta');
+            if (meta) meta.innerHTML = '<span>账单号：' + data.billNo + '</span><span>账单日期：' + data.billDate + '</span>';
             var tbody = document.getElementById('lister-detail-tbody');
             if (tbody) {
                 tbody.innerHTML =
@@ -250,6 +276,8 @@
                     '<td class="p-2 text-right tabular-nums border border-neutral-200">¥' + r.amount + '</td>' +
                     '</tr>';
             }
+            var partyBName = document.getElementById('lister-detail-party-b-name');
+            if (partyBName) partyBName.textContent = data.productProvider;
             var partyCName = document.getElementById('lister-detail-party-c-name');
             if (partyCName) partyCName.textContent = r.name;
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -307,82 +335,84 @@
         var appealDrawerData = {
             'pending': {
                 title: '账单复核详情',
-                bills: [{ no: 'JS-20260514-001', date: '2026-05-13', amount: '¥15,600.00' }],
-                reason: '账单JS-20260514-001中部分券码核销金额与实际不符，5月13日10:23的加油订单实际核销金额应为¥150.00而非¥100.00，请核实调整。',
-                amount: '+¥500.00',
+                relation: '数科公司（产品提供方）→ 石化公司（服务提供方）',
+                bills: [{ no: 'GX-20260513-003', date: '2026-05-13', amount: '¥130.00' }],
+                reason: '部分券码核销金额与实际不符，申请调减',
+                amount: '-¥5.00',
                 attachments: ['凭证1.jpg', '凭证2.pdf'],
                 applicant: 'SH-2026001',
-                applyTime: '2026-05-14 09:30',
+                applyTime: '2026-05-18 11:20',
                 status: '待审核',
                 statusCls: 'status-warning',
                 mode: 'view'
             },
             'audit': {
                 title: '账单复核审核',
-                bills: [{ no: 'JS-20260514-001', date: '2026-05-13', amount: '¥15,600.00' }],
-                reason: '账单JS-20260514-001中部分券码核销金额与实际不符，5月13日10:23的加油订单实际核销金额应为¥150.00而非¥100.00，请核实调整。',
-                amount: '+¥500.00',
+                relation: '数科公司（产品提供方）→ 石化公司（服务提供方）',
+                bills: [{ no: 'GX-20260513-003', date: '2026-05-13', amount: '¥130.00' }],
+                reason: '部分券码核销金额与实际不符，申请调减',
+                amount: '-¥5.00',
                 attachments: ['凭证1.jpg', '凭证2.pdf'],
                 applicant: 'SH-2026001',
-                applyTime: '2026-05-14 09:30',
+                applyTime: '2026-05-18 11:20',
                 status: '待审核',
                 statusCls: 'status-warning',
                 mode: 'audit'
             },
             'approved': {
                 title: '账单复核详情',
-                bills: [{ no: 'JS-20260514-003', date: '2026-05-13', amount: '¥3,900.00' }],
-                reason: '部分订单重复结算，申请扣减退款金额。',
-                amount: '-¥300.00',
-                attachments: ['退款凭证.pdf'],
-                applicant: '李五（驿达管理员）',
-                applyTime: '2026-05-13 10:00',
+                relation: '皖通公司（营销活动方）→ 数科公司（产品提供方）',
+                bills: [{ no: 'GX-20260513-001', date: '2026-05-13', amount: '¥110.00' }],
+                reason: '券码核销金额与订单实际不符，需调增结算金额',
+                amount: '+¥10.00',
+                attachments: ['凭证1.jpg'],
+                applicant: 'WT-2026001',
+                applyTime: '2026-05-16 09:30',
                 status: '审核通过',
                 statusCls: 'status-success',
                 mode: 'view',
                 auditResult: 'pass',
-                auditAmount: '-¥300.00',
-                auditDate: '2026-05-14',
-                auditNote: '经核实，确实存在重复结算，同意扣减。',
+                auditAmount: '+¥10.00',
+                auditDate: '2026-05-20',
+                auditNote: '经核实，同意调增结算金额。',
                 auditAuditor: '李四（平台管理员）',
-                auditTime: '2026-05-13 16:20'
+                auditTime: '2026-05-17 14:00'
             },
             'approved2': {
                 title: '账单复核详情',
-                bills: [
-                    { no: 'JS-20260513-002', date: '2026-05-12', amount: '¥20,300.00' },
-                    { no: 'JS-20260514-002', date: '2026-05-13', amount: '¥8,900.00' }
-                ],
-                reason: '多个账单中存在券码面额核算偏低的情况，申请补差。',
-                amount: '+¥1,200.00',
-                attachments: ['核算明细.xlsx', '差异对比.pdf'],
+                relation: '数科公司（产品提供方）→ 交控石油公司（服务提供方）',
+                bills: [{ no: 'GX-20260513-004', date: '2026-05-13', amount: '¥100.00' }],
+                reason: '订单取消导致核销金额需调减',
+                amount: '-¥20.00',
+                attachments: ['退款凭证.pdf'],
                 applicant: 'SH-2026001',
-                applyTime: '2026-05-11 14:30',
+                applyTime: '2026-05-16 15:00',
                 status: '审核通过',
                 statusCls: 'status-success',
                 mode: 'view',
                 auditResult: 'pass',
-                auditAmount: '+¥1,200.00',
-                auditDate: '2026-05-13',
-                auditNote: '经核实，券码面额确实存在差异，同意补差。',
+                auditAmount: '-¥20.00',
+                auditDate: '2026-05-21',
+                auditNote: '经核实，同意调减结算金额。',
                 auditAuditor: '李四（平台管理员）',
-                auditTime: '2026-05-12 09:15'
+                auditTime: '2026-05-18 10:00'
             },
             'rejected': {
                 title: '账单复核详情',
-                bills: [{ no: 'JS-20260514-002', date: '2026-05-13', amount: '¥8,900.00' }],
+                relation: '皖通公司（营销活动方）→ 石化公司（产品提供方）',
+                bills: [{ no: 'GX-20260513-005', date: '2026-05-13', amount: '¥30.00' }],
                 reason: '订单金额与实际消费不符，申请调账。',
-                amount: '+¥200.00',
+                amount: '+¥8.00',
                 attachments: [],
-                applicant: 'ZS-2026002',
-                applyTime: '2026-05-12 08:45',
+                applicant: 'WT-2026002',
+                applyTime: '2026-05-15 10:20',
                 status: '审核驳回',
                 statusCls: 'status-error',
                 mode: 'view',
                 auditResult: 'reject',
                 auditNote: '复核材料不足，无法核实差异金额。请补充完整交易凭证后重新提交复核申请。',
                 auditAuditor: '李四（平台管理员）',
-                auditTime: '2026-05-13 14:20'
+                auditTime: '2026-05-16 09:00'
             }
         };
 
@@ -403,7 +433,7 @@
                 billsContainer.innerHTML = '';
                 for (var i = 0; i < data.bills.length; i++) {
                     var b = data.bills[i];
-                    billsContainer.innerHTML += '<div class="flex items-center gap-2 mb-1"><i data-lucide="file-text" class="w-4 h-4 text-neutral-400"></i><span class="text-sm font-medium">' + b.no + '</span><span class="text-xs text-neutral-400">' + b.date + '</span><span class="text-xs text-neutral-400">原结算金额：' + b.amount + '</span></div>';
+                    billsContainer.innerHTML += '<div class="space-y-1 mb-1"><div class="flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-neutral-400"></i><span class="text-sm font-medium">' + b.no + '</span></div><div class="text-sm text-neutral-600">' + (data.relation || '') + '</div><div class="text-xs text-neutral-400">' + b.date + ' · 结算金额：' + b.amount + '</div></div>';
                 }
             }
 
@@ -604,6 +634,326 @@
               ]
             }
         ];
+
+        // ===== 结算关系数据（应付/应收账单共用） =====
+        var relationData = [
+            { id: 'GX-20260513-001', payer: '皖通公司', payerRole: '营销活动方', receiver: '数科公司', receiverRole: '产品提供方', points: 110, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: null, adjustAmount: 10, review: { status: 'done', reason: '券码核销金额与订单实际不符，需调增结算金额', applyTime: '2026-05-16 09:30', result: '复核通过', targetDate: '2026-05-20', resultTime: '2026-05-17 14:00' } },
+            { id: 'GX-20260513-002', payer: '联网公司', payerRole: '营销活动方', receiver: '数科公司', receiverRole: '产品提供方', points: 40, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: null },
+            { id: 'GX-20260513-003', payer: '数科公司', payerRole: '产品提供方', receiver: '石化公司', receiverRole: '服务提供方', points: 80, cash: 50, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, adjustAmount: null, review: { status: 'pending', reason: '部分券码核销金额与实际不符，申请调减', applyTime: '2026-05-18 11:20', expectAmount: -5 }, coupons: [
+                { seq: 1, type: '加油', orderNo: 'PO20260513000001', time: '2026-05-13 10:23', couponName: '50元加油代金券红包', couponCode: '8943ce9ef83c7283a46dcbf84ddf4fcf', couponType: '积分券', points: 1000, amt: '50.00', status: '已核销' },
+                { seq: 2, type: '加油', orderNo: 'PO20260513000002', time: '2026-05-13 11:45', couponName: '30元加油代金券红包', couponCode: '245520cc223ac35b23d0bc65158124ca', couponType: '积分券', points: 600, amt: '30.00', status: '已核销' },
+                { seq: 3, type: '加油', orderNo: 'PO20260513000003', time: '2026-05-13 14:20', couponName: '9.9元秒杀50元加油券', couponCode: 'a1b2c3d4e5f6789012345678abcdef01', couponType: '现金券', points: 0, amt: '50.00', status: '已核销' }
+            ] },
+            { id: 'GX-20260513-004', payer: '数科公司', payerRole: '产品提供方', receiver: '交控石油公司', receiverRole: '服务提供方', points: null, cash: 100, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, adjustAmount: -20, review: { status: 'done', reason: '订单取消导致核销金额需调减', applyTime: '2026-05-16 15:00', result: '复核通过', targetDate: '2026-05-21', resultTime: '2026-05-18 10:00' }, coupons: [
+                { seq: 1, type: '充电', orderNo: 'PO20260513000004', time: '2026-05-13 09:00', couponName: '100元交控充电现金券', couponCode: 'b2c3d4e5f6789012345678abcdef0123', couponType: '现金券', points: 0, amt: '100.00', status: '已核销' }
+            ] },
+            { id: 'GX-20260513-005', payer: '皖通公司', payerRole: '营销活动方', receiver: '石化公司', receiverRole: '产品提供方', points: 30, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: null },
+            { id: 'GX-20260513-006', payer: '石化公司', payerRole: '产品提供方', receiver: '石化公司', receiverRole: '服务提供方', points: 30, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: true, coupons: [
+                { seq: 1, type: '加油', orderNo: 'PO20260513000005', time: '2026-05-13 15:30', couponName: '30元石化加油代金券红包', couponCode: 'c3d4e5f6789012345678abcdef0123456', couponType: '积分券', points: 600, amt: '30.00', status: '已核销' }
+            ] }
+        ];
+
+        function fmtMoney(num) {
+            if (num === null || num === undefined) return '——';
+            return '¥' + num.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function relationTotal(r) {
+            return (r.points || 0) + (r.cash || 0);
+        }
+
+        function relationSettle(r) {
+            return relationTotal(r) + (r.adjustAmount || 0);
+        }
+
+        function fmtAdjust(num) {
+            if (num === null || num === undefined) return '——';
+            var abs = Math.abs(num);
+            var formatted = '¥' + abs.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return (num > 0 ? '+' : (num < 0 ? '-' : '')) + formatted;
+        }
+
+        var relationFrom = 'payable';
+
+        function relationRemarkTag(r) {
+            var tags = [];
+            if (r.review) tags.push('<span class="px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-600 border border-blue-200">含账单复核记录</span>');
+            if (r.isSelf) tags.push('<span class="px-2 py-0.5 rounded text-xs bg-amber-50 text-amber-600 border border-amber-200">同一主体，无需结算确认</span>');
+            if (tags.length === 0) return '<span class="text-neutral-400">——</span>';
+            return '<div class="flex flex-wrap gap-1">' + tags.join('') + '</div>';
+        }
+
+        function renderPayableBillList() {
+            var tbody = document.getElementById('payable-bill-tbody');
+            if (!tbody) return;
+            var list = relationData.slice().sort(function(a, b) { return a.payer.localeCompare(b.payer, 'zh-CN'); });
+            var html = '';
+            for (var i = 0; i < list.length; i++) {
+                var r = list[i];
+                html += '<tr class="border-b border-neutral-200 table-row">' +
+                    '<td class="text-center"><input type="checkbox" class="payable-bill-checkbox cursor-pointer" data-id="' + r.id + '"></td>' +
+                    '<td class="text-center text-neutral-600">' + (i + 1) + '</td>' +
+                    '<td class="text-left">' + r.id + '</td>' +
+                    '<td class="text-left">' + r.payer + '</td>' +
+                    '<td class="text-left">' + r.payerRole + '</td>' +
+                    '<td class="text-left">' + r.receiver + '</td>' +
+                    '<td class="text-left">' + r.receiverRole + '</td>' +
+                    '<td class="text-right tabular-nums">' + fmtMoney(r.points) + '</td>' +
+                    '<td class="text-right tabular-nums">' + fmtMoney(r.cash) + '</td>' +
+                    '<td class="text-right tabular-nums ' + (r.adjustAmount > 0 ? 'text-success' : (r.adjustAmount < 0 ? 'text-error' : '')) + '">' + fmtAdjust(r.adjustAmount) + '</td>' +
+                    '<td class="text-right font-semibold tabular-nums">' + fmtMoney(relationSettle(r)) + '</td>' +
+                    '<td class="text-left">' + r.date + '</td>' +
+                    '<td class="text-left">' + relationRemarkTag(r) + '</td>' +
+                    '<td class="text-right"><button class="btn btn-text" onclick="showRelationDetail(\'' + r.id + '\', \'payable\')">查 看</button><button class="btn btn-text ml-2" onclick="handleRelationDownload(\'' + r.id + '\')">下载</button><button class="btn btn-text ml-2" onclick="handleRelationReview(\'' + r.id + '\')">账单复核</button></td>' +
+                    '</tr>';
+            }
+            tbody.innerHTML = html;
+            var count = document.getElementById('payable-bill-count');
+            if (count) count.textContent = list.length;
+        }
+
+        function renderReceivableBillList() {
+            var tbody = document.getElementById('receivable-bill-tbody');
+            if (!tbody) return;
+            var list = relationData.slice().sort(function(a, b) { return a.receiver.localeCompare(b.receiver, 'zh-CN'); });
+            var html = '';
+            for (var i = 0; i < list.length; i++) {
+                var r = list[i];
+                html += '<tr class="border-b border-neutral-200 table-row">' +
+                    '<td class="text-center"><input type="checkbox" class="receivable-bill-checkbox cursor-pointer" data-id="' + r.id + '"></td>' +
+                    '<td class="text-center text-neutral-600">' + (i + 1) + '</td>' +
+                    '<td class="text-left">' + r.id + '</td>' +
+                    '<td class="text-left">' + r.receiver + '</td>' +
+                    '<td class="text-left">' + r.receiverRole + '</td>' +
+                    '<td class="text-left">' + r.payer + '</td>' +
+                    '<td class="text-left">' + r.payerRole + '</td>' +
+                    '<td class="text-right tabular-nums">' + fmtMoney(r.points) + '</td>' +
+                    '<td class="text-right tabular-nums">' + fmtMoney(r.cash) + '</td>' +
+                    '<td class="text-right tabular-nums ' + (r.adjustAmount > 0 ? 'text-success' : (r.adjustAmount < 0 ? 'text-error' : '')) + '">' + fmtAdjust(r.adjustAmount) + '</td>' +
+                    '<td class="text-right font-semibold tabular-nums">' + fmtMoney(relationSettle(r)) + '</td>' +
+                    '<td class="text-left">' + r.date + '</td>' +
+                    '<td class="text-left">' + relationRemarkTag(r) + '</td>' +
+                    '<td class="text-right"><button class="btn btn-text" onclick="showRelationDetail(\'' + r.id + '\', \'receivable\')">查 看</button><button class="btn btn-text ml-2" onclick="handleRelationDownload(\'' + r.id + '\')">下载</button><button class="btn btn-text ml-2" onclick="handleRelationReview(\'' + r.id + '\')">账单复核</button></td>' +
+                    '</tr>';
+            }
+            tbody.innerHTML = html;
+            var count = document.getElementById('receivable-bill-count');
+            if (count) count.textContent = list.length;
+        }
+
+        function showRelationDetail(id, from) {
+            var r = null;
+            for (var i = 0; i < relationData.length; i++) {
+                if (relationData[i].id === id) { r = relationData[i]; break; }
+            }
+            if (!r) return;
+            relationFrom = from || 'payable';
+
+            var el;
+            el = document.getElementById('rd-payer'); if (el) el.textContent = r.payer;
+            el = document.getElementById('rd-payer-role'); if (el) el.textContent = r.payerRole;
+            el = document.getElementById('rd-receiver'); if (el) el.textContent = r.receiver;
+            el = document.getElementById('rd-receiver-role'); if (el) el.textContent = r.receiverRole;
+            el = document.getElementById('rd-date'); if (el) el.textContent = r.date;
+            el = document.getElementById('rd-genTime'); if (el) el.textContent = r.genTime;
+            el = document.getElementById('rd-points'); if (el) el.textContent = fmtMoney(r.points);
+            el = document.getElementById('rd-cash'); if (el) el.textContent = fmtMoney(r.cash);
+            el = document.getElementById('rd-total'); if (el) el.textContent = fmtMoney(relationSettle(r));
+            var adjEl = document.getElementById('rd-adjust');
+            if (adjEl) {
+                adjEl.textContent = fmtAdjust(r.adjustAmount);
+                adjEl.className = 'text-sm font-semibold tabular-nums ' + (r.adjustAmount > 0 ? 'text-success' : (r.adjustAmount < 0 ? 'text-error' : 'text-neutral-500'));
+            }
+
+            var title = document.getElementById('relation-detail-title');
+            if (title) title.textContent = '结算关系明细 - ' + (relationFrom === 'receivable' ? '应收账单' : '应付账单');
+
+            var selfTag = document.getElementById('rd-self-tag');
+            if (selfTag) { if (r.isSelf) { selfTag.classList.remove('hidden'); } else { selfTag.classList.add('hidden'); } }
+
+            var couponSection = document.getElementById('relation-coupon-section');
+            var noCouponSection = document.getElementById('relation-no-coupon-section');
+            var hasCoupons = r.receiverRole === '服务提供方' && r.coupons && r.coupons.length > 0;
+            if (couponSection) { if (hasCoupons) { couponSection.classList.remove('hidden'); } else { couponSection.classList.add('hidden'); } }
+            if (noCouponSection) { if (hasCoupons) { noCouponSection.classList.add('hidden'); } else { noCouponSection.classList.remove('hidden'); } }
+
+            var tbody = document.getElementById('relation-coupon-tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                if (hasCoupons) {
+                    for (var j = 0; j < r.coupons.length; j++) {
+                        var c = r.coupons[j];
+                        var amtCls = c.amt.indexOf('-') >= 0 ? 'text-error' : '';
+                        var statusCls = c.status === '已核销' ? 'status-success' : 'status-error';
+                        tbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row"><td class="text-center text-neutral-600">' + c.seq + '</td><td class="text-left">' + c.type + '</td><td class="text-left">' + c.orderNo + '</td><td class="text-left">' + c.time + '</td><td class="text-left">' + c.couponName + '</td><td class="text-left text-xs font-mono">' + c.couponCode + '</td><td class="text-left">' + c.couponType + '</td><td class="text-right tabular-nums">' + c.points + '</td><td class="text-right tabular-nums ' + amtCls + '">' + c.amt + '</td><td class="text-left"><span class="status-badge ' + statusCls + '">' + c.status + '</span></td></tr>';
+                    }
+                }
+            }
+
+            renderRelationReview(r);
+
+            showPage('relation-detail');
+        }
+
+        function renderRelationReview(r) {
+            var section = document.getElementById('relation-review-section');
+            var content = document.getElementById('relation-review-content');
+            if (!section || !content) return;
+            if (!r.review) {
+                section.classList.add('hidden');
+                return;
+            }
+            section.classList.remove('hidden');
+            var rv = r.review;
+            var statusHtml = rv.status === 'done'
+                ? '<span class="status-badge status-success">账单复核成功</span>'
+                : '<span class="status-badge" style="background:#fef3c7;color:#b45309">账单复核申请中</span>';
+            var html = '<div class="flex items-center gap-2 mb-4">' + statusHtml + '</div>';
+            html += '<div class="grid grid-cols-2 gap-4">';
+            html += '<div><span class="text-sm text-neutral-500">复核原因</span><p class="text-sm mt-1">' + rv.reason + '</p></div>';
+            html += '<div><span class="text-sm text-neutral-500">申请时间</span><p class="text-sm mt-1">' + rv.applyTime + '</p></div>';
+            if (rv.status === 'done') {
+                var adjCls = r.adjustAmount > 0 ? 'text-success' : 'text-error';
+                html += '<div><span class="text-sm text-neutral-500">调账金额</span><p class="text-sm mt-1 font-semibold ' + adjCls + '">' + fmtAdjust(r.adjustAmount) + '</p></div>';
+                html += '<div><span class="text-sm text-neutral-500">复核结果</span><p class="text-sm mt-1 text-success">' + rv.result + '</p></div>';
+                html += '<div><span class="text-sm text-neutral-500">调账计入账单</span><p class="text-sm mt-1">' + rv.targetDate + ' 结算单</p></div>';
+                html += '<div><span class="text-sm text-neutral-500">复核时间</span><p class="text-sm mt-1">' + rv.resultTime + '</p></div>';
+            } else {
+                html += '<div><span class="text-sm text-neutral-500">期望调账金额</span><p class="text-sm mt-1">' + fmtAdjust(rv.expectAmount) + '</p></div>';
+            }
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        function showRelationList() {
+            if (relationFrom === 'receivable') {
+                showPage('receivable-bill');
+                switchSubnav('receivable-bill');
+            } else {
+                showPage('payable-bill');
+                switchSubnav('payable-bill');
+            }
+        }
+
+        function findRelation(id) {
+            for (var i = 0; i < relationData.length; i++) {
+                if (relationData[i].id === id) return relationData[i];
+            }
+            return null;
+        }
+
+        function handleRelationDownload(id) {
+            var r = findRelation(id);
+            if (!r) return;
+            var total = relationTotal(r).toFixed(2);
+            if (r.receiverRole === '服务提供方') {
+                currentMerchantTripartite = {
+                    billNo: r.id,
+                    billDate: r.date,
+                    serviceProvider: r.receiver,
+                    platform: '联网公司',
+                    total: total,
+                    providers: [{ name: r.payer, amount: total }]
+                };
+                var info = document.getElementById('tripartite-info');
+                if (info) info.innerHTML = '<p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为三方对账确认单预览样例，实际功能为直接下载 Excel 文件。</p>';
+                showMerchantDetailConfirm(0);
+                showModal('modal-tripartite');
+            } else {
+                currentListerTripartite = {
+                    billNo: r.id,
+                    billDate: r.date,
+                    productProvider: r.receiver,
+                    platform: '联网公司',
+                    total: total,
+                    receivables: [{ name: r.payer, activity: '积分活动', points: String(r.points || 0), amount: total, ratio: '100%' }]
+                };
+                var info2 = document.getElementById('lister-tripartite-info');
+                if (info2) info2.innerHTML = '<p class="text-sm text-amber-800"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>提示：以下为三方对账确认单预览样例，实际功能为直接下载 Excel 文件。</p>';
+                showListerDetailConfirm(0);
+                showModal('modal-lister-tripartite');
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function handleRelationReview(id) {
+            openRelationReviewDrawer([id]);
+        }
+
+        function openRelationReviewDrawer(ids) {
+            var container = document.getElementById('review-drawer-bills');
+            if (container) {
+                container.innerHTML = '';
+                for (var i = 0; i < ids.length; i++) {
+                    var r = findRelation(ids[i]);
+                    if (!r) continue;
+                    var item = document.createElement('div');
+                    item.className = 'space-y-1';
+                    item.innerHTML = '<div class="flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-neutral-400"></i><span class="text-sm font-medium">账单号：' + r.id + '</span></div>' +
+                        '<div class="text-sm text-neutral-600">' + r.payer + '（' + r.payerRole + '）→ ' + r.receiver + '（' + r.receiverRole + '）</div>';
+                    container.appendChild(item);
+                }
+                var tip = document.createElement('div');
+                tip.className = 'flex items-start gap-1 text-xs text-amber-600';
+                tip.innerHTML = '<i data-lucide="alert-circle" class="w-3.5 h-3.5 mt-0.5 flex-shrink-0"></i><span>' + (ids.length > 1 ? '上述账单' : '该账单') + '在应付/应收两侧共用同一账单号，复核通过后另一侧账单将同步修改。</span>';
+                container.appendChild(tip);
+            }
+            var timeEl = document.getElementById('review-drawer-time');
+            if (timeEl) {
+                var now = new Date();
+                timeEl.textContent = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            }
+            var drawer = document.getElementById('review-drawer');
+            if (drawer) drawer.classList.add('active');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function getSelectedRelationIds(prefix) {
+            var ids = [];
+            var checkboxes = document.querySelectorAll('.' + prefix + '-checkbox');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) ids.push(checkboxes[i].getAttribute('data-id'));
+            }
+            return ids;
+        }
+
+        function updateRelationBatchBar(prefix) {
+            var checkboxes = document.querySelectorAll('.' + prefix + '-checkbox');
+            var count = 0;
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) count++;
+            }
+            var countEl = document.getElementById(prefix + '-selected-count');
+            if (countEl) countEl.textContent = count;
+            var downloadBtn = document.getElementById(prefix + '-download-btn');
+            if (downloadBtn) downloadBtn.disabled = count === 0;
+            var selectAll = document.getElementById(prefix + '-select-all');
+            if (selectAll) selectAll.checked = checkboxes.length > 0 && count === checkboxes.length;
+        }
+
+        function handleBatchDownload(prefix) {
+            var ids = getSelectedRelationIds(prefix);
+            if (ids.length === 0) { showToast('请先选择账单', 'warning'); return; }
+            showToast('已选择 ' + ids.length + ' 笔账单，导出任务已提交', 'success');
+        }
+
+        // 应付/应收账单多选（事件委托，适配动态渲染的行）
+        document.addEventListener('change', function(e) {
+            var t = e.target;
+            if (!t || !t.classList) return;
+            if (t.classList.contains('payable-bill-checkbox') || t.classList.contains('receivable-bill-checkbox')) {
+                updateRelationBatchBar(t.classList.contains('payable-bill-checkbox') ? 'payable-bill' : 'receivable-bill');
+                return;
+            }
+            if (t.id === 'payable-bill-select-all' || t.id === 'receivable-bill-select-all') {
+                var prefix = t.id === 'payable-bill-select-all' ? 'payable-bill' : 'receivable-bill';
+                var checkboxes = document.querySelectorAll('.' + prefix + '-checkbox');
+                for (var i = 0; i < checkboxes.length; i++) {
+                    checkboxes[i].checked = t.checked;
+                }
+                updateRelationBatchBar(prefix);
+            }
+        });
 
         function showMerchantBillDetail(billId) {
             var bill = null;
@@ -1288,6 +1638,562 @@
                 tbody.innerHTML += '<tr class="border-b border-neutral-200 table-row"><td class="text-center text-neutral-600">' + (i + 1) + '</td><td class="text-left">' + bill.id + '</td><td class="text-left">' + bill.lister + '</td><td class="text-left">' + bill.date + '</td><td class="text-right font-semibold tabular-nums">' + bill.payable + '</td><td class="text-right font-semibold tabular-nums">' + bill.receivable + '</td><td class="text-right tabular-nums text-neutral-500">' + bill.userPaid + '</td><td class="text-right font-semibold tabular-nums' + diffCls + '">' + bill.diff + '</td><td class="text-left text-neutral-500">' + bill.genTime + '</td><td class="text-right"><button class="btn btn-text" onclick="showListerBillDetail(\'' + bill.id + '\')">查 看</button><button class="btn btn-text ml-2" onclick="openListerTripartiteModal([\'' + bill.id + '\'])">下载</button></td></tr>';
             }
         }
+        // ================================================================
+        // 一期活动报表 - 结算总览表
+        // ================================================================
+        var summaryData = [{
+            type: '营销服务费',
+            subjectType: '平台运营方',
+            subjectName: '联网公司',
+            receivable: 12127.70,
+            receivableDiscount: 12127.70,
+            received: 0,
+            payable: 0,
+            payableDiscount: 0,
+            paid: 0,
+            remark: '向营销活动方开具6%增值税专用发票，孵化期内营销服务费全额减免',
+            action: ''
+        }, {
+            type: '营销服务费',
+            subjectType: '营销活动方',
+            subjectName: '皖通公司',
+            receivable: 0,
+            receivableDiscount: 0,
+            received: 0,
+            payable: 12127.70,
+            payableDiscount: 12127.70,
+            paid: 0,
+            remark: '向平台运营方收取平台运营发票',
+            action: '结算单-皖通'
+        }, {
+            type: '营销活动费用',
+            subjectType: '营销活动方',
+            subjectName: '皖通公司',
+            receivable: 0,
+            receivableDiscount: 0,
+            received: 0,
+            payable: 242553.95,
+            payableDiscount: 0,
+            paid: 242553.95,
+            remark: '向服务产品提供方收取对应服务发票，按实际核销金额与服务提供方结算',
+            action: '货车积分活动结算单'
+        }, {
+            type: '营销活动费用',
+            subjectType: '服务产品提供方',
+            subjectName: '石化公司',
+            receivable: 88470.00,
+            receivableDiscount: 0,
+            received: 88470.00,
+            payable: 0,
+            payableDiscount: 0,
+            paid: 0,
+            remark: '向营销活动方开具对应服务增值税发票，按积分核销金额结算',
+            action: '结算单-石化'
+        }, {
+            type: '营销活动费用',
+            subjectType: '服务产品提供方',
+            subjectName: '驿达集团',
+            receivable: 150683.95,
+            receivableDiscount: 0,
+            received: 150683.95,
+            payable: 0,
+            payableDiscount: 0,
+            paid: 0,
+            remark: '',
+            action: '结算单-驿达'
+        }, {
+            type: '营销活动费用',
+            subjectType: '服务产品提供方',
+            subjectName: '交控石油公司',
+            receivable: 3400.00,
+            receivableDiscount: 0,
+            received: 3400.00,
+            payable: 0,
+            payableDiscount: 0,
+            paid: 0,
+            remark: '',
+            action: '结算单-交控石油'
+        }];
+
+        function renderSummary() {
+            var tbody = document.getElementById('summary-tbody');
+            if (!tbody) return;
+            var html = '';
+            var totalReceivable = 0,
+                totalReceived = 0,
+                totalPayable = 0,
+                totalPaid = 0;
+            summaryData.forEach(function(row) {
+                totalReceivable += row.receivable;
+                totalReceived += row.received;
+                totalPayable += row.payable;
+                totalPaid += row.paid;
+                html += '<tr class="border-b border-neutral-200 table-row">';
+                html += '<td class="text-left border border-neutral-200 text-sm">' + row.type + '</td>';
+                html += '<td class="text-left border border-neutral-200 text-sm">' + row.subjectType + '</td>';
+                html += '<td class="text-left border border-neutral-200 text-sm font-medium">' + row.subjectName + '</td>';
+                html += '<td class="text-right border border-neutral-200 text-sm tabular-nums">' + row.receivable.toFixed(2) + '</td>';
+                html += '<td class="text-right border border-neutral-200 text-sm tabular-nums">' + row.receivableDiscount.toFixed(2) + '</td>';
+                html += '<td class="text-right border border-neutral-200 text-sm tabular-nums font-semibold">' + row.received.toFixed(2) + '</td>';
+                html += '<td class="text-right border border-neutral-200 text-sm tabular-nums">' + row.payable.toFixed(2) + '</td>';
+                html += '<td class="text-right border border-neutral-200 text-sm tabular-nums">' + row.payableDiscount.toFixed(2) + '</td>';
+                html += '<td class="text-right border border-neutral-200 text-sm tabular-nums font-semibold">' + row.paid.toFixed(2) + '</td>';
+                html += '<td class="text-left border border-neutral-200 text-xs text-neutral-500">' + (row.remark || '-') + '</td>';
+                if (row.action) {
+                    html += '<td class="text-center border border-neutral-200 text-sm"><button class="btn btn-text" onclick="showToast(\'' + row.action + '任务已提交\', \'success\')">' + row.action + '</button></td>';
+                } else {
+                    html += '<td class="text-center border border-neutral-200 text-sm text-neutral-400">-</td>';
+                }
+                html += '</tr>';
+            });
+
+            var tfoot = document.getElementById('summary-tfoot');
+            if (tfoot) {
+                tfoot.innerHTML = '<tr class="bg-green-50 font-semibold">' +
+                    '<td class="text-left border border-neutral-200" colspan="3">合计</td>' +
+                    '<td class="text-right border border-neutral-200 tabular-nums">' + totalReceivable.toFixed(2) + '</td>' +
+                    '<td class="text-right border border-neutral-200 tabular-nums">-</td>' +
+                    '<td class="text-right border border-neutral-200 tabular-nums">' + totalReceived.toFixed(2) + '</td>' +
+                    '<td class="text-right border border-neutral-200 tabular-nums">' + totalPayable.toFixed(2) + '</td>' +
+                    '<td class="text-right border border-neutral-200 tabular-nums">-</td>' +
+                    '<td class="text-right border border-neutral-200 tabular-nums">' + totalPaid.toFixed(2) + '</td>' +
+                    '<td class="text-left border border-neutral-200 text-xs text-neutral-500">-</td>' +
+                    '<td class="text-center border border-neutral-200 text-xs text-neutral-500">-</td>' +
+                    '</tr>';
+            }
+            tbody.innerHTML = html;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // ================================================================
+        // 一期活动报表 - 结算明细表
+        // ================================================================
+        var detailSampleData = [{
+            time: '2026-01-14',
+            plate: '皖AF61291',
+            points: 1000,
+            amount: 50,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260114000001',
+            status: '已核销',
+            couponName: '50元加油代金券红包'
+        }, {
+            time: '2026-01-14',
+            plate: '皖AF61291',
+            points: 400,
+            amount: 20,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260114000002',
+            status: '已核销',
+            couponName: '20元驿达便利店代金券红包'
+        }, {
+            time: '2026-01-14',
+            plate: '皖AFB3597',
+            points: 1000,
+            amount: 50,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260114000003',
+            status: '已核销',
+            couponName: '50元加油代金券红包'
+        }, {
+            time: '2026-01-14',
+            plate: '皖AFB3597',
+            points: 400,
+            amount: 20,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260114000004',
+            status: '已核销',
+            couponName: '20元驿达便利店代金券红包'
+        }, {
+            time: '2026-01-16',
+            plate: '皖AF88P1',
+            points: 1000,
+            amount: 50,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260116000001',
+            status: '已核销',
+            couponName: '50元加油代金券红包'
+        }, {
+            time: '2026-01-16',
+            plate: '皖AF88P1',
+            points: 400,
+            amount: 20,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260116000002',
+            status: '已核销',
+            couponName: '20元驿达便利店代金券红包'
+        }, {
+            time: '2026-01-16',
+            plate: '皖AF88P1',
+            points: 400,
+            amount: 20,
+            provider: '石化公司',
+            type: '尿素加注',
+            orderNo: 'PO20260116000003',
+            status: '已核销',
+            couponName: '20元高速石化加注尿素代金券红包'
+        }, {
+            time: '2026-02-06',
+            plate: '皖AFB3597',
+            points: 1000,
+            amount: 50,
+            provider: '交控石油公司',
+            type: '加油',
+            orderNo: 'PO20260206000001',
+            status: '已核销',
+            couponName: '50元加油代金券红包'
+        }, {
+            time: '2026-02-10',
+            plate: '豫NC3881',
+            points: 1000,
+            amount: 50,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260206000002',
+            status: '已核销',
+            couponName: '50元驿达便利店代金券红包'
+        }, {
+            time: '2026-02-10',
+            plate: '豫NC3881',
+            points: 400,
+            amount: 20,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260210000001',
+            status: '已核销',
+            couponName: '20元驿达便利店代金券红包'
+        }, {
+            time: '2026-02-11',
+            plate: '皖CF6262',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260211000001',
+            status: '已核销',
+            couponName: '100元加油代金券红包'
+        }, {
+            time: '2026-02-17',
+            plate: '鲁AF8670',
+            points: 1000,
+            amount: 50,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260217000001',
+            status: '已核销',
+            couponName: '50元驿达便利店代金券红包'
+        }, {
+            time: '2026-02-17',
+            plate: '鲁AD8913',
+            points: 1000,
+            amount: 49.8,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260217000002',
+            status: '已核销',
+            couponName: '50元驿达便利店代金券红包'
+        }, {
+            time: '2026-02-17',
+            plate: '鲁AD8913',
+            points: 1000,
+            amount: 50,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260217000003',
+            status: '已核销',
+            couponName: '50元驿达便利店代金券红包'
+        }, {
+            time: '2026-02-22',
+            plate: '皖N76590',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '尿素加注',
+            orderNo: 'PO20260222000001',
+            status: '已核销',
+            couponName: '100元高速石化加注尿素代金券红包'
+        }, {
+            time: '2026-02-26',
+            plate: '苏A4D843',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260211000003',
+            status: '已核销',
+            couponName: '100元加油代金券红包'
+        }, {
+            time: '2026-02-28',
+            plate: '鄂D06399',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260129000001',
+            status: '已核销',
+            couponName: '100元高速石化加油代金券红包'
+        }, {
+            time: '2026-03-01',
+            plate: '苏BTS680',
+            points: 1000,
+            amount: 50,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260210000002',
+            status: '已核销',
+            couponName: '50元驿达便利店代金券红包'
+        }, {
+            time: '2026-03-01',
+            plate: '鄂AEM587',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260212000001',
+            status: '已核销',
+            couponName: '100元加油代金券红包'
+        }, {
+            time: '2026-03-01',
+            plate: '鄂AEM587',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260212000002',
+            status: '已核销',
+            couponName: '100元加油代金券红包'
+        }, {
+            time: '2026-03-01',
+            plate: '苏BTS680',
+            points: 1000,
+            amount: 50,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260301000001',
+            status: '已核销',
+            couponName: '50元驿达便利店代金券红包'
+        }, {
+            time: '2026-03-02',
+            plate: '鲁JE7650',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260227000001',
+            status: '已核销',
+            couponName: '100元加油代金券红包'
+        }, {
+            time: '2026-03-04',
+            plate: '鲁JA7705',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260303000001',
+            status: '已核销',
+            couponName: '100元加油代金券红包'
+        }, {
+            time: '2026-03-05',
+            plate: '豫PK3066',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260305000001',
+            status: '已核销',
+            couponName: '100元加油代金券红包'
+        }, {
+            time: '2026-03-08',
+            plate: '赣C5M066',
+            points: 3000,
+            amount: 150,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260211000002',
+            status: '已核销',
+            couponName: '150元加油代金券红包'
+        }, {
+            time: '2026-03-11',
+            plate: '皖N75377',
+            points: 200,
+            amount: 10,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260311000001',
+            status: '已核销',
+            couponName: '10元驿达便利店代金券红包'
+        }, {
+            time: '2026-03-15',
+            plate: '赣C5M066',
+            points: 3000,
+            amount: 150,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260314000003',
+            status: '已核销',
+            couponName: '150元加油代金券红包'
+        }, {
+            time: '2026-03-15',
+            plate: '苏AN9409',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260315000001',
+            status: '已核销',
+            couponName: '100元加油代金券红包'
+        }, {
+            time: '2026-03-19',
+            plate: '皖CF4522',
+            points: 1000,
+            amount: 50,
+            provider: '驿达集团',
+            type: '便利店消费',
+            orderNo: 'PO20260315000004',
+            status: '已核销',
+            couponName: '50元驿达便利店代金券红包'
+        }, {
+            time: '2026-03-20',
+            plate: '苏FF8516',
+            points: 2000,
+            amount: 100,
+            provider: '石化公司',
+            type: '加油',
+            orderNo: 'PO20260317000005',
+            status: '已核销',
+            couponName: '100元加油代金券红包'
+        }];
+
+        var detailPageSize = 20;
+        var detailCurrentPage = 1;
+        var detailFilteredData = [];
+
+        function renderDetail() {
+            var plateEl = document.getElementById('detail-search-plate');
+            var providerEl = document.getElementById('detail-search-provider');
+            var typeEl = document.getElementById('detail-search-type');
+            var statusEl = document.getElementById('detail-search-status');
+            var container = document.getElementById('detail-table-container');
+            var pagination = document.getElementById('detail-pagination');
+            if (!plateEl || !providerEl || !typeEl || !statusEl || !container || !pagination) return;
+
+            var plate = plateEl.value.trim();
+            var provider = providerEl.value;
+            var type = typeEl.value;
+            var status = statusEl.value;
+
+            detailFilteredData = detailSampleData.filter(function(item) {
+                if (plate && !item.plate.includes(plate)) return false;
+                if (provider && item.provider !== provider) return false;
+                if (type && item.type !== type) return false;
+                if (status && item.status !== status) return false;
+                return true;
+            });
+
+            var total = detailFilteredData.length;
+            var totalPages = Math.ceil(total / detailPageSize) || 1;
+            if (detailCurrentPage > totalPages) detailCurrentPage = totalPages;
+            if (detailCurrentPage < 1) detailCurrentPage = 1;
+            var start = (detailCurrentPage - 1) * detailPageSize;
+            var end = Math.min(start + detailPageSize, total);
+            var pageData = detailFilteredData.slice(start, end);
+
+            if (total === 0) {
+                container.innerHTML = '<div class="text-center py-8 text-neutral-400 text-sm">没有找到匹配的记录</div>';
+                pagination.innerHTML = '';
+                return;
+            }
+
+            var html = '<table class="data-table w-full">';
+            html += '<thead><tr class="bg-neutral-50 border-b border-neutral-200 h-10">';
+            html += '<th class="w-32 text-left">核销时间</th>';
+            html += '<th class="w-28 text-left">车牌号</th>';
+            html += '<th class="w-20 text-right">积分</th>';
+            html += '<th class="w-24 text-right">金额(元)</th>';
+            html += '<th class="w-32 text-left">服务提供方</th>';
+            html += '<th class="w-24 text-left">服务类型</th>';
+            html += '<th class="w-36 text-left">订单号</th>';
+            html += '<th class="w-20 text-left">状态</th>';
+            html += '<th class="w-40 text-left">券名称</th>';
+            html += '</tr></thead><tbody>';
+
+            pageData.forEach(function(item) {
+                var statusCls = item.status === '已核销' ? 'status-success' : 'status-error';
+                html += '<tr class="border-b border-neutral-200 h-12 table-row">';
+                html += '<td class="text-left text-sm">' + item.time + '</td>';
+                html += '<td class="text-left text-sm font-mono">' + item.plate + '</td>';
+                html += '<td class="text-right text-sm tabular-nums">' + item.points + '</td>';
+                html += '<td class="text-right text-sm tabular-nums">' + item.amount.toFixed(2) + '</td>';
+                html += '<td class="text-left text-sm">' + item.provider + '</td>';
+                html += '<td class="text-left text-sm">' + item.type + '</td>';
+                html += '<td class="text-left text-sm font-mono text-xs">' + item.orderNo + '</td>';
+                html += '<td class="text-left text-sm"><span class="status-badge ' + statusCls + '">' + item.status + '</span></td>';
+                html += '<td class="text-left text-sm text-ellipsis" style="max-width:140px;" title="' + item.couponName + '">' + item.couponName + '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+
+            var pageButtons = '';
+            for (var p = 1; p <= totalPages; p++) {
+                if (p === detailCurrentPage) {
+                    pageButtons += '<button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">' + p + '</button>';
+                } else {
+                    pageButtons += '<button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" onclick="goDetailPage(' + p + ')">' + p + '</button>';
+                }
+            }
+
+            pagination.innerHTML =
+                '<span class="text-sm text-neutral-600">共 <span class="font-semibold">' + total + '</span> 条记录</span>' +
+                '<div class="flex items-center gap-2">' +
+                '<select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white" onchange="changeDetailPageSize(this.value)">' +
+                '<option value="10"' + (detailPageSize === 10 ? ' selected' : '') + '>10条/页</option>' +
+                '<option value="20"' + (detailPageSize === 20 ? ' selected' : '') + '>20条/页</option>' +
+                '<option value="50"' + (detailPageSize === 50 ? ' selected' : '') + '>50条/页</option>' +
+                '</select>' +
+                '<div class="flex items-center gap-1">' +
+                (detailCurrentPage <= 1
+                    ? '<button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>'
+                    : '<button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" onclick="goDetailPage(' + (detailCurrentPage - 1) + ')" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>') +
+                pageButtons +
+                (detailCurrentPage >= totalPages
+                    ? '<button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>'
+                    : '<button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" onclick="goDetailPage(' + (detailCurrentPage + 1) + ')" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>') +
+                '</div>' +
+                '</div>';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function resetDetailFilters() {
+            var plateEl = document.getElementById('detail-search-plate');
+            var providerEl = document.getElementById('detail-search-provider');
+            var typeEl = document.getElementById('detail-search-type');
+            var statusEl = document.getElementById('detail-search-status');
+            if (plateEl) plateEl.value = '';
+            if (providerEl) providerEl.value = '';
+            if (typeEl) typeEl.value = '';
+            if (statusEl) statusEl.value = '';
+            detailCurrentPage = 1;
+            renderDetail();
+        }
+
+        function goDetailPage(page) {
+            detailCurrentPage = page;
+            renderDetail();
+        }
+
+        function changeDetailPageSize(size) {
+            detailPageSize = parseInt(size, 10);
+            detailCurrentPage = 1;
+            renderDetail();
+        }
     </script>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
@@ -1354,16 +2260,16 @@
         <aside class="w-36 bg-[#e8e8e8] fixed left-0 top-0 bottom-0 overflow-y-auto border-r border-[#d8d8d8]" role="navigation" aria-label="侧边导航">
             <nav class="py-4">
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">结算管理</div>
-                <a onclick="switchSubnav('lister-bill'); showPage('lister-bill')" id="subnav-lister-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 产品提供方账单</span></a>
-                <a onclick="switchSubnav('merchant-bill'); showPage('merchant-bill')" id="subnav-merchant-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 服务提供方账单</span></a>
-                <!-- 现金券账单已废弃，隐藏 -->
-                <!-- <a onclick="switchSubnav('cash-coupon-bill'); showPage('cash-coupon-bill')" id="subnav-cash-coupon-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 现金券账单</span></a> -->
-                <a onclick="switchSubnav('activity-bill'); showPage('activity-bill')" id="subnav-activity-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 营销活动方账单</span></a>
+                <a onclick="switchSubnav('payable-bill'); showPage('payable-bill')" id="subnav-payable-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 应付账单</span></a>
+                <a onclick="switchSubnav('receivable-bill'); showPage('receivable-bill')" id="subnav-receivable-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 应收账单</span></a>
                 <a onclick="switchSubnav('summary-bill'); showPage('summary-bill')" id="subnav-summary-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 汇总账单</span></a>
                 <a onclick="switchSubnav('appeal'); showPage('appeal')" id="subnav-appeal" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 账单复核管理</span></a>
                 <a onclick="switchSubnav('yima-recon'); showPage('yima-recon')" id="subnav-yima-recon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer hidden" tabindex="0" role="link"><span class="font-semibold">·</span><span> 翼码对账</span></a>
                 <a onclick="switchSubnav('trade-recon'); showPage('trade-recon')" id="subnav-trade-recon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer hidden" tabindex="0" role="link"><span class="font-semibold">·</span><span> 交易对账</span></a>
                 <a onclick="switchSubnav('settlement-account'); showPage('settlement-account')" id="subnav-settlement-account" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer hidden" tabindex="0" role="link"><span class="font-semibold">·</span><span> 结算账号</span></a>
+                <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">一期活动报表</div>
+                <a onclick="switchSubnav('summary-overview'); showPage('summary-overview')" id="subnav-summary-overview" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 结算总览表</span></a>
+                <a onclick="switchSubnav('settlement-detail'); showPage('settlement-detail')" id="subnav-settlement-detail" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 结算明细表</span></a>
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">支付管理</div>
                 <a onclick="switchSubnav('pay-order'); showPage('pay-order')" id="subnav-pay-order" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 支付账单</span></a>
                 <a onclick="switchSubnav('pay-recon'); showPage('pay-recon')" id="subnav-pay-recon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 支付对账</span></a>
@@ -1371,6 +2277,250 @@
         </aside>
 
         <main class="flex-1 ml-36 p-2 min-h-screen">
+
+            <!-- ========== 应付账单列表 ========== -->
+            <div id="page-payable-bill" class="page">
+                <div class="bg-white rounded border border-neutral-200">
+                    <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                            <h1 class="text-base font-bold text-neutral-900">应付账单</h1>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                        </div>
+                    </div>
+                    <div class="px-2 pb-2">
+                        <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
+                            <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
+                            <span class="text-sm text-neutral-600">温馨提示：应付账单按付款方维度展示结算关系。付款方与收款方为同一主体的关系仅展示、无需结算确认。点击"查看"进入关系明细，仅涉及服务提供方收款的关系下钻券码级明细。</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                            <div class="inline-label-input">
+                                <span class="label">付款方名称</span>
+                                <select><option value="">全部</option><option>皖通公司</option><option>联网公司</option><option>数科公司</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
+                            </div>
+                            <div class="inline-label-input">
+                                <span class="label">收款方名称</span>
+                                <select><option value="">全部</option><option>皖通公司</option><option>联网公司</option><option>数科公司</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
+                            </div>
+                            <div class="inline-label-input">
+                                <span class="label">收款方身份</span>
+                                <select><option value="">全部</option><option>产品提供方</option><option>服务提供方</option></select>
+                            </div>
+                            <div class="date-range-input">
+                                <span class="label">结算日期</span>
+                                <input type="date" class="input-focus">
+                                <span class="separator">→</span>
+                                <input type="date" class="input-focus">
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-3">
+                            <button class="btn btn-secondary btn-md">重 置</button>
+                            <button class="btn btn-primary btn-md">查 询</button>
+                        </div>
+                    </div>
+                    <div id="payable-bill-batch-bar" class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
+                        <span class="text-sm text-neutral-600">已选 <span class="font-semibold text-primary" id="payable-bill-selected-count">0</span> 项</span>
+                        <button class="btn btn-batch-action btn-md" id="payable-bill-download-btn" onclick="handleBatchDownload('payable-bill')" disabled><i data-lucide="download" class="w-4 h-4"></i>批量下载</button>
+                    </div>
+                    <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                        <table class="data-table w-full">
+                            <thead>
+                                <tr class="bg-neutral-50 border-b border-neutral-200">
+                                    <th class="w-10 text-center"><input type="checkbox" id="payable-bill-select-all" class="cursor-pointer"></th>
+                                    <th class="w-12 text-center">序号</th>
+                                    <th class="text-left">账单号</th>
+                                    <th class="text-left">付款方</th>
+                                    <th class="text-left">付款方身份</th>
+                                    <th class="text-left">收款方</th>
+                                    <th class="text-left">收款方身份</th>
+                                    <th class="text-right">积分券金额</th>
+                                    <th class="text-right">现金券金额</th>
+                                    <th class="text-right">调账金额</th>
+                                    <th class="text-right">结算金额</th>
+                                    <th class="text-left">结算日期</th>
+                                    <th class="text-left">备注</th>
+                                    <th class="text-right w-32">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payable-bill-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="mx-2 mb-2 flex justify-between items-center py-2">
+                        <span class="text-sm text-neutral-600">共 <span class="font-semibold" id="payable-bill-count">0</span> 条记录</span>
+                        <div class="flex items-center gap-2">
+                            <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                            <div class="flex items-center gap-1">
+                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 应收账单列表 ========== -->
+            <div id="page-receivable-bill" class="page">
+                <div class="bg-white rounded border border-neutral-200">
+                    <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                            <h1 class="text-base font-bold text-neutral-900">应收账单</h1>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                        </div>
+                    </div>
+                    <div class="px-2 pb-2">
+                        <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
+                            <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
+                            <span class="text-sm text-neutral-600">温馨提示：应收账单按收款方维度展示结算关系。付款方与收款方为同一主体的关系仅展示、无需结算确认。点击"查看"进入关系明细，仅涉及服务提供方收款的关系下钻券码级明细。</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                            <div class="inline-label-input">
+                                <span class="label">收款方名称</span>
+                                <select><option value="">全部</option><option>皖通公司</option><option>联网公司</option><option>数科公司</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
+                            </div>
+                            <div class="inline-label-input">
+                                <span class="label">付款方名称</span>
+                                <select><option value="">全部</option><option>皖通公司</option><option>联网公司</option><option>数科公司</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
+                            </div>
+                            <div class="inline-label-input">
+                                <span class="label">收款方身份</span>
+                                <select><option value="">全部</option><option>产品提供方</option><option>服务提供方</option></select>
+                            </div>
+                            <div class="date-range-input">
+                                <span class="label">结算日期</span>
+                                <input type="date" class="input-focus">
+                                <span class="separator">→</span>
+                                <input type="date" class="input-focus">
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-3">
+                            <button class="btn btn-secondary btn-md">重 置</button>
+                            <button class="btn btn-primary btn-md">查 询</button>
+                        </div>
+                    </div>
+                    <div id="receivable-bill-batch-bar" class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
+                        <span class="text-sm text-neutral-600">已选 <span class="font-semibold text-primary" id="receivable-bill-selected-count">0</span> 项</span>
+                        <button class="btn btn-batch-action btn-md" id="receivable-bill-download-btn" onclick="handleBatchDownload('receivable-bill')" disabled><i data-lucide="download" class="w-4 h-4"></i>批量下载</button>
+                    </div>
+                    <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                        <table class="data-table w-full">
+                            <thead>
+                                <tr class="bg-neutral-50 border-b border-neutral-200">
+                                    <th class="w-10 text-center"><input type="checkbox" id="receivable-bill-select-all" class="cursor-pointer"></th>
+                                    <th class="w-12 text-center">序号</th>
+                                    <th class="text-left">账单号</th>
+                                    <th class="text-left">收款方</th>
+                                    <th class="text-left">收款方身份</th>
+                                    <th class="text-left">付款方</th>
+                                    <th class="text-left">付款方身份</th>
+                                    <th class="text-right">积分券金额</th>
+                                    <th class="text-right">现金券金额</th>
+                                    <th class="text-right">调账金额</th>
+                                    <th class="text-right">结算金额</th>
+                                    <th class="text-left">结算日期</th>
+                                    <th class="text-left">备注</th>
+                                    <th class="text-right w-32">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="receivable-bill-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="mx-2 mb-2 flex justify-between items-center py-2">
+                        <span class="text-sm text-neutral-600">共 <span class="font-semibold" id="receivable-bill-count">0</span> 条记录</span>
+                        <div class="flex items-center gap-2">
+                            <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                            <div class="flex items-center gap-1">
+                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 结算关系明细 ========== -->
+            <div id="page-relation-detail" class="page">
+                <div class="bg-white rounded border border-neutral-200 mb-3">
+                    <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                            <h1 class="text-base font-bold" id="relation-detail-title">结算关系明细</h1>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="btn btn-secondary btn-md" onclick="showRelationList()"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
+                        </div>
+                    </div>
+                    <div class="px-5 py-4">
+                        <div class="grid grid-cols-4 gap-4">
+                            <div><span class="text-sm text-neutral-500">付款方</span><p class="text-sm font-medium mt-1" id="rd-payer">-</p></div>
+                            <div><span class="text-sm text-neutral-500">付款方身份</span><p class="text-sm font-medium mt-1" id="rd-payer-role">-</p></div>
+                            <div><span class="text-sm text-neutral-500">收款方</span><p class="text-sm font-medium mt-1" id="rd-receiver">-</p></div>
+                            <div><span class="text-sm text-neutral-500">收款方身份</span><p class="text-sm font-medium mt-1" id="rd-receiver-role">-</p></div>
+                        </div>
+                        <div class="grid grid-cols-4 gap-4 mt-4">
+                            <div><span class="text-sm text-neutral-500">结算日期</span><p class="text-sm font-medium mt-1" id="rd-date">-</p></div>
+                            <div><span class="text-sm text-neutral-500">生成时间</span><p class="text-sm font-medium mt-1" id="rd-genTime">-</p></div>
+                            <div><span class="text-sm text-neutral-500">积分券金额</span><p class="text-sm font-medium mt-1" id="rd-points">-</p></div>
+                            <div><span class="text-sm text-neutral-500">现金券金额</span><p class="text-sm font-medium mt-1" id="rd-cash">-</p></div>
+                        </div>
+                        <div class="mt-4 flex items-center gap-6">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-neutral-500">结算金额</span>
+                                <span class="text-xl font-bold tabular-nums text-success" id="rd-total">¥0.00</span>
+                                <span id="rd-self-tag" class="hidden ml-2 px-2 py-0.5 rounded text-xs bg-amber-50 text-amber-600 border border-amber-200">同一主体，无需结算确认</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-neutral-500">调账金额</span>
+                                <span class="text-sm font-semibold tabular-nums" id="rd-adjust">——</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 账单复核记录 -->
+                <div id="relation-review-section" class="bg-white rounded border border-neutral-200 p-6 mb-3 hidden">
+                    <h2 class="text-sm font-semibold text-neutral-700 mb-4">账单复核记录</h2>
+                    <div id="relation-review-content"></div>
+                </div>
+                <!-- 服务提供方收款 → 有券码明细 -->
+                <div id="relation-coupon-section" class="bg-white rounded border border-neutral-200 p-6 mb-3 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-semibold text-neutral-700">核销券码明细</h2>
+                        <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                    </div>
+                    <div class="overflow-x-auto bg-white rounded border border-neutral-200">
+                        <table class="data-table w-full">
+                            <thead>
+                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                    <th class="w-12 text-center">序号</th>
+                                    <th class="text-left">服务类型</th>
+                                    <th class="text-left">订单号</th>
+                                    <th class="text-left">核销时间</th>
+                                    <th class="text-left">券名称</th>
+                                    <th class="text-left">券码ID</th>
+                                    <th class="text-left">券码类型</th>
+                                    <th class="text-right">兑换积分数量</th>
+                                    <th class="text-right">核销金额(元)</th>
+                                    <th class="text-left">核销状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="relation-coupon-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- 产品提供方收款 → 无券码明细 -->
+                <div id="relation-no-coupon-section" class="bg-white rounded border border-neutral-200 p-6 mb-3 hidden">
+                    <div class="flex items-start gap-2">
+                        <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
+                        <span class="text-sm text-neutral-600">该关系为营销活动方 → 产品提供方的积分分摊结算，无核销券码明细，仅记录对方总金额。</span>
+                    </div>
+                </div>
+            </div>
 
             <!-- ========== 支付账单列表 ========== -->
             <div id="page-pay-order" class="page">
@@ -3198,8 +4348,8 @@
                     <div class="px-2 pb-2">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
                             <div class="inline-label-input">
-                                <span class="label">商户名称</span>
-                                <select><option value="">全部</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
+                                <span class="label">结算主体</span>
+                                <select><option value="">全部</option><option>皖通公司</option><option>联网公司</option><option>数科公司</option><option>石化公司</option><option>交控石油公司</option></select>
                             </div>
                             <div class="inline-label-input">
                                 <span class="label">审核状态</span>
@@ -3227,7 +4377,7 @@
                                 <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
                                     <th class="w-12 text-center">序号</th>
                                     <th class="text-left">账单复核单号</th>
-                                    <th class="text-left">商户名称</th>
+                                    <th class="text-left">结算关系</th>
                                     <th class="text-left">关联账单</th>
                                     <th class="text-left">申请时间</th>
                                     <th class="text-right">期望调账金额</th>
@@ -3239,11 +4389,11 @@
                             <tbody>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
                                     <td class="text-center text-neutral-600">1</td>
-                                    <td class="text-left">SS-20260514-001</td>
-                                    <td class="text-left">石化公司</td>
-                                    <td class="text-left">JS-20260514-001</td>
-                                    <td class="text-left">2026-05-14</td>
-                                    <td class="text-right tabular-nums">+¥500.00</td>
+                                    <td class="text-left">SS-20260518-001</td>
+                                    <td class="text-left">数科公司 → 石化公司</td>
+                                    <td class="text-left">GX-20260513-003</td>
+                                    <td class="text-left">2026-05-18 11:20</td>
+                                    <td class="text-right tabular-nums">-¥5.00</td>
                                     <td class="text-left"><span class="status-badge status-warning">待审核</span></td>
                                     <td class="text-left">-</td>
                                     <td class="text-right">
@@ -3253,48 +4403,48 @@
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
                                     <td class="text-center text-neutral-600">2</td>
-                                    <td class="text-left">SS-20260513-001</td>
-                                    <td class="text-left">驿达集团</td>
-                                    <td class="text-left">JS-20260514-003</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-right tabular-nums">-¥300.00</td>
+                                    <td class="text-left">SS-20260516-001</td>
+                                    <td class="text-left">皖通公司 → 数科公司</td>
+                                    <td class="text-left">GX-20260513-001</td>
+                                    <td class="text-left">2026-05-16 09:30</td>
+                                    <td class="text-right tabular-nums">+¥10.00</td>
                                     <td class="text-left"><span class="status-badge status-success">审核通过</span></td>
-                                    <td class="text-left">2026-05-14</td>
+                                    <td class="text-left">2026-05-20</td>
                                     <td class="text-right">
                                         <button class="btn btn-text" onclick="openAppealDrawer('approved')">查 看</button>
                                     </td>
                                 </tr>
                                 <tr class="border-b border-neutral-200 h-12 table-row">
                                     <td class="text-center text-neutral-600">3</td>
-                                    <td class="text-left">SS-20260512-001</td>
-                                    <td class="text-left">石化公司</td>
-                                    <td class="text-left">JS-20260514-002</td>
-                                    <td class="text-left">2026-05-12</td>
-                                    <td class="text-right tabular-nums">+¥200.00</td>
+                                    <td class="text-left">SS-20260516-002</td>
+                                    <td class="text-left">数科公司 → 交控石油公司</td>
+                                    <td class="text-left">GX-20260513-004</td>
+                                    <td class="text-left">2026-05-16 15:00</td>
+                                    <td class="text-right tabular-nums">-¥20.00</td>
+                                    <td class="text-left"><span class="status-badge status-success">审核通过</span></td>
+                                    <td class="text-left">2026-05-21</td>
+                                    <td class="text-right">
+                                        <button class="btn btn-text" onclick="openAppealDrawer('approved2')">查 看</button>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-neutral-200 h-12 table-row">
+                                    <td class="text-center text-neutral-600">4</td>
+                                    <td class="text-left">SS-20260515-001</td>
+                                    <td class="text-left">皖通公司 → 石化公司</td>
+                                    <td class="text-left">GX-20260513-005</td>
+                                    <td class="text-left">2026-05-15 10:20</td>
+                                    <td class="text-right tabular-nums">+¥8.00</td>
                                     <td class="text-left"><span class="status-badge status-error">审核驳回</span></td>
                                     <td class="text-left">-</td>
                                     <td class="text-right">
                                         <button class="btn btn-text" onclick="openAppealDrawer('rejected')">查 看</button>
                                     </td>
                                 </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">4</td>
-                                    <td class="text-left">SS-20260511-001</td>
-                                    <td class="text-left">石化公司</td>
-                                    <td class="text-left">JS-20260513-002, JS-20260514-002</td>
-                                    <td class="text-left">2026-05-11</td>
-                                    <td class="text-right tabular-nums">+¥1,200.00</td>
-                                    <td class="text-left"><span class="status-badge status-success">审核通过</span></td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-right">
-                                        <button class="btn btn-text" onclick="openAppealDrawer('approved2')">查 看</button>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="mx-2 mb-2 flex justify-between items-center py-2">
-                        <span class="text-sm text-neutral-600">共 <span class="font-semibold">12</span> 条记录</span>
+                        <span class="text-sm text-neutral-600">共 <span class="font-semibold">4</span> 条记录</span>
                         <div class="flex items-center gap-2">
                             <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
                             <div class="flex items-center gap-1">
@@ -4362,6 +5512,122 @@
             </div>
         </div>
 
+            <!-- ========== 结算总览表 ========== -->
+            <div id="page-summary-overview" class="page">
+                <div class="bg-white rounded border border-neutral-200">
+                    <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                            <h1 class="text-base font-bold text-neutral-900">结算总览表</h1>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="btn btn-secondary btn-md" onclick="showToast('结算总览表导出任务已提交', 'success')"><i data-lucide="download" class="w-4 h-4"></i>导出结算总览表</button>
+                        </div>
+                    </div>
+                    <div class="px-4 pt-3 pb-3 text-sm text-neutral-600">
+                        <span>结算周期：</span><span class="font-medium">2026年1月 – 2026年6月</span>
+                    </div>
+                    <div class="px-4 pb-4 overflow-x-auto">
+                        <div class="text-xs text-neutral-400 text-right mb-1">单位：元</div>
+                        <table class="data-table w-full border-collapse border border-neutral-200">
+                            <thead>
+                                <tr class="bg-neutral-50">
+                                    <th class="border border-neutral-200 text-sm font-semibold text-neutral-700 text-center" colspan="3">结算主体</th>
+                                    <th class="border border-neutral-200 text-sm font-semibold text-neutral-700 text-center" colspan="3">收入</th>
+                                    <th class="border border-neutral-200 text-sm font-semibold text-neutral-700 text-center" colspan="3">支出</th>
+                                    <th class="border border-neutral-200 text-sm font-semibold text-neutral-700 text-center" rowspan="2" style="min-width:140px;">备注</th>
+                                    <th class="border border-neutral-200 text-sm font-semibold text-neutral-700 text-center" rowspan="2" style="min-width:170px;">导出报表</th>
+                                </tr>
+                                <tr class="bg-neutral-50">
+                                    <th class="border border-neutral-200 text-xs font-medium text-neutral-500 w-28 text-center">结算类型</th>
+                                    <th class="border border-neutral-200 text-xs font-medium text-neutral-500 w-28 text-center">主体类型</th>
+                                    <th class="border border-neutral-200 text-xs font-medium text-neutral-500 w-32 text-center">主体名称</th>
+                                    <th class="border border-neutral-200 text-xs font-medium text-neutral-500 w-24 text-right">应收总金额</th>
+                                    <th class="border border-neutral-200 text-xs font-medium text-neutral-500 w-24 text-right">应收减免</th>
+                                    <th class="border border-neutral-200 text-xs font-medium text-neutral-500 w-24 text-right">实收金额</th>
+                                    <th class="border border-neutral-200 text-xs font-medium text-neutral-500 w-24 text-right">应付总金额</th>
+                                    <th class="border border-neutral-200 text-xs font-medium text-neutral-500 w-24 text-right">应付减免</th>
+                                    <th class="border border-neutral-200 text-xs font-medium text-neutral-500 w-24 text-right">实付金额</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summary-tbody"></tbody>
+                            <tfoot id="summary-tfoot"></tfoot>
+                        </table>
+                    </div>
+                    <div class="px-4 pb-4 text-xs text-neutral-500">
+                        <span>注：石化公司的费用已由交通数科垫付，皖通公司直接付给交通数科</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 结算明细表 ========== -->
+            <div id="page-settlement-detail" class="page">
+                <div class="bg-white rounded border border-neutral-200">
+                    <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                            <h1 class="text-base font-bold text-neutral-900">结算明细表</h1>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="btn btn-secondary btn-md" onclick="showToast('结算明细下载任务已提交', 'success')">
+                                <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>导出结算明细表
+                            </button>
+                            <button class="btn btn-secondary btn-md" onclick="showToast('券活动汇总表下载任务已提交', 'success')">
+                                <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>导出券活动汇总表
+                            </button>
+                        </div>
+                    </div>
+                    <div class="px-2 pb-2">
+                        <div class="text-sm text-neutral-500 pt-2">
+                            <span>范围：石化公司 + 驿达集团 + 交控石油公司</span>
+                            <span class="mx-3">|</span>
+                            <span>结算周期：2026年1月 – 2026年6月</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                            <div class="inline-label-input">
+                                <span class="label">车牌号</span>
+                                <input type="text" id="detail-search-plate" placeholder="请输入" class="input-focus" oninput="renderDetail()">
+                            </div>
+                            <div class="inline-label-input">
+                                <span class="label">服务提供方</span>
+                                <select id="detail-search-provider" onchange="renderDetail()">
+                                    <option value="">全部</option>
+                                    <option value="石化公司">石化公司</option>
+                                    <option value="驿达集团">驿达集团</option>
+                                    <option value="交控石油公司">交控石油公司</option>
+                                </select>
+                            </div>
+                            <div class="inline-label-input">
+                                <span class="label">服务类型</span>
+                                <select id="detail-search-type" onchange="renderDetail()">
+                                    <option value="">全部</option>
+                                    <option value="加油">加油</option>
+                                    <option value="便利店消费">便利店消费</option>
+                                    <option value="尿素加注">尿素加注</option>
+                                    <option value="充电">充电</option>
+                                </select>
+                            </div>
+                            <div class="inline-label-input">
+                                <span class="label">核销状态</span>
+                                <select id="detail-search-status" onchange="renderDetail()">
+                                    <option value="">全部</option>
+                                    <option value="已核销">已核销</option>
+                                    <option value="已退货">已退货</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-3">
+                            <button class="btn btn-secondary btn-md" onclick="resetDetailFilters()">重 置</button>
+                            <button class="btn btn-primary btn-md" onclick="renderDetail()">查 询</button>
+                        </div>
+                    </div>
+                    <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                        <div id="detail-table-container"></div>
+                    </div>
+                    <div id="detail-pagination" class="mx-2 mb-2 flex justify-between items-center py-2"></div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -4684,13 +5950,13 @@
                     <div class="text-center mb-4">
                         <h4 class="text-lg font-bold text-neutral-900" id="lister-summary-h4">产品提供方结算单-汇总</h4>
                         <div class="flex justify-between mt-2 text-sm text-neutral-500">
-                            <span>账单号：ZJ-SK-20260801</span>
-                            <span>产品提供方：数科公司</span>
-                            <span>账单日期：2026-08-01</span>
+                            <span>账单号：<span id="lister-summary-billno">ZJ-SK-20260801</span></span>
+                            <span>产品提供方：<span id="lister-summary-provider">数科公司</span></span>
+                            <span>账单日期：<span id="lister-summary-date">2026-08-01</span></span>
                         </div>
                     </div>
                     <!-- 应付区：应付服务提供方 -->
-                    <div class="mb-5">
+                    <div class="mb-5" id="lister-pay-section">
                         <h5 class="text-sm font-semibold text-neutral-700 mb-2">应付明细（支付给服务提供方）</h5>
                         <table class="w-full border-collapse text-sm">
                             <thead>
@@ -4745,8 +6011,8 @@
                             <tfoot>
                                 <tr class="bg-neutral-50 font-semibold text-sm">
                                     <td class="p-2 text-left border border-neutral-200" colspan="2">应收合计</td>
-                                    <td class="p-2 text-right tabular-nums border border-neutral-200">150</td>
-                                    <td class="p-2 text-right tabular-nums border border-neutral-200">¥150.00</td>
+                                    <td class="p-2 text-right tabular-nums border border-neutral-200" id="lister-receivable-points-total">150</td>
+                                    <td class="p-2 text-right tabular-nums border border-neutral-200" id="lister-receivable-amount-total">¥150.00</td>
                                     <td class="p-2 text-right border border-neutral-200">100%</td>
                                     <td class="p-2 text-center border border-neutral-200"></td>
                                 </tr>
@@ -4756,12 +6022,12 @@
                 </div>
                 <!-- 明细视图 -->
                 <div id="lister-detail-view" class="hidden">
-                    <div class="mb-2">
-                        <button class="btn btn-text" onclick="renderListerSummary(listerTripartiteData['ZJ-SK-20260801'])"><i data-lucide="arrow-left" class="w-4 h-4 inline-block mr-1"></i>返回汇总</button>
+                    <div class="mb-2 hidden">
+                        <button class="btn btn-text" onclick="renderListerSummary(currentListerTripartite)"><i data-lucide="arrow-left" class="w-4 h-4 inline-block mr-1"></i>返回汇总</button>
                     </div>
                     <div class="text-center mb-4">
                         <h4 class="text-lg font-bold text-neutral-900" id="lister-detail-h4">数科公司 × 皖通公司 三方对账确认单</h4>
-                        <div class="flex justify-between mt-2 text-sm text-neutral-500">
+                        <div class="flex justify-between mt-2 text-sm text-neutral-500" id="lister-detail-meta">
                             <span>账单号：ZJ-SK-20260801</span>
                             <span>账单日期：2026-08-01</span>
                         </div>
@@ -4800,7 +6066,7 @@
                             <table class="w-full">
                                 <tr class="bg-neutral-50">
                                     <td class="p-2 border-b border-neutral-200 text-center font-medium text-neutral-700">乙方（产品提供方）</td>
-                                    <td class="p-2 border-b border-neutral-200 text-center text-neutral-500">数科公司</td>
+                                    <td class="p-2 border-b border-neutral-200 text-center text-neutral-500" id="lister-detail-party-b-name">数科公司</td>
                                 </tr>
                                 <tr>
                                     <td class="p-2 border-b border-neutral-200 text-center text-neutral-600">产品提供方（乙方）签字</td>
@@ -4879,8 +6145,8 @@
                 </div>
                 <!-- 明细视图 -->
                 <div id="tripartite-detail-view" class="hidden">
-                    <div class="mb-2">
-                        <button class="btn btn-text" onclick="renderMerchantSummary(merchantTripartiteData['JS-20260514-001'])"><i data-lucide="arrow-left" class="w-4 h-4 inline-block mr-1"></i>返回汇总</button>
+                    <div class="mb-2 hidden">
+                        <button class="btn btn-text" onclick="renderMerchantSummary(currentMerchantTripartite)"><i data-lucide="arrow-left" class="w-4 h-4 inline-block mr-1"></i>返回汇总</button>
                     </div>
                     <div class="text-center mb-4">
                         <h4 class="text-lg font-bold text-neutral-900" id="tripartite-detail-h4">石化公司 × 数科公司 三方对账确认单</h4>
@@ -4925,7 +6191,7 @@
                             <table class="w-full">
                                 <tr class="bg-neutral-50">
                                     <td class="p-2 border-b border-neutral-200 text-center font-medium text-neutral-700">乙方（服务提供方）</td>
-                                    <td class="p-2 border-b border-neutral-200 text-center text-neutral-500">石化公司</td>
+                                    <td class="p-2 border-b border-neutral-200 text-center text-neutral-500" id="tripartite-detail-party-b-name">石化公司</td>
                                 </tr>
                                 <tr>
                                     <td class="p-2 border-b border-neutral-200 text-center text-neutral-600">服务提供方（乙方）签字</td>
@@ -5381,6 +6647,6 @@
         </div>
     </div>
 
-    <script>lucide.createIcons(); initBillDropdown(); initMerchantBillSelectAll(); renderListerBillList(); switchSubnav('lister-bill'); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
+    <script>lucide.createIcons(); initBillDropdown(); initMerchantBillSelectAll(); renderPayableBillList(); renderReceivableBillList(); renderSummary(); renderDetail(); showPage('payable-bill'); switchSubnav('payable-bill'); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
 </body>
 </html>

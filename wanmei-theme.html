@@ -159,67 +159,15 @@
         .activity-card:active { transform: scale(0.98); }
         .activity-card.selected { box-shadow: 0 0 0 3px #FF6B35; }
 
-        /* 柴油券卡片 */
-        .gas-card .gas-card-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            border-bottom: 1px dashed #E5E7EB;
-        }
-        .gas-card .gas-brand { display: flex; align-items: center; gap: 8px; }
-        .gas-card .gas-brand-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8A50 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        .gas-card .gas-brand-name { font-size: 16px; font-weight: 700; color: #111827; }
-        .gas-card .gas-brand-desc { font-size: 12px; color: #6B7280; margin-top: 2px; }
-        .gas-card .gas-type-tag {
-            background: #FF6B35;
-            color: #fff;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-        .gas-card .gas-face-row { display: flex; gap: 10px; padding: 12px 16px; }
-        .gas-face-chip {
-            flex: 1;
-            background: linear-gradient(135deg, #FFF7E6 0%, #FFF0E0 100%);
-            border: 1px solid #FFE0C2;
-            border-radius: 12px;
-            padding: 10px 8px;
-            text-align: center;
-        }
-        .gas-face-chip .face-value { font-size: 20px; font-weight: 800; color: #FF6B35; line-height: 1; }
-        .gas-face-chip .face-value .yen { font-size: 13px; font-weight: 700; }
-        .gas-face-chip .face-threshold { font-size: 11px; color: #6B7280; margin-top: 5px; line-height: 1.3; }
-        .gas-card .gas-card-footer {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 10px 16px 14px;
-        }
-        .gas-card .gas-arrow { color: #6B7280; display: flex; align-items: center; gap: 2px; font-size: 13px; }
-
         /* 广告卡片 */
         .ad-card {
             position: relative;
             padding: 18px 16px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
             overflow: hidden;
             min-height: 96px;
+            background: linear-gradient(120deg, #FF9A5C 0%, #FF6B35 50%, #F25A1F 100%);
         }
         .ad-card::before {
             content: '';
@@ -249,18 +197,6 @@
             gap: 6px;
         }
         .ad-card .ad-title { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
-        .ad-card .ad-desc { font-size: 12px; color: rgba(255, 255, 255, 0.92); }
-        .ad-card .ad-btn {
-            position: relative;
-            z-index: 1;
-            background: #fff;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 9px 18px;
-            border-radius: 22px;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-        }
 
         /* Toast */
         .toast-wrap {
@@ -363,34 +299,6 @@
         input:checked + .slider:before { transform: translateX(26px); }
         .switch-tip { margin-left: 10px; color: #666; font-size: 13px; }
 
-        /* 面额配置 */
-        .faces-list { margin-bottom: 10px; }
-        .face-item { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 10px; }
-        .face-field { flex: 1; }
-        .face-field label { font-weight: normal; font-size: 12px; color: #666; margin-bottom: 4px; }
-        .face-del {
-            background: #fff;
-            border: 1px solid #EF4444;
-            color: #EF4444;
-            border-radius: 4px;
-            padding: 9px 14px;
-            cursor: pointer;
-            font-size: 13px;
-            flex-shrink: 0;
-        }
-        .face-del:hover { background: #FEF2F2; }
-        .btn-add-face {
-            background: #fff;
-            color: #FF6B35;
-            border: 1px dashed #FF6B35;
-            border-radius: 4px;
-            padding: 8px 0;
-            width: 100%;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .btn-add-face:hover { background: #FFF7E6; }
-
         /* 图片预览占位 */
         #iconPreview {
             width: 50px; height: 50px; border-radius: 8px; margin-bottom: 10px;
@@ -468,34 +376,6 @@
         </div>
 
         <div class="form-group">
-            <label>副标题</label>
-            <input type="text" id="actSubtitle" placeholder="如：签到领成长值，连续签到更多奖励">
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label>卡片类型</label>
-                <select id="actType" onchange="onTypeChange()">
-                    <option value="ad">广告卡片</option>
-                    <option value="gas">柴油券卡片</option>
-                </select>
-            </div>
-            <div class="form-group" id="themeGroup">
-                <label>颜色主题</label>
-                <select id="actTheme" onchange="onThemeChange()">
-                    <option value="orange">活力橙</option>
-                    <option value="blue">天空蓝</option>
-                    <option value="green">翡翠绿</option>
-                    <option value="purple">魅力紫</option>
-                    <option value="pink">雅致粉</option>
-                    <option value="yellow">经典黄</option>
-                    <option value="black">雅酷黑</option>
-                    <option value="cyan">湖青蓝</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
             <label>关联模块</label>
             <select id="actModule">
                 <option value="H5">H5</option>
@@ -507,33 +387,6 @@
         <div class="form-group">
             <label>访问地址</label>
             <input type="text" id="actUrl" placeholder="请输入活动跳转链接">
-        </div>
-
-        <div class="form-group">
-            <label>是否登录</label>
-            <div class="switch-group">
-                <label class="switch">
-                    <input type="checkbox" id="actLogin">
-                    <span class="slider"></span>
-                </label>
-                <span class="switch-tip">开启后需用户登录才能参加</span>
-            </div>
-        </div>
-
-        <div class="form-group" id="btnTextGroup">
-            <label>按钮文字</label>
-            <input type="text" id="actBtnText" placeholder="如：立即参与">
-        </div>
-
-        <div class="form-group" id="tagGroup">
-            <label>类型标签</label>
-            <input type="text" id="actTag" placeholder="如：柴油券">
-        </div>
-
-        <div class="form-group" id="facesGroup">
-            <label>面额配置</label>
-            <div class="faces-list" id="facesList"></div>
-            <button type="button" class="btn-add-face" onclick="addFace()">+ 新增面额</button>
         </div>
 
         <div class="form-group">
@@ -556,93 +409,41 @@
 </div>
 
 <script>
-    // ===== 颜色主题映射 =====
-    var AD_THEMES = {
-        orange: { bg: 'linear-gradient(120deg, #FF9A5C 0%, #FF6B35 50%, #F25A1F 100%)', btn: '#FF6B35' },
-        blue:   { bg: 'linear-gradient(120deg, #818CF8 0%, #6366F1 50%, #4F46E5 100%)', btn: '#4F46E5' },
-        green:  { bg: 'linear-gradient(120deg, #34D399 0%, #10B981 50%, #059669 100%)', btn: '#059669' },
-        purple: { bg: 'linear-gradient(120deg, #C4B5FD 0%, #8B5CF6 50%, #7C3AED 100%)', btn: '#7C3AED' },
-        pink:   { bg: 'linear-gradient(120deg, #FBCFE8 0%, #EC4899 50%, #DB2777 100%)', btn: '#DB2777' },
-        yellow: { bg: 'linear-gradient(120deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%)', btn: '#D97706' },
-        black:  { bg: 'linear-gradient(120deg, #6B7280 0%, #374151 50%, #111827 100%)', btn: '#111827' },
-        cyan:   { bg: 'linear-gradient(120deg, #67E8F9 0%, #06B6D4 50%, #0891B2 100%)', btn: '#0891B2' }
-    };
-
-    // ===== 图标 =====
-    var ICONS = {
-        truck: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5h13v11H1z"/><path d="M14 8h4l4 4v4h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
-        chevronRight: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'
-    };
-
     // ===== 初始活动数据（已配置好的活动） =====
     var activities = [
         {
             id: 'act-gas',
             name: '高速石化柴油券',
-            subtitle: '货车专享 · 高速沿线站点通用',
-            type: 'gas',
-            theme: 'orange',
             module: 'MiniProgram',
             url: 'https://example.com/gas',
-            needLogin: true,
-            tag: '柴油券',
-            btnText: '',
-            icon: null,
-            faces: [
-                { value: 20, threshold: 150 },
-                { value: 40, threshold: 200 },
-                { value: 75, threshold: 300 }
-            ]
+            icon: null
         },
         {
             id: 'act-signin',
             name: '每日签到',
-            subtitle: '签到领成长值，连续签到更多奖励',
-            type: 'ad',
-            theme: 'orange',
             module: 'H5',
             url: 'https://example.com/signin',
-            needLogin: true,
-            tag: '',
-            btnText: '立即参与',
-            icon: null,
-            faces: []
+            icon: null
         },
         {
             id: 'act-lottery',
             name: '幸运抽奖',
-            subtitle: '消耗积分参与抽奖，赢取好礼',
-            type: 'ad',
-            theme: 'blue',
             module: 'H5',
             url: 'https://example.com/lottery',
-            needLogin: true,
-            tag: '',
-            btnText: '立即参与',
-            icon: null,
-            faces: []
+            icon: null
         },
         {
             id: 'act-points',
             name: '消费返积分',
-            subtitle: '服务区消费返积分，积分兑好礼',
-            type: 'ad',
-            theme: 'green',
             module: 'MiniProgram',
             url: 'https://example.com/points',
-            needLogin: false,
-            tag: '',
-            btnText: '立即参与',
-            icon: null,
-            faces: []
+            icon: null
         }
     ];
 
     // ===== 状态 =====
     var currentId = null;      // 当前选中的活动 id
-    var editFaces = [];        // 面额编辑态
     var editIcon = null;       // 图标编辑态（base64）
-    var editTheme = 'orange';  // 主题编辑态（用于实时预览）
 
     // ===== 工具函数 =====
     function escapeHtml(s) {
@@ -674,47 +475,14 @@
         var html = '';
         for (var i = 0; i < activities.length; i++) {
             var a = activities[i];
-            var theme = a.theme;
-            if (a.id === currentId && a.type === 'ad') {
-                theme = editTheme;
-            }
-            html += buildActivityCard(a, a.id === currentId, theme);
+            html += buildAdCard(a, a.id === currentId);
         }
         list.innerHTML = html;
     }
 
-    function buildActivityCard(a, selected, theme) {
-        if (a.type === 'gas') {
-            return buildGasCard(a, selected);
-        }
-        return buildAdCard(a, selected, theme);
-    }
-
-    function buildGasCard(a, selected) {
-        var chips = '';
-        for (var i = 0; i < a.faces.length; i++) {
-            var f = a.faces[i];
-            chips += '<div class="gas-face-chip"><div class="face-value"><span class="yen">¥</span>' + escapeHtml(f.value) + '</div><div class="face-threshold">满' + escapeHtml(f.threshold) + '升可用</div></div>';
-        }
-        var iconHtml = a.icon
-            ? '<img src="' + a.icon + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
-            : ICONS.truck;
-
-        return '<div class="activity-card gas-card' + (selected ? ' selected' : '') + '" data-id="' + a.id + '" onclick="selectActivity(\'' + a.id + '\')">'
-            + '<div class="gas-card-top">'
-            + '<div class="gas-brand"><div class="gas-brand-icon">' + iconHtml + '</div>'
-            + '<div><div class="gas-brand-name">' + escapeHtml(a.name) + '</div><div class="gas-brand-desc">' + escapeHtml(a.subtitle) + '</div></div></div>'
-            + '<span class="gas-type-tag">' + escapeHtml(a.tag || '柴油券') + '</span></div>'
-            + '<div class="gas-face-row">' + chips + '</div>'
-            + '<div class="gas-card-footer"><span class="gas-arrow">点击配置 ' + ICONS.chevronRight + '</span></div>'
-            + '</div>';
-    }
-
-    function buildAdCard(a, selected, theme) {
-        var t = AD_THEMES[theme] || AD_THEMES[a.theme] || AD_THEMES.orange;
-        return '<div class="activity-card ad-card' + (selected ? ' selected' : '') + '" style="background:' + t.bg + '" data-id="' + a.id + '" onclick="selectActivity(\'' + a.id + '\')">'
-            + '<div class="ad-content"><div class="ad-title">' + escapeHtml(a.name) + '</div><div class="ad-desc">' + escapeHtml(a.subtitle) + '</div></div>'
-            + '<span class="ad-btn" style="color:' + t.btn + '">' + escapeHtml(a.btnText || '立即参与') + '</span>'
+    function buildAdCard(a, selected) {
+        return '<div class="activity-card ad-card' + (selected ? ' selected' : '') + '" data-id="' + a.id + '" onclick="selectActivity(\'' + a.id + '\')">'
+            + '<div class="ad-content"><div class="ad-title">' + escapeHtml(a.name) + '</div></div>'
             + '</div>';
     }
 
@@ -729,61 +497,18 @@
     // ===== 配置表单 =====
     function loadConfigForm(a) {
         var nameEl = document.getElementById('actName');
-        var subEl = document.getElementById('actSubtitle');
-        var typeEl = document.getElementById('actType');
-        var themeEl = document.getElementById('actTheme');
         var moduleEl = document.getElementById('actModule');
         var urlEl = document.getElementById('actUrl');
-        var loginEl = document.getElementById('actLogin');
-        var btnEl = document.getElementById('actBtnText');
-        var tagEl = document.getElementById('actTag');
         var editNameEl = document.getElementById('currentEditName');
 
         if (nameEl) nameEl.value = a.name;
-        if (subEl) subEl.value = a.subtitle || '';
-        if (typeEl) typeEl.value = a.type || 'ad';
-        if (themeEl) themeEl.value = a.theme || 'orange';
-        editTheme = a.theme || 'orange';
         if (moduleEl) moduleEl.value = a.module || 'H5';
         if (urlEl) urlEl.value = a.url || '';
-        if (loginEl) loginEl.checked = !!a.needLogin;
-        if (btnEl) btnEl.value = a.btnText || '';
-        if (tagEl) tagEl.value = a.tag || '';
         if (editNameEl) editNameEl.textContent = a.name;
 
-        editFaces = a.faces ? JSON.parse(JSON.stringify(a.faces)) : [];
         editIcon = a.icon || null;
 
-        renderFaces();
         renderIconPreview();
-        updateTypeFields(a.type || 'ad');
-    }
-
-    function updateTypeFields(type) {
-        var themeGroup = document.getElementById('themeGroup');
-        var btnGroup = document.getElementById('btnTextGroup');
-        var tagGroup = document.getElementById('tagGroup');
-        var facesGroup = document.getElementById('facesGroup');
-
-        if (themeGroup) themeGroup.style.display = (type === 'ad') ? 'block' : 'none';
-        if (btnGroup) btnGroup.style.display = (type === 'ad') ? 'block' : 'none';
-        if (tagGroup) tagGroup.style.display = (type === 'gas') ? 'block' : 'none';
-        if (facesGroup) facesGroup.style.display = (type === 'gas') ? 'block' : 'none';
-    }
-
-    function renderFaces() {
-        var list = document.getElementById('facesList');
-        if (!list) return;
-        var html = '';
-        for (var i = 0; i < editFaces.length; i++) {
-            var f = editFaces[i];
-            html += '<div class="face-item">'
-                + '<div class="face-field"><label>面额 (元)</label><input type="number" class="face-value-input" value="' + escapeHtml(f.value) + '"></div>'
-                + '<div class="face-field"><label>门槛 (升)</label><input type="number" class="face-threshold-input" value="' + escapeHtml(f.threshold) + '"></div>'
-                + '<button type="button" class="face-del" onclick="removeFace(' + i + ')">删 除</button>'
-                + '</div>';
-        }
-        list.innerHTML = html;
     }
 
     function renderIconPreview() {
@@ -796,41 +521,6 @@
             preview.style.display = 'none';
             preview.style.backgroundImage = '';
         }
-    }
-
-    function addFace() {
-        editFaces.push({ value: 20, threshold: 100 });
-        renderFaces();
-    }
-
-    function removeFace(idx) {
-        editFaces.splice(idx, 1);
-        renderFaces();
-    }
-
-    function readFacesFromDom() {
-        var valueInputs = document.querySelectorAll('.face-value-input');
-        var thresholdInputs = document.querySelectorAll('.face-threshold-input');
-        var faces = [];
-        for (var i = 0; i < valueInputs.length; i++) {
-            var v = parseFloat(valueInputs[i].value);
-            var t = parseFloat(thresholdInputs[i].value);
-            faces.push({ value: isNaN(v) ? 0 : v, threshold: isNaN(t) ? 0 : t });
-        }
-        return faces;
-    }
-
-    // ===== 类型/主题切换 =====
-    function onTypeChange() {
-        var typeEl = document.getElementById('actType');
-        if (typeEl) updateTypeFields(typeEl.value);
-    }
-
-    function onThemeChange() {
-        var themeEl = document.getElementById('actTheme');
-        if (!themeEl) return;
-        editTheme = themeEl.value;
-        renderPhone();
     }
 
     // ===== 图片上传预览 =====
@@ -857,17 +547,9 @@
         }
 
         a.name = getValue('actName', a.name);
-        a.subtitle = getValue('actSubtitle', '');
-        a.type = getValue('actType', 'ad');
-        a.theme = getValue('actTheme', 'orange');
-        editTheme = a.theme;
         a.module = getValue('actModule', 'H5');
         a.url = getValue('actUrl', '');
-        a.needLogin = document.getElementById('actLogin') ? document.getElementById('actLogin').checked : true;
-        a.btnText = getValue('actBtnText', '立即参与');
-        a.tag = getValue('actTag', '');
         a.icon = editIcon;
-        a.faces = readFacesFromDom();
 
         renderPhone();
         var editNameEl = document.getElementById('currentEditName');
@@ -880,16 +562,9 @@
         var newAct = {
             id: id,
             name: '新活动',
-            subtitle: '',
-            type: 'ad',
-            theme: 'orange',
             module: 'H5',
             url: '',
-            needLogin: true,
-            tag: '',
-            btnText: '立即参与',
-            icon: null,
-            faces: []
+            icon: null
         };
         activities.push(newAct);
         currentId = id;
@@ -915,7 +590,6 @@
             loadConfigForm(activities[0]);
         } else {
             currentId = null;
-            editFaces = [];
             editIcon = null;
             renderPhone();
             clearConfigForm();
@@ -932,18 +606,15 @@
     }
 
     function clearConfigForm() {
-        var ids = ['actName', 'actSubtitle', 'actUrl', 'actBtnText', 'actTag'];
+        var ids = ['actName', 'actUrl'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
             if (el) el.value = '';
         }
         var editNameEl = document.getElementById('currentEditName');
         if (editNameEl) editNameEl.textContent = '未选择';
-        editFaces = [];
         editIcon = null;
-        renderFaces();
         renderIconPreview();
-        updateTypeFields('ad');
     }
 
     // ===== Toast =====

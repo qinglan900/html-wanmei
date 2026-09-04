@@ -341,18 +341,14 @@
                                         </div>
                                         <div class="text-xs text-neutral-400 mt-1">订单满多少元时可以使用此优惠券，0元代表无使用门槛</div>
                                     </div>
-                                    <!-- 订餐：满 X 元 / 满 X 份 -->
+                                    <!-- 订餐：满 X 元 -->
                                     <div id="threshold-food" class="hidden">
-                                        <div class="flex items-center gap-4 h-8">
-                                            <label class="flex items-center gap-1 text-sm"><input type="radio" name="food-type" value="amount" checked data-unit-span="food-unit" data-unit="元" onchange="applyUnit(this)"> 满 X 元</label>
-                                            <label class="flex items-center gap-1 text-sm"><input type="radio" name="food-type" value="count" data-unit-span="food-unit" data-unit="份" onchange="applyUnit(this)"> 满 X 份</label>
-                                        </div>
-                                        <div class="flex items-center gap-2 h-8 mt-2">
+                                        <div class="flex items-center gap-2 h-8">
                                             <span class="text-sm text-neutral-600">满</span>
                                             <input type="text" class="form-input w-28" placeholder="请输入使用门槛">
-                                            <span class="text-sm text-neutral-600" id="food-unit">元</span>
+                                            <span class="text-sm text-neutral-600">元</span>
                                         </div>
-                                        <div class="text-xs text-neutral-400 mt-1">订餐金额满 X 元或份数满 X 份时可以使用此优惠券，0代表无使用门槛</div>
+                                        <div class="text-xs text-neutral-400 mt-1">订餐金额满 X 元时可以使用此优惠券，0代表无使用门槛</div>
                                     </div>
                                     <!-- 酒店：满 X 元 / 满 X 晚 -->
                                     <div id="threshold-hotel" class="hidden">
@@ -367,18 +363,14 @@
                                         </div>
                                         <div class="text-xs text-neutral-400 mt-1">酒店金额满 X 元或入住满 X 晚时可以使用此优惠券，0代表无使用门槛</div>
                                     </div>
-                                    <!-- 便利店：满 X 元 / 满 X 件 -->
+                                    <!-- 便利店：满 X 元 -->
                                     <div id="threshold-market" class="hidden">
-                                        <div class="flex items-center gap-4 h-8">
-                                            <label class="flex items-center gap-1 text-sm"><input type="radio" name="market-type" value="amount" checked data-unit-span="market-unit" data-unit="元" onchange="applyUnit(this)"> 满 X 元</label>
-                                            <label class="flex items-center gap-1 text-sm"><input type="radio" name="market-type" value="count" data-unit-span="market-unit" data-unit="件" onchange="applyUnit(this)"> 满 X 件</label>
-                                        </div>
-                                        <div class="flex items-center gap-2 h-8 mt-2">
+                                        <div class="flex items-center gap-2 h-8">
                                             <span class="text-sm text-neutral-600">满</span>
                                             <input type="text" class="form-input w-28" placeholder="请输入使用门槛">
-                                            <span class="text-sm text-neutral-600" id="market-unit">元</span>
+                                            <span class="text-sm text-neutral-600">元</span>
                                         </div>
-                                        <div class="text-xs text-neutral-400 mt-1">便利店金额满 X 元或件数满 X 件时可以使用此优惠券，0代表无使用门槛</div>
+                                        <div class="text-xs text-neutral-400 mt-1">便利店金额满 X 元时可以使用此优惠券，0代表无使用门槛</div>
                                     </div>
                                     <!-- 加油：满 X 元 / 单次加油满 X 升 + 油品种类多选 -->
                                     <div id="threshold-fuel" class="hidden">

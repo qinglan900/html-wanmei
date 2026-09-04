@@ -175,81 +175,6 @@
     }
     .activity-card:active { transform: scale(0.98); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 
-    /* 加油券活动卡片 */
-    .gas-card .gas-card-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px;
-      border-bottom: 1px dashed #E5E7EB;
-    }
-    .gas-card .gas-brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .gas-card .gas-brand-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #FF6B35 0%, #FF8A50 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-    }
-    .gas-card .gas-brand-name { font-size: 16px; font-weight: 700; color: #111827; }
-    .gas-card .gas-brand-desc { font-size: 12px; color: #6B7280; margin-top: 2px; }
-    .gas-card .gas-type-tag {
-      background: #FF6B35;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 6px;
-    }
-    .gas-card .gas-face-row {
-      display: flex;
-      gap: 10px;
-      padding: 12px 16px;
-    }
-    .gas-face-chip {
-      flex: 1;
-      background: linear-gradient(135deg, #FFF7E6 0%, #FFF0E0 100%);
-      border: 1px solid #FFE0C2;
-      border-radius: 12px;
-      padding: 10px 8px;
-      text-align: center;
-    }
-    .gas-face-chip .face-value {
-      font-size: 20px;
-      font-weight: 800;
-      color: #FF6B35;
-      line-height: 1;
-    }
-    .gas-face-chip .face-value .yen { font-size: 13px; font-weight: 700; }
-    .gas-face-chip .face-threshold {
-      font-size: 11px;
-      color: #6B7280;
-      margin-top: 5px;
-      line-height: 1.3;
-    }
-    .gas-card .gas-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px 14px;
-    }
-    .gas-card .gas-oil-tag {
-      font-size: 12px;
-      color: #FF6B35;
-      background: #FFF7E6;
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-weight: 600;
-    }
-    .gas-card .gas-arrow { color: #9CA3AF; display: flex; align-items: center; gap: 2px; font-size: 13px; color: #6B7280; }
-
     /* 占位活动卡片 */
     .placeholder-card {
       padding: 16px;
@@ -328,25 +253,11 @@
       font-size: 12px;
       color: rgba(255, 255, 255, 0.92);
     }
-    .ad-card .ad-btn {
-      position: relative;
-      z-index: 1;
-      background: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      padding: 9px 18px;
-      border-radius: 22px;
-      flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-    }
 
     /* 颜色主题 */
     .ad-card.ad-orange { background: linear-gradient(120deg, #FF9A5C 0%, #FF6B35 50%, #F25A1F 100%); }
-    .ad-card.ad-orange .ad-btn { color: #FF6B35; }
     .ad-card.ad-blue { background: linear-gradient(120deg, #818CF8 0%, #6366F1 50%, #4F46E5 100%); }
-    .ad-card.ad-blue .ad-btn { color: #4F46E5; }
     .ad-card.ad-green { background: linear-gradient(120deg, #34D399 0%, #10B981 50%, #059669 100%); }
-    .ad-card.ad-green .ad-btn { color: #059669; }
 
     /* ===== 底部 Tab ===== */
     .bottom-tab {
@@ -788,34 +699,10 @@
         </div>
         <div class="activity-list">
           <!-- 加油券活动卡片 -->
-          <div class="activity-card gas-card" onclick="openDetail()">
-            <div class="gas-card-top">
-              <div class="gas-brand">
-                <div class="gas-brand-icon"><i data-lucide="truck" class="w-5 h-5"></i></div>
-                <div>
-                  <div class="gas-brand-name">高速石化柴油券</div>
-                  <div class="gas-brand-desc">货车专享 · 高速沿线站点通用</div>
-                </div>
-              </div>
-              <span class="gas-type-tag">柴油券</span>
-            </div>
-            <div class="gas-face-row">
-              <div class="gas-face-chip">
-                <div class="face-value"><span class="yen">¥</span>20</div>
-                <div class="face-threshold">满150升可用</div>
-              </div>
-              <div class="gas-face-chip">
-                <div class="face-value"><span class="yen">¥</span>40</div>
-                <div class="face-threshold">满200升可用</div>
-              </div>
-              <div class="gas-face-chip">
-                <div class="face-value"><span class="yen">¥</span>75</div>
-                <div class="face-threshold">满300升可用</div>
-              </div>
-            </div>
-            <div class="gas-card-footer">
-              <span class="gas-oil-tag">货车专享</span>
-              <span class="gas-arrow">查看详情 <i data-lucide="chevron-right" class="w-4 h-4"></i></span>
+          <div class="activity-card ad-card ad-orange" onclick="openDetail()">
+            <div class="ad-content">
+              <div class="ad-title">高速石化柴油券</div>
+              <div class="ad-desc">货车专享 · 高速沿线站点通用</div>
             </div>
           </div>
 
@@ -825,7 +712,6 @@
               <div class="ad-title">每日签到</div>
               <div class="ad-desc">签到领成长值，连续签到更多奖励</div>
             </div>
-            <span class="ad-btn">立即参与</span>
           </div>
 
           <!-- 幸运抽奖广告 -->
@@ -834,7 +720,6 @@
               <div class="ad-title">幸运抽奖</div>
               <div class="ad-desc">消耗积分参与抽奖，赢取好礼</div>
             </div>
-            <span class="ad-btn">立即参与</span>
           </div>
 
           <!-- 消费返积分广告 -->
@@ -843,7 +728,6 @@
               <div class="ad-title">消费返积分</div>
               <div class="ad-desc">服务区消费返积分，积分兑好礼</div>
             </div>
-            <span class="ad-btn">立即参与</span>
           </div>
 
           <div style="height: 8px;"></div>

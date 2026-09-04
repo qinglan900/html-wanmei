@@ -373,7 +373,7 @@
                 mode: 'view',
                 auditResult: 'pass',
                 auditAmount: '+¥10.00',
-                auditDate: '2026-05-20',
+                auditDate: '2026-05-13',
                 auditNote: '经核实，同意调增结算金额。',
                 auditAuditor: '李四（平台管理员）',
                 auditTime: '2026-05-17 14:00'
@@ -392,7 +392,7 @@
                 mode: 'view',
                 auditResult: 'pass',
                 auditAmount: '-¥20.00',
-                auditDate: '2026-05-21',
+                auditDate: '2026-05-13',
                 auditNote: '经核实，同意调减结算金额。',
                 auditAuditor: '李四（平台管理员）',
                 auditTime: '2026-05-18 10:00'
@@ -462,6 +462,11 @@
             if (data.mode === 'audit') {
                 if (auditForm) auditForm.style.display = 'block';
                 if (footer) footer.style.display = 'flex';
+                // 调账计入账单日期默认为账单日期（只读，不可修改）
+                var auditDateEl = document.getElementById('drawer-audit-date');
+                if (auditDateEl && data.bills && data.bills.length > 0) {
+                    auditDateEl.textContent = data.bills[0].date;
+                }
                 // 审核模式：两列布局，右侧显示审核表单
                 var contentEl = document.getElementById('appeal-drawer-content');
                 if (contentEl) contentEl.className = 'grid grid-cols-2 gap-6';
@@ -637,14 +642,14 @@
 
         // ===== 结算关系数据（应付/应收账单共用） =====
         var relationData = [
-            { id: 'GX-20260513-001', payer: '皖通公司', payerRole: '营销活动方', receiver: '数科公司', receiverRole: '产品提供方', points: 110, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: null, adjustAmount: 10, review: { status: 'done', reason: '券码核销金额与订单实际不符，需调增结算金额', applyTime: '2026-05-16 09:30', result: '复核通过', targetDate: '2026-05-20', resultTime: '2026-05-17 14:00' } },
+            { id: 'GX-20260513-001', payer: '皖通公司', payerRole: '营销活动方', receiver: '数科公司', receiverRole: '产品提供方', points: 110, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: null, adjustAmount: 10, review: { status: 'done', reason: '券码核销金额与订单实际不符，需调增结算金额', applyTime: '2026-05-16 09:30', result: '复核通过', targetDate: '2026-05-13', resultTime: '2026-05-17 14:00' } },
             { id: 'GX-20260513-002', payer: '联网公司', payerRole: '营销活动方', receiver: '数科公司', receiverRole: '产品提供方', points: 40, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: null, settled: true },
             { id: 'GX-20260513-003', payer: '数科公司', payerRole: '产品提供方', receiver: '石化公司', receiverRole: '服务提供方', points: 80, cash: 50, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, adjustAmount: null, review: { status: 'pending', reason: '部分券码核销金额与实际不符，申请调减', applyTime: '2026-05-18 11:20', expectAmount: -5 }, coupons: [
                 { seq: 1, type: '加油', orderNo: 'PO20260513000001', time: '2026-05-13 10:23', couponName: '50元加油代金券红包', couponCode: '8943ce9ef83c7283a46dcbf84ddf4fcf', couponType: '积分券', points: 1000, amt: '50.00', status: '已核销' },
                 { seq: 2, type: '加油', orderNo: 'PO20260513000002', time: '2026-05-13 11:45', couponName: '30元加油代金券红包', couponCode: '245520cc223ac35b23d0bc65158124ca', couponType: '积分券', points: 600, amt: '30.00', status: '已核销' },
                 { seq: 3, type: '加油', orderNo: 'PO20260513000003', time: '2026-05-13 14:20', couponName: '9.9元秒杀50元加油券', couponCode: 'a1b2c3d4e5f6789012345678abcdef01', couponType: '现金券', points: 0, amt: '50.00', status: '已核销' }
             ] },
-            { id: 'GX-20260513-004', payer: '数科公司', payerRole: '产品提供方', receiver: '交控石油公司', receiverRole: '服务提供方', points: null, cash: 100, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, settled: true, adjustAmount: -20, review: { status: 'done', reason: '订单取消导致核销金额需调减', applyTime: '2026-05-16 15:00', result: '复核通过', targetDate: '2026-05-21', resultTime: '2026-05-18 10:00' }, coupons: [
+            { id: 'GX-20260513-004', payer: '数科公司', payerRole: '产品提供方', receiver: '交控石油公司', receiverRole: '服务提供方', points: null, cash: 100, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, settled: true, adjustAmount: -20, review: { status: 'done', reason: '订单取消导致核销金额需调减', applyTime: '2026-05-16 15:00', result: '复核通过', targetDate: '2026-05-13', resultTime: '2026-05-18 10:00' }, coupons: [
                 { seq: 1, type: '充电', orderNo: 'PO20260513000004', time: '2026-05-13 09:00', couponName: '100元交控充电现金券', couponCode: 'b2c3d4e5f6789012345678abcdef0123', couponType: '现金券', points: 0, amt: '100.00', status: '已核销' }
             ] },
             { id: 'GX-20260513-005', payer: '皖通公司', payerRole: '营销活动方', receiver: '石化公司', receiverRole: '产品提供方', points: 30, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: null, review: { status: 'failed', reason: '订单金额与实际消费不符，申请调账。', applyTime: '2026-05-15 10:20', result: '复核驳回', resultNote: '复核材料不足，无法核实差异金额。', resultTime: '2026-05-16 09:00' } },
@@ -673,7 +678,7 @@
             return (num > 0 ? '+' : (num < 0 ? '-' : '')) + formatted;
         }
 
-        var relationFrom = 'payable';
+        var currentMerchantView = '数科公司';
 
         function relationRemarkTag(r) {
             var tags = [];
@@ -705,10 +710,24 @@
             return el ? el.value : '';
         }
 
-        function relationMatchFilter(r, f) {
-            if (f.payer && r.payer !== f.payer) return false;
-            if (f.receiver && r.receiver !== f.receiver) return false;
-            if (f.receiverRole && r.receiverRole !== f.receiverRole) return false;
+        function getSettlementBillType(r) {
+            if (!currentMerchantView) return null;
+            if (r.payer === currentMerchantView && r.receiver === currentMerchantView) return null;
+            if (r.payer === currentMerchantView) return 'payable';
+            if (r.receiver === currentMerchantView) return 'receivable';
+            return null;
+        }
+
+        function settlementBillTypeTag(r) {
+            var t = getSettlementBillType(r);
+            if (t === 'payable') return '<span class="px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-600 border border-blue-200">应付账单</span>';
+            if (t === 'receivable') return '<span class="px-2 py-0.5 rounded text-xs bg-orange-50 text-orange-600 border border-orange-200">应收账单</span>';
+            return '<span class="text-neutral-400">——</span>';
+        }
+
+        function settlementMatchFilter(r, f) {
+            if (currentMerchantView && r.payer !== currentMerchantView && r.receiver !== currentMerchantView) return false;
+            if (f.type && getSettlementBillType(r) !== f.type) return false;
             if (f.dateStart && r.date < f.dateStart) return false;
             if (f.dateEnd && r.date > f.dateEnd) return false;
             if (f.status === 'unsettled' && (r.settled || r.isSelf)) return false;
@@ -717,26 +736,21 @@
             return true;
         }
 
-        function getRelationFilters(prefix) {
-            return {
-                payer: relationFilterValue(prefix + '-filter-payer'),
-                receiver: relationFilterValue(prefix + '-filter-receiver'),
-                receiverRole: relationFilterValue(prefix + '-filter-receiverRole'),
-                dateStart: relationFilterValue(prefix + '-filter-date-start'),
-                dateEnd: relationFilterValue(prefix + '-filter-date-end'),
-                status: relationFilterValue(prefix + '-filter-status'),
-                remark: relationFilterValue(prefix + '-filter-remark')
-            };
+        function handleMerchantViewChange() {
+            currentMerchantView = relationFilterValue('settlement-bill-filter-merchant');
+            renderSettlementBillList();
         }
 
-        function resetRelationFilters(prefix) {
-            var keys = ['payer', 'receiver', 'receiverRole', 'date-start', 'date-end', 'status', 'remark'];
+        function resetSettlementBillFilters() {
+            var merchant = document.getElementById('settlement-bill-filter-merchant');
+            if (merchant) merchant.value = '数科公司';
+            currentMerchantView = '数科公司';
+            var keys = ['type', 'date-start', 'date-end', 'status', 'remark'];
             for (var i = 0; i < keys.length; i++) {
-                var el = document.getElementById(prefix + '-filter-' + keys[i]);
+                var el = document.getElementById('settlement-bill-filter-' + keys[i]);
                 if (el) el.value = '';
             }
-            if (prefix === 'payable-bill') renderPayableBillList();
-            else renderReceivableBillList();
+            renderSettlementBillList();
         }
 
         function canConfirmSettle(r) {
@@ -774,24 +788,34 @@
             var r = findRelation(id);
             if (!r || !canConfirmSettle(r)) return;
             r.settled = true;
-            renderPayableBillList();
-            renderReceivableBillList();
+            renderSettlementBillList();
             showToast('确认结算成功', 'success');
         }
 
-        function renderPayableBillList() {
-            var tbody = document.getElementById('payable-bill-tbody');
+        function renderSettlementBillList() {
+            var tbody = document.getElementById('settlement-bill-tbody');
             if (!tbody) return;
-            var f = getRelationFilters('payable-bill');
-            var list = relationData.filter(function(r) { return relationMatchFilter(r, f); })
-                .sort(function(a, b) { return a.payer.localeCompare(b.payer, 'zh-CN'); });
+            var f = {
+                type: relationFilterValue('settlement-bill-filter-type'),
+                dateStart: relationFilterValue('settlement-bill-filter-date-start'),
+                dateEnd: relationFilterValue('settlement-bill-filter-date-end'),
+                status: relationFilterValue('settlement-bill-filter-status'),
+                remark: relationFilterValue('settlement-bill-filter-remark')
+            };
+            var list = relationData.filter(function(r) { return settlementMatchFilter(r, f); })
+                .sort(function(a, b) { return a.id.localeCompare(b.id); });
             var html = '';
             var total = 0;
             for (var i = 0; i < list.length; i++) {
                 var r = list[i];
                 total += relationSettle(r);
+                var type = getSettlementBillType(r);
+                var canSettle = type === 'receivable' && canConfirmSettle(r);
+                var confirmBtn = type === 'receivable' ? relationConfirmBtn(r) : '';
                 html += '<tr class="border-b border-neutral-200 table-row">' +
+                    '<td class="text-center"><input type="checkbox" class="settlement-bill-checkbox cursor-pointer" data-id="' + r.id + '"' + (canSettle ? '' : ' disabled') + '></td>' +
                     '<td class="text-center text-neutral-600">' + (i + 1) + '</td>' +
+                    '<td class="text-left">' + settlementBillTypeTag(r) + '</td>' +
                     '<td class="text-left">' + r.id + '</td>' +
                     '<td class="text-left">' + r.payer + '</td>' +
                     '<td class="text-left">' + r.payerRole + '</td>' +
@@ -804,51 +828,63 @@
                     '<td class="text-left">' + r.date + '</td>' +
                     '<td class="text-left">' + relationRemarkTag(r) + '</td>' +
                     '<td class="text-left">' + relationSettleTag(r) + '</td>' +
-                    '<td class="text-right"><button class="btn btn-text" onclick="showRelationDetail(\'' + r.id + '\', \'payable\')">查 看</button>' + relationDownloadBtn(r) + relationReviewBtn(r) + '</td>' +
+                    '<td class="text-right"><button class="btn btn-text" onclick="showRelationDetail(\'' + r.id + '\')">查 看</button>' + relationDownloadBtn(r) + relationReviewBtn(r) + confirmBtn + '</td>' +
                     '</tr>';
             }
             tbody.innerHTML = html;
-            var count = document.getElementById('payable-bill-count');
+            var count = document.getElementById('settlement-bill-count');
             if (count) count.textContent = list.length;
-            var totalEl = document.getElementById('payable-bill-total');
+            var totalEl = document.getElementById('settlement-bill-total');
             if (totalEl) totalEl.textContent = fmtMoney(total);
+            updateSettlementBillBatchBar();
         }
 
-        function renderReceivableBillList() {
-            var tbody = document.getElementById('receivable-bill-tbody');
-            if (!tbody) return;
-            var f = getRelationFilters('receivable-bill');
-            var list = relationData.filter(function(r) { return relationMatchFilter(r, f); })
-                .sort(function(a, b) { return a.receiver.localeCompare(b.receiver, 'zh-CN'); });
-            var html = '';
-            var total = 0;
-            for (var i = 0; i < list.length; i++) {
-                var r = list[i];
-                total += relationSettle(r);
-                html += '<tr class="border-b border-neutral-200 table-row">' +
-                    '<td class="text-center"><input type="checkbox" class="receivable-bill-checkbox cursor-pointer" data-id="' + r.id + '"' + (canConfirmSettle(r) ? '' : ' disabled') + '></td>' +
-                    '<td class="text-center text-neutral-600">' + (i + 1) + '</td>' +
-                    '<td class="text-left">' + r.id + '</td>' +
-                    '<td class="text-left">' + r.receiver + '</td>' +
-                    '<td class="text-left">' + r.receiverRole + '</td>' +
-                    '<td class="text-left">' + r.payer + '</td>' +
-                    '<td class="text-left">' + r.payerRole + '</td>' +
-                    '<td class="text-right tabular-nums">' + fmtMoney(r.points) + '</td>' +
-                    '<td class="text-right tabular-nums">' + fmtMoney(r.cash) + '</td>' +
-                    '<td class="text-right tabular-nums ' + (r.adjustAmount > 0 ? 'text-success' : (r.adjustAmount < 0 ? 'text-error' : '')) + '">' + fmtAdjust(r.adjustAmount) + '</td>' +
-                    '<td class="text-right font-semibold tabular-nums">' + fmtMoney(relationSettle(r)) + '</td>' +
-                    '<td class="text-left">' + r.date + '</td>' +
-                    '<td class="text-left">' + relationRemarkTag(r) + '</td>' +
-                    '<td class="text-left">' + relationSettleTag(r) + '</td>' +
-                    '<td class="text-right"><button class="btn btn-text" onclick="showRelationDetail(\'' + r.id + '\', \'receivable\')">查 看</button>' + relationDownloadBtn(r) + relationReviewBtn(r) + relationConfirmBtn(r) + '</td>' +
-                    '</tr>';
+        function getSelectedSettlementBillIds() {
+            var ids = [];
+            var checkboxes = document.querySelectorAll('.settlement-bill-checkbox');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) ids.push(checkboxes[i].getAttribute('data-id'));
             }
-            tbody.innerHTML = html;
-            var count = document.getElementById('receivable-bill-count');
-            if (count) count.textContent = list.length;
-            var totalEl = document.getElementById('receivable-bill-total');
-            if (totalEl) totalEl.textContent = fmtMoney(total);
-            updateRelationBatchBar('receivable-bill');
+            return ids;
+        }
+
+        function updateSettlementBillBatchBar() {
+            var checkboxes = document.querySelectorAll('.settlement-bill-checkbox:not(:disabled)');
+            var count = 0;
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) count++;
+            }
+            var countEl = document.getElementById('settlement-bill-selected-count');
+            if (countEl) countEl.textContent = count;
+            var confirmBtn = document.getElementById('settlement-bill-confirm-btn');
+            if (confirmBtn) confirmBtn.disabled = count === 0;
+            var selectAll = document.getElementById('settlement-bill-select-all');
+            if (selectAll) selectAll.checked = checkboxes.length > 0 && count === checkboxes.length;
+        }
+
+        function handleBatchConfirmSettle() {
+            var ids = getSelectedSettlementBillIds();
+            if (ids.length === 0) { showToast('请先选择账单', 'warning'); return; }
+            var settledCount = 0;
+            var skipCount = 0;
+            for (var i = 0; i < ids.length; i++) {
+                var r = findRelation(ids[i]);
+                if (!r) continue;
+                if (canConfirmSettle(r)) {
+                    r.settled = true;
+                    settledCount++;
+                } else {
+                    skipCount++;
+                }
+            }
+            if (settledCount === 0) {
+                showToast('所选账单均不可确认结算', 'warning');
+                return;
+            }
+            renderSettlementBillList();
+            var msg = '已确认结算 ' + settledCount + ' 笔';
+            if (skipCount > 0) msg += '，跳过 ' + skipCount + ' 笔（已结算/复核中/同一主体）';
+            showToast(msg, 'success');
         }
 
         function showRelationDetail(id, from) {
@@ -857,7 +893,6 @@
                 if (relationData[i].id === id) { r = relationData[i]; break; }
             }
             if (!r) return;
-            relationFrom = from || 'payable';
 
             var el;
             el = document.getElementById('rd-payer'); if (el) el.textContent = r.payer;
@@ -876,7 +911,7 @@
             }
 
             var title = document.getElementById('relation-detail-title');
-            if (title) title.textContent = '结算关系明细 - ' + (relationFrom === 'receivable' ? '应收账单' : '应付账单');
+            if (title) title.textContent = '结算关系明细';
 
             var selfTag = document.getElementById('rd-self-tag');
             if (selfTag) { if (r.isSelf) { selfTag.classList.remove('hidden'); } else { selfTag.classList.add('hidden'); } }
@@ -942,13 +977,9 @@
         }
 
         function showRelationList() {
-            if (relationFrom === 'receivable') {
-                showPage('receivable-bill');
-                switchSubnav('receivable-bill');
-            } else {
-                showPage('payable-bill');
-                switchSubnav('payable-bill');
-            }
+            showPage('settlement-bill');
+            switchSubnav('settlement-bill');
+            renderSettlementBillList();
         }
 
         function findRelation(id) {
@@ -1024,69 +1055,20 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        function getSelectedRelationIds(prefix) {
-            var ids = [];
-            var checkboxes = document.querySelectorAll('.' + prefix + '-checkbox');
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) ids.push(checkboxes[i].getAttribute('data-id'));
-            }
-            return ids;
-        }
-
-        function updateRelationBatchBar(prefix) {
-            var checkboxes = document.querySelectorAll('.' + prefix + '-checkbox:not(:disabled)');
-            var count = 0;
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) count++;
-            }
-            var countEl = document.getElementById(prefix + '-selected-count');
-            if (countEl) countEl.textContent = count;
-            var confirmBtn = document.getElementById(prefix + '-confirm-btn');
-            if (confirmBtn) confirmBtn.disabled = count === 0;
-            var selectAll = document.getElementById(prefix + '-select-all');
-            if (selectAll) selectAll.checked = checkboxes.length > 0 && count === checkboxes.length;
-        }
-
-        function handleBatchConfirmSettle(prefix) {
-            var ids = getSelectedRelationIds(prefix);
-            if (ids.length === 0) { showToast('请先选择账单', 'warning'); return; }
-            var settledCount = 0;
-            var skipCount = 0;
-            for (var i = 0; i < ids.length; i++) {
-                var r = findRelation(ids[i]);
-                if (!r) continue;
-                if (canConfirmSettle(r)) {
-                    r.settled = true;
-                    settledCount++;
-                } else {
-                    skipCount++;
-                }
-            }
-            if (settledCount === 0) {
-                showToast('所选账单均不可确认结算', 'warning');
-                return;
-            }
-            renderPayableBillList();
-            renderReceivableBillList();
-            var msg = '已确认结算 ' + settledCount + ' 笔';
-            if (skipCount > 0) msg += '，跳过 ' + skipCount + ' 笔（已结算/复核中/同一主体）';
-            showToast(msg, 'success');
-        }
-
-        // 应收账单多选（事件委托，适配动态渲染的行）
+        // 商户账单多选（事件委托，适配动态渲染的行）
         document.addEventListener('change', function(e) {
             var t = e.target;
             if (!t || !t.classList) return;
-            if (t.classList.contains('receivable-bill-checkbox')) {
-                updateRelationBatchBar('receivable-bill');
+            if (t.classList.contains('settlement-bill-checkbox')) {
+                updateSettlementBillBatchBar();
                 return;
             }
-            if (t.id === 'receivable-bill-select-all') {
-                var checkboxes = document.querySelectorAll('.receivable-bill-checkbox:not(:disabled)');
+            if (t.id === 'settlement-bill-select-all') {
+                var checkboxes = document.querySelectorAll('.settlement-bill-checkbox:not(:disabled)');
                 for (var i = 0; i < checkboxes.length; i++) {
                     checkboxes[i].checked = t.checked;
                 }
-                updateRelationBatchBar('receivable-bill');
+                updateSettlementBillBatchBar();
             }
         });
 
@@ -1423,11 +1405,6 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        function handleAccountAdd() { showToast('账户添加成功', 'success'); hideModal('modal-account-add'); }
-        function handleAccountEdit() { showToast('账户修改成功', 'success'); hideModal('modal-account-edit'); }
-        function handleAccountDelete() { showToast('账户已删除', 'success'); hideModal('modal-account-delete'); }
-        function handleReconFile() { showToast('对账文件生成任务已提交', 'success'); hideModal('modal-recon-file'); }
-
         function filterBillOptions(keyword) {
             var dropdown = document.getElementById('appeal-bill-dropdown');
             if (!dropdown) return;
@@ -1605,164 +1582,6 @@
             }
         });
 
-        function showYimaReconDetail(status, no) {
-            var exportBtn = document.getElementById('yima-export-btn');
-            var diffSection = document.getElementById('yima-diff-section');
-            var diffHr = document.getElementById('yima-diff-hr');
-            var diffDetailSection = document.getElementById('yima-diff-detail-section');
-            var statusBadge = document.getElementById('yima-recon-status');
-            var reconNo = document.getElementById('yima-recon-no');
-            var merchant = document.getElementById('yima-recon-merchant');
-            var date = document.getElementById('yima-recon-date');
-            var successSection = document.getElementById('yima-success-section');
-            var successHr = document.getElementById('yima-success-hr');
-            var summarySection = document.getElementById('yima-summary-section');
-            var summaryHr = document.getElementById('yima-summary-hr');
-            var platformCard = document.getElementById('yima-platform-card') || document.querySelector('#yima-diff-section .bg-neutral-50:nth-child(1)');
-            var yimaCard = document.getElementById('yima-yima-card') || document.querySelector('#yima-diff-section .bg-neutral-50:nth-child(2)');
-            var diffCard = document.getElementById('yima-diff-card') || document.querySelector('#yima-diff-section .bg-orange-50');
-
-            var diffData = {
-                'JY-20260514-001': { merchant: '石化公司', date: '2026-05-13', pCount: '156', pAmount: '¥15,600.00', yCount: '155', yAmount: '¥15,500.00', dCount: '+1', dAmount: '+¥100.00' },
-                'JY-20260514-002': { merchant: '石化公司', date: '2026-05-13', pCount: '89', pAmount: '¥8,900.00', yCount: '89', yAmount: '¥8,900.00', dCount: '0', dAmount: '¥0.00' },
-                'JY-20260514-003': { merchant: '驿达集团', date: '2026-05-13', pCount: '42', pAmount: '¥4,200.00', yCount: '42', yAmount: '¥4,200.00', dCount: '0', dAmount: '¥0.00' },
-                'JY-20260514-004': { merchant: '交控石油公司', date: '2026-05-13', pCount: '67', pAmount: '¥6,700.00', yCount: '67', yAmount: '¥6,700.00', dCount: '0', dAmount: '¥0.00' }
-            };
-
-            var data = diffData[no] || diffData['JY-20260514-001'];
-            if (reconNo) reconNo.textContent = no;
-            if (merchant) merchant.textContent = data.merchant;
-            if (date) date.textContent = data.date;
-
-            document.getElementById('yima-platform-count').textContent = data.pCount;
-            document.getElementById('yima-platform-amount').textContent = data.pAmount;
-            document.getElementById('yima-yima-count').textContent = data.yCount;
-            document.getElementById('yima-yima-amount').textContent = data.yAmount;
-            document.getElementById('yima-diff-count').textContent = data.dCount;
-            document.getElementById('yima-diff-amount').textContent = data.dAmount;
-
-            if (status === 'success') {
-                if (exportBtn) exportBtn.style.display = 'none';
-                if (diffSection) diffSection.style.display = 'block';
-                if (diffDetailSection) diffDetailSection.style.display = 'none';
-                if (diffHr) diffHr.style.display = 'none';
-                if (successSection) successSection.style.display = 'block';
-                if (successHr) successHr.style.display = 'block';
-                if (summarySection) summarySection.style.display = 'block';
-                if (summaryHr) summaryHr.style.display = 'block';
-                if (statusBadge) {
-                    statusBadge.textContent = '对账成功';
-                    statusBadge.className = 'status-badge status-success';
-                }
-                if (diffCard) {
-                    diffCard.className = 'bg-green-50 rounded p-4';
-                    var diffSpan = diffCard.querySelector('.text-error');
-                    if (diffSpan) { diffSpan.className = diffSpan.className.replace('text-error', 'text-green-600'); }
-                }
-                if (platformCard) { platformCard.className = 'bg-green-50 rounded p-4'; }
-                if (yimaCard) { yimaCard.className = 'bg-green-50 rounded p-4'; }
-            } else {
-                if (exportBtn) exportBtn.style.display = 'inline-flex';
-                if (diffSection) diffSection.style.display = 'block';
-                if (diffDetailSection) diffDetailSection.style.display = 'block';
-                if (diffHr) diffHr.style.display = 'block';
-                if (successSection) successSection.style.display = 'none';
-                if (successHr) successHr.style.display = 'none';
-                if (summarySection) summarySection.style.display = 'none';
-                if (summaryHr) summaryHr.style.display = 'none';
-                if (statusBadge) {
-                    statusBadge.textContent = '存在差异';
-                    statusBadge.className = 'status-badge status-warning';
-                }
-                if (diffCard) {
-                    diffCard.className = 'bg-orange-50 rounded p-4';
-                    var diffSpan = diffCard.querySelector('.text-green-600');
-                    if (diffSpan) { diffSpan.className = diffSpan.className.replace('text-green-600', 'text-error'); }
-                }
-                if (platformCard) { platformCard.className = 'bg-neutral-50 rounded p-4'; }
-                if (yimaCard) { yimaCard.className = 'bg-neutral-50 rounded p-4'; }
-            }
-            showPage('yima-recon-detail');
-            lucide.createIcons();
-        }
-
-        function showTradeReconDetail(status, no) {
-            var exportBtn = document.getElementById('trade-export-btn');
-            var amountSection = document.getElementById('trade-amount-section');
-            var amountHr = document.getElementById('trade-amount-hr');
-            var diffSection = document.getElementById('trade-diff-section');
-            var diffHr = document.getElementById('trade-diff-hr');
-            var statusBadge = document.getElementById('trade-recon-status');
-            var reconNo = document.getElementById('trade-recon-no');
-            var merchant = document.getElementById('trade-recon-merchant');
-            var date = document.getElementById('trade-recon-date');
-            var successSection = document.getElementById('trade-success-section');
-            var successHr = document.getElementById('trade-success-hr');
-            var summarySection = document.getElementById('trade-summary-section');
-            var summaryHr = document.getElementById('trade-summary-hr');
-            var diffCards = document.querySelectorAll('#trade-amount-section .bg-orange-50');
-            var successCards = document.querySelectorAll('#trade-amount-section .bg-neutral-50');
-
-            var diffData = {
-                'JY-20260514-001': { merchant: '石化公司', date: '2026-05-13', orderAmount: '¥16,000.00', verifyAmount: '¥15,600.00', diffAmount: '¥400.00', diffOrders: '4' },
-                'JY-20260514-002': { merchant: '石化公司', date: '2026-05-13', orderAmount: '¥8,900.00', verifyAmount: '¥8,900.00', diffAmount: '¥0.00', diffOrders: '0' },
-                'JY-20260514-003': { merchant: '驿达集团', date: '2026-05-13', orderAmount: '¥4,200.00', verifyAmount: '¥4,200.00', diffAmount: '¥0.00', diffOrders: '0' },
-                'JY-20260514-004': { merchant: '交控石油公司', date: '2026-05-13', orderAmount: '¥6,700.00', verifyAmount: '¥6,700.00', diffAmount: '¥0.00', diffOrders: '0' }
-            };
-
-            var data = diffData[no] || diffData['JY-20260514-001'];
-            if (reconNo) reconNo.textContent = no;
-            if (merchant) merchant.textContent = data.merchant;
-            if (date) date.textContent = data.date;
-
-            document.getElementById('trade-order-amount').textContent = data.orderAmount;
-            document.getElementById('trade-verify-amount').textContent = data.verifyAmount;
-            document.getElementById('trade-diff-amount').textContent = data.diffAmount;
-            document.getElementById('trade-diff-orders').textContent = data.diffOrders;
-
-            if (status === 'success') {
-                if (exportBtn) exportBtn.style.display = 'none';
-                if (amountSection) amountSection.style.display = 'block';
-                if (amountHr) amountHr.style.display = 'block';
-                if (diffSection) diffSection.style.display = 'none';
-                if (diffHr) diffHr.style.display = 'none';
-                if (successSection) successSection.style.display = 'block';
-                if (successHr) successHr.style.display = 'block';
-                if (summarySection) summarySection.style.display = 'block';
-                if (summaryHr) summaryHr.style.display = 'block';
-                if (statusBadge) {
-                    statusBadge.textContent = '对账成功';
-                    statusBadge.className = 'status-badge status-success';
-                }
-                diffCards.forEach(function(card) {
-                    card.className = 'bg-green-50 rounded p-4 text-center';
-                    var p = card.querySelector('p');
-                    if (p) {
-                        p.className = p.className.replace('text-error', 'text-green-700');
-                    }
-                });
-            } else {
-                if (exportBtn) exportBtn.style.display = 'inline-flex';
-                if (amountSection) amountSection.style.display = 'block';
-                if (amountHr) amountHr.style.display = 'block';
-                if (diffSection) diffSection.style.display = 'block';
-                if (diffHr) diffHr.style.display = 'block';
-                if (successSection) successSection.style.display = 'none';
-                if (successHr) successHr.style.display = 'none';
-                if (summarySection) summarySection.style.display = 'none';
-                if (summaryHr) summaryHr.style.display = 'none';
-                if (statusBadge) {
-                    statusBadge.textContent = '存在差异';
-                    statusBadge.className = 'status-badge status-warning';
-                }
-                diffCards.forEach(function(card) {
-                    card.className = 'bg-orange-50 rounded p-4 text-center';
-                });
-            }
-            showPage('trade-recon-detail');
-            lucide.createIcons();
-        }
-
         function renderListerBillList() {
             var tbody = document.getElementById('lister-bill-tbody');
             if (!tbody) return;
@@ -1906,7 +1725,7 @@
         var detailSampleData = [{
             time: '2026-01-14',
             plate: '皖AF61291',
-            points: 1000,
+            points: 50,
             amount: 50,
             provider: '石化公司',
             type: '加油',
@@ -1916,7 +1735,7 @@
         }, {
             time: '2026-01-14',
             plate: '皖AF61291',
-            points: 400,
+            points: 20,
             amount: 20,
             provider: '驿达集团',
             type: '便利店消费',
@@ -1926,7 +1745,7 @@
         }, {
             time: '2026-01-14',
             plate: '皖AFB3597',
-            points: 1000,
+            points: 50,
             amount: 50,
             provider: '石化公司',
             type: '加油',
@@ -1936,7 +1755,7 @@
         }, {
             time: '2026-01-14',
             plate: '皖AFB3597',
-            points: 400,
+            points: 20,
             amount: 20,
             provider: '驿达集团',
             type: '便利店消费',
@@ -1946,7 +1765,7 @@
         }, {
             time: '2026-01-16',
             plate: '皖AF88P1',
-            points: 1000,
+            points: 50,
             amount: 50,
             provider: '石化公司',
             type: '加油',
@@ -1956,7 +1775,7 @@
         }, {
             time: '2026-01-16',
             plate: '皖AF88P1',
-            points: 400,
+            points: 20,
             amount: 20,
             provider: '驿达集团',
             type: '便利店消费',
@@ -1966,7 +1785,7 @@
         }, {
             time: '2026-01-16',
             plate: '皖AF88P1',
-            points: 400,
+            points: 20,
             amount: 20,
             provider: '石化公司',
             type: '尿素加注',
@@ -1976,7 +1795,7 @@
         }, {
             time: '2026-02-06',
             plate: '皖AFB3597',
-            points: 1000,
+            points: 50,
             amount: 50,
             provider: '交控石油公司',
             type: '加油',
@@ -1986,7 +1805,7 @@
         }, {
             time: '2026-02-10',
             plate: '豫NC3881',
-            points: 1000,
+            points: 50,
             amount: 50,
             provider: '驿达集团',
             type: '便利店消费',
@@ -1996,7 +1815,7 @@
         }, {
             time: '2026-02-10',
             plate: '豫NC3881',
-            points: 400,
+            points: 20,
             amount: 20,
             provider: '驿达集团',
             type: '便利店消费',
@@ -2006,7 +1825,7 @@
         }, {
             time: '2026-02-11',
             plate: '皖CF6262',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '加油',
@@ -2016,7 +1835,7 @@
         }, {
             time: '2026-02-17',
             plate: '鲁AF8670',
-            points: 1000,
+            points: 50,
             amount: 50,
             provider: '驿达集团',
             type: '便利店消费',
@@ -2026,7 +1845,7 @@
         }, {
             time: '2026-02-17',
             plate: '鲁AD8913',
-            points: 1000,
+            points: 49.8,
             amount: 49.8,
             provider: '驿达集团',
             type: '便利店消费',
@@ -2036,7 +1855,7 @@
         }, {
             time: '2026-02-17',
             plate: '鲁AD8913',
-            points: 1000,
+            points: 50,
             amount: 50,
             provider: '驿达集团',
             type: '便利店消费',
@@ -2046,7 +1865,7 @@
         }, {
             time: '2026-02-22',
             plate: '皖N76590',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '尿素加注',
@@ -2056,7 +1875,7 @@
         }, {
             time: '2026-02-26',
             plate: '苏A4D843',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '加油',
@@ -2066,7 +1885,7 @@
         }, {
             time: '2026-02-28',
             plate: '鄂D06399',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '加油',
@@ -2076,7 +1895,7 @@
         }, {
             time: '2026-03-01',
             plate: '苏BTS680',
-            points: 1000,
+            points: 50,
             amount: 50,
             provider: '驿达集团',
             type: '便利店消费',
@@ -2086,7 +1905,7 @@
         }, {
             time: '2026-03-01',
             plate: '鄂AEM587',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '加油',
@@ -2096,7 +1915,7 @@
         }, {
             time: '2026-03-01',
             plate: '鄂AEM587',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '加油',
@@ -2106,7 +1925,7 @@
         }, {
             time: '2026-03-01',
             plate: '苏BTS680',
-            points: 1000,
+            points: 50,
             amount: 50,
             provider: '驿达集团',
             type: '便利店消费',
@@ -2116,7 +1935,7 @@
         }, {
             time: '2026-03-02',
             plate: '鲁JE7650',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '加油',
@@ -2126,7 +1945,7 @@
         }, {
             time: '2026-03-04',
             plate: '鲁JA7705',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '加油',
@@ -2136,7 +1955,7 @@
         }, {
             time: '2026-03-05',
             plate: '豫PK3066',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '加油',
@@ -2146,7 +1965,7 @@
         }, {
             time: '2026-03-08',
             plate: '赣C5M066',
-            points: 3000,
+            points: 150,
             amount: 150,
             provider: '石化公司',
             type: '加油',
@@ -2156,7 +1975,7 @@
         }, {
             time: '2026-03-11',
             plate: '皖N75377',
-            points: 200,
+            points: 10,
             amount: 10,
             provider: '驿达集团',
             type: '便利店消费',
@@ -2166,7 +1985,7 @@
         }, {
             time: '2026-03-15',
             plate: '赣C5M066',
-            points: 3000,
+            points: 150,
             amount: 150,
             provider: '石化公司',
             type: '加油',
@@ -2176,7 +1995,7 @@
         }, {
             time: '2026-03-15',
             plate: '苏AN9409',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '加油',
@@ -2186,7 +2005,7 @@
         }, {
             time: '2026-03-19',
             plate: '皖CF4522',
-            points: 1000,
+            points: 50,
             amount: 50,
             provider: '驿达集团',
             type: '便利店消费',
@@ -2196,7 +2015,7 @@
         }, {
             time: '2026-03-20',
             plate: '苏FF8516',
-            points: 2000,
+            points: 100,
             amount: 100,
             provider: '石化公司',
             type: '加油',
@@ -2363,7 +2182,7 @@
         voucherVerificationData = voucherVerificationData.concat([{
             time: '2026-10-22',
             phone: '13855136701',
-            points: -1000,
+            points: -50,
             amount: -50,
             provider: '石化公司',
             type: '加油',
@@ -2383,7 +2202,7 @@
         }, {
             time: '2026-12-11',
             phone: '13755136703',
-            points: -2000,
+            points: -100,
             amount: -100,
             provider: '石化公司',
             type: '加油',
@@ -2420,6 +2239,13 @@
                 if (status && item.status !== status) return false;
                 return true;
             });
+
+            var voucherTotalAmount = 0;
+            for (var ai = 0; ai < voucherFilteredData.length; ai++) {
+                voucherTotalAmount += voucherFilteredData[ai].amount || 0;
+            }
+            var voucherTotalEl = document.getElementById('voucher-amount-total');
+            if (voucherTotalEl) voucherTotalEl.textContent = fmtMoney(voucherTotalAmount);
 
             var total = voucherFilteredData.length;
             var totalPages = Math.ceil(total / voucherPageSize) || 1;
@@ -2525,41 +2351,41 @@
         // 结算管理 - 积分兑换实物表
         // ================================================================
         var goodsExchangeData = [{
-            time: '2026-08-05', phone: '13855136701', orderNo: 'PO20260805000001', goodsName: '车载吸尘器', quantity: 1, points: 8000, amount: 129, status: '已完成'
+            time: '2026-08-05', phone: '13855136701', orderNo: 'PO20260805000001', goodsName: '车载吸尘器', quantity: 1, points: 129, amount: 129, status: '已完成'
         }, {
-            time: '2026-08-12', phone: '13955136702', orderNo: 'PO20260812000001', goodsName: '保温杯', quantity: 2, points: 4000, amount: 78, status: '已完成'
+            time: '2026-08-12', phone: '13955136702', orderNo: 'PO20260812000001', goodsName: '保温杯', quantity: 2, points: 78, amount: 78, status: '已完成'
         }, {
-            time: '2026-08-18', phone: '13755136703', orderNo: 'PO20260818000001', goodsName: '行车记录仪', quantity: 1, points: 15000, amount: 299, status: '已发货'
+            time: '2026-08-18', phone: '13755136703', orderNo: 'PO20260818000001', goodsName: '行车记录仪', quantity: 1, points: 299, amount: 299, status: '已发货'
         }, {
-            time: '2026-08-25', phone: '13655136704', orderNo: 'PO20260825000001', goodsName: '雨伞', quantity: 1, points: 2000, amount: 39, status: '已退货'
+            time: '2026-08-25', phone: '13655136704', orderNo: 'PO20260825000001', goodsName: '雨伞', quantity: 1, points: 39, amount: 39, status: '已退货'
         }, {
-            time: '2026-09-02', phone: '13555136705', orderNo: 'PO20260902000001', goodsName: '车用头枕', quantity: 2, points: 6000, amount: 98, status: '已发货'
+            time: '2026-09-02', phone: '13555136705', orderNo: 'PO20260902000001', goodsName: '车用头枕', quantity: 2, points: 98, amount: 98, status: '已发货'
         }, {
-            time: '2026-09-09', phone: '18155136706', orderNo: 'PO20260909000001', goodsName: '车载支架', quantity: 1, points: 3000, amount: 49, status: '已完成'
+            time: '2026-09-09', phone: '18155136706', orderNo: 'PO20260909000001', goodsName: '车载支架', quantity: 1, points: 49, amount: 49, status: '已完成'
         }, {
-            time: '2026-09-15', phone: '15955136707', orderNo: 'PO20260915000001', goodsName: '抱枕', quantity: 2, points: 5000, amount: 88, status: '已兑换'
+            time: '2026-09-15', phone: '15955136707', orderNo: 'PO20260915000001', goodsName: '抱枕', quantity: 2, points: 88, amount: 88, status: '已兑换'
         }, {
-            time: '2026-09-22', phone: '13855136708', orderNo: 'PO20260922000001', goodsName: '折叠收纳箱', quantity: 1, points: 7000, amount: 119, status: '已发货'
+            time: '2026-09-22', phone: '13855136708', orderNo: 'PO20260922000001', goodsName: '折叠收纳箱', quantity: 1, points: 119, amount: 119, status: '已发货'
         }, {
-            time: '2026-10-08', phone: '13955136709', orderNo: 'PO20261008000001', goodsName: '车载冰箱', quantity: 1, points: 20000, amount: 399, status: '已兑换'
+            time: '2026-10-08', phone: '13955136709', orderNo: 'PO20261008000001', goodsName: '车载冰箱', quantity: 1, points: 399, amount: 399, status: '已兑换'
         }, {
-            time: '2026-10-15', phone: '13755136710', orderNo: 'PO20261015000001', goodsName: '雨刮器', quantity: 2, points: 3000, amount: 59, status: '已完成'
+            time: '2026-10-15', phone: '13755136710', orderNo: 'PO20261015000001', goodsName: '雨刮器', quantity: 2, points: 59, amount: 59, status: '已完成'
         }, {
-            time: '2026-10-21', phone: '13655136711', orderNo: 'PO20261021000001', goodsName: '保温杯', quantity: 1, points: 2000, amount: 39, status: '已退货'
+            time: '2026-10-21', phone: '13655136711', orderNo: 'PO20261021000001', goodsName: '保温杯', quantity: 1, points: 39, amount: 39, status: '已退货'
         }, {
-            time: '2026-10-28', phone: '13555136712', orderNo: 'PO20261028000001', goodsName: '行车记录仪', quantity: 1, points: 15000, amount: 299, status: '已完成'
+            time: '2026-10-28', phone: '13555136712', orderNo: 'PO20261028000001', goodsName: '行车记录仪', quantity: 1, points: 299, amount: 299, status: '已完成'
         }, {
-            time: '2026-11-05', phone: '13855136701', orderNo: 'PO20261105000001', goodsName: '车用头枕', quantity: 1, points: 3000, amount: 49, status: '已发货'
+            time: '2026-11-05', phone: '13855136701', orderNo: 'PO20261105000001', goodsName: '车用头枕', quantity: 1, points: 49, amount: 49, status: '已发货'
         }, {
-            time: '2026-11-12', phone: '13955136702', orderNo: 'PO20261112000001', goodsName: '车载吸尘器', quantity: 1, points: 8000, amount: 129, status: '已兑换'
+            time: '2026-11-12', phone: '13955136702', orderNo: 'PO20261112000001', goodsName: '车载吸尘器', quantity: 1, points: 129, amount: 129, status: '已兑换'
         }, {
-            time: '2026-11-20', phone: '13755136703', orderNo: 'PO20261120000001', goodsName: '折叠收纳箱', quantity: 2, points: 14000, amount: 238, status: '已发货'
+            time: '2026-11-20', phone: '13755136703', orderNo: 'PO20261120000001', goodsName: '折叠收纳箱', quantity: 2, points: 238, amount: 238, status: '已发货'
         }, {
-            time: '2026-12-03', phone: '13655136704', orderNo: 'PO20261203000001', goodsName: '抱枕', quantity: 1, points: 2500, amount: 44, status: '已兑换'
+            time: '2026-12-03', phone: '13655136704', orderNo: 'PO20261203000001', goodsName: '抱枕', quantity: 1, points: 44, amount: 44, status: '已兑换'
         }, {
-            time: '2026-12-10', phone: '13555136705', orderNo: 'PO20261210000001', goodsName: '车载支架', quantity: 2, points: 6000, amount: 98, status: '已退货'
+            time: '2026-12-10', phone: '13555136705', orderNo: 'PO20261210000001', goodsName: '车载支架', quantity: 2, points: 98, amount: 98, status: '已退货'
         }, {
-            time: '2026-12-18', phone: '18155136706', orderNo: 'PO20261218000001', goodsName: '雨伞', quantity: 1, points: 2000, amount: 39, status: '已完成'
+            time: '2026-12-18', phone: '18155136706', orderNo: 'PO20261218000001', goodsName: '雨伞', quantity: 1, points: 39, amount: 39, status: '已完成'
         }];
 
         var goodsPageSize = 20;
@@ -2587,6 +2413,13 @@
                 if (status && item.status !== status) return false;
                 return true;
             });
+
+            var goodsTotalAmount = 0;
+            for (var ai = 0; ai < goodsFilteredData.length; ai++) {
+                goodsTotalAmount += goodsFilteredData[ai].amount || 0;
+            }
+            var goodsTotalEl = document.getElementById('goods-amount-total');
+            if (goodsTotalEl) goodsTotalEl.textContent = fmtMoney(goodsTotalAmount);
 
             var total = goodsFilteredData.length;
             var totalPages = Math.ceil(total / goodsPageSize) || 1;
@@ -2754,13 +2587,9 @@
         <aside class="w-36 bg-[#e8e8e8] fixed left-0 top-0 bottom-0 overflow-y-auto border-r border-[#d8d8d8]" role="navigation" aria-label="侧边导航">
             <nav class="py-4">
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">结算管理</div>
-                <a onclick="switchSubnav('payable-bill'); showPage('payable-bill')" id="subnav-payable-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 应付账单</span></a>
-                <a onclick="switchSubnav('receivable-bill'); showPage('receivable-bill')" id="subnav-receivable-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 应收账单</span></a>
+                <a onclick="switchSubnav('settlement-bill'); showPage('settlement-bill')" id="subnav-settlement-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 商户账单</span></a>
                 <a onclick="switchSubnav('summary-bill'); showPage('summary-bill')" id="subnav-summary-bill" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 汇总账单</span></a>
                 <a onclick="switchSubnav('appeal'); showPage('appeal')" id="subnav-appeal" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 账单复核管理</span></a>
-                <a onclick="switchSubnav('yima-recon'); showPage('yima-recon')" id="subnav-yima-recon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer hidden" tabindex="0" role="link"><span class="font-semibold">·</span><span> 翼码对账</span></a>
-                <a onclick="switchSubnav('trade-recon'); showPage('trade-recon')" id="subnav-trade-recon" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer hidden" tabindex="0" role="link"><span class="font-semibold">·</span><span> 交易对账</span></a>
-                <a onclick="switchSubnav('settlement-account'); showPage('settlement-account')" id="subnav-settlement-account" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer hidden" tabindex="0" role="link"><span class="font-semibold">·</span><span> 结算账号</span></a>
                 <a onclick="switchSubnav('voucher-verification'); showPage('voucher-verification')" id="subnav-voucher-verification" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 积分券核销明细</span></a>
                 <a onclick="switchSubnav('goods-exchange'); showPage('goods-exchange')" id="subnav-goods-exchange" class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" tabindex="0" role="link"><span class="font-semibold">·</span><span> 积分兑换实物表</span></a>
                 <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">一期活动报表</div>
@@ -2774,13 +2603,13 @@
 
         <main class="flex-1 ml-36 p-2 min-h-screen">
 
-            <!-- ========== 应付账单列表 ========== -->
-            <div id="page-payable-bill" class="page">
+            <!-- ========== 商户账单列表 ========== -->
+            <div id="page-settlement-bill" class="page">
                 <div class="bg-white rounded border border-neutral-200">
                     <div class="px-2 pt-2 pb-1 flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold text-neutral-900">应付账单</h1>
+                            <h1 class="text-base font-bold text-neutral-900">商户账单</h1>
                         </div>
                         <div class="flex gap-3">
                             <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
@@ -2789,153 +2618,71 @@
                     <div class="px-2 pb-2">
                         <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
                             <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                            <span class="text-sm text-neutral-600">温馨提示：应付账单按付款方维度展示结算关系。付款方与收款方为同一主体的关系仅展示、无需结算确认。点击"查看"进入关系明细，仅涉及服务提供方收款的关系下钻券码级明细。</span>
+                            <span class="text-sm text-neutral-600">温馨提示：商户账单按结算主体（商户）维度展示结算关系。选择一个商户后，列表展示该商户作为付款方（应付）或收款方（应收）的账单，并通过「账单类型」区分；仅应收类型账单可确认结算。付款方与收款方为同一主体的关系仅展示、无需结算确认。</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
                             <div class="inline-label-input">
-                                <span class="label">付款方名称</span>
-                                <select id="payable-bill-filter-payer"><option value="">全部</option><option>皖通公司</option><option>联网公司</option><option>数科公司</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
+                                <span class="label">商户名称</span>
+                                <select id="settlement-bill-filter-merchant" onchange="handleMerchantViewChange()">
+                                    <option value="">全部</option>
+                                    <option value="皖通公司">皖通公司</option>
+                                    <option value="联网公司">联网公司</option>
+                                    <option value="数科公司" selected>数科公司</option>
+                                    <option value="石化公司">石化公司</option>
+                                    <option value="驿达集团">驿达集团</option>
+                                    <option value="交控石油公司">交控石油公司</option>
+                                </select>
                             </div>
                             <div class="inline-label-input">
-                                <span class="label">收款方名称</span>
-                                <select id="payable-bill-filter-receiver"><option value="">全部</option><option>皖通公司</option><option>联网公司</option><option>数科公司</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">收款方身份</span>
-                                <select id="payable-bill-filter-receiverRole"><option value="">全部</option><option>产品提供方</option><option>服务提供方</option></select>
-                            </div>
-                            <div class="date-range-input">
-                                <span class="label">结算日期</span>
-                                <input type="date" class="input-focus" id="payable-bill-filter-date-start">
-                                <span class="separator">→</span>
-                                <input type="date" class="input-focus" id="payable-bill-filter-date-end">
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">结算状态</span>
-                                <select id="payable-bill-filter-status"><option value="">全部</option><option value="unsettled">未结算</option><option value="settled">已结算</option></select>
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">备注</span>
-                                <input type="text" class="input-focus" id="payable-bill-filter-remark" placeholder="输入备注关键词">
-                            </div>
-                        </div>
-                        <div class="flex justify-end gap-3 mt-3">
-                            <button class="btn btn-secondary btn-md" onclick="resetRelationFilters('payable-bill')">重 置</button>
-                            <button class="btn btn-primary btn-md" onclick="renderPayableBillList()">查 询</button>
-                        </div>
-                    </div>
-                    <div class="mx-2 mb-2 px-4 py-3 bg-primary-light rounded flex items-center justify-end gap-3">
-                        <span class="text-sm text-neutral-600">结算金额合计 <span class="text-neutral-400">（当前查询条件）</span></span>
-                        <span class="text-xl font-bold tabular-nums text-primary" id="payable-bill-total">¥0.00</span>
-                    </div>
-                    <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
-                        <table class="data-table w-full">
-                            <thead>
-                                <tr class="bg-neutral-50 border-b border-neutral-200">
-                                    <th class="w-12 text-center">序号</th>
-                                    <th class="text-left">账单号</th>
-                                    <th class="text-left">付款方</th>
-                                    <th class="text-left">付款方身份</th>
-                                    <th class="text-left">收款方</th>
-                                    <th class="text-left">收款方身份</th>
-                                    <th class="text-right">积分券金额</th>
-                                    <th class="text-right">现金券金额</th>
-                                    <th class="text-right">调账金额</th>
-                                    <th class="text-right">结算金额</th>
-                                    <th class="text-left">结算日期</th>
-                                    <th class="text-left">备注</th>
-                                    <th class="text-left">结算状态</th>
-                                    <th class="text-right w-32">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="payable-bill-tbody"></tbody>
-                        </table>
-                    </div>
-                    <div class="mx-2 mb-2 flex justify-between items-center py-2">
-                        <span class="text-sm text-neutral-600">共 <span class="font-semibold" id="payable-bill-count">0</span> 条记录</span>
-                        <div class="flex items-center gap-2">
-                            <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
-                            <div class="flex items-center gap-1">
-                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                                <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========== 应收账单列表 ========== -->
-            <div id="page-receivable-bill" class="page">
-                <div class="bg-white rounded border border-neutral-200">
-                    <div class="px-2 pt-2 pb-1 flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold text-neutral-900">应收账单</h1>
-                        </div>
-                        <div class="flex gap-3">
-                            <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
-                        </div>
-                    </div>
-                    <div class="px-2 pb-2">
-                        <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
-                            <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                            <span class="text-sm text-neutral-600">温馨提示：应收账单按收款方维度展示结算关系。付款方与收款方为同一主体的关系仅展示、无需结算确认。点击"查看"进入关系明细，仅涉及服务提供方收款的关系下钻券码级明细。</span>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
-                            <div class="inline-label-input">
-                                <span class="label">收款方名称</span>
-                                <select id="receivable-bill-filter-receiver"><option value="">全部</option><option>皖通公司</option><option>联网公司</option><option>数科公司</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">付款方名称</span>
-                                <select id="receivable-bill-filter-payer"><option value="">全部</option><option>皖通公司</option><option>联网公司</option><option>数科公司</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">收款方身份</span>
-                                <select id="receivable-bill-filter-receiverRole"><option value="">全部</option><option>产品提供方</option><option>服务提供方</option></select>
-                            </div>
-                            <div class="date-range-input">
-                                <span class="label">结算日期</span>
-                                <input type="date" class="input-focus" id="receivable-bill-filter-date-start">
-                                <span class="separator">→</span>
-                                <input type="date" class="input-focus" id="receivable-bill-filter-date-end">
+                                <span class="label">账单类型</span>
+                                <select id="settlement-bill-filter-type">
+                                    <option value="">全部</option>
+                                    <option value="payable">应付账单</option>
+                                    <option value="receivable">应收账单</option>
+                                </select>
                             </div>
                             <div class="inline-label-input">
                                 <span class="label">结算状态</span>
-                                <select id="receivable-bill-filter-status"><option value="">全部</option><option value="unsettled">未结算</option><option value="settled">已结算</option></select>
+                                <select id="settlement-bill-filter-status"><option value="">全部</option><option value="unsettled">未结算</option><option value="settled">已结算</option></select>
+                            </div>
+                            <div class="date-range-input">
+                                <span class="label">结算日期</span>
+                                <input type="date" class="input-focus" id="settlement-bill-filter-date-start">
+                                <span class="separator">→</span>
+                                <input type="date" class="input-focus" id="settlement-bill-filter-date-end">
                             </div>
                             <div class="inline-label-input">
                                 <span class="label">备注</span>
-                                <input type="text" class="input-focus" id="receivable-bill-filter-remark" placeholder="输入备注关键词">
+                                <input type="text" class="input-focus" id="settlement-bill-filter-remark" placeholder="输入备注关键词">
                             </div>
                         </div>
                         <div class="flex justify-end gap-3 mt-3">
-                            <button class="btn btn-secondary btn-md" onclick="resetRelationFilters('receivable-bill')">重 置</button>
-                            <button class="btn btn-primary btn-md" onclick="renderReceivableBillList()">查 询</button>
+                            <button class="btn btn-secondary btn-md" onclick="resetSettlementBillFilters()">重 置</button>
+                            <button class="btn btn-primary btn-md" onclick="renderSettlementBillList()">查 询</button>
                         </div>
                     </div>
-                    <div id="receivable-bill-batch-bar" class="mx-2 mb-2 px-4 py-2 bg-primary-light rounded flex items-center justify-between">
+                    <div id="settlement-bill-batch-bar" class="mx-2 mb-2 px-4 py-2 bg-primary-light rounded flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <span class="text-sm text-neutral-600">已选 <span class="font-semibold text-primary" id="receivable-bill-selected-count">0</span> 项</span>
-                            <button class="btn btn-batch-action btn-md" id="receivable-bill-confirm-btn" onclick="handleBatchConfirmSettle('receivable-bill')" disabled><i data-lucide="check-circle" class="w-4 h-4"></i>批量确认结算</button>
+                            <span class="text-sm text-neutral-600">已选 <span class="font-semibold text-primary" id="settlement-bill-selected-count">0</span> 项</span>
+                            <button class="btn btn-batch-action btn-md" id="settlement-bill-confirm-btn" onclick="handleBatchConfirmSettle()" disabled><i data-lucide="check-circle" class="w-4 h-4"></i>批量确认结算</button>
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="text-sm text-neutral-600">结算金额合计 <span class="text-neutral-400">（当前查询条件）</span></span>
-                            <span class="text-xl font-bold tabular-nums text-primary" id="receivable-bill-total">¥0.00</span>
+                            <span class="text-xl font-bold tabular-nums text-primary" id="settlement-bill-total">¥0.00</span>
                         </div>
                     </div>
                     <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
                         <table class="data-table w-full">
                             <thead>
                                 <tr class="bg-neutral-50 border-b border-neutral-200">
-                                    <th class="w-10 text-center"><input type="checkbox" id="receivable-bill-select-all" class="cursor-pointer"></th>
+                                    <th class="w-10 text-center"><input type="checkbox" id="settlement-bill-select-all" class="cursor-pointer"></th>
                                     <th class="w-12 text-center">序号</th>
+                                    <th class="text-left">账单类型</th>
                                     <th class="text-left">账单号</th>
-                                    <th class="text-left">收款方</th>
-                                    <th class="text-left">收款方身份</th>
                                     <th class="text-left">付款方</th>
                                     <th class="text-left">付款方身份</th>
+                                    <th class="text-left">收款方</th>
+                                    <th class="text-left">收款方身份</th>
                                     <th class="text-right">积分券金额</th>
                                     <th class="text-right">现金券金额</th>
                                     <th class="text-right">调账金额</th>
@@ -2946,11 +2693,11 @@
                                     <th class="text-right w-32">操作</th>
                                 </tr>
                             </thead>
-                            <tbody id="receivable-bill-tbody"></tbody>
+                            <tbody id="settlement-bill-tbody"></tbody>
                         </table>
                     </div>
                     <div class="mx-2 mb-2 flex justify-between items-center py-2">
-                        <span class="text-sm text-neutral-600">共 <span class="font-semibold" id="receivable-bill-count">0</span> 条记录</span>
+                        <span class="text-sm text-neutral-600">共 <span class="font-semibold" id="settlement-bill-count">0</span> 条记录</span>
                         <div class="flex items-center gap-2">
                             <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
                             <div class="flex items-center gap-1">
@@ -5043,9 +4790,9 @@
                                             <input type="number" id="drawer-audit-amount" class="w-full border border-neutral-200 rounded p-2 text-sm h-8 input-focus" placeholder="审核通过时必填">
                                         </div>
                                         <div>
-                                            <label class="text-sm text-neutral-500 block mb-1">调账计入账单日期 <span class="text-error">*</span></label>
-                                            <input type="date" id="drawer-audit-date" class="w-full border border-neutral-200 rounded p-2 text-sm h-8 input-focus">
-                                            <p class="text-xs text-neutral-400 mt-1">调账金额将计入该日期的结算单</p>
+                                            <label class="text-sm text-neutral-500 block mb-1">调账计入账单日期</label>
+                                            <p id="drawer-audit-date" class="text-sm font-medium"></p>
+                                            <p class="text-xs text-neutral-400 mt-1">默认计入账单日期，不可修改</p>
                                         </div>
                                         <div>
                                             <label class="text-sm text-neutral-500 block mb-1">审核说明 <span class="text-error">*</span></label>
@@ -5180,811 +4927,10 @@
 
 
 
-            <!-- ========== 翼码对账列表 ========== -->
-            <div id="page-yima-recon" class="page">
-                <div class="bg-white rounded border border-neutral-200">
-                    <div class="px-2 pt-2 pb-1 flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold text-neutral-900">翼码对账</h1>
-                        </div>
-                        <div class="flex gap-3">
-                            <button class="btn btn-primary btn-md" onclick="showModal('modal-recon-file')"><i data-lucide="file-plus" class="w-4 h-4"></i>生成对账文件</button>
-                        </div>
-                    </div>
-                    <div class="px-2 pb-2">
-                        <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
-                            <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                            <span class="text-sm text-neutral-600">温馨提示：翼码对账每日凌晨02:00自动执行，对比平台与翼码系统的券码数据。对账成功后可查看数据对比，存在差异时可下钻差异明细。</span>
-                        </div>
-                        <div class="grid grid-cols-4 gap-3 mb-3">
-                            <div class="bg-neutral-50 rounded p-3">
-                                <div class="text-xs text-neutral-500 mb-1">今日对账任务数</div>
-                                <div class="text-xl font-bold text-neutral-900">4</div>
-                            </div>
-                            <div class="bg-green-50 rounded p-3">
-                                <div class="text-xs text-neutral-500 mb-1">对账成功数</div>
-                                <div class="text-xl font-bold text-success">3</div>
-                            </div>
-                            <div class="bg-orange-50 rounded p-3">
-                                <div class="text-xs text-neutral-500 mb-1">存在差异数</div>
-                                <div class="text-xl font-bold text-warning">1</div>
-                            </div>
-                            <div class="bg-blue-50 rounded p-3">
-                                <div class="text-xs text-neutral-500 mb-1">成功率</div>
-                                <div class="text-xl font-bold text-info">75.00%</div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
-                            <div class="inline-label-input">
-                                <span class="label">对账记录号</span>
-                                <input type="text" placeholder="请输入" class="input-focus">
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">商户名称</span>
-                                <select><option value="">全部</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">对账状态</span>
-                                <select><option value="">全部</option><option>对账成功</option><option>存在差异</option></select>
-                            </div>
-                            <div class="date-range-input">
-                                <span class="label">对账日期</span>
-                                <input type="date" class="input-focus">
-                                <span class="separator">→</span>
-                                <input type="date" class="input-focus">
-                            </div>
-                        </div>
-                        <div class="flex justify-end gap-3 mt-3">
-                            <button class="btn btn-secondary btn-md">重 置</button>
-                            <button class="btn btn-primary btn-md">查 询</button>
-                        </div>
-                    </div>
-                    <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
-                        <table class="data-table w-full">
-                            <thead>
-                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                    <th class="w-12 text-center">序号</th>
-                                    <th class="text-left">对账记录号</th>
-                                    <th class="text-left">商户名称</th>
-                                    <th class="text-left">对账日期</th>
-                                    <th class="text-right">平台券数</th>
-                                    <th class="text-right">平台金额</th>
-                                    <th class="text-right">翼码券数</th>
-                                    <th class="text-right">翼码金额</th>
-                                    <th class="text-right">差异金额</th>
-                                    <th class="text-left">状态</th>
-                                    <th class="text-left">对账时间</th>
-                                    <th class="text-right w-24">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">1</td>
-                                    <td class="text-left">JY-20260514-001</td>
-                                    <td class="text-left">石化公司</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-right">156</td>
-                                    <td class="text-right tabular-nums">¥15,600.00</td>
-                                    <td class="text-right">155</td>
-                                    <td class="text-right tabular-nums">¥15,500.00</td>
-                                    <td class="text-right tabular-nums text-error">¥100.00</td>
-                                    <td class="text-left"><span class="status-badge status-warning">存在差异</span></td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:20</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showYimaReconDetail('diff', 'JY-20260514-001')">查 看</button></td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">2</td>
-                                    <td class="text-left">JY-20260514-002</td>
-                                    <td class="text-left">石化公司</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-right">89</td>
-                                    <td class="text-right tabular-nums">¥8,900.00</td>
-                                    <td class="text-right">89</td>
-                                    <td class="text-right tabular-nums">¥8,900.00</td>
-                                    <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
-                                    <td class="text-left"><span class="status-badge status-success">对账成功</span></td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:18</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showYimaReconDetail('success', 'JY-20260514-002')">查 看</button></td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">3</td>
-                                    <td class="text-left">JY-20260514-003</td>
-                                    <td class="text-left">驿达集团</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-right">42</td>
-                                    <td class="text-right tabular-nums">¥4,200.00</td>
-                                    <td class="text-right">42</td>
-                                    <td class="text-right tabular-nums">¥4,200.00</td>
-                                    <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
-                                    <td class="text-left"><span class="status-badge status-success">对账成功</span></td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:19</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showYimaReconDetail('success', 'JY-20260514-003')">查 看</button></td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">4</td>
-                                    <td class="text-left">JY-20260514-004</td>
-                                    <td class="text-left">交控石油公司</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-right">67</td>
-                                    <td class="text-right tabular-nums">¥6,700.00</td>
-                                    <td class="text-right">67</td>
-                                    <td class="text-right tabular-nums">¥6,700.00</td>
-                                    <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
-                                    <td class="text-left"><span class="status-badge status-success">对账成功</span></td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:21</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showYimaReconDetail('success', 'JY-20260514-004')">查 看</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mx-2 mb-2 flex justify-between items-center py-2">
-                        <span class="text-sm text-neutral-600">共 <span class="font-semibold">4</span> 条记录</span>
-                        <div class="flex items-center gap-2">
-                            <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
-                            <div class="flex items-center gap-1">
-                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                                <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- ========== 翼码对账详情 ========== -->
-            <div id="page-yima-recon-detail" class="page">
-                <div class="bg-white rounded border border-neutral-200 mb-3">
-                    <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
-                        <div class="flex items-center gap-2">
-                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold">翼码对账详情</h1>
-                        </div>
-                        <div class="flex gap-3">
-                            <button class="btn btn-secondary btn-md" onclick="showPage('yima-recon'); switchSubnav('yima-recon')"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
-                            <button id="yima-export-btn" class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>差异明细导出</button>
-                        </div>
-                    </div>
-                    <div class="px-5 py-4">
-                        <div class="grid grid-cols-4 gap-4">
-                            <div><span class="text-sm text-neutral-500">对账记录号</span><p id="yima-recon-no" class="text-sm font-medium mt-1">JY-20260514-001</p></div>
-                            <div><span class="text-sm text-neutral-500">商户名称</span><p id="yima-recon-merchant" class="text-sm font-medium mt-1">石化公司</p></div>
-                            <div><span class="text-sm text-neutral-500">对账日期</span><p id="yima-recon-date" class="text-sm font-medium mt-1">2026-05-13</p></div>
-                            <div><span class="text-sm text-neutral-500">对账状态</span><p class="mt-1"><span id="yima-recon-status" class="status-badge status-warning">存在差异</span></p></div>
-                        </div>
-                    </div>
-                    <hr class="mx-6 border-t border-neutral-200">
-                    <div id="yima-diff-section" class="px-5 py-4">
-                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">数据对比</h2>
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="bg-neutral-50 rounded p-4">
-                                <span class="text-sm text-neutral-500 block mb-2">平台数据</span>
-                                <div class="flex justify-between text-sm"><span>券数</span><span id="yima-platform-count" class="font-semibold">156</span></div>
-                                <div class="flex justify-between text-sm mt-1"><span>金额</span><span id="yima-platform-amount" class="font-semibold tabular-nums">¥15,600.00</span></div>
-                            </div>
-                            <div class="bg-neutral-50 rounded p-4">
-                                <span class="text-sm text-neutral-500 block mb-2">翼码数据</span>
-                                <div class="flex justify-between text-sm"><span>券数</span><span id="yima-yima-count" class="font-semibold">155</span></div>
-                                <div class="flex justify-between text-sm mt-1"><span>金额</span><span id="yima-yima-amount" class="font-semibold tabular-nums">¥15,500.00</span></div>
-                            </div>
-                            <div class="bg-orange-50 rounded p-4">
-                                <span class="text-sm text-neutral-500 block mb-2">差异数据</span>
-                                <div class="flex justify-between text-sm"><span>券数差异</span><span id="yima-diff-count" class="font-semibold text-error">+1</span></div>
-                                <div class="flex justify-between text-sm mt-1"><span>金额差异</span><span id="yima-diff-amount" class="font-semibold text-error tabular-nums">+¥100.00</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr id="yima-diff-hr" class="mx-6 border-t border-neutral-200">
-                    <div id="yima-diff-detail-section" class="px-5 py-4">
-                        <div class="flex justify-between items-center mb-3">
-                            <h2 class="text-sm font-semibold text-neutral-700">差异明细</h2>
-                            <div class="inline-label-input" style="min-width:160px">
-                                <span class="label">差异类型</span>
-                                <select><option value="">全部</option><option>平台有翼码无</option><option>平台无翼码有</option><option>金额不一致</option></select>
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="data-table w-full">
-                                <thead>
-                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                        <th class="w-12 text-center">序号</th>
-                                        <th class="text-left">券码ID</th>
-                                        <th class="text-right">平台金额</th>
-                                        <th class="text-right">翼码金额</th>
-                                        <th class="text-right">差异金额</th>
-                                        <th class="text-left">差异类型</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="yima-diff-tbody">
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-center text-neutral-600">1</td>
-                                        <td class="text-left">QM20260513078</td>
-                                        <td class="text-right tabular-nums">¥100.00</td>
-                                        <td class="text-right tabular-nums">¥0.00</td>
-                                        <td class="text-right tabular-nums text-error">+¥100.00</td>
-                                        <td class="text-left"><span class="status-badge status-info">平台有翼码无</span></td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-center text-neutral-600">2</td>
-                                        <td class="text-left">QM20260513092</td>
-                                        <td class="text-right tabular-nums">¥0.00</td>
-                                        <td class="text-right tabular-nums">¥50.00</td>
-                                        <td class="text-right tabular-nums text-error">-¥50.00</td>
-                                        <td class="text-left"><span class="status-badge status-warning">平台无翼码有</span></td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-center text-neutral-600">3</td>
-                                        <td class="text-left">QM20260513105</td>
-                                        <td class="text-right tabular-nums">¥200.00</td>
-                                        <td class="text-right tabular-nums">¥180.00</td>
-                                        <td class="text-right tabular-nums text-error">+¥20.00</td>
-                                        <td class="text-left"><span class="status-badge status-error">金额不一致</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="flex justify-between items-center py-2 mt-3">
-                            <span class="text-sm text-neutral-600">共 <span class="font-semibold">3</span> 条记录</span>
-                            <div class="flex items-center gap-2">
-                                <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option selected>20条/页</option><option>50条/页</option></select>
-                                <div class="flex items-center gap-1">
-                                    <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                                    <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                    <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr id="yima-success-hr" class="mx-6 border-t border-neutral-200">
-                    <div id="yima-success-section" class="px-5 py-4">
-                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">对账结论</h2>
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-green-700">对账成功</p>
-                                <p class="text-sm text-neutral-500 mt-0.5">平台数据与翼码数据完全一致，无差异</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-4 gap-4">
-                            <div class="bg-green-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500 block mb-1">匹配券数</span>
-                                <p id="yima-match-count" class="text-lg font-bold text-green-700">89</p>
-                            </div>
-                            <div class="bg-green-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500 block mb-1">匹配金额</span>
-                                <p id="yima-match-amount" class="text-lg font-bold text-green-700 tabular-nums">¥8,900.00</p>
-                            </div>
-                            <div class="bg-green-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500 block mb-1">匹配率</span>
-                                <p class="text-lg font-bold text-green-700">100.00%</p>
-                            </div>
-                            <div class="bg-green-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500 block mb-1">差异笔数</span>
-                                <p class="text-lg font-bold text-green-700">0</p>
-                            </div>
-                        </div>
-                    </div>
-                    <hr id="yima-summary-hr" class="mx-6 border-t border-neutral-200">
-                    <div id="yima-summary-section" class="px-5 py-4">
-                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">券码汇总</h2>
-                        <div class="overflow-x-auto">
-                            <table class="data-table w-full">
-                                <thead>
-                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                        <th class="text-left">业务类型</th>
-                                        <th class="text-right">平台券数</th>
-                                        <th class="text-right">翼码券数</th>
-                                        <th class="text-right">匹配券数</th>
-                                        <th class="text-right">平台金额</th>
-                                        <th class="text-right">翼码金额</th>
-                                        <th class="text-right">匹配金额</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="yima-summary-tbody">
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-left">加油</td>
-                                        <td class="text-right">60</td>
-                                        <td class="text-right">60</td>
-                                        <td class="text-right text-green-600">60</td>
-                                        <td class="text-right tabular-nums">¥6,000.00</td>
-                                        <td class="text-right tabular-nums">¥6,000.00</td>
-                                        <td class="text-right tabular-nums text-green-600">¥6,000.00</td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-left">充电</td>
-                                        <td class="text-right">29</td>
-                                        <td class="text-right">29</td>
-                                        <td class="text-right text-green-600">29</td>
-                                        <td class="text-right tabular-nums">¥2,900.00</td>
-                                        <td class="text-right tabular-nums">¥2,900.00</td>
-                                        <td class="text-right tabular-nums text-green-600">¥2,900.00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <hr class="mx-6 border-t border-neutral-200">
-                    <div class="px-5 py-4">
-                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">对账执行记录</h2>
-                        <div class="grid grid-cols-4 gap-4">
-                            <div><span class="text-sm text-neutral-500">对账开始时间</span><p class="text-sm font-medium mt-1">2026-05-14 02:00:00</p></div>
-                            <div><span class="text-sm text-neutral-500">对账完成时间</span><p class="text-sm font-medium mt-1">2026-05-14 02:03:15</p></div>
-                            <div><span class="text-sm text-neutral-500">耗时</span><p class="text-sm font-medium mt-1">3分15秒</p></div>
-                            <div><span class="text-sm text-neutral-500">执行方式</span><p class="text-sm font-medium mt-1">自动执行</p></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- ========== 交易对账列表 ========== -->
-            <div id="page-trade-recon" class="page">
-                <div class="bg-white rounded border border-neutral-200">
-                    <div class="px-2 pt-2 pb-1 flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold text-neutral-900">交易对账</h1>
-                        </div>
-                        <div class="flex gap-3">
-                            <button class="btn btn-primary btn-md" onclick="showModal('modal-recon-file')"><i data-lucide="file-plus" class="w-4 h-4"></i>生成对账文件</button>
-                        </div>
-                    </div>
-                    <div class="px-2 pb-2">
-                        <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
-                            <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                            <span class="text-sm text-neutral-600">温馨提示：交易对账按"商户"维度聚合比对，每日凌晨02:00自动执行。差异明细仅用于展示和排查，不提供处理操作。</span>
-                        </div>
-                        <div class="grid grid-cols-4 gap-3 mb-3">
-                            <div class="bg-neutral-50 rounded p-3">
-                                <div class="text-xs text-neutral-500 mb-1">今日对账记录数</div>
-                                <div class="text-xl font-bold text-neutral-900">4</div>
-                            </div>
-                            <div class="bg-green-50 rounded p-3">
-                                <div class="text-xs text-neutral-500 mb-1">对账成功数</div>
-                                <div class="text-xl font-bold text-success">3</div>
-                            </div>
-                            <div class="bg-orange-50 rounded p-3">
-                                <div class="text-xs text-neutral-500 mb-1">存在差异数</div>
-                                <div class="text-xl font-bold text-warning">1</div>
-                            </div>
-                            <div class="bg-blue-50 rounded p-3">
-                                <div class="text-xs text-neutral-500 mb-1">成功率</div>
-                                <div class="text-xl font-bold text-info">75.00%</div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
-                            <div class="inline-label-input">
-                                <span class="label">对账记录号</span>
-                                <input type="text" placeholder="请输入">
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">商户名称</span>
-                                <select><option value="">全部</option><option>石化公司</option><option>驿达集团</option><option>交控石油公司</option></select>
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">对账状态</span>
-                                <select><option value="">全部</option><option>对账成功</option><option>存在差异</option></select>
-                            </div>
-                            <div class="date-range-input">
-                                <span class="label">对账日期</span>
-                                <input type="date">
-                                <span class="separator">→</span>
-                                <input type="date">
-                            </div>
-                        </div>
-                        <div class="flex justify-end gap-3 mt-3">
-                            <button class="btn btn-secondary btn-md">重 置</button>
-                            <button class="btn btn-primary btn-md">查 询</button>
-                        </div>
-                    </div>
-                    <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
-                        <table class="data-table w-full">
-                            <thead>
-                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                    <th class="w-12 text-center">序号</th>
-                                    <th class="text-left">对账记录号</th>
-                                    <th class="text-left">对账日期</th>
-                                    <th class="text-left">商户名称</th>
-                                    <th class="text-right">订单券码总数</th>
-                                    <th class="text-right">核销券码总数</th>
-                                    <th class="text-right">订单券码总金额</th>
-                                    <th class="text-right">券码核销总金额</th>
-                                    <th class="text-right">差异金额</th>
-                                    <th class="text-right">差异订单数</th>
-                                    <th class="text-left">对账状态</th>
-                                    <th class="text-left">对账时间</th>
-                                    <th class="text-right w-16">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">1</td>
-                                    <td class="text-left">JY-20260514-001</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-left">石化公司</td>
-                                    <td class="text-right">160</td>
-                                    <td class="text-right">156</td>
-                                    <td class="text-right tabular-nums">¥16,000.00</td>
-                                    <td class="text-right tabular-nums">¥15,600.00</td>
-                                    <td class="text-right tabular-nums text-error">¥400.00</td>
-                                    <td class="text-right">4</td>
-                                    <td class="text-left"><span class="status-badge status-warning">存在差异</span></td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:05</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showTradeReconDetail('diff', 'JY-20260514-001')">查 看</button></td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">2</td>
-                                    <td class="text-left">JY-20260514-002</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-left">石化公司</td>
-                                    <td class="text-right">89</td>
-                                    <td class="text-right">89</td>
-                                    <td class="text-right tabular-nums">¥8,900.00</td>
-                                    <td class="text-right tabular-nums">¥8,900.00</td>
-                                    <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
-                                    <td class="text-right">0</td>
-                                    <td class="text-left"><span class="status-badge status-success">对账成功</span></td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:03</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showTradeReconDetail('success', 'JY-20260514-002')">查 看</button></td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">3</td>
-                                    <td class="text-left">JY-20260514-003</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-left">驿达集团</td>
-                                    <td class="text-right">42</td>
-                                    <td class="text-right">42</td>
-                                    <td class="text-right tabular-nums">¥4,200.00</td>
-                                    <td class="text-right tabular-nums">¥4,200.00</td>
-                                    <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
-                                    <td class="text-right">0</td>
-                                    <td class="text-left"><span class="status-badge status-success">对账成功</span></td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:04</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showTradeReconDetail('success', 'JY-20260514-003')">查 看</button></td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">4</td>
-                                    <td class="text-left">JY-20260514-004</td>
-                                    <td class="text-left">2026-05-13</td>
-                                    <td class="text-left">交控石油公司</td>
-                                    <td class="text-right">67</td>
-                                    <td class="text-right">67</td>
-                                    <td class="text-right tabular-nums">¥6,700.00</td>
-                                    <td class="text-right tabular-nums">¥6,700.00</td>
-                                    <td class="text-right tabular-nums text-neutral-400">¥0.00</td>
-                                    <td class="text-right">0</td>
-                                    <td class="text-left"><span class="status-badge status-success">对账成功</span></td>
-                                    <td class="text-left text-neutral-500">2026-05-14 02:06</td>
-                                    <td class="text-right"><button class="btn btn-text" onclick="showTradeReconDetail('success', 'JY-20260514-004')">查 看</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mx-2 mb-2 flex justify-between items-center py-2">
-                        <span class="text-sm text-neutral-600">共 <span class="font-semibold">4</span> 条记录</span>
-                        <div class="flex items-center gap-2">
-                            <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
-                            <div class="flex items-center gap-1">
-                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                                <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- ========== 交易对账详情 ========== -->
-            <div id="page-trade-recon-detail" class="page">
-                <div class="bg-white rounded border border-neutral-200 mb-3">
-                    <div class="px-4 py-3 flex justify-between items-center border-b border-neutral-200">
-                        <div class="flex items-center gap-2">
-                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold">交易对账详情</h1>
-                        </div>
-                        <div class="flex gap-3">
-                            <button class="btn btn-secondary btn-md" onclick="showPage('trade-recon'); switchSubnav('trade-recon')"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
-                            <button id="trade-export-btn" class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>差异明细导出</button>
-                        </div>
-                    </div>
-                    <div class="px-5 py-4">
-                        <div class="grid grid-cols-4 gap-4">
-                            <div><span class="text-sm text-neutral-500">对账记录号</span><p id="trade-recon-no" class="text-sm font-medium mt-1">JY-20260514-001</p></div>
-                            <div><span class="text-sm text-neutral-500">对账日期</span><p id="trade-recon-date" class="text-sm font-medium mt-1">2026-05-13</p></div>
-                            <div><span class="text-sm text-neutral-500">商户名称</span><p id="trade-recon-merchant" class="text-sm font-medium mt-1">石化公司</p></div>
-                            <div><span class="text-sm text-neutral-500">对账状态</span><p class="mt-1"><span id="trade-recon-status" class="status-badge status-warning">存在差异</span></p></div>
-                        </div>
-                    </div>
-                    <hr id="trade-amount-hr" class="mx-6 border-t border-neutral-200">
-                    <div id="trade-amount-section" class="px-5 py-4">
-                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">金额对比</h2>
-                        <div class="grid grid-cols-4 gap-4">
-                            <div class="bg-neutral-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500">订单券码总金额</span>
-                                <p id="trade-order-amount" class="text-lg font-bold tabular-nums mt-1">¥16,000.00</p>
-                            </div>
-                            <div class="bg-neutral-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500">券码核销总金额</span>
-                                <p id="trade-verify-amount" class="text-lg font-bold tabular-nums mt-1">¥15,600.00</p>
-                            </div>
-                            <div class="bg-orange-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500">差异金额</span>
-                                <p id="trade-diff-amount" class="text-lg font-bold tabular-nums mt-1 text-error">¥400.00</p>
-                            </div>
-                            <div class="bg-orange-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500">差异订单数</span>
-                                <p id="trade-diff-orders" class="text-lg font-bold tabular-nums mt-1 text-error">4</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 mt-3">
-                            <div><span class="text-sm text-neutral-500">对账开始时间</span><p class="text-sm font-medium mt-1">2026-05-14 02:00:00</p></div>
-                            <div><span class="text-sm text-neutral-500">完成时间</span><p class="text-sm font-medium mt-1">2026-05-14 02:05:12</p></div>
-                        </div>
-                    </div>
-                    <hr id="trade-diff-hr" class="mx-6 border-t border-neutral-200">
-                    <div id="trade-diff-section" class="px-5 py-4">
-                        <div class="flex justify-between items-center mb-3">
-                            <h2 class="text-sm font-semibold text-neutral-700">差异明细</h2>
-                            <div class="inline-label-input" style="min-width:160px">
-                                <span class="label">差异类型</span>
-                                <select><option value="">全部</option><option>金额不一致</option><option>订单状态不一致</option><option>核销记录缺失</option><option>业务类型分类错误</option></select>
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="data-table w-full">
-                                <thead>
-                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                        <th class="w-12 text-center">序号</th>
-                                        <th class="text-left">订单号</th>
-                                        <th class="text-left">券码ID</th>
-                                        <th class="text-left">业务类型</th>
-                                        <th class="text-left">订单状态</th>
-                                        <th class="text-left">核销状态</th>
-                                        <th class="text-right">订单券码金额</th>
-                                        <th class="text-right">核销金额</th>
-                                        <th class="text-right">差异金额</th>
-                                        <th class="text-left">差异类型</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="trade-diff-tbody">
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-center text-neutral-600">1</td>
-                                        <td class="text-left">OD20260513078</td>
-                                        <td class="text-left">QM20260513078</td>
-                                        <td class="text-left">加油</td>
-                                        <td class="text-left">已核销</td>
-                                        <td class="text-left">已核销</td>
-                                        <td class="text-right tabular-nums">¥100.00</td>
-                                        <td class="text-right tabular-nums">¥80.00</td>
-                                        <td class="text-right tabular-nums text-error">¥20.00</td>
-                                        <td class="text-left"><span class="status-badge status-warning">金额不一致</span></td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-center text-neutral-600">2</td>
-                                        <td class="text-left">OD20260513092</td>
-                                        <td class="text-left">QM20260513092</td>
-                                        <td class="text-left">充电</td>
-                                        <td class="text-left">已核销</td>
-                                        <td class="text-left">未核销</td>
-                                        <td class="text-right tabular-nums">¥50.00</td>
-                                        <td class="text-right tabular-nums">¥0.00</td>
-                                        <td class="text-right tabular-nums text-error">¥50.00</td>
-                                        <td class="text-left"><span class="status-badge status-error">状态不一致</span></td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-center text-neutral-600">3</td>
-                                        <td class="text-left">OD20260513105</td>
-                                        <td class="text-left">QM20260513105</td>
-                                        <td class="text-left">加油</td>
-                                        <td class="text-left">已核销</td>
-                                        <td class="text-left">-</td>
-                                        <td class="text-right tabular-nums">¥200.00</td>
-                                        <td class="text-right tabular-nums">¥0.00</td>
-                                        <td class="text-right tabular-nums text-error">¥200.00</td>
-                                        <td class="text-left"><span class="status-badge status-info">核销记录缺失</span></td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-center text-neutral-600">4</td>
-                                        <td class="text-left">OD20260513118</td>
-                                        <td class="text-left">QM20260513118</td>
-                                        <td class="text-left">洗车</td>
-                                        <td class="text-left">已核销</td>
-                                        <td class="text-left">已核销</td>
-                                        <td class="text-right tabular-nums">¥130.00</td>
-                                        <td class="text-right tabular-nums">¥100.00</td>
-                                        <td class="text-right tabular-nums text-error">¥30.00</td>
-                                        <td class="text-left"><span class="status-badge status-warning">金额不一致</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="flex justify-between items-center py-2 mt-2">
-                            <span class="text-sm text-neutral-600">共 <span class="font-semibold">4</span> 条记录</span>
-                            <div class="flex items-center gap-2">
-                                <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
-                                <div class="flex items-center gap-1">
-                                    <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                                    <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                    <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr id="trade-success-hr" class="mx-6 border-t border-neutral-200">
-                    <div id="trade-success-section" class="px-5 py-4">
-                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">对账结论</h2>
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-green-700">对账成功</p>
-                                <p class="text-sm text-neutral-500 mt-0.5">订单券码金额与核销金额完全匹配，无差异</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-4 gap-4">
-                            <div class="bg-green-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500 block mb-1">匹配订单数</span>
-                                <p id="trade-match-orders" class="text-lg font-bold text-green-700">89</p>
-                            </div>
-                            <div class="bg-green-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500 block mb-1">匹配金额</span>
-                                <p id="trade-match-amount" class="text-lg font-bold text-green-700 tabular-nums">¥8,900.00</p>
-                            </div>
-                            <div class="bg-green-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500 block mb-1">匹配率</span>
-                                <p class="text-lg font-bold text-green-700">100.00%</p>
-                            </div>
-                            <div class="bg-green-50 rounded p-4 text-center">
-                                <span class="text-sm text-neutral-500 block mb-1">差异笔数</span>
-                                <p class="text-lg font-bold text-green-700">0</p>
-                            </div>
-                        </div>
-                    </div>
-                    <hr id="trade-summary-hr" class="mx-6 border-t border-neutral-200">
-                    <div id="trade-summary-section" class="px-5 py-4">
-                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">业务类型汇总</h2>
-                        <div class="overflow-x-auto">
-                            <table class="data-table w-full">
-                                <thead>
-                                    <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                        <th class="text-left">业务类型</th>
-                                        <th class="text-right">订单数</th>
-                                        <th class="text-right">券码核销数</th>
-                                        <th class="text-right">订单券码总金额</th>
-                                        <th class="text-right">券码核销总金额</th>
-                                        <th class="text-right">差异金额</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="trade-summary-tbody">
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-left">加油</td>
-                                        <td class="text-right">60</td>
-                                        <td class="text-right">60</td>
-                                        <td class="text-right tabular-nums">¥6,000.00</td>
-                                        <td class="text-right tabular-nums">¥6,000.00</td>
-                                        <td class="text-right tabular-nums text-green-600">¥0.00</td>
-                                    </tr>
-                                    <tr class="border-b border-neutral-200 h-12 table-row">
-                                        <td class="text-left">充电</td>
-                                        <td class="text-right">29</td>
-                                        <td class="text-right">29</td>
-                                        <td class="text-right tabular-nums">¥2,900.00</td>
-                                        <td class="text-right tabular-nums">¥2,900.00</td>
-                                        <td class="text-right tabular-nums text-green-600">¥0.00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <hr class="mx-6 border-t border-neutral-200">
-                    <div class="px-5 py-4">
-                        <h2 class="text-sm font-semibold text-neutral-700 mb-3">对账执行记录</h2>
-                        <div class="grid grid-cols-4 gap-4">
-                            <div><span class="text-sm text-neutral-500">对账开始时间</span><p class="text-sm font-medium mt-1">2026-05-14 02:00:00</p></div>
-                            <div><span class="text-sm text-neutral-500">对账完成时间</span><p class="text-sm font-medium mt-1">2026-05-14 02:03:12</p></div>
-                            <div><span class="text-sm text-neutral-500">耗时</span><p class="text-sm font-medium mt-1">3分12秒</p></div>
-                            <div><span class="text-sm text-neutral-500">执行方式</span><p class="text-sm font-medium mt-1">自动执行</p></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- ========== 结算账号列表 ========== -->
-            <div id="page-settlement-account" class="page">
-                <div class="bg-white rounded border border-neutral-200">
-                    <div class="px-2 pt-2 pb-1 flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
-                            <h1 class="text-base font-bold text-neutral-900">结算账号</h1>
-                        </div>
-                    </div>
-                    <div class="mx-2 mb-2 px-3 py-2 bg-primary-light rounded flex items-center gap-3">
-                        <button class="btn btn-batch-action btn-md" onclick="showModal('modal-account-add')"><i data-lucide="plus" class="w-4 h-4"></i>新 增</button>
-                    </div>
-                    <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
-                        <table class="data-table w-full">
-                            <thead>
-                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
-                                    <th class="w-12 text-center">序号</th>
-                                    <th class="text-left">商户名称</th>
-                                    <th class="text-left">账户名称</th>
-                                    <th class="text-left">银行账号</th>
-                                    <th class="text-left">开户银行</th>
-                                    <th class="text-left">开户行所在地</th>
-                                    <th class="text-right w-40">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">1</td>
-                                    <td class="text-left">石化公司</td>
-                                    <td class="text-left">石化公司基本户</td>
-                                    <td class="text-left">**** **** **** 5678</td>
-                                    <td class="text-left">中国工商银行</td>
-                                    <td class="text-left">安徽省合肥市蜀山区</td>
-                                    <td class="text-right">
-                                        <button class="btn btn-text" onclick="showModal('modal-account-view')">查 看</button>
-                                        <button class="btn btn-text ml-2" onclick="showModal('modal-account-edit')">编 辑</button>
-                                        <button class="btn btn-text ml-2 text-error" onclick="showModal('modal-account-delete')">删 除</button>
-                                    </td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">2</td>
-                                    <td class="text-left">石化公司</td>
-                                    <td class="text-left">石化公司结算户</td>
-                                    <td class="text-left">**** **** **** 9012</td>
-                                    <td class="text-left">中国建设银行</td>
-                                    <td class="text-left">安徽省合肥市包河区</td>
-                                    <td class="text-right">
-                                        <button class="btn btn-text" onclick="showModal('modal-account-view')">查 看</button>
-                                        <button class="btn btn-text ml-2" onclick="showModal('modal-account-edit')">编 辑</button>
-                                        <button class="btn btn-text ml-2 text-error" onclick="showModal('modal-account-delete')">删 除</button>
-                                    </td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">3</td>
-                                    <td class="text-left">驿达集团</td>
-                                    <td class="text-left">驿达集团一般户</td>
-                                    <td class="text-left">**** **** **** 3456</td>
-                                    <td class="text-left">中国农业银行</td>
-                                    <td class="text-left">安徽省芜湖市镜湖区</td>
-                                    <td class="text-right">
-                                        <button class="btn btn-text" onclick="showModal('modal-account-view')">查 看</button>
-                                        <button class="btn btn-text ml-2" onclick="showModal('modal-account-edit')">编 辑</button>
-                                        <button class="btn btn-text ml-2 text-error" onclick="showModal('modal-account-delete')">删 除</button>
-                                    </td>
-                                </tr>
-                                <tr class="border-b border-neutral-200 h-12 table-row">
-                                    <td class="text-center text-neutral-600">4</td>
-                                    <td class="text-left">交控石油公司</td>
-                                    <td class="text-left">交控石油公司基本户</td>
-                                    <td class="text-left">**** **** **** 7890</td>
-                                    <td class="text-left">中国银行</td>
-                                    <td class="text-left">安徽省合肥市瑶海区</td>
-                                    <td class="text-right">
-                                        <button class="btn btn-text" onclick="showModal('modal-account-view')">查 看</button>
-                                        <button class="btn btn-text ml-2" onclick="showModal('modal-account-edit')">编 辑</button>
-                                        <button class="btn btn-text ml-2 text-error" onclick="showModal('modal-account-delete')">删 除</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mx-2 mb-2 flex justify-between items-center py-2">
-                        <span class="text-sm text-neutral-600">共 <span class="font-semibold">4</span> 条记录</span>
-                        <div class="flex items-center gap-2">
-                            <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
-                            <div class="flex items-center gap-1">
-                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                                <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
         <!-- ========== 账单复核申请 - 右侧弹窗 ========== -->
         <div id="review-drawer" class="drawer-overlay fixed inset-0 z-[999] justify-end" onclick="if(event.target===this)closeReviewDrawer()">
@@ -6202,6 +5148,10 @@
                             <button class="btn btn-primary btn-md" onclick="renderVoucher()">查 询</button>
                         </div>
                     </div>
+                    <div class="mx-2 mb-2 px-4 py-3 bg-primary-light rounded flex items-center justify-end gap-3">
+                        <span class="text-sm text-neutral-600">金额合计 <span class="text-neutral-400">（当前查询条件）</span></span>
+                        <span class="text-xl font-bold tabular-nums text-primary" id="voucher-amount-total">¥0.00</span>
+                    </div>
                     <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
                         <div id="voucher-table-container"></div>
                     </div>
@@ -6251,6 +5201,10 @@
                             <button class="btn btn-primary btn-md" onclick="renderGoods()">查 询</button>
                         </div>
                     </div>
+                    <div class="mx-2 mb-2 px-4 py-3 bg-primary-light rounded flex items-center justify-end gap-3">
+                        <span class="text-sm text-neutral-600">金额合计 <span class="text-neutral-400">（当前查询条件）</span></span>
+                        <span class="text-xl font-bold tabular-nums text-primary" id="goods-amount-total">¥0.00</span>
+                    </div>
                     <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
                         <div id="goods-table-container"></div>
                     </div>
@@ -6259,166 +5213,6 @@
             </div>
 
         </main>
-    </div>
-
-    <!-- ========== 查看账户弹窗 ========== -->
-    <div id="modal-account-view" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-account-view')">
-        <div class="modal-content max-w-lg w-full my-8">
-            <div class="flex justify-between items-center px-5 py-3 border-b border-neutral-200">
-                <h3 class="text-base font-bold text-neutral-900">账户详情</h3>
-                <button onclick="hideModal('modal-account-view')" class="text-neutral-400 hover:text-neutral-600 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="px-5 py-4 space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div><span class="text-sm text-neutral-500">商户名称</span><p class="text-sm font-medium mt-1">石化公司</p></div>
-                    <div><span class="text-sm text-neutral-500">账户名称</span><p class="text-sm font-medium mt-1">石化公司基本户</p></div>
-                    <div><span class="text-sm text-neutral-500">银行账号</span><p class="text-sm font-medium mt-1">6222 **** **** 5678</p></div>
-                    <div><span class="text-sm text-neutral-500">开户银行</span><p class="text-sm font-medium mt-1">中国工商银行</p></div>
-                    <div><span class="text-sm text-neutral-500">开户行所在地</span><p class="text-sm font-medium mt-1">安徽省合肥市蜀山区</p></div>
-                </div>
-            </div>
-            <div class="px-5 py-3 border-t border-neutral-200 flex justify-end">
-                <button class="btn btn-secondary btn-md" onclick="hideModal('modal-account-view')">关 闭</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== 新增账户弹窗 ========== -->
-    <div id="modal-account-add" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-account-add')">
-        <div class="modal-content max-w-lg w-full my-8">
-            <div class="px-5 py-3 flex justify-between items-center border-b border-neutral-200">
-                <h3 class="text-base font-semibold">新增账户</h3>
-                <button onclick="hideModal('modal-account-add')" class="text-neutral-400 hover:text-neutral-600 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-5 space-y-4">
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">商户名称 <span class="text-error">*</span></label>
-                    <select class="w-full border border-neutral-200 rounded h-8 px-2 text-sm input-focus">
-                        <option value="">请选择</option>
-                        <option>石化公司</option><option>驿达集团</option><option>交控石油公司</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">账户名称 <span class="text-error">*</span></label>
-                    <input type="text" placeholder="最大50字符" class="w-full border border-neutral-200 rounded h-8 px-2 text-sm input-focus" maxlength="50">
-                </div>
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">银行账号 <span class="text-error">*</span></label>
-                    <input type="text" placeholder="16-19位数字" class="w-full border border-neutral-200 rounded h-8 px-2 text-sm input-focus" maxlength="19">
-                </div>
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">开户银行 <span class="text-error">*</span></label>
-                    <select class="w-full border border-neutral-200 rounded h-8 px-2 text-sm input-focus">
-                        <option value="">请选择</option>
-                        <option>中国工商银行</option><option>中国建设银行</option><option>中国农业银行</option><option>中国银行</option><option>交通银行</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">开户行所在地 <span class="text-error">*</span></label>
-                    <div class="flex gap-2">
-                        <select class="flex-1 border border-neutral-200 rounded h-8 px-2 text-sm input-focus"><option value="">省</option><option>安徽省</option></select>
-                        <select class="flex-1 border border-neutral-200 rounded h-8 px-2 text-sm input-focus"><option value="">市</option><option>合肥市</option><option>芜湖市</option></select>
-                        <select class="flex-1 border border-neutral-200 rounded h-8 px-2 text-sm input-focus"><option value="">区</option><option>蜀山区</option><option>包河区</option></select>
-                    </div>
-                </div>
-            </div>
-            <div class="px-5 py-3 bg-neutral-50 border-t border-neutral-200 flex justify-end gap-3">
-                <button class="btn btn-secondary btn-md" onclick="hideModal('modal-account-add')">取 消</button>
-                <button class="btn btn-primary btn-md" onclick="handleAccountAdd()">确 定</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== 编辑账户弹窗 ========== -->
-    <div id="modal-account-edit" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-account-edit')">
-        <div class="modal-content max-w-lg w-full my-8">
-            <div class="px-5 py-3 flex justify-between items-center border-b border-neutral-200">
-                <h3 class="text-base font-semibold">编辑账户</h3>
-                <button onclick="hideModal('modal-account-edit')" class="text-neutral-400 hover:text-neutral-600 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-5 space-y-4">
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">商户名称</label>
-                    <input type="text" value="石化公司" class="w-full border border-neutral-200 rounded h-8 px-2 text-sm bg-neutral-50" disabled>
-                </div>
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">银行账号</label>
-                    <input type="text" value="**** **** **** 5678" class="w-full border border-neutral-200 rounded h-8 px-2 text-sm bg-neutral-50" disabled>
-                </div>
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">账户名称 <span class="text-error">*</span></label>
-                    <input type="text" value="石化公司基本户" class="w-full border border-neutral-200 rounded h-8 px-2 text-sm input-focus" maxlength="50">
-                </div>
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">开户银行 <span class="text-error">*</span></label>
-                    <select class="w-full border border-neutral-200 rounded h-8 px-2 text-sm input-focus">
-                        <option>中国工商银行</option><option>中国建设银行</option><option>中国农业银行</option><option>中国银行</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">开户行所在地 <span class="text-error">*</span></label>
-                    <div class="flex gap-2">
-                        <select class="flex-1 border border-neutral-200 rounded h-8 px-2 text-sm input-focus"><option>安徽省</option></select>
-                        <select class="flex-1 border border-neutral-200 rounded h-8 px-2 text-sm input-focus"><option>合肥市</option></select>
-                        <select class="flex-1 border border-neutral-200 rounded h-8 px-2 text-sm input-focus"><option selected>蜀山区</option></select>
-                    </div>
-                </div>
-            </div>
-            <div class="px-5 py-3 bg-neutral-50 border-t border-neutral-200 flex justify-end gap-3">
-                <button class="btn btn-secondary btn-md" onclick="hideModal('modal-account-edit')">取 消</button>
-                <button class="btn btn-primary btn-md" onclick="handleAccountEdit()">确 定</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== 删除确认弹窗 ========== -->
-    <div id="modal-account-delete" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-account-delete')">
-        <div class="modal-content max-w-md w-full my-8">
-            <div class="px-5 py-3 flex justify-between items-center border-b border-neutral-200">
-                <h3 class="text-base font-semibold">确认删除</h3>
-                <button onclick="hideModal('modal-account-delete')" class="text-neutral-400 hover:text-neutral-600 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-5">
-                <div class="flex items-start gap-3">
-                    <i data-lucide="alert-triangle" class="w-5 h-5 text-warning flex-shrink-0 mt-0.5"></i>
-                    <div>
-                        <p class="text-sm font-medium">确定要删除账户"石化公司基本户"吗？</p>
-                        <p class="text-sm text-neutral-500 mt-1">此操作不可恢复，请谨慎操作。</p>
-                    </div>
-                </div>
-            </div>
-            <div class="px-5 py-3 bg-neutral-50 border-t border-neutral-200 flex justify-end gap-3">
-                <button class="btn btn-secondary btn-md" onclick="hideModal('modal-account-delete')">取 消</button>
-                <button class="btn btn-danger btn-md" onclick="handleAccountDelete()">删 除</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== 生成对账文件弹窗（交易对账） ========== -->
-    <div id="modal-recon-file" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-recon-file')">
-        <div class="modal-content max-w-md w-full my-8">
-            <div class="px-5 py-3 flex justify-between items-center border-b border-neutral-200">
-                <h3 class="text-base font-semibold">生成对账文件</h3>
-                <button onclick="hideModal('modal-recon-file')" class="text-neutral-400 hover:text-neutral-600 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-5 space-y-4">
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">商户名称 <span class="text-error">*</span></label>
-                    <select class="w-full border border-neutral-200 rounded h-8 px-2 text-sm input-focus">
-                        <option value="">请选择</option>
-                        <option>石化公司</option><option>驿达集团</option><option>交控石油公司</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">对账日期 <span class="text-error">*</span></label>
-                    <input type="date" value="2026-05-12" class="w-full border border-neutral-200 rounded h-8 px-2 text-sm input-focus">
-                </div>
-            </div>
-            <div class="px-5 py-3 bg-neutral-50 border-t border-neutral-200 flex justify-end gap-3">
-                <button class="btn btn-secondary btn-md" onclick="hideModal('modal-recon-file')">取 消</button>
-                <button class="btn btn-primary btn-md" onclick="handleReconFile()">生 成</button>
-            </div>
-        </div>
     </div>
 
     <!-- ========== 生成对账文件弹窗（支付对账） ========== -->
@@ -6451,33 +5245,6 @@
             <div class="px-5 py-3 bg-neutral-50 border-t border-neutral-200 flex justify-end gap-3">
                 <button class="btn btn-secondary btn-md" onclick="hideModal('modal-pay-recon-file')">取 消</button>
                 <button class="btn btn-primary btn-md" onclick="showToast('对账文件生成任务已提交', 'success'); hideModal('modal-pay-recon-file')">生 成</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== 生成对账文件弹窗（翼码对账） ========== -->
-    <div id="modal-yima-recon-file" class="modal-overlay" onclick="if(event.target===this)hideModal('modal-yima-recon-file')">
-        <div class="modal-content max-w-md w-full my-8">
-            <div class="px-5 py-3 flex justify-between items-center border-b border-neutral-200">
-                <h3 class="text-base font-semibold">生成对账文件</h3>
-                <button onclick="hideModal('modal-yima-recon-file')" class="text-neutral-400 hover:text-neutral-600 cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-5 space-y-4">
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">商户名称 <span class="text-error">*</span></label>
-                    <select class="w-full border border-neutral-200 rounded h-8 px-2 text-sm input-focus">
-                        <option value="">请选择</option>
-                        <option>石化公司</option><option>驿达集团</option><option>交控石油公司</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-sm text-neutral-600 block mb-1">对账日期 <span class="text-error">*</span></label>
-                    <input type="date" value="2026-05-12" class="w-full border border-neutral-200 rounded h-8 px-2 text-sm input-focus">
-                </div>
-            </div>
-            <div class="px-5 py-3 bg-neutral-50 border-t border-neutral-200 flex justify-end gap-3">
-                <button class="btn btn-secondary btn-md" onclick="hideModal('modal-yima-recon-file')">取 消</button>
-                <button class="btn btn-primary btn-md" onclick="showToast('对账文件生成任务已提交', 'success'); hideModal('modal-yima-recon-file')">生 成</button>
             </div>
         </div>
     </div>
@@ -7277,6 +6044,6 @@
         </div>
     </div>
 
-    <script>lucide.createIcons(); initBillDropdown(); initMerchantBillSelectAll(); renderPayableBillList(); renderReceivableBillList(); renderSummary(); renderDetail(); renderVoucher(); renderGoods(); showPage('payable-bill'); switchSubnav('payable-bill'); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
+    <script>lucide.createIcons(); initBillDropdown(); initMerchantBillSelectAll(); renderSettlementBillList(); renderSummary(); renderDetail(); renderVoucher(); renderGoods(); showPage('settlement-bill'); switchSubnav('settlement-bill'); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
 </body>
 </html>

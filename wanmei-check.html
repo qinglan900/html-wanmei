@@ -642,20 +642,60 @@
 
         // ===== 结算关系数据（应付/应收账单共用） =====
         var relationData = [
-            { id: 'GX-20260513-001', payer: '皖通公司', payerRole: '营销活动方', receiver: '数科公司', receiverRole: '产品提供方', points: 110, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: null, adjustAmount: 10, review: { status: 'done', reason: '券码核销金额与订单实际不符，需调增结算金额', applyTime: '2026-05-16 09:30', result: '复核通过', targetDate: '2026-05-13', resultTime: '2026-05-17 14:00' } },
-            { id: 'GX-20260513-002', payer: '联网公司', payerRole: '营销活动方', receiver: '数科公司', receiverRole: '产品提供方', points: 40, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: null, settled: true },
+            { id: 'GX-20260513-001', payer: '皖通公司', payerRole: '营销活动方', receiver: '数科公司', receiverRole: '产品提供方', points: 110, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, adjustAmount: 10, review: { status: 'done', reason: '券码核销金额与订单实际不符，需调增结算金额', applyTime: '2026-05-16 09:30', result: '复核通过', targetDate: '2026-05-13', resultTime: '2026-05-17 14:00' }, coupons: [
+                { seq: 1, type: '加油', orderNo: 'PO20260513000006', time: '2026-05-13 10:00', couponName: '100元加油代金券', couponCode: 'd1e2f3a4b5c6789012345678abcdef01', couponType: '积分券', faceAmount: '100.00', verifyAmount: '100.00', shareAmount: '60.00', settleAmount: '60.00', status: '已核销' },
+                { seq: 2, type: '尿素加注', orderNo: 'PO20260513000007', time: '2026-05-13 12:30', couponName: '50元尿素代金券', couponCode: 'e2f3a4b5c6d7890123456789abcdef01', couponType: '积分券', faceAmount: '50.00', verifyAmount: '50.00', shareAmount: '50.00', settleAmount: '50.00', status: '已核销' }
+            ] },
+            { id: 'GX-20260513-002', payer: '联网公司', payerRole: '营销活动方', receiver: '数科公司', receiverRole: '产品提供方', points: 40, cash: null, goods: 60, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, settled: false, coupons: [
+                { seq: 1, type: '加油', orderNo: 'PO20260513000010', time: '2026-05-13 09:00', couponName: '100元加油代金券', couponCode: 'f6789012345678abcdef0123456789ab', couponType: '积分券', faceAmount: '100.00', verifyAmount: '100.00', shareAmount: '30.00', settleAmount: '30.00', status: '已核销' },
+                { seq: 2, type: '加油', orderNo: 'PO20260513000011', time: '2026-05-13 11:00', couponName: '100元加油代金券', couponCode: '678901234567890123456789abcdef01', couponType: '积分券', faceAmount: '100.00', verifyAmount: '100.00', shareAmount: '10.00', settleAmount: '10.00', status: '已核销' }
+            ], goodsItems: [
+                { seq: 1, name: '车载香薰套装', orderNo: 'GO20260513000003', time: '2026-05-13 18:05', value: '60.00', shareAmount: '60.00', settleAmount: '60.00', status: '已发货' }
+            ] },
             { id: 'GX-20260513-003', payer: '数科公司', payerRole: '产品提供方', receiver: '石化公司', receiverRole: '服务提供方', points: 80, cash: 50, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, adjustAmount: null, review: { status: 'pending', reason: '部分券码核销金额与实际不符，申请调减', applyTime: '2026-05-18 11:20', expectAmount: -5 }, coupons: [
-                { seq: 1, type: '加油', orderNo: 'PO20260513000001', time: '2026-05-13 10:23', couponName: '50元加油代金券红包', couponCode: '8943ce9ef83c7283a46dcbf84ddf4fcf', couponType: '积分券', points: 1000, amt: '50.00', status: '已核销' },
-                { seq: 2, type: '加油', orderNo: 'PO20260513000002', time: '2026-05-13 11:45', couponName: '30元加油代金券红包', couponCode: '245520cc223ac35b23d0bc65158124ca', couponType: '积分券', points: 600, amt: '30.00', status: '已核销' },
-                { seq: 3, type: '加油', orderNo: 'PO20260513000003', time: '2026-05-13 14:20', couponName: '9.9元秒杀50元加油券', couponCode: 'a1b2c3d4e5f6789012345678abcdef01', couponType: '现金券', points: 0, amt: '50.00', status: '已核销' }
+                { seq: 1, type: '加油', orderNo: 'PO20260513000001', time: '2026-05-13 10:23', couponName: '50元加油代金券红包', couponCode: '8943ce9ef83c7283a46dcbf84ddf4fcf', couponType: '积分券', faceAmount: '50.00', verifyAmount: '50.00', settleAmount: '50.00', status: '已核销' },
+                { seq: 2, type: '加油', orderNo: 'PO20260513000002', time: '2026-05-13 11:45', couponName: '30元加油代金券红包', couponCode: '245520cc223ac35b23d0bc65158124ca', couponType: '积分券', faceAmount: '30.00', verifyAmount: '30.00', settleAmount: '30.00', status: '已核销' },
+                { seq: 3, type: '加油', orderNo: 'PO20260513000003', time: '2026-05-13 14:20', couponName: '9.9元秒杀50元加油券', couponCode: 'a1b2c3d4e5f6789012345678abcdef01', couponType: '现金券', faceAmount: '50.00', userPaid: '9.90', verifyAmount: '50.00', settleAmount: '50.00', status: '已核销' }
             ] },
             { id: 'GX-20260513-004', payer: '数科公司', payerRole: '产品提供方', receiver: '交控石油公司', receiverRole: '服务提供方', points: null, cash: 100, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, settled: true, adjustAmount: -20, review: { status: 'done', reason: '订单取消导致核销金额需调减', applyTime: '2026-05-16 15:00', result: '复核通过', targetDate: '2026-05-13', resultTime: '2026-05-18 10:00' }, coupons: [
-                { seq: 1, type: '充电', orderNo: 'PO20260513000004', time: '2026-05-13 09:00', couponName: '100元交控充电现金券', couponCode: 'b2c3d4e5f6789012345678abcdef0123', couponType: '现金券', points: 0, amt: '100.00', status: '已核销' }
+                { seq: 1, type: '充电', orderNo: 'PO20260513000004', time: '2026-05-13 09:00', couponName: '100元交控充电现金券', couponCode: 'b2c3d4e5f6789012345678abcdef0123', couponType: '现金券', faceAmount: '100.00', userPaid: '100.00', verifyAmount: '100.00', settleAmount: '100.00', status: '已核销' }
             ] },
-            { id: 'GX-20260513-005', payer: '皖通公司', payerRole: '营销活动方', receiver: '石化公司', receiverRole: '产品提供方', points: 30, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: null, review: { status: 'failed', reason: '订单金额与实际消费不符，申请调账。', applyTime: '2026-05-15 10:20', result: '复核驳回', resultNote: '复核材料不足，无法核实差异金额。', resultTime: '2026-05-16 09:00' } },
+            { id: 'GX-20260513-005', payer: '皖通公司', payerRole: '营销活动方', receiver: '石化公司', receiverRole: '产品提供方', points: 30, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, review: { status: 'failed', reason: '订单金额与实际消费不符，申请调账。', applyTime: '2026-05-15 10:20', result: '复核驳回', resultNote: '复核材料不足，无法核实差异金额。', resultTime: '2026-05-16 09:00' }, coupons: [
+                { seq: 1, type: '加油', orderNo: 'PO20260513000008', time: '2026-05-13 09:30', couponName: '30元石化加油代金券', couponCode: 'f3a4b5c6d7e890123456789abcdef012', couponType: '积分券', faceAmount: '30.00', verifyAmount: '30.00', shareAmount: '30.00', settleAmount: '30.00', status: '已核销' }
+            ] },
             { id: 'GX-20260513-006', payer: '石化公司', payerRole: '产品提供方', receiver: '石化公司', receiverRole: '服务提供方', points: 30, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: true, coupons: [
-                { seq: 1, type: '加油', orderNo: 'PO20260513000005', time: '2026-05-13 15:30', couponName: '30元石化加油代金券红包', couponCode: 'c3d4e5f6789012345678abcdef0123456', couponType: '积分券', points: 600, amt: '30.00', status: '已核销' }
+                { seq: 1, type: '加油', orderNo: 'PO20260513000005', time: '2026-05-13 15:30', couponName: '30元石化加油代金券红包', couponCode: 'c3d4e5f6789012345678abcdef0123456', couponType: '积分券', faceAmount: '30.00', verifyAmount: '30.00', settleAmount: '30.00', status: '已核销' }
+            ] },
+            { id: 'GX-20260513-007', payer: '皖通公司', payerRole: '营销活动方', receiver: '石化公司', receiverRole: '服务提供方', points: null, cash: null, goods: 100, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, goodsItems: [
+                { seq: 1, name: '车载保温杯', orderNo: 'GO20260513000001', time: '2026-05-13 16:00', value: '100.00', settleAmount: '100.00', status: '已完成' }
+            ] },
+            { id: 'GX-20260513-008', payer: '皖通公司', payerRole: '营销活动方', receiver: '驿达集团', receiverRole: '服务提供方', points: null, cash: null, goods: 50, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, goodsItems: [
+                { seq: 1, name: '驿达便利店礼包', orderNo: 'GO20260513000002', time: '2026-05-13 17:20', value: '50.00', settleAmount: '50.00', status: '已发货' }
+            ] },
+            { id: 'GX-20260513-009', payer: '联网公司', payerRole: '营销活动方', receiver: '皖通公司', receiverRole: '产品提供方', points: 90, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: [
+                { seq: 1, type: '加油', orderNo: 'PO20260513000020', time: '2026-05-13 10:40', couponName: '90元皖通加油代金券', couponCode: 'a9b8c7d6e5f401234567890abcdef001', couponType: '积分券', faceAmount: '90.00', verifyAmount: '90.00', shareAmount: '90.00', settleAmount: '90.00', status: '已核销' }
+            ] },
+            { id: 'GX-20260513-010', payer: '皖通公司', payerRole: '产品提供方', receiver: '石化公司', receiverRole: '服务提供方', points: 90, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: [
+                { seq: 1, type: '加油', orderNo: 'PO20260513000021', time: '2026-05-13 11:20', couponName: '90元皖通加油代金券', couponCode: 'b8c7d6e5f4a301234567890abcdef002', couponType: '积分券', faceAmount: '90.00', verifyAmount: '90.00', settleAmount: '90.00', status: '已核销' }
+            ] },
+            { id: 'GX-20260513-011', payer: '石化公司', payerRole: '营销活动方', receiver: '数科公司', receiverRole: '产品提供方', points: 60, cash: null, date: '2026-05-13', genTime: '2026-05-14 02:35', isSelf: false, coupons: [
+                { seq: 1, type: '加油', orderNo: 'PO20260513000022', time: '2026-05-13 14:30', couponName: '60元数科加油代金券', couponCode: 'c7d6e5f4a3b201234567890abcdef003', couponType: '积分券', faceAmount: '60.00', verifyAmount: '60.00', shareAmount: '60.00', settleAmount: '60.00', status: '已核销' }
             ] }
+        ];
+
+        // ===== 用户现金结算数据（用户直接支付给商户的现金，含购买现金券支付与消费场景支付） =====
+        var userCashData = [
+            { id: 'UC-20260513-001', merchant: '数科公司', date: '2026-05-13', amount: 9.90, purchases: [
+                { seq: 1, couponName: '9.9元秒杀50元加油券', orderNo: 'CS20260513000001', time: '2026-05-13 09:12', paid: '9.90', payMethod: '支付宝', status: '已支付' }
+            ], consumes: [] },
+            { id: 'UC-20260513-002', merchant: '石化公司', date: '2026-05-13', amount: 165.00, purchases: [
+                { seq: 1, couponName: '15元购30元便利店券', orderNo: 'CS20260513000002', time: '2026-05-13 10:30', paid: '15.00', payMethod: '微信', status: '已支付' }
+            ], consumes: [
+                { seq: 1, scene: '加油', orderNo: 'CS20260513000003', time: '2026-05-13 14:20', paid: '150.00', payMethod: '支付宝', status: '已支付' }
+            ] },
+            { id: 'UC-20260513-003', merchant: '皖通公司', date: '2026-05-13', amount: 19.90, purchases: [
+                { seq: 1, couponName: '19.9元购50元皖通加油券', orderNo: 'CS20260513000004', time: '2026-05-13 15:00', paid: '19.90', payMethod: '支付宝', status: '已支付' }
+            ], consumes: [] }
         ];
 
         function fmtMoney(num) {
@@ -664,7 +704,7 @@
         }
 
         function relationTotal(r) {
-            return (r.points || 0) + (r.cash || 0);
+            return (r.points || 0) + (r.cash || 0) + (r.goods || 0);
         }
 
         function relationSettle(r) {
@@ -739,6 +779,7 @@
         function handleMerchantViewChange() {
             currentMerchantView = relationFilterValue('settlement-bill-filter-merchant');
             renderSettlementBillList();
+            renderMerchantFundSummary();
         }
 
         function resetSettlementBillFilters() {
@@ -751,6 +792,7 @@
                 if (el) el.value = '';
             }
             renderSettlementBillList();
+            renderMerchantFundSummary();
         }
 
         function canConfirmSettle(r) {
@@ -823,6 +865,7 @@
                     '<td class="text-left">' + r.receiverRole + '</td>' +
                     '<td class="text-right tabular-nums">' + fmtMoney(r.points) + '</td>' +
                     '<td class="text-right tabular-nums">' + fmtMoney(r.cash) + '</td>' +
+                    '<td class="text-right tabular-nums">' + fmtMoney(r.goods) + '</td>' +
                     '<td class="text-right tabular-nums ' + (r.adjustAmount > 0 ? 'text-success' : (r.adjustAmount < 0 ? 'text-error' : '')) + '">' + fmtAdjust(r.adjustAmount) + '</td>' +
                     '<td class="text-right font-semibold tabular-nums">' + fmtMoney(relationSettle(r)) + '</td>' +
                     '<td class="text-left">' + r.date + '</td>' +
@@ -887,7 +930,12 @@
             showToast(msg, 'success');
         }
 
-        function showRelationDetail(id, from) {
+        function toggleSection(id, show) {
+            var el = document.getElementById(id);
+            if (el) { if (show) { el.classList.remove('hidden'); } else { el.classList.add('hidden'); } }
+        }
+
+        function showRelationDetail(id, focus, fromSummary) {
             var r = null;
             for (var i = 0; i < relationData.length; i++) {
                 if (relationData[i].id === id) { r = relationData[i]; break; }
@@ -895,20 +943,42 @@
             if (!r) return;
 
             var el;
+
+            // 基本信息区：结算关系明细显示，用户现金明细隐藏
+            var baseInfo = document.getElementById('relation-base-info');
+            var ucBaseInfo = document.getElementById('usercash-base-info');
+            if (baseInfo) baseInfo.classList.remove('hidden');
+            if (ucBaseInfo) ucBaseInfo.classList.add('hidden');
+
             el = document.getElementById('rd-payer'); if (el) el.textContent = r.payer;
             el = document.getElementById('rd-payer-role'); if (el) el.textContent = r.payerRole;
             el = document.getElementById('rd-receiver'); if (el) el.textContent = r.receiver;
             el = document.getElementById('rd-receiver-role'); if (el) el.textContent = r.receiverRole;
             el = document.getElementById('rd-date'); if (el) el.textContent = r.date;
             el = document.getElementById('rd-genTime'); if (el) el.textContent = r.genTime;
-            el = document.getElementById('rd-points'); if (el) el.textContent = fmtMoney(r.points);
-            el = document.getElementById('rd-cash'); if (el) el.textContent = fmtMoney(r.cash);
-            el = document.getElementById('rd-total'); if (el) el.textContent = fmtMoney(relationSettle(r));
+            // 资金汇总入口聚焦单券种：结算金额与基本信息区只显示对应券种，其余显示「——」
+            var focusPoints = r.points, focusCash = r.cash, focusGoods = r.goods;
+            var focusTotal;
+            if (fromSummary) {
+                if (focus === '积分券结算') { focusCash = null; focusGoods = null; focusTotal = r.points; }
+                else if (focus === '现金券结算') { focusPoints = null; focusGoods = null; focusTotal = r.cash; }
+                else if (focus === '积分实物结算') { focusPoints = null; focusCash = null; focusTotal = r.goods; }
+                else { focusTotal = relationTotal(r); }
+            } else {
+                focusTotal = relationSettle(r);
+            }
+            el = document.getElementById('rd-points'); if (el) el.textContent = fmtMoney(focusPoints);
+            el = document.getElementById('rd-cash'); if (el) el.textContent = fmtMoney(focusCash);
+            el = document.getElementById('rd-goods'); if (el) el.textContent = fmtMoney(focusGoods);
+            el = document.getElementById('rd-total'); if (el) el.textContent = fmtMoney(focusTotal);
+
             var adjEl = document.getElementById('rd-adjust');
             if (adjEl) {
                 adjEl.textContent = fmtAdjust(r.adjustAmount);
                 adjEl.className = 'text-sm font-semibold tabular-nums ' + (r.adjustAmount > 0 ? 'text-success' : (r.adjustAmount < 0 ? 'text-error' : 'text-neutral-500'));
             }
+            // 资金汇总入口隐藏调账金额
+            toggleSection('rd-adjust-wrap', !fromSummary);
 
             var title = document.getElementById('relation-detail-title');
             if (title) title.textContent = '结算关系明细';
@@ -916,28 +986,327 @@
             var selfTag = document.getElementById('rd-self-tag');
             if (selfTag) { if (r.isSelf) { selfTag.classList.remove('hidden'); } else { selfTag.classList.add('hidden'); } }
 
-            var couponSection = document.getElementById('relation-coupon-section');
-            var noCouponSection = document.getElementById('relation-no-coupon-section');
-            var hasCoupons = r.receiverRole === '服务提供方' && r.coupons && r.coupons.length > 0;
-            if (couponSection) { if (hasCoupons) { couponSection.classList.remove('hidden'); } else { couponSection.classList.add('hidden'); } }
-            if (noCouponSection) { if (hasCoupons) { noCouponSection.classList.add('hidden'); } else { noCouponSection.classList.remove('hidden'); } }
+            // 明细按券种分组
+            var pointsItems = [];
+            var cashItems = [];
+            var coupons = r.coupons || [];
+            for (var j = 0; j < coupons.length; j++) {
+                if (coupons[j].couponType === '积分券') pointsItems.push(coupons[j]);
+                else if (coupons[j].couponType === '现金券') cashItems.push(coupons[j]);
+            }
+            var goodsItems = r.goodsItems || [];
 
-            var tbody = document.getElementById('relation-coupon-tbody');
-            if (tbody) {
-                tbody.innerHTML = '';
-                if (hasCoupons) {
-                    for (var j = 0; j < r.coupons.length; j++) {
-                        var c = r.coupons[j];
-                        var amtCls = c.amt.indexOf('-') >= 0 ? 'text-error' : '';
-                        var statusCls = c.status === '已核销' ? 'status-success' : 'status-error';
-                        tbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row"><td class="text-center text-neutral-600">' + c.seq + '</td><td class="text-left">' + c.type + '</td><td class="text-left">' + c.orderNo + '</td><td class="text-left">' + c.time + '</td><td class="text-left">' + c.couponName + '</td><td class="text-left text-xs font-mono">' + c.couponCode + '</td><td class="text-left">' + c.couponType + '</td><td class="text-right tabular-nums">' + c.points + '</td><td class="text-right tabular-nums ' + amtCls + '">' + c.amt + '</td><td class="text-left"><span class="status-badge ' + statusCls + '">' + c.status + '</span></td></tr>';
-                    }
+            // 卡片显隐（资金汇总入口按 focus 只展示对应卡片；结算账单入口按金额/明细展示）
+            var showPoints = true, showCash = true, showGoods = true;
+            if (focus === '积分券结算') { showCash = false; showGoods = false; }
+            else if (focus === '现金券结算') { showPoints = false; showGoods = false; }
+            else if (focus === '积分实物结算') { showPoints = false; showCash = false; }
+            else {
+                showPoints = !!r.points || pointsItems.length > 0;
+                showCash = !!r.cash || cashItems.length > 0;
+                showGoods = !!r.goods || goodsItems.length > 0;
+            }
+            toggleSection('relation-points-card', showPoints);
+            toggleSection('relation-cashcard-card', showCash);
+            toggleSection('relation-goods-card', showGoods);
+            toggleSection('relation-usercash-purchase-card', false);
+            toggleSection('relation-usercash-consume-card', false);
+
+            renderPointsCard(r, pointsItems);
+            renderCashCard(cashItems);
+            renderGoodsCard(goodsItems);
+
+            // 复核记录：资金汇总入口隐藏
+            var reviewSection = document.getElementById('relation-review-section');
+            if (fromSummary) {
+                if (reviewSection) reviewSection.classList.add('hidden');
+            } else {
+                renderRelationReview(r);
+            }
+
+            showPage('relation-detail');
+        }
+
+        function renderPointsCard(r, items) {
+            var tbody = document.getElementById('relation-points-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="text-center text-neutral-400 py-8">暂无积分分摊明细</td></tr>';
+                return;
+            }
+            var isShare = r.payerRole === '营销活动方' && r.receiverRole === '产品提供方';
+            for (var i = 0; i < items.length; i++) {
+                var c = items[i];
+                var shareText = isShare ? (c.shareAmount || '——') : '——';
+                var statusCls = c.status === '已核销' ? 'status-success' : 'status-error';
+                tbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row">'
+                    + '<td class="text-center text-neutral-600">' + c.seq + '</td>'
+                    + '<td class="text-left">' + c.type + '</td>'
+                    + '<td class="text-left">' + c.orderNo + '</td>'
+                    + '<td class="text-left">' + c.time + '</td>'
+                    + '<td class="text-left">' + c.couponName + '</td>'
+                    + '<td class="text-left text-xs font-mono">' + c.couponCode + '</td>'
+                    + '<td class="text-right tabular-nums">' + c.faceAmount + '</td>'
+                    + '<td class="text-right tabular-nums">' + c.verifyAmount + '</td>'
+                    + '<td class="text-right tabular-nums">' + shareText + '</td>'
+                    + '<td class="text-right tabular-nums">' + c.settleAmount + '</td>'
+                    + '<td class="text-left"><span class="status-badge ' + statusCls + '">' + c.status + '</span></td>'
+                    + '</tr>';
+            }
+        }
+
+        function renderCashCard(items) {
+            var tbody = document.getElementById('relation-cashcard-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="text-center text-neutral-400 py-8">暂无现金券明细</td></tr>';
+                return;
+            }
+            for (var i = 0; i < items.length; i++) {
+                var c = items[i];
+                var amtCls = (c.verifyAmount && c.verifyAmount.indexOf('-') >= 0) ? 'text-error' : '';
+                var statusCls = c.status === '已核销' ? 'status-success' : 'status-error';
+                tbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row">'
+                    + '<td class="text-center text-neutral-600">' + c.seq + '</td>'
+                    + '<td class="text-left">' + c.type + '</td>'
+                    + '<td class="text-left">' + c.orderNo + '</td>'
+                    + '<td class="text-left">' + c.time + '</td>'
+                    + '<td class="text-left">' + c.couponName + '</td>'
+                    + '<td class="text-left text-xs font-mono">' + c.couponCode + '</td>'
+                    + '<td class="text-right tabular-nums">' + c.faceAmount + '</td>'
+                    + '<td class="text-right tabular-nums">' + (c.userPaid || '——') + '</td>'
+                    + '<td class="text-right tabular-nums ' + amtCls + '">' + c.verifyAmount + '</td>'
+                    + '<td class="text-right tabular-nums ' + amtCls + '">' + c.settleAmount + '</td>'
+                    + '<td class="text-left"><span class="status-badge ' + statusCls + '">' + c.status + '</span></td>'
+                    + '</tr>';
+            }
+        }
+
+        function renderGoodsCard(items) {
+            var tbody = document.getElementById('relation-goods-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-neutral-400 py-8">暂无实物明细</td></tr>';
+                return;
+            }
+            for (var i = 0; i < items.length; i++) {
+                var g = items[i];
+                var statusCls = (g.status === '已发货' || g.status === '已完成') ? 'status-success' : 'status-error';
+                tbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row">'
+                    + '<td class="text-center text-neutral-600">' + g.seq + '</td>'
+                    + '<td class="text-left">' + g.name + '</td>'
+                    + '<td class="text-left">' + g.orderNo + '</td>'
+                    + '<td class="text-left">' + g.time + '</td>'
+                    + '<td class="text-right tabular-nums">' + g.value + '</td>'
+                    + '<td class="text-right tabular-nums">' + (g.shareAmount || '——') + '</td>'
+                    + '<td class="text-right tabular-nums">' + g.settleAmount + '</td>'
+                    + '<td class="text-left"><span class="status-badge ' + statusCls + '">' + g.status + '</span></td>'
+                    + '</tr>';
+            }
+        }
+
+        // ===== 商户账单 tab 切换 =====
+        function switchMerchantBillTab(tab) {
+            var summaryBtn = document.getElementById('merchant-tab-summary');
+            var billBtn = document.getElementById('merchant-tab-bill');
+            var summaryPanel = document.getElementById('merchant-summary-panel');
+            var billPanel = document.getElementById('merchant-bill-panel');
+
+            var isSummary = tab === 'summary';
+            if (summaryBtn) summaryBtn.classList.toggle('merchant-tab-btn-active', isSummary);
+            if (billBtn) billBtn.classList.toggle('merchant-tab-btn-active', !isSummary);
+            if (summaryPanel) summaryPanel.classList.toggle('hidden', !isSummary);
+            if (billPanel) billPanel.classList.toggle('hidden', isSummary);
+
+            if (isSummary) renderMerchantFundSummary();
+            if (!isSummary) renderSettlementBillList();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function fundAmountStr(v) {
+            return v > 0 ? fmtMoney(v) : '——';
+        }
+
+        // ===== 资金汇总渲染 =====
+        function resetFundSummaryFilters() {
+            var s = document.getElementById('fund-summary-date-start');
+            var e = document.getElementById('fund-summary-date-end');
+            if (s) s.value = '';
+            if (e) e.value = '';
+            renderMerchantFundSummary();
+        }
+
+        function renderMerchantFundSummary() {
+            var tbody = document.getElementById('merchant-fund-summary-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            var merchant = currentMerchantView;
+            var dateStart = relationFilterValue('fund-summary-date-start');
+            var dateEnd = relationFilterValue('fund-summary-date-end');
+
+            var groups = {};
+            function addRow(type, subject, income, expense, id) {
+                var key = type + '|' + (subject || '');
+                if (!groups[key]) groups[key] = { type: type, subject: subject, income: 0, expense: 0, ids: [] };
+                groups[key].income += income;
+                groups[key].expense += expense;
+                if (id) groups[key].ids.push(id);
+            }
+
+            // 1) 用户现金结算（无主体名称）
+            for (var i = 0; i < userCashData.length; i++) {
+                var uc = userCashData[i];
+                if (merchant && uc.merchant !== merchant) continue;
+                if (dateStart && uc.date < dateStart) continue;
+                if (dateEnd && uc.date > dateEnd) continue;
+                addRow('用户现金结算', '', uc.amount, 0, uc.id);
+            }
+
+            // 2) 现金券 / 积分券 / 积分实物（按主体名称分组，不含调账）
+            for (var j = 0; j < relationData.length; j++) {
+                var r = relationData[j];
+                if (merchant && r.payer !== merchant && r.receiver !== merchant) continue;
+                if (r.isSelf) continue;
+                if (dateStart && r.date < dateStart) continue;
+                if (dateEnd && r.date > dateEnd) continue;
+
+                var isReceiver = r.receiver === merchant;
+                var isPayer = r.payer === merchant;
+                var subject = isReceiver ? r.payer : (isPayer ? r.receiver : '');
+                if (!subject) continue;
+
+                if (r.cash) addRow('现金券结算', subject, isReceiver ? r.cash : 0, isPayer ? r.cash : 0, r.id);
+                if (r.points) addRow('积分券结算', subject, isReceiver ? r.points : 0, isPayer ? r.points : 0, r.id);
+                if (r.goods) addRow('积分实物结算', subject, isReceiver ? r.goods : 0, isPayer ? r.goods : 0, r.id);
+            }
+
+            var order = ['用户现金结算', '现金券结算', '积分券结算', '积分实物结算'];
+            var rows = [];
+            for (var oi = 0; oi < order.length; oi++) {
+                for (var k in groups) {
+                    if (groups[k].type === order[oi]) rows.push(groups[k]);
                 }
             }
 
-            renderRelationReview(r);
+            if (rows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-neutral-400 py-8">暂无数据</td></tr>';
+                return;
+            }
+
+            var html = '';
+            var totalIncome = 0, totalExpense = 0;
+            for (var m = 0; m < rows.length; m++) {
+                var row = rows[m];
+                var net = row.income - row.expense;
+                totalIncome += row.income;
+                totalExpense += row.expense;
+                var netCls = net > 0 ? 'text-success' : (net < 0 ? 'text-error' : 'text-neutral-500');
+                var subjectText = row.subject || '——';
+                var action = row.type === '用户现金结算'
+                    ? '<button class="btn btn-text" onclick="showUserCashDetail(\'' + row.ids[0] + '\')">查 看</button>'
+                    : '<button class="btn btn-text" onclick="showRelationDetail(\'' + row.ids[0] + '\', \'' + row.type + '\', true)">查 看</button>';
+                html += '<tr class="border-b border-neutral-200 table-row">'
+                    + '<td class="text-left">' + row.type + '</td>'
+                    + '<td class="text-left">' + subjectText + '</td>'
+                    + '<td class="text-right tabular-nums">' + fundAmountStr(row.income) + '</td>'
+                    + '<td class="text-right tabular-nums">' + fundAmountStr(row.expense) + '</td>'
+                    + '<td class="text-right tabular-nums font-semibold ' + netCls + '">' + fmtMoney(net) + '</td>'
+                    + '<td class="text-right">' + action + '</td>'
+                    + '</tr>';
+            }
+            var totalNet = totalIncome - totalExpense;
+            var totalNetCls = totalNet > 0 ? 'text-success' : (totalNet < 0 ? 'text-error' : 'text-neutral-500');
+            html += '<tr class="bg-neutral-50 border-t border-neutral-200">'
+                + '<td class="text-left font-semibold" colspan="2">合计</td>'
+                + '<td class="text-right tabular-nums font-semibold">' + fundAmountStr(totalIncome) + '</td>'
+                + '<td class="text-right tabular-nums font-semibold">' + fundAmountStr(totalExpense) + '</td>'
+                + '<td class="text-right tabular-nums font-semibold ' + totalNetCls + '">' + fmtMoney(totalNet) + '</td>'
+                + '<td></td>'
+                + '</tr>';
+            tbody.innerHTML = html;
+        }
+
+        function showUserCashDetail(id) {
+            var uc = null;
+            for (var i = 0; i < userCashData.length; i++) {
+                if (userCashData[i].id === id) { uc = userCashData[i]; break; }
+            }
+            if (!uc) return;
+
+            var el;
+
+            // 基本信息区：用户现金明细显示，结算关系明细隐藏
+            var baseInfo = document.getElementById('relation-base-info');
+            var ucBaseInfo = document.getElementById('usercash-base-info');
+            if (baseInfo) baseInfo.classList.add('hidden');
+            if (ucBaseInfo) ucBaseInfo.classList.remove('hidden');
+
+            el = document.getElementById('uc-merchant'); if (el) el.textContent = uc.merchant;
+            el = document.getElementById('uc-date'); if (el) el.textContent = uc.date;
+            el = document.getElementById('uc-total'); if (el) el.textContent = fmtMoney(uc.amount);
+
+            var title = document.getElementById('relation-detail-title');
+            if (title) title.textContent = '用户现金明细';
+
+            // 隐藏结算关系卡片、调账与复核记录
+            toggleSection('rd-adjust-wrap', false);
+            toggleSection('relation-points-card', false);
+            toggleSection('relation-cashcard-card', false);
+            toggleSection('relation-goods-card', false);
+            toggleSection('relation-review-section', false);
+
+            // 用户现金两个卡片
+            var purchases = uc.purchases || [];
+            var consumes = uc.consumes || [];
+            toggleSection('relation-usercash-purchase-card', purchases.length > 0);
+            toggleSection('relation-usercash-consume-card', consumes.length > 0);
+
+            renderUserCashPurchase(purchases);
+            renderUserCashConsume(consumes);
 
             showPage('relation-detail');
+        }
+
+        function renderUserCashPurchase(items) {
+            var tbody = document.getElementById('relation-usercash-purchase-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            for (var i = 0; i < items.length; i++) {
+                var p = items[i];
+                var statusCls = p.status === '已支付' ? 'status-success' : 'status-error';
+                tbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row">'
+                    + '<td class="text-center text-neutral-600">' + p.seq + '</td>'
+                    + '<td class="text-left">' + p.couponName + '</td>'
+                    + '<td class="text-left">' + p.orderNo + '</td>'
+                    + '<td class="text-left">' + p.time + '</td>'
+                    + '<td class="text-left">' + p.payMethod + '</td>'
+                    + '<td class="text-right tabular-nums">' + p.paid + '</td>'
+                    + '<td class="text-left"><span class="status-badge ' + statusCls + '">' + p.status + '</span></td>'
+                    + '</tr>';
+            }
+        }
+
+        function renderUserCashConsume(items) {
+            var tbody = document.getElementById('relation-usercash-consume-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            for (var i = 0; i < items.length; i++) {
+                var c = items[i];
+                var statusCls = c.status === '已支付' ? 'status-success' : 'status-error';
+                tbody.innerHTML += '<tr class="border-b border-neutral-200 h-12 table-row">'
+                    + '<td class="text-center text-neutral-600">' + c.seq + '</td>'
+                    + '<td class="text-left">' + c.scene + '</td>'
+                    + '<td class="text-left">' + c.orderNo + '</td>'
+                    + '<td class="text-left">' + c.time + '</td>'
+                    + '<td class="text-left">' + c.payMethod + '</td>'
+                    + '<td class="text-right tabular-nums">' + c.paid + '</td>'
+                    + '<td class="text-left"><span class="status-badge ' + statusCls + '">' + c.status + '</span></td>'
+                    + '</tr>';
+            }
         }
 
         function renderRelationReview(r) {
@@ -2527,6 +2896,10 @@
         .page { display: none; }
         .page.active { display: block; }
         #page-pay-order-detail { display: none; }
+        .merchant-tab-btn { padding: 8px 16px; font-size: 14px; color: #6B7280; border-bottom: 2px solid transparent; cursor: pointer; background: transparent; }
+        .merchant-tab-btn:hover { color: #FF6B35; }
+        .merchant-tab-btn-active { color: #FF6B35; border-bottom-color: #FF6B35; font-weight: 600; }
+        .merchant-panel.hidden { display: none; }
         .table-row { transition: background-color 0.2s ease; }
         .table-row:hover { background-color: #FFF7E6 !important; }
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500; border-radius: 0.25rem; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
@@ -2615,12 +2988,14 @@
                             <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
                         </div>
                     </div>
-                    <div class="px-2 pb-2">
-                        <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
-                            <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                            <span class="text-sm text-neutral-600">温馨提示：商户账单按结算主体（商户）维度展示结算关系。选择一个商户后，列表展示该商户作为付款方（应付）或收款方（应收）的账单，并通过「账单类型」区分；仅应收类型账单可确认结算。付款方与收款方为同一主体的关系仅展示、无需结算确认。</span>
+                    <div class="px-2 pt-2">
+                        <div class="flex gap-1 border-b border-neutral-200">
+                            <button id="merchant-tab-summary" class="merchant-tab-btn merchant-tab-btn-active" onclick="switchMerchantBillTab('summary')">资金汇总</button>
+                            <button id="merchant-tab-bill" class="merchant-tab-btn" onclick="switchMerchantBillTab('bill')">结算账单</button>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                    </div>
+                    <div class="px-2 pb-2 pt-3">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3">
                             <div class="inline-label-input">
                                 <span class="label">商户名称</span>
                                 <select id="settlement-bill-filter-merchant" onchange="handleMerchantViewChange()">
@@ -2633,77 +3008,127 @@
                                     <option value="交控石油公司">交控石油公司</option>
                                 </select>
                             </div>
-                            <div class="inline-label-input">
-                                <span class="label">账单类型</span>
-                                <select id="settlement-bill-filter-type">
-                                    <option value="">全部</option>
-                                    <option value="payable">应付账单</option>
-                                    <option value="receivable">应收账单</option>
-                                </select>
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">结算状态</span>
-                                <select id="settlement-bill-filter-status"><option value="">全部</option><option value="unsettled">未结算</option><option value="settled">已结算</option></select>
-                            </div>
-                            <div class="date-range-input">
-                                <span class="label">结算日期</span>
-                                <input type="date" class="input-focus" id="settlement-bill-filter-date-start">
-                                <span class="separator">→</span>
-                                <input type="date" class="input-focus" id="settlement-bill-filter-date-end">
-                            </div>
-                            <div class="inline-label-input">
-                                <span class="label">备注</span>
-                                <input type="text" class="input-focus" id="settlement-bill-filter-remark" placeholder="输入备注关键词">
-                            </div>
-                        </div>
-                        <div class="flex justify-end gap-3 mt-3">
-                            <button class="btn btn-secondary btn-md" onclick="resetSettlementBillFilters()">重 置</button>
-                            <button class="btn btn-primary btn-md" onclick="renderSettlementBillList()">查 询</button>
                         </div>
                     </div>
-                    <div id="settlement-bill-batch-bar" class="mx-2 mb-2 px-4 py-2 bg-primary-light rounded flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <span class="text-sm text-neutral-600">已选 <span class="font-semibold text-primary" id="settlement-bill-selected-count">0</span> 项</span>
-                            <button class="btn btn-batch-action btn-md" id="settlement-bill-confirm-btn" onclick="handleBatchConfirmSettle()" disabled><i data-lucide="check-circle" class="w-4 h-4"></i>批量确认结算</button>
+
+                    <!-- ===== 资金汇总 tab ===== -->
+                    <div id="merchant-summary-panel" class="merchant-panel">
+                        <div class="px-2 pb-2">
+                            <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
+                                <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
+                                <span class="text-sm text-neutral-600">资金汇总：汇总当前商户在平台的所有资金往来，包括用户现金结算、券码结算、积分兑换实物折钱。净额 = 收入 − 支出。</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3">
+                                <div class="date-range-input">
+                                    <span class="label">结算日期</span>
+                                    <input type="date" class="input-focus" id="fund-summary-date-start">
+                                    <span class="separator">→</span>
+                                    <input type="date" class="input-focus" id="fund-summary-date-end">
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="resetFundSummaryFilters()">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="renderMerchantFundSummary()">查 询</button>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-sm text-neutral-600">结算金额合计 <span class="text-neutral-400">（当前查询条件）</span></span>
-                            <span class="text-xl font-bold tabular-nums text-primary" id="settlement-bill-total">¥0.00</span>
+                        <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200">
+                                        <th class="text-left">资金类型</th>
+                                        <th class="text-left">主体名称</th>
+                                        <th class="text-right">收入</th>
+                                        <th class="text-right">支出</th>
+                                        <th class="text-right">净额</th>
+                                        <th class="text-right w-32">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="merchant-fund-summary-tbody"></tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
-                        <table class="data-table w-full">
-                            <thead>
-                                <tr class="bg-neutral-50 border-b border-neutral-200">
-                                    <th class="w-10 text-center"><input type="checkbox" id="settlement-bill-select-all" class="cursor-pointer"></th>
-                                    <th class="w-12 text-center">序号</th>
-                                    <th class="text-left">账单类型</th>
-                                    <th class="text-left">账单号</th>
-                                    <th class="text-left">付款方</th>
-                                    <th class="text-left">付款方身份</th>
-                                    <th class="text-left">收款方</th>
-                                    <th class="text-left">收款方身份</th>
-                                    <th class="text-right">积分券金额</th>
-                                    <th class="text-right">现金券金额</th>
-                                    <th class="text-right">调账金额</th>
-                                    <th class="text-right">结算金额</th>
-                                    <th class="text-left">结算日期</th>
-                                    <th class="text-left">备注</th>
-                                    <th class="text-left">结算状态</th>
-                                    <th class="text-right w-32">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="settlement-bill-tbody"></tbody>
-                        </table>
-                    </div>
-                    <div class="mx-2 mb-2 flex justify-between items-center py-2">
-                        <span class="text-sm text-neutral-600">共 <span class="font-semibold" id="settlement-bill-count">0</span> 条记录</span>
-                        <div class="flex items-center gap-2">
-                            <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
-                            <div class="flex items-center gap-1">
-                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                                <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
-                                <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+
+                    <!-- ===== 结算账单 tab ===== -->
+                    <div id="merchant-bill-panel" class="merchant-panel hidden">
+                        <div class="px-2 pb-2">
+                            <div class="bg-primary-light rounded p-3 mb-3 flex items-start gap-2">
+                                <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
+                                <span class="text-sm text-neutral-600">温馨提示：结算账单按结算主体（商户）维度展示结算关系。选择一个商户后，列表展示该商户作为付款方（应付）或收款方（应收）的账单，并通过「账单类型」区分；仅应收类型账单可确认结算。付款方与收款方为同一主体的关系仅展示、无需结算确认。</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                                <div class="inline-label-input">
+                                    <span class="label">账单类型</span>
+                                    <select id="settlement-bill-filter-type">
+                                        <option value="">全部</option>
+                                        <option value="payable">应付账单</option>
+                                        <option value="receivable">应收账单</option>
+                                    </select>
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">结算状态</span>
+                                    <select id="settlement-bill-filter-status"><option value="">全部</option><option value="unsettled">未结算</option><option value="settled">已结算</option></select>
+                                </div>
+                                <div class="date-range-input">
+                                    <span class="label">结算日期</span>
+                                    <input type="date" class="input-focus" id="settlement-bill-filter-date-start">
+                                    <span class="separator">→</span>
+                                    <input type="date" class="input-focus" id="settlement-bill-filter-date-end">
+                                </div>
+                                <div class="inline-label-input">
+                                    <span class="label">备注</span>
+                                    <input type="text" class="input-focus" id="settlement-bill-filter-remark" placeholder="输入备注关键词">
+                                </div>
+                            </div>
+                            <div class="flex justify-end gap-3 mt-3">
+                                <button class="btn btn-secondary btn-md" onclick="resetSettlementBillFilters()">重 置</button>
+                                <button class="btn btn-primary btn-md" onclick="renderSettlementBillList()">查 询</button>
+                            </div>
+                        </div>
+                        <div id="settlement-bill-batch-bar" class="mx-2 mb-2 px-4 py-2 bg-primary-light rounded flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm text-neutral-600">已选 <span class="font-semibold text-primary" id="settlement-bill-selected-count">0</span> 项</span>
+                                <button class="btn btn-batch-action btn-md" id="settlement-bill-confirm-btn" onclick="handleBatchConfirmSettle()" disabled><i data-lucide="check-circle" class="w-4 h-4"></i>批量确认结算</button>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm text-neutral-600">结算金额合计 <span class="text-neutral-400">（当前查询条件）</span></span>
+                                <span class="text-xl font-bold tabular-nums text-primary" id="settlement-bill-total">¥0.00</span>
+                            </div>
+                        </div>
+                        <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr class="bg-neutral-50 border-b border-neutral-200">
+                                        <th class="w-10 text-center"><input type="checkbox" id="settlement-bill-select-all" class="cursor-pointer"></th>
+                                        <th class="w-12 text-center">序号</th>
+                                        <th class="text-left">账单类型</th>
+                                        <th class="text-left">账单号</th>
+                                        <th class="text-left">付款方</th>
+                                        <th class="text-left">付款方身份</th>
+                                        <th class="text-left">收款方</th>
+                                        <th class="text-left">收款方身份</th>
+                                        <th class="text-right">积分券金额</th>
+                                        <th class="text-right">现金券金额</th>
+                                        <th class="text-right">实物金额</th>
+                                        <th class="text-right">调账金额</th>
+                                        <th class="text-right">结算金额</th>
+                                        <th class="text-left">结算日期</th>
+                                        <th class="text-left">备注</th>
+                                        <th class="text-left">结算状态</th>
+                                        <th class="text-right w-32">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="settlement-bill-tbody"></tbody>
+                            </table>
+                        </div>
+                        <div class="mx-2 mb-2 flex justify-between items-center py-2">
+                            <span class="text-sm text-neutral-600">共 <span class="font-semibold" id="settlement-bill-count">0</span> 条记录</span>
+                            <div class="flex items-center gap-2">
+                                <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                <div class="flex items-center gap-1">
+                                    <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded text-neutral-400 cursor-not-allowed" disabled aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                    <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+                                    <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2722,7 +3147,7 @@
                             <button class="btn btn-secondary btn-md" onclick="showRelationList()"><i data-lucide="arrow-left" class="w-4 h-4"></i>返回上级页面</button>
                         </div>
                     </div>
-                    <div class="px-5 py-4">
+                    <div id="relation-base-info" class="px-5 py-4">
                         <div class="grid grid-cols-4 gap-4">
                             <div><span class="text-sm text-neutral-500">付款方</span><p class="text-sm font-medium mt-1" id="rd-payer">-</p></div>
                             <div><span class="text-sm text-neutral-500">付款方身份</span><p class="text-sm font-medium mt-1" id="rd-payer-role">-</p></div>
@@ -2735,15 +3160,31 @@
                             <div><span class="text-sm text-neutral-500">积分券金额</span><p class="text-sm font-medium mt-1" id="rd-points">-</p></div>
                             <div><span class="text-sm text-neutral-500">现金券金额</span><p class="text-sm font-medium mt-1" id="rd-cash">-</p></div>
                         </div>
-                        <div class="mt-4 flex items-center gap-6">
+                        <div class="mt-4 flex items-center gap-6 flex-wrap">
                             <div class="flex items-center gap-2">
                                 <span class="text-sm text-neutral-500">结算金额</span>
                                 <span class="text-xl font-bold tabular-nums text-success" id="rd-total">¥0.00</span>
                                 <span id="rd-self-tag" class="hidden ml-2 px-2 py-0.5 rounded text-xs bg-amber-50 text-amber-600 border border-amber-200">同一主体，无需结算确认</span>
                             </div>
-                            <div class="flex items-center gap-2">
+                            <div id="rd-adjust-wrap" class="flex items-center gap-2">
                                 <span class="text-sm text-neutral-500">调账金额</span>
                                 <span class="text-sm font-semibold tabular-nums" id="rd-adjust">——</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-neutral-500">实物金额</span>
+                                <span class="text-sm font-semibold tabular-nums" id="rd-goods">——</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="usercash-base-info" class="px-5 py-4 hidden">
+                        <div class="grid grid-cols-4 gap-4">
+                            <div><span class="text-sm text-neutral-500">商户名称</span><p class="text-sm font-medium mt-1" id="uc-merchant">-</p></div>
+                            <div><span class="text-sm text-neutral-500">结算日期</span><p class="text-sm font-medium mt-1" id="uc-date">-</p></div>
+                        </div>
+                        <div class="mt-4 flex items-center gap-6 flex-wrap">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-neutral-500">实付金额合计</span>
+                                <span class="text-xl font-bold tabular-nums text-success" id="uc-total">¥0.00</span>
                             </div>
                         </div>
                     </div>
@@ -2753,10 +3194,10 @@
                     <h2 class="text-sm font-semibold text-neutral-700 mb-4">账单复核记录</h2>
                     <div id="relation-review-content"></div>
                 </div>
-                <!-- 服务提供方收款 → 有券码明细 -->
-                <div id="relation-coupon-section" class="bg-white rounded border border-neutral-200 p-6 mb-3 hidden">
+                <!-- 积分券卡片 -->
+                <div id="relation-points-card" class="bg-white rounded border border-neutral-200 p-6 mb-3 hidden">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-sm font-semibold text-neutral-700">核销券码明细</h2>
+                        <h2 class="text-sm font-semibold text-neutral-700">积分券明细</h2>
                         <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
                     </div>
                     <div class="overflow-x-auto bg-white rounded border border-neutral-200">
@@ -2769,21 +3210,110 @@
                                     <th class="text-left">核销时间</th>
                                     <th class="text-left">券名称</th>
                                     <th class="text-left">券码ID</th>
-                                    <th class="text-left">券码类型</th>
-                                    <th class="text-right">兑换积分数量</th>
+                                    <th class="text-right">面额(元)</th>
                                     <th class="text-right">核销金额(元)</th>
+                                    <th class="text-right">分摊金额(元)</th>
+                                    <th class="text-right">结算金额(元)</th>
                                     <th class="text-left">核销状态</th>
                                 </tr>
                             </thead>
-                            <tbody id="relation-coupon-tbody"></tbody>
+                            <tbody id="relation-points-tbody"></tbody>
                         </table>
                     </div>
                 </div>
-                <!-- 产品提供方收款 → 无券码明细 -->
-                <div id="relation-no-coupon-section" class="bg-white rounded border border-neutral-200 p-6 mb-3 hidden">
-                    <div class="flex items-start gap-2">
-                        <i data-lucide="info" class="w-4 h-4 text-primary mt-0.5 flex-shrink-0"></i>
-                        <span class="text-sm text-neutral-600">该关系为营销活动方 → 产品提供方的积分分摊结算，无核销券码明细，仅记录对方总金额。</span>
+                <!-- 现金券卡片 -->
+                <div id="relation-cashcard-card" class="bg-white rounded border border-neutral-200 p-6 mb-3 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-semibold text-neutral-700">现金券明细</h2>
+                        <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                    </div>
+                    <div class="overflow-x-auto bg-white rounded border border-neutral-200">
+                        <table class="data-table w-full">
+                            <thead>
+                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                    <th class="w-12 text-center">序号</th>
+                                    <th class="text-left">服务类型</th>
+                                    <th class="text-left">订单号</th>
+                                    <th class="text-left">核销时间</th>
+                                    <th class="text-left">券名称</th>
+                                    <th class="text-left">券码ID</th>
+                                    <th class="text-right">面额(元)</th>
+                                    <th class="text-right">用户实付金额(元)</th>
+                                    <th class="text-right">核销金额(元)</th>
+                                    <th class="text-right">结算金额(元)</th>
+                                    <th class="text-left">核销状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="relation-cashcard-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- 积分兑换实物卡片 -->
+                <div id="relation-goods-card" class="bg-white rounded border border-neutral-200 p-6 mb-3 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-semibold text-neutral-700">积分兑换实物明细</h2>
+                        <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                    </div>
+                    <div class="overflow-x-auto bg-white rounded border border-neutral-200">
+                        <table class="data-table w-full">
+                            <thead>
+                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                    <th class="w-12 text-center">序号</th>
+                                    <th class="text-left">实物名称</th>
+                                    <th class="text-left">订单号</th>
+                                    <th class="text-left">兑换时间</th>
+                                    <th class="text-right">价值(元)</th>
+                                    <th class="text-right">分摊金额(元)</th>
+                                    <th class="text-right">结算金额(元)</th>
+                                    <th class="text-left">状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="relation-goods-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- 用户现金 - 购买现金券支付 -->
+                <div id="relation-usercash-purchase-card" class="bg-white rounded border border-neutral-200 p-6 mb-3 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-semibold text-neutral-700">购买现金券支付</h2>
+                    </div>
+                    <div class="overflow-x-auto bg-white rounded border border-neutral-200">
+                        <table class="data-table w-full">
+                            <thead>
+                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                    <th class="w-12 text-center">序号</th>
+                                    <th class="text-left">券名称</th>
+                                    <th class="text-left">订单号</th>
+                                    <th class="text-left">购买时间</th>
+                                    <th class="text-left">支付方式</th>
+                                    <th class="text-right">支付金额(元)</th>
+                                    <th class="text-left">状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="relation-usercash-purchase-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- 用户现金 - 消费场景支付 -->
+                <div id="relation-usercash-consume-card" class="bg-white rounded border border-neutral-200 p-6 mb-3 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-semibold text-neutral-700">消费场景支付</h2>
+                    </div>
+                    <div class="overflow-x-auto bg-white rounded border border-neutral-200">
+                        <table class="data-table w-full">
+                            <thead>
+                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                    <th class="w-12 text-center">序号</th>
+                                    <th class="text-left">消费场景</th>
+                                    <th class="text-left">订单号</th>
+                                    <th class="text-left">消费时间</th>
+                                    <th class="text-left">支付方式</th>
+                                    <th class="text-right">支付金额(元)</th>
+                                    <th class="text-left">状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="relation-usercash-consume-tbody"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -6044,6 +6574,6 @@
         </div>
     </div>
 
-    <script>lucide.createIcons(); initBillDropdown(); initMerchantBillSelectAll(); renderSettlementBillList(); renderSummary(); renderDetail(); renderVoucher(); renderGoods(); showPage('settlement-bill'); switchSubnav('settlement-bill'); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
+    <script>lucide.createIcons(); initBillDropdown(); initMerchantBillSelectAll(); renderSettlementBillList(); renderMerchantFundSummary(); renderSummary(); renderDetail(); renderVoucher(); renderGoods(); showPage('settlement-bill'); switchSubnav('settlement-bill'); document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReviewDrawer(); } });</script>
 </body>
 </html>

@@ -655,102 +655,6 @@
       flex: 1;
     }
 
-    /* 车辆选择 */
-    .vehicle-radio-group {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-sm);
-    }
-
-    .vehicle-radio-item {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-sm) var(--spacing-md);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--color-text-secondary);
-      transition: all 0.2s;
-    }
-
-    .vehicle-radio-item.selected {
-      border-color: var(--color-primary);
-      background: var(--color-primary-bg);
-      color: var(--color-primary);
-    }
-
-    .vehicle-radio-item input {
-      display: none;
-    }
-
-    .vehicle-radio-item .vehicle-info {
-      flex: 1;
-    }
-
-    .vehicle-add-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--spacing-xs);
-      padding: var(--spacing-sm) var(--spacing-md);
-      border: 1px dashed var(--color-border);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--color-primary);
-      transition: all 0.2s;
-    }
-
-    .vehicle-add-btn:hover {
-      border-color: var(--color-primary);
-      background: var(--color-primary-bg);
-    }
-
-    .form-input[readonly] {
-      background: var(--color-bg-light);
-      color: var(--color-text-muted);
-    }
-
-    /* 开关 */
-    .switch-group {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .switch {
-      width: 44px;
-      height: 24px;
-      background: var(--color-border);
-      border-radius: 12px;
-      position: relative;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .switch.active {
-      background: var(--color-primary);
-    }
-
-    .switch::after {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: var(--color-white);
-      border-radius: 50%;
-      top: 2px;
-      left: 2px;
-      transition: transform 0.2s;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-    }
-
-    .switch.active::after {
-      transform: translateX(20px);
-    }
-
     /* 详情页 */
     .detail-container {
       padding-bottom: 80px;
@@ -795,91 +699,6 @@
     .detail-info-row span {
       color: var(--color-text-primary);
       font-weight: 500;
-    }
-
-    /* 评价信息卡片 */
-    .evaluate-card {
-      margin: var(--spacing-md) var(--spacing-lg);
-      background: var(--color-white);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-card);
-      padding: var(--spacing-lg);
-    }
-
-    .evaluate-header {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      margin-bottom: var(--spacing-md);
-    }
-
-    .evaluate-header .evaluate-role {
-      font-size: 12px;
-      padding: 2px 8px;
-      border-radius: var(--radius-sm);
-      background: var(--color-primary-bg);
-      color: var(--color-primary);
-    }
-
-    .evaluate-overall {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      margin-bottom: var(--spacing-md);
-    }
-
-    .evaluate-stars {
-      display: flex;
-      gap: 2px;
-    }
-
-    .evaluate-stars i {
-      width: 16px;
-      height: 16px;
-      color: #FFD700;
-    }
-
-    .evaluate-stars i.empty-star {
-      color: var(--color-border);
-    }
-
-    .evaluate-score {
-      font-size: 16px;
-      font-weight: bold;
-      color: var(--color-warning);
-    }
-
-    .evaluate-dimensions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--spacing-sm);
-      margin-bottom: var(--spacing-md);
-    }
-
-    .evaluate-dim-item {
-      font-size: 12px;
-      color: var(--color-text-secondary);
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-    }
-
-    .evaluate-dim-label {
-      flex: 1;
-    }
-
-    .evaluate-dim-score {
-      font-weight: bold;
-      color: var(--color-warning);
-    }
-
-    .evaluate-content {
-      font-size: 13px;
-      color: var(--color-text-primary);
-      line-height: 1.6;
-      margin-top: var(--spacing-sm);
-      padding-top: var(--spacing-sm);
-      border-top: 1px solid var(--color-bg-light);
     }
 
     .detail-section {
@@ -1104,94 +923,6 @@
     .modal-footer .btn-primary {
       flex: 1;
       height: 44px;
-    }
-
-    /* 星级评分 */
-    .star-rating {
-      display: flex;
-      gap: var(--spacing-xs);
-      margin-bottom: var(--spacing-md);
-    }
-
-    .star-rating i {
-      cursor: pointer;
-      color: var(--color-border);
-      transition: color 0.2s;
-    }
-
-    .star-rating svg {
-      cursor: pointer;
-      color: var(--color-border);
-      transition: color 0.2s;
-    }
-
-    .star-rating i.active,
-    .star-rating i:hover,
-    .star-rating svg.active {
-      color: var(--color-warning);
-    }
-
-    .rating-dimension {
-      margin-bottom: var(--spacing-md);
-    }
-
-    .rating-dimension-label {
-      font-size: 13px;
-      color: var(--color-text-secondary);
-      margin-bottom: var(--spacing-xs);
-    }
-
-    .rating-dimension-stars {
-      display: flex;
-      gap: var(--spacing-xs);
-    }
-
-    .rating-dimension-stars i {
-      cursor: pointer;
-      color: var(--color-border);
-      transition: color 0.2s;
-    }
-
-    .rating-dimension-stars svg {
-      cursor: pointer;
-      color: var(--color-border);
-      transition: color 0.2s;
-    }
-
-    .rating-dimension-stars i.active,
-    .rating-dimension-stars svg.active {
-      color: var(--color-warning);
-    }
-
-    /* 取消原因 */
-    .cancel-reason-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-sm);
-      margin-bottom: var(--spacing-md);
-    }
-
-    .cancel-reason-item {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-sm) var(--spacing-md);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 14px;
-      color: var(--color-text-secondary);
-      transition: all 0.2s;
-    }
-
-    .cancel-reason-item.selected {
-      border-color: var(--color-primary);
-      background: var(--color-primary-bg);
-      color: var(--color-primary);
-    }
-
-    .cancel-reason-item input {
-      display: none;
     }
 
     /* 列表动画 */
@@ -1441,24 +1172,7 @@
       <div class="detail-footer" id="orderDetailFooter"></div>
     </div>
 
-    <!-- 弹窗1：评价弹窗 -->
-    <div class="modal" id="modalEvaluate">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title" id="evaluateModalTitle">评价</div>
-          <div class="modal-close" id="evaluateModalClose">
-            <i data-lucide="x" style="width: 20px; height: 20px;"></i>
-          </div>
-        </div>
-        <div class="modal-body" id="evaluateModalBody"></div>
-        <div class="modal-footer">
-          <button class="btn-secondary" id="evaluateCancelBtn">取消</button>
-          <button class="btn-primary" id="evaluateSubmitBtn">提交评价</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 弹窗2：确认弹窗 -->
+    <!-- 弹窗1：确认弹窗 -->
     <div class="modal" id="modalConfirm">
       <div class="modal-content">
         <div class="modal-header">
@@ -1475,7 +1189,7 @@
       </div>
     </div>
 
-    <!-- 弹窗3：取消原因弹窗 -->
+    <!-- 弹窗2：取消原因弹窗 -->
     <div class="modal" id="modalCancel">
       <div class="modal-content">
         <div class="modal-header">
@@ -1516,29 +1230,15 @@
     ];
 
     var orders = [
-      { id: 'ORD20260520001', route: '合肥 → 上海', summary: '10吨电子产品', amount: '¥350/吨', status: 'completed', role: 'owner', date: '2026-05-20', phone: '158****1111', evaluated: true },
-      { id: 'ORD20260521002', route: '上海 → 合肥', summary: '9.6米高栏车', amount: '¥340/吨', status: 'completed', role: 'driver', date: '2026-05-21', phone: '138****1234', evaluated: true },
-      { id: 'ORD20260523003', route: '杭州 → 合肥', summary: '6吨食品', amount: '¥360/吨', status: 'completed', role: 'driver', date: '2026-05-23', phone: '155****5555', evaluated: false },
-      { id: 'ORD20260522003', route: '南京 → 合肥', summary: '5吨建材', amount: '¥240/吨', status: 'completed', role: 'owner', date: '2026-05-22', phone: '159****2222', evaluated: false },
-      { id: 'ORD20260522004', route: '南京 → 合肥', summary: '4.2米平板车', amount: '¥240/吨', status: 'transporting', role: 'driver', date: '2026-05-22', phone: '136****3456', evaluated: false },
-      { id: 'ORD20260524005', route: '上海 → 南京', summary: '5吨食品', amount: '¥360/吨', status: 'accepted', role: 'owner', date: '2026-05-24', phone: '155****5555', evaluated: false },
-      { id: 'ORD20260525006', route: '合肥 → 上海', summary: '15吨钢材', amount: '¥300/吨', status: 'accepted', role: 'driver', date: '2026-05-25', phone: '137****9012', evaluated: false },
-      { id: 'ORD20260525007', route: '合肥 → 芜湖', summary: '3吨日用品', amount: '¥267/吨', status: 'cancelled', role: 'owner', date: '2026-05-25', cancelReason: '货物已自行处理', cancelBy: '货主', phone: '153****6666', evaluated: false },
-      { id: 'ORD20260525008', route: '杭州 → 合肥', summary: '8吨化工品', amount: '面议', status: 'cancelled', role: 'driver', date: '2026-05-25', cancelReason: '车辆故障无法出行', cancelBy: '司机', phone: '156****4444', evaluated: false }
-    ];
-
-    var myVehicles = [
-      { plate: '皖 A12345', model: '东风天龙', type: '9.6米高栏', size: '9.6米', bodyType: '高栏', capacity: 10 },
-      { plate: '皖 B67890', model: '解放 J6', type: '13米平板', size: '13米', bodyType: '平板', capacity: 20 },
-      { plate: '皖 C11111', model: '陕汽德龙', type: '4.2米厢式', size: '4.2米', bodyType: '厢式', capacity: 3 }
-    ];
-
-    var cancelReasons = [
-      '临时有变，无法执行',
-      '找到更合适的合作方',
-      '货物/车辆信息有误',
-      '对方无法按时履约',
-      '其他原因'
+      { id: 'ORD20260520001', route: '合肥 → 上海', summary: '10吨电子产品', amount: '¥350/吨', status: 'completed', role: 'owner', date: '2026-05-20', phone: '158****1111' },
+      { id: 'ORD20260521002', route: '上海 → 合肥', summary: '9.6米高栏车', amount: '¥340/吨', status: 'completed', role: 'driver', date: '2026-05-21', phone: '138****1234' },
+      { id: 'ORD20260523003', route: '杭州 → 合肥', summary: '6吨食品', amount: '¥360/吨', status: 'completed', role: 'driver', date: '2026-05-23', phone: '155****5555' },
+      { id: 'ORD20260522003', route: '南京 → 合肥', summary: '5吨建材', amount: '¥240/吨', status: 'completed', role: 'owner', date: '2026-05-22', phone: '159****2222' },
+      { id: 'ORD20260522004', route: '南京 → 合肥', summary: '4.2米平板车', amount: '¥240/吨', status: 'transporting', role: 'driver', date: '2026-05-22', phone: '136****3456' },
+      { id: 'ORD20260524005', route: '上海 → 南京', summary: '5吨食品', amount: '¥360/吨', status: 'accepted', role: 'owner', date: '2026-05-24', phone: '155****5555' },
+      { id: 'ORD20260525006', route: '合肥 → 上海', summary: '15吨钢材', amount: '¥300/吨', status: 'accepted', role: 'driver', date: '2026-05-25', phone: '137****9012' },
+      { id: 'ORD20260525007', route: '合肥 → 芜湖', summary: '3吨日用品', amount: '¥267/吨', status: 'cancelled', role: 'owner', date: '2026-05-25', cancelReason: '货物已自行处理', cancelBy: '货主', phone: '153****6666' },
+      { id: 'ORD20260525008', route: '杭州 → 合肥', summary: '8吨化工品', amount: '面议', status: 'cancelled', role: 'driver', date: '2026-05-25', cancelReason: '车辆故障无法出行', cancelBy: '司机', phone: '156****4444' }
     ];
 
     // ===== 状态 =====
@@ -1794,8 +1494,7 @@
             status: 'accepted',
             role: 'driver',
             date: new Date().toISOString().slice(0, 10),
-            phone: cargo.phone,
-            evaluated: false
+            phone: cargo.phone
           };
           orders.unshift(newOrder);
           showToast('抢单成功，订单号：' + newOrder.id);
@@ -1828,8 +1527,7 @@
             status: 'accepted',
             role: 'owner',
             date: new Date().toISOString().slice(0, 10),
-            phone: vehicle.phone,
-            evaluated: false
+            phone: vehicle.phone
           };
           orders.unshift(newOrder);
           showToast('下单成功，订单号：' + newOrder.id);
@@ -1871,25 +1569,10 @@
         container.innerHTML = renderOwnerForm();
       }
 
-      bindFormEvents(container);
       showView('publish');
     }
 
     function renderDriverForm() {
-      var vehicleOptionsHtml = '';
-      for (var i = 0; i < myVehicles.length; i++) {
-        var v = myVehicles[i];
-        vehicleOptionsHtml +=
-          '<div class="vehicle-radio-item" data-vehicle-index="' + i + '">' +
-            '<input type="radio" name="pubVehicle" value="' + i + '">' +
-            '<div class="vehicle-info">' + v.plate + ' · ' + v.model + ' · ' + v.type + ' · 可载' + v.capacity + '吨</div>' +
-          '</div>';
-      }
-      vehicleOptionsHtml +=
-        '<div class="vehicle-add-btn" id="addVehicleBtn">' +
-          '<i data-lucide="plus" style="width: 14px; height: 14px;"></i> 添加新车辆' +
-        '</div>';
-
       return (
         '<div class="form-card">' +
           '<div class="form-group">' +
@@ -1899,10 +1582,6 @@
           '<div class="form-group">' +
             '<label class="form-label">目的地 <span class="required">*</span></label>' +
             '<input type="text" class="form-input" id="pubDest" placeholder="请输入目的地">' +
-          '</div>' +
-          '<div class="form-group">' +
-            '<label class="form-label">我的车辆 <span class="required">*</span></label>' +
-            '<div class="vehicle-radio-group" id="pubVehicleGroup">' + vehicleOptionsHtml + '</div>' +
           '</div>' +
           '<div class="form-group">' +
             '<label class="form-label">车型 <span class="required">*</span></label>' +
@@ -1935,13 +1614,7 @@
           '</div>' +
           '<div class="form-group">' +
             '<label class="form-label">运费报价</label>' +
-            '<input type="text" class="form-input" id="pubPrice" placeholder="请输入运费报价（元/吨）或"面议"">' +
-          '</div>' +
-          '<div class="form-group">' +
-            '<div class="switch-group">' +
-              '<label class="form-label" style="margin-bottom: 0;">是否接受议价</label>' +
-              '<div class="switch active" id="pubNegotiable"></div>' +
-            '</div>' +
+            '<input type="text" class="form-input" id="pubPrice" placeholder="请输入运费报价（元/吨）「面议」">' +
           '</div>' +
           '<div class="form-group">' +
             '<label class="form-label">备注</label>' +
@@ -1997,13 +1670,7 @@
           '</div>' +
           '<div class="form-group">' +
             '<label class="form-label">运费预算</label>' +
-            '<input type="text" class="form-input" id="pubPrice" placeholder="请输入运费预算（元/吨）或"面议"">' +
-          '</div>' +
-          '<div class="form-group">' +
-            '<div class="switch-group">' +
-              '<label class="form-label" style="margin-bottom: 0;">是否允许议价</label>' +
-              '<div class="switch active" id="pubNegotiable"></div>' +
-            '</div>' +
+            '<input type="text" class="form-input" id="pubPrice" placeholder="请输入运费预算（元/吨）「面议」">' +
           '</div>' +
           '<div class="form-group">' +
             '<label class="form-label">备注</label>' +
@@ -2011,212 +1678,6 @@
           '</div>' +
         '</div>'
       );
-    }
-
-    function bindFormEvents(container) {
-      var switches = container.querySelectorAll('.switch');
-      for (var i = 0; i < switches.length; i++) {
-        switches[i].addEventListener('click', function() {
-          this.classList.toggle('active');
-        });
-      }
-
-      // 车辆选择事件（司机发布运力表单）
-      var vehicleItems = container.querySelectorAll('.vehicle-radio-item');
-      for (var i = 0; i < vehicleItems.length; i++) {
-        vehicleItems[i].addEventListener('click', function() {
-          // 取消所有选中
-          for (var j = 0; j < vehicleItems.length; j++) {
-            vehicleItems[j].classList.remove('selected');
-            var radio = vehicleItems[j].querySelector('input');
-            if (radio) radio.checked = false;
-          }
-          // 选中当前
-          this.classList.add('selected');
-          var radio = this.querySelector('input');
-          if (radio) radio.checked = true;
-
-          // 自动填充车型、车辆类型、可载重量
-          var idx = parseInt(this.getAttribute('data-vehicle-index'));
-          if (!isNaN(idx) && myVehicles[idx]) {
-            var v = myVehicles[idx];
-            var sizeEl = document.getElementById('pubVehicleSize');
-            var typeEl = document.getElementById('pubVehicleType');
-            var capEl = document.getElementById('pubCapacity');
-            if (sizeEl) { sizeEl.value = v.size; sizeEl.setAttribute('readonly', true); sizeEl.disabled = true; }
-            if (typeEl) { typeEl.value = v.bodyType; typeEl.setAttribute('readonly', true); typeEl.disabled = true; }
-            if (capEl) { capEl.value = v.capacity; capEl.readOnly = true; }
-          }
-        });
-      }
-
-      // 添加新车辆按钮
-      var addVehicleBtn = container.querySelector('#addVehicleBtn');
-      if (addVehicleBtn) {
-        addVehicleBtn.addEventListener('click', function() {
-          // 取消已绑定车辆的选中
-          for (var j = 0; j < vehicleItems.length; j++) {
-            vehicleItems[j].classList.remove('selected');
-            var radio = vehicleItems[j].querySelector('input');
-            if (radio) radio.checked = false;
-          }
-          // 恢复车型/车辆类型/可载重量为可编辑
-          var sizeEl = document.getElementById('pubVehicleSize');
-          var typeEl = document.getElementById('pubVehicleType');
-          var capEl = document.getElementById('pubCapacity');
-          if (sizeEl) { sizeEl.value = ''; sizeEl.removeAttribute('readonly'); sizeEl.disabled = false; }
-          if (typeEl) { typeEl.value = ''; typeEl.removeAttribute('readonly'); typeEl.disabled = false; }
-          if (capEl) { capEl.value = ''; capEl.readOnly = false; }
-          // 打开添加新车辆弹窗
-          openAddVehicleModal();
-        });
-      }
-    }
-
-    // ===== 添加新车辆弹窗 =====
-    function openAddVehicleModal() {
-      var modal = document.getElementById('modalConfirm');
-      if (!modal) return;
-
-      var titleEl = document.getElementById('confirmModalTitle');
-      if (titleEl) titleEl.textContent = '添加新车辆';
-
-      var bodyEl = document.getElementById('confirmModalBody');
-      if (!bodyEl) return;
-
-      bodyEl.innerHTML =
-        '<div class="form-group">' +
-          '<label class="form-label">车牌号 <span class="required">*</span></label>' +
-          '<input type="text" class="form-input" id="newVehiclePlate" placeholder="请输入车牌号">' +
-        '</div>' +
-        '<div class="form-group">' +
-          '<label class="form-label">车型 <span class="required">*</span></label>' +
-          '<input type="text" class="form-input" id="newVehicleModel" placeholder="请输入车型（如 东风天龙）">' +
-        '</div>' +
-        '<div class="form-group">' +
-          '<label class="form-label">车辆类型 <span class="required">*</span></label>' +
-          '<input type="text" class="form-input" id="newVehicleType" placeholder="如 9.6米高栏">' +
-        '</div>' +
-        '<div class="form-group">' +
-          '<label class="form-label">可载重量（吨）<span class="required">*</span></label>' +
-          '<input type="number" class="form-input" id="newVehicleCapacity" placeholder="请输入可载重量">' +
-        '</div>';
-
-      confirmCallback = function() {
-        var plateEl = document.getElementById('newVehiclePlate');
-        var modelEl = document.getElementById('newVehicleModel');
-        var typeEl = document.getElementById('newVehicleType');
-        var capEl = document.getElementById('newVehicleCapacity');
-
-        if (!plateEl || !plateEl.value.trim()) { showToast('请输入车牌号'); return; }
-        if (!modelEl || !modelEl.value.trim()) { showToast('请输入车型'); return; }
-        if (!typeEl || !typeEl.value.trim()) { showToast('请输入车辆类型'); return; }
-        if (!capEl || !capEl.value.trim()) { showToast('请输入可载重量'); return; }
-
-        // 解析车辆类型中的尺寸和车身类型
-        var typeStr = typeEl.value.trim();
-        var size = '';
-        var bodyType = '';
-        var sizeMatch = typeStr.match(/(\d+\.?\d*)米/);
-        if (sizeMatch) size = sizeMatch[1] + '米';
-        if (typeStr.indexOf('高栏') !== -1) bodyType = '高栏';
-        else if (typeStr.indexOf('平板') !== -1) bodyType = '平板';
-        else if (typeStr.indexOf('厢式') !== -1) bodyType = '厢式';
-        else if (typeStr.indexOf('冷藏') !== -1) bodyType = '冷藏';
-        else if (typeStr.indexOf('危险品') !== -1) bodyType = '危险品';
-        else bodyType = typeStr;
-
-        var newVehicle = {
-          plate: plateEl.value.trim(),
-          model: modelEl.value.trim(),
-          type: typeStr,
-          size: size,
-          bodyType: bodyType,
-          capacity: parseInt(capEl.value.trim()) || 0
-        };
-
-        myVehicles.push(newVehicle);
-        var newIndex = myVehicles.length - 1;
-
-        // 自动填充表单
-        var sizeSelect = document.getElementById('pubVehicleSize');
-        var typeSelect = document.getElementById('pubVehicleType');
-        var capInput = document.getElementById('pubCapacity');
-        if (sizeSelect && size) { sizeSelect.value = size; sizeSelect.disabled = true; }
-        if (typeSelect && bodyType) { typeSelect.value = bodyType; typeSelect.disabled = true; }
-        if (capInput) { capInput.value = newVehicle.capacity; capInput.readOnly = true; }
-
-        // 重新渲染车辆选择列表
-        var group = document.getElementById('pubVehicleGroup');
-        if (group) {
-          var vehicleOptionsHtml = '';
-          for (var i = 0; i < myVehicles.length; i++) {
-            var v = myVehicles[i];
-            var isSelected = (i === newIndex);
-            vehicleOptionsHtml +=
-              '<div class="vehicle-radio-item' + (isSelected ? ' selected' : '') + '" data-vehicle-index="' + i + '">' +
-                '<input type="radio" name="pubVehicle" value="' + i + '"' + (isSelected ? ' checked' : '') + '>' +
-                '<div class="vehicle-info">' + v.plate + ' · ' + v.model + ' · ' + v.type + ' · 可载' + v.capacity + '吨</div>' +
-              '</div>';
-          }
-          vehicleOptionsHtml +=
-            '<div class="vehicle-add-btn" id="addVehicleBtn">' +
-              '<i data-lucide="plus" style="width: 14px; height: 14px;"></i> 添加新车辆' +
-            '</div>';
-          group.innerHTML = vehicleOptionsHtml;
-
-          // 重新绑定事件
-          var newVehicleItems = group.querySelectorAll('.vehicle-radio-item');
-          for (var i = 0; i < newVehicleItems.length; i++) {
-            newVehicleItems[i].addEventListener('click', function() {
-              for (var j = 0; j < newVehicleItems.length; j++) {
-                newVehicleItems[j].classList.remove('selected');
-                var r = newVehicleItems[j].querySelector('input');
-                if (r) r.checked = false;
-              }
-              this.classList.add('selected');
-              var r = this.querySelector('input');
-              if (r) r.checked = true;
-
-              var idx = parseInt(this.getAttribute('data-vehicle-index'));
-              if (!isNaN(idx) && myVehicles[idx]) {
-                var vv = myVehicles[idx];
-                var sEl = document.getElementById('pubVehicleSize');
-                var tEl = document.getElementById('pubVehicleType');
-                var cEl = document.getElementById('pubCapacity');
-                if (sEl) { sEl.value = vv.size; sEl.disabled = true; }
-                if (tEl) { tEl.value = vv.bodyType; tEl.disabled = true; }
-                if (cEl) { cEl.value = vv.capacity; cEl.readOnly = true; }
-              }
-            });
-          }
-
-          var newAddBtn = group.querySelector('#addVehicleBtn');
-          if (newAddBtn) {
-            newAddBtn.addEventListener('click', function() {
-              for (var j = 0; j < newVehicleItems.length; j++) {
-                newVehicleItems[j].classList.remove('selected');
-                var r = newVehicleItems[j].querySelector('input');
-                if (r) r.checked = false;
-              }
-              var sEl = document.getElementById('pubVehicleSize');
-              var tEl = document.getElementById('pubVehicleType');
-              var cEl = document.getElementById('pubCapacity');
-              if (sEl) { sEl.value = ''; sEl.disabled = false; }
-              if (tEl) { tEl.value = ''; tEl.disabled = false; }
-              if (cEl) { cEl.value = ''; cEl.readOnly = false; }
-              openAddVehicleModal();
-            });
-          }
-        }
-
-        closeConfirmModal();
-        showToast('新车辆已添加');
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-      };
-
-      modal.classList.add('show');
-      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function submitPublish() {
@@ -2233,8 +1694,6 @@
       }
 
       if (currentRole === 'driver') {
-        var selectedVehicle = document.querySelector('#pubVehicleGroup .vehicle-radio-item.selected');
-        if (!selectedVehicle) { showToast('请选择车辆'); return; }
         var vehicleSize = document.getElementById('pubVehicleSize');
         var vehicleType = document.getElementById('pubVehicleType');
         var capacity = document.getElementById('pubCapacity');
@@ -2335,7 +1794,6 @@
             '<div class="order-info-row"><i data-lucide="calendar"></i> ' + o.date + '</div>' +
             '<div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--spacing-sm);">' +
               getStatusTag(o.status) +
-              (o.evaluated ? '<span class="tag tag-success">已评价</span>' : '') +
             '</div>' +
           '</div>';
       }
@@ -2440,55 +1898,11 @@
           '<div class="detail-info-row"><i data-lucide="phone"></i> 对方电话：<span>' + order.phone + '</span></div>' +
         '</div>' +
         timelineHtml +
-        cancelInfo +
-        renderEvaluateInfo(order);
+        cancelInfo;
 
       // 渲染底部操作按钮
       renderOrderDetailFooter(order);
       showView('order-detail');
-    }
-
-    function renderEvaluateInfo(order) {
-      if (!order.evaluated) return '';
-
-      var targetName = order.role === 'owner' ? '司机' : '货主';
-      var evaluatorName = order.role === 'owner' ? '货主' : '司机';
-
-      // 模拟评价数据
-      var evaluateData = order.evaluateData || {
-        overall: 4,
-        attitude: 5,
-        efficiency: 4,
-        price: 4,
-        integrity: 5,
-        content: '合作很愉快，非常专业。'
-      };
-
-      // 渲染星星
-      var overallStarsHtml = '';
-      for (var i = 1; i <= 5; i++) {
-        overallStarsHtml += '<i data-lucide="star"' + (i > evaluateData.overall ? ' class="empty-star"' : '') + '></i>';
-      }
-
-      return (
-        '<div class="evaluate-card">' +
-          '<div class="evaluate-header">' +
-            '<span class="evaluate-role">评价信息</span>' +
-            '<span style="font-size: 13px; color: var(--color-text-secondary);">' + evaluatorName + '评价' + targetName + '</span>' +
-          '</div>' +
-          '<div class="evaluate-overall">' +
-            '<div class="evaluate-stars">' + overallStarsHtml + '</div>' +
-            '<span class="evaluate-score">' + evaluateData.overall + '.0</span>' +
-          '</div>' +
-          '<div class="evaluate-dimensions">' +
-            '<div class="evaluate-dim-item"><span class="evaluate-dim-label">沟通态度</span><span class="evaluate-dim-score">' + evaluateData.attitude + '.0</span></div>' +
-            '<div class="evaluate-dim-item"><span class="evaluate-dim-label">装卸效率</span><span class="evaluate-dim-score">' + evaluateData.efficiency + '.0</span></div>' +
-            '<div class="evaluate-dim-item"><span class="evaluate-dim-label">运费合理</span><span class="evaluate-dim-score">' + evaluateData.price + '.0</span></div>' +
-            '<div class="evaluate-dim-item"><span class="evaluate-dim-label">货物完好</span><span class="evaluate-dim-score">' + evaluateData.integrity + '.0</span></div>' +
-          '</div>' +
-          '<div class="evaluate-content">' + evaluateData.content + '</div>' +
-        '</div>'
-      );
     }
 
     function renderOrderDetailFooter(order) {
@@ -2519,11 +1933,6 @@
         } else {
           buttons.push('<button class="action-btn primary btn-block" onclick="confirmDeliver(\'' + order.id + '\')"><i data-lucide="check-circle" style="width: 16px; height: 16px;"></i> 司机确认送达</button>');
           buttons.push('<button class="action-btn btn-block" onclick="contactPerson(\'' + order.phone + '\', \'货主\')"><i data-lucide="phone" style="width: 16px; height: 16px;"></i> 联系货主</button>');
-        }
-      } else if (order.status === 'completed') {
-        if (!order.evaluated) {
-          var evaluateLabel = order.role === 'owner' ? '货主评价司机' : '司机评价货主';
-          buttons.push('<button class="action-btn primary btn-block" onclick="openEvaluateModal(\'' + order.id + '\')"><i data-lucide="star" style="width: 16px; height: 16px;"></i> ' + evaluateLabel + '</button>');
         }
       } else if (order.status === 'cancelled') {
         if (order.cancelReason) {
@@ -2603,31 +2012,11 @@
       var body = document.getElementById('cancelModalBody');
       if (!body) return;
 
-      var reasonHtml = '';
-      for (var i = 0; i < cancelReasons.length; i++) {
-        reasonHtml +=
-          '<div class="cancel-reason-item" data-reason="' + cancelReasons[i] + '">' +
-            cancelReasons[i] +
-          '</div>';
-      }
-
       body.innerHTML =
-        '<div class="cancel-reason-list" id="cancelReasonList">' + reasonHtml + '</div>' +
         '<div class="form-group">' +
-          '<label class="form-label">补充说明</label>' +
-          '<textarea class="form-textarea" id="cancelSupplement" placeholder="请补充说明取消原因（选填）..." style="min-height: 60px;"></textarea>' +
+          '<label class="form-label">取消原因 <span class="required">*</span></label>' +
+          '<textarea class="form-textarea" id="cancelReason" placeholder="请输入取消原因..." style="min-height: 80px;"></textarea>' +
         '</div>';
-
-      // 绑定选择事件
-      var reasonItems = body.querySelectorAll('.cancel-reason-item');
-      for (var i = 0; i < reasonItems.length; i++) {
-        reasonItems[i].addEventListener('click', function() {
-          for (var j = 0; j < reasonItems.length; j++) {
-            reasonItems[j].classList.remove('selected');
-          }
-          this.classList.add('selected');
-        });
-      }
 
       modal.classList.add('show');
       modal.setAttribute('data-order-id', orderId);
@@ -2643,18 +2032,14 @@
       if (!modal) return;
 
       var orderId = modal.getAttribute('data-order-id');
-      var selectedReason = modal.querySelector('.cancel-reason-item.selected');
-      var supplement = document.getElementById('cancelSupplement');
+      var reasonInput = document.getElementById('cancelReason');
 
-      if (!selectedReason) {
-        showToast('请选择取消原因');
+      if (!reasonInput || !reasonInput.value.trim()) {
+        showToast('请输入取消原因');
         return;
       }
 
-      var reason = selectedReason.getAttribute('data-reason');
-      if (supplement && supplement.value.trim()) {
-        reason += '；' + supplement.value.trim();
-      }
+      var reason = reasonInput.value.trim();
 
       for (var i = 0; i < orders.length; i++) {
         if (orders[i].id === orderId) {
@@ -2667,171 +2052,6 @@
 
       closeCancelModal();
       showToast('订单已取消');
-      openOrderDetail(orderId);
-    }
-
-    // ===== 评价弹窗 =====
-    function openEvaluateModal(orderId) {
-      var modal = document.getElementById('modalEvaluate');
-      if (!modal) return;
-
-      var order = null;
-      for (var i = 0; i < orders.length; i++) {
-        if (orders[i].id === orderId) { order = orders[i]; break; }
-      }
-      if (!order) return;
-
-      var targetName = order.role === 'owner' ? '司机' : '货主';
-
-      var titleEl = document.getElementById('evaluateModalTitle');
-      if (titleEl) titleEl.textContent = '评价' + targetName;
-
-      var body = document.getElementById('evaluateModalBody');
-      if (!body) return;
-
-      body.innerHTML =
-        '<div class="form-group">' +
-          '<label class="form-label">总体评分 <span class="required">*</span></label>' +
-          '<div class="star-rating" id="overallRating">' +
-            '<i data-lucide="star" data-rating="1"></i>' +
-            '<i data-lucide="star" data-rating="2"></i>' +
-            '<i data-lucide="star" data-rating="3"></i>' +
-            '<i data-lucide="star" data-rating="4"></i>' +
-            '<i data-lucide="star" data-rating="5"></i>' +
-          '</div>' +
-        '</div>' +
-        '<div class="rating-dimension">' +
-          '<div class="rating-dimension-label">沟通态度</div>' +
-          '<div class="rating-dimension-stars" data-dim="attitude">' +
-            '<i data-lucide="star" data-rating="1"></i>' +
-            '<i data-lucide="star" data-rating="2"></i>' +
-            '<i data-lucide="star" data-rating="3"></i>' +
-            '<i data-lucide="star" data-rating="4"></i>' +
-            '<i data-lucide="star" data-rating="5"></i>' +
-          '</div>' +
-        '</div>' +
-        '<div class="rating-dimension">' +
-          '<div class="rating-dimension-label">装卸效率</div>' +
-          '<div class="rating-dimension-stars" data-dim="efficiency">' +
-            '<i data-lucide="star" data-rating="1"></i>' +
-            '<i data-lucide="star" data-rating="2"></i>' +
-            '<i data-lucide="star" data-rating="3"></i>' +
-            '<i data-lucide="star" data-rating="4"></i>' +
-            '<i data-lucide="star" data-rating="5"></i>' +
-          '</div>' +
-        '</div>' +
-        '<div class="rating-dimension">' +
-          '<div class="rating-dimension-label">运费合理</div>' +
-          '<div class="rating-dimension-stars" data-dim="price">' +
-            '<i data-lucide="star" data-rating="1"></i>' +
-            '<i data-lucide="star" data-rating="2"></i>' +
-            '<i data-lucide="star" data-rating="3"></i>' +
-            '<i data-lucide="star" data-rating="4"></i>' +
-            '<i data-lucide="star" data-rating="5"></i>' +
-          '</div>' +
-        '</div>' +
-        '<div class="rating-dimension">' +
-          '<div class="rating-dimension-label">货物完好</div>' +
-          '<div class="rating-dimension-stars" data-dim="integrity">' +
-            '<i data-lucide="star" data-rating="1"></i>' +
-            '<i data-lucide="star" data-rating="2"></i>' +
-            '<i data-lucide="star" data-rating="3"></i>' +
-            '<i data-lucide="star" data-rating="4"></i>' +
-            '<i data-lucide="star" data-rating="5"></i>' +
-          '</div>' +
-        '</div>' +
-        '<div class="form-group">' +
-          '<label class="form-label">文字评价</label>' +
-          '<textarea class="form-textarea" id="evaluateContent" placeholder="请输入您的评价..." style="min-height: 80px;"></textarea>' +
-        '</div>';
-
-      modal.classList.add('show');
-      modal.setAttribute('data-order-id', orderId);
-
-      // 先渲染 Lucide 图标，再绑定事件委托
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-
-      // 总体评分 - 事件委托
-      var overallContainer = document.getElementById('overallRating');
-      if (overallContainer) {
-        overallContainer.addEventListener('click', function(e) {
-          var starEl = e.target.closest('svg');
-          if (!starEl) return;
-          var parent = starEl.closest('.star-rating');
-          if (!parent) return;
-          var rating = parseInt(parent.getAttribute('data-click-rating') || '0');
-          // 查找是第几个 SVG
-          var svgSiblings = parent.querySelectorAll('svg');
-          for (var i = 0; i < svgSiblings.length; i++) {
-            if (svgSiblings[i] === starEl) { rating = i + 1; break; }
-          }
-          for (var j = 0; j < svgSiblings.length; j++) {
-            svgSiblings[j].classList.toggle('active', j < rating);
-          }
-        });
-      }
-
-      // 维度评分 - 事件委托
-      var dimGroups = body.querySelectorAll('.rating-dimension-stars');
-      for (var g = 0; g < dimGroups.length; g++) {
-        (function(group) {
-          group.addEventListener('click', function(e) {
-            var starEl = e.target.closest('svg');
-            if (!starEl) return;
-            var svgSiblings = group.querySelectorAll('svg');
-            for (var i = 0; i < svgSiblings.length; i++) {
-              if (svgSiblings[i] === starEl) {
-                var rating = i + 1;
-                for (var j = 0; j < svgSiblings.length; j++) {
-                  svgSiblings[j].classList.toggle('active', j < rating);
-                }
-                break;
-              }
-            }
-          });
-        })(dimGroups[g]);
-      }
-    }
-
-    function closeEvaluateModal() {
-      var modal = document.getElementById('modalEvaluate');
-      if (modal) modal.classList.remove('show');
-    }
-
-    function submitEvaluate() {
-      var modal = document.getElementById('modalEvaluate');
-      if (!modal) return;
-
-      var orderId = modal.getAttribute('data-order-id');
-      var overallStars = modal.querySelectorAll('#overallRating i.active');
-      var content = document.getElementById('evaluateContent');
-
-      if (overallStars.length === 0) {
-        showToast('请选择总体评分');
-        return;
-      }
-
-      for (var i = 0; i < orders.length; i++) {
-        if (orders[i].id === orderId) {
-          orders[i].evaluated = true;
-          orders[i].evaluation = {
-            rating: overallStars.length,
-            content: content ? content.value.trim() : '',
-            dimensions: {}
-          };
-          // 收集维度评分
-          var dimGroups = modal.querySelectorAll('.rating-dimension-stars');
-          for (var g = 0; g < dimGroups.length; g++) {
-            var dimName = dimGroups[g].getAttribute('data-dim');
-            var activeStars = dimGroups[g].querySelectorAll('i.active');
-            orders[i].evaluation.dimensions[dimName] = activeStars.length;
-          }
-          break;
-        }
-      }
-
-      closeEvaluateModal();
-      showToast('评价已提交');
       openOrderDetail(orderId);
     }
 
@@ -2999,29 +2219,6 @@
       if (modalCancel) {
         modalCancel.addEventListener('click', function(e) {
           if (e.target === this) closeCancelModal();
-        });
-      }
-
-      // 评价弹窗
-      var evaluateSubmitBtn = document.getElementById('evaluateSubmitBtn');
-      if (evaluateSubmitBtn) {
-        evaluateSubmitBtn.addEventListener('click', submitEvaluate);
-      }
-
-      var evaluateCancelBtn = document.getElementById('evaluateCancelBtn');
-      if (evaluateCancelBtn) {
-        evaluateCancelBtn.addEventListener('click', closeEvaluateModal);
-      }
-
-      var evaluateModalClose = document.getElementById('evaluateModalClose');
-      if (evaluateModalClose) {
-        evaluateModalClose.addEventListener('click', closeEvaluateModal);
-      }
-
-      var modalEvaluate = document.getElementById('modalEvaluate');
-      if (modalEvaluate) {
-        modalEvaluate.addEventListener('click', function(e) {
-          if (e.target === this) closeEvaluateModal();
         });
       }
 

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>皖美e行 - 订单管理 - 物流匹配</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#FF6B35', light: '#FFF7E6', dark: '#E55A2B' },
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                        neutral: {
+                            50: '#F9FAFB', 100: '#F3F4F6', 200: '#E5E7EB', 300: '#D1D5DB',
+                            400: '#9CA3AF', 500: '#6B7280', 600: '#4B5563', 700: '#374151',
+                            800: '#1F2937', 900: '#111827'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .nav-item { cursor: pointer; }
+        .nav-item:hover { background-color: #d0d0d0; }
+        .subnav-item { cursor: pointer; transition: background-color 0.2s ease; font-size: 14px; }
+        .subnav-item:hover { background-color: #d0d0d0; }
+        .subnav-item.active { color: rgba(26, 188, 156, 0.8); }
+        .table-row { transition: background-color 0.2s ease; }
+        .table-row:hover { background-color: #FFF7E6 !important; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500; border-radius: 0.25rem; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .btn-md { height: 32px; padding: 0 1rem; font-size: 14px; }
+        .btn-sm { height: 28px; padding: 0 0.75rem; font-size: 12px; }
+        .btn-primary { background-color: #FF6B35; color: white; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { background-color: white; border-color: #D1D5DB; color: #6B7280; }
+        .btn-secondary:hover { background-color: #F3F4F6; }
+        .btn-text { background: transparent; border: none; color: #FF6B35; padding: 0; height: auto; }
+        .btn-text:hover { text-decoration: underline; }
+        .status-badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .status-success { background-color: #ECFDF5; color: #10B981; }
+        .status-info { background-color: #EFF6FF; color: #3B82F6; }
+        .status-warning { background-color: #FFFBEB; color: #F59E0B; }
+        .status-cancelled { background-color: #F3F4F6; color: #6B7280; }
+        .inline-label-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; min-width: 200px; }
+        .inline-label-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
+        .inline-label-input input, .inline-label-input select { flex: 1; height: 100%; padding: 0 12px; border: none; outline: none; font-size: 14px; background: transparent; }
+        .inline-label-input select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+        .date-range-input { display: flex; align-items: center; height: 32px; border: 1px solid #E5E7EB; border-radius: 3px; background: white; min-width: 280px; }
+        .date-range-input .label { padding: 0 12px; border-right: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; white-space: nowrap; }
+        .date-range-input input { flex: 1; height: 100%; padding: 0 8px; border: none; outline: none; font-size: 13px; background: transparent; min-width: 0; }
+        .date-range-input .separator { padding: 0 6px; color: #9CA3AF; font-size: 13px; }
+        .data-table th { padding: 12px 8px; font-weight: 600; font-size: 14px; vertical-align: middle; }
+        .data-table td { padding: 12px 8px; font-size: 14px; vertical-align: middle; }
+        .drawer-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.5); z-index: 999; display: flex; justify-content: flex-end; }
+        .drawer-overlay.hidden { display: none; }
+        .drawer-container { background: white; width: 100%; max-width: 480px; height: 100%; display: flex; flex-direction: column; box-shadow: -4px 0 16px rgba(0,0,0,0.12); animation: drawerSlideIn 0.3s ease; }
+        @keyframes drawerSlideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .order-timeline { position: relative; padding-left: 20px; }
+        .order-timeline::before { content: ''; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 2px; background: #E5E7EB; }
+        .timeline-item { position: relative; padding-bottom: 16px; }
+        .timeline-item:last-child { padding-bottom: 0; }
+        .timeline-dot { position: absolute; left: -20px; top: 3px; width: 12px; height: 12px; border-radius: 50%; background: #9CA3AF; border: 2px solid #fff; box-shadow: 0 0 0 1px #E5E7EB; }
+        .timeline-dot.done { background: #10B981; }
+        .timeline-dot.current { background: #FF6B35; }
+        .timeline-dot.cancelled { background: #EF4444; }
+        .stars { color: #F59E0B; letter-spacing: 2px; font-size: 14px; }
+        .close-modal { cursor: pointer; color: #6B7280; }
+        .close-modal:hover { color: #374151; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    </style>
+</head>
+<body class="bg-neutral-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- 左侧导航 -->
+        <aside class="w-36 bg-[#e8e8e8] flex-shrink-0 flex flex-col border-r border-[#d8d8d8]">
+            <nav class="flex-1 py-2">
+                <div class="px-3 py-2 text-xs text-[#999] font-semibold bg-[#f5f5f5]">订单管理</div>
+                <!-- 二级菜单：订单管理 -->
+                <div class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer" onclick="location.href='wanmei-order.html'">
+                    <span class="font-semibold">·</span><span> 订单管理</span>
+                </div>
+                <!-- 二级菜单：物流匹配 -->
+                <div class="subnav-item block px-4 py-3 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer">
+                    <span class="font-semibold">·</span><span> 物流匹配</span>
+                </div>
+                <!-- 三级菜单：物流匹配 -->
+                <div class="subnav-item active block pl-8 pr-4 py-2.5 text-sm text-[#333] bg-[#e8e8e8] border-b border-[#d8d8d8] cursor-pointer">
+                    <span>· 物流匹配</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <div class="flex-1 overflow-auto">
+            <main class="p-2">
+                <div class="bg-white rounded border border-neutral-200">
+                    <!-- 标题区 -->
+                    <div class="px-2 pt-2 pb-1 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-4 bg-orange-500 rounded"></div>
+                            <h1 class="text-base font-bold text-neutral-900">物流匹配</h1>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="btn btn-secondary btn-md" onclick="handleExport()"><i data-lucide="download" class="w-4 h-4"></i>导 出</button>
+                        </div>
+                    </div>
+                    <!-- 筛选区 -->
+                    <div class="px-2 pb-2">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-3 pt-2">
+                            <div class="inline-label-input">
+                                <span class="label">订单编号/手机号</span>
+                                <input type="text" id="filter-keyword" placeholder="请输入">
+                            </div>
+                            <div class="date-range-input">
+                                <span class="label">下单时间</span>
+                                <input type="date" id="filter-start" placeholder="开始日期">
+                                <span class="separator">→</span>
+                                <input type="date" id="filter-end" placeholder="结束日期">
+                            </div>
+                            <div class="inline-label-input">
+                                <span class="label">订单状态</span>
+                                <select id="filter-status">
+                                    <option value="">全部</option>
+                                    <option value="accepted">已接单</option>
+                                    <option value="transporting">运输中</option>
+                                    <option value="completed">已完成</option>
+                                    <option value="cancelled">已取消</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-3">
+                            <button class="btn btn-secondary btn-md" onclick="handleReset()">重 置</button>
+                            <button class="btn btn-primary btn-md" onclick="handleSearch()">查 询</button>
+                        </div>
+                    </div>
+                    <!-- 表格 -->
+                    <div class="mx-2 mb-2 overflow-x-auto bg-white rounded border border-neutral-200">
+                        <table class="data-table w-full">
+                            <thead>
+                                <tr class="bg-neutral-50 border-b border-neutral-200 h-10">
+                                    <th class="w-12 text-center">序号</th>
+                                    <th class="text-left">订单编号</th>
+                                    <th class="text-left">货主</th>
+                                    <th class="text-left">司机</th>
+                                    <th class="text-center">路线</th>
+                                    <th class="text-left">货物/车辆</th>
+                                    <th class="text-right">运费金额</th>
+                                    <th class="text-center">订单状态</th>
+                                    <th class="text-center">下单时间</th>
+                                    <th class="text-right w-24">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="order-tbody"></tbody>
+                        </table>
+                    </div>
+                    <!-- 分页 -->
+                    <div class="mx-2 mb-2">
+                        <div class="flex justify-between items-center py-2">
+                            <span class="text-sm text-neutral-600">共 <span class="font-semibold" id="total-count">0</span> 条记录</span>
+                            <div class="flex items-center gap-2">
+                                <select class="h-8 px-2 border border-neutral-200 rounded text-sm bg-white"><option>10条/页</option><option selected>20条/页</option><option>50条/页</option></select>
+                                <div class="flex items-center gap-1">
+                                    <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="上一页"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                    <button class="w-8 h-8 flex items-center justify-center border border-orange-500 bg-orange-500 text-white rounded font-medium" aria-current="page">1</button>
+                                    <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">2</button>
+                                    <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors">3</button>
+                                    <button class="w-8 h-8 flex items-center justify-center border border-neutral-200 rounded bg-white text-neutral-500 cursor-pointer hover:bg-neutral-50 transition-colors" aria-label="下一页"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 订单详情抽屉 -->
+    <div id="drawer-order-detail" class="drawer-overlay hidden" onclick="if(event.target===this)closeOrderDetail()">
+        <div class="drawer-container">
+            <div class="flex justify-between items-center px-4 py-4 border-b border-neutral-200">
+                <h3 class="text-base font-bold">订单详情</h3>
+                <button class="close-modal" onclick="closeOrderDetail()"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="flex-1 overflow-auto px-5 py-5" id="order-detail-body"></div>
+            <div class="flex justify-end gap-3 px-4 py-4 bg-neutral-50 border-t border-neutral-200">
+                <button class="btn btn-secondary btn-md" onclick="closeOrderDetail()">关 闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[1000] flex flex-col gap-2"></div>
+
+    <script>
+        // ===== 模拟数据 =====
+        var logisticsOrders = [
+            { orderNo: 'ORD20260601001', owner: '王经理', ownerPhone: '138****1111', driver: '刘师傅', driverPhone: '137****2222', route: '合肥 → 上海', goods: '10吨电子产品', price: '¥350/吨', status: 'completed', time: '2026-06-01 08:15:00', cancelReason: '', ownerRating: 5, ownerComment: '司机准时到达，货物完好无损，服务很专业！', driverRating: 5, driverComment: '货主沟通顺畅，装卸货安排得当。' },
+            { orderNo: 'ORD20260601002', owner: '李老板', ownerPhone: '139****3333', driver: '张师傅', driverPhone: '136****4444', route: '上海 → 合肥', goods: '9.6米高栏车', price: '¥340/吨', status: 'transporting', time: '2026-06-01 09:30:00', cancelReason: '', ownerRating: 0, ownerComment: '', driverRating: 0, driverComment: '' },
+            { orderNo: 'ORD20260601003', owner: '赵经理', ownerPhone: '158****5555', driver: '陈师傅', driverPhone: '155****6666', route: '南京 → 合肥', goods: '5吨建材', price: '¥240/吨', status: 'completed', time: '2026-06-01 10:00:00', cancelReason: '', ownerRating: 4, ownerComment: '整体不错，运输准时，沟通效率可以再提高。', driverRating: 5, driverComment: '货主很配合，结算及时。' },
+            { orderNo: 'ORD20260602004', owner: '孙老板', ownerPhone: '159****7777', driver: '周师傅', driverPhone: '156****8888', route: '南京 → 合肥', goods: '4.2米平板车', price: '¥240/吨', status: 'transporting', time: '2026-06-02 08:20:00', cancelReason: '', ownerRating: 0, ownerComment: '', driverRating: 0, driverComment: '' },
+            { orderNo: 'ORD20260602005', owner: '钱经理', ownerPhone: '133****9999', driver: '吴师傅', driverPhone: '135****0000', route: '上海 → 南京', goods: '5吨食品', price: '¥360/吨', status: 'accepted', time: '2026-06-02 09:45:00', cancelReason: '', ownerRating: 0, ownerComment: '', driverRating: 0, driverComment: '' },
+            { orderNo: 'ORD20260602006', owner: '郑老板', ownerPhone: '137****1111', driver: '冯师傅', driverPhone: '132****2222', route: '合肥 → 上海', goods: '15吨钢材', price: '¥300/吨', status: 'accepted', time: '2026-06-02 11:00:00', cancelReason: '', ownerRating: 0, ownerComment: '', driverRating: 0, driverComment: '' },
+            { orderNo: 'ORD20260603007', owner: '王经理', ownerPhone: '138****1111', driver: '刘师傅', driverPhone: '137****2222', route: '合肥 → 芜湖', goods: '3吨日用品', price: '¥267/吨', status: 'cancelled', time: '2026-06-03 14:30:00', cancelReason: '货主取消：货物已自行处理', ownerRating: 0, ownerComment: '', driverRating: 0, driverComment: '' },
+            { orderNo: 'ORD20260603008', owner: '李老板', ownerPhone: '139****3333', driver: '张师傅', driverPhone: '136****4444', route: '杭州 → 合肥', goods: '8吨化工品', price: '面议', status: 'cancelled', time: '2026-06-03 15:10:00', cancelReason: '司机取消：车辆故障无法出行', ownerRating: 0, ownerComment: '', driverRating: 0, driverComment: '' },
+            { orderNo: 'ORD20260603009', owner: '赵经理', ownerPhone: '158****5555', driver: '陈师傅', driverPhone: '155****6666', route: '合肥 → 杭州', goods: '15吨钢材', price: '¥300/吨', status: 'transporting', time: '2026-06-03 16:00:00', cancelReason: '', ownerRating: 0, ownerComment: '', driverRating: 0, driverComment: '' },
+            { orderNo: 'ORD20260604010', owner: '孙老板', ownerPhone: '159****7777', driver: '周师傅', driverPhone: '156****8888', route: '上海 → 南京', goods: '6吨化工品', price: '¥867/吨', status: 'accepted', time: '2026-06-04 09:20:00', cancelReason: '', ownerRating: 0, ownerComment: '', driverRating: 0, driverComment: '' }
+        ];
+
+        // ===== 状态映射 =====
+        function statusBadge(status) {
+            if (status === 'completed') return '<span class="status-badge status-success">已完成</span>';
+            if (status === 'transporting') return '<span class="status-badge status-info">运输中</span>';
+            if (status === 'accepted') return '<span class="status-badge status-warning">已接单</span>';
+            if (status === 'cancelled') return '<span class="status-badge status-cancelled">已取消</span>';
+            return '';
+        }
+
+        function statusText(status) {
+            if (status === 'completed') return '已完成';
+            if (status === 'transporting') return '运输中';
+            if (status === 'accepted') return '已接单';
+            if (status === 'cancelled') return '已取消';
+            return status;
+        }
+
+        // ===== 筛选状态 =====
+        var currentKeyword = '';
+        var currentStatus = '';
+
+        function getFilteredOrders() {
+            return logisticsOrders.filter(function (o) {
+                if (currentStatus && o.status !== currentStatus) return false;
+                if (currentKeyword) {
+                    var kw = currentKeyword.toLowerCase();
+                    var haystack = (o.orderNo + o.owner + o.ownerPhone + o.driver + o.driverPhone + o.route + o.goods).toLowerCase();
+                    if (haystack.indexOf(kw) === -1) return false;
+                }
+                return true;
+            });
+        }
+
+        // ===== 渲染表格 =====
+        function renderTable() {
+            var tbody = document.getElementById('order-tbody');
+            if (!tbody) return;
+            var list = getFilteredOrders();
+            var html = '';
+            for (var i = 0; i < list.length; i++) {
+                var o = list[i];
+                html +=
+                    '<tr class="border-b border-neutral-200 table-row">' +
+                        '<td class="text-center text-neutral-600">' + (i + 1) + '</td>' +
+                        '<td class="text-left text-neutral-900">' + o.orderNo + '</td>' +
+                        '<td class="text-left">' + o.owner + '</td>' +
+                        '<td class="text-left">' + o.driver + '</td>' +
+                        '<td class="text-center">' + o.route + '</td>' +
+                        '<td class="text-left">' + o.goods + '</td>' +
+                        '<td class="text-right font-semibold tabular-nums">' + o.price + '</td>' +
+                        '<td class="text-center">' + statusBadge(o.status) + '</td>' +
+                        '<td class="text-center">' + o.time + '</td>' +
+                        '<td class="text-right"><button class="btn btn-text btn-sm" onclick="showOrderDetail(\'' + o.orderNo + '\')">查 看</button></td>' +
+                    '</tr>';
+            }
+            tbody.innerHTML = html;
+            document.getElementById('total-count').textContent = list.length;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // ===== 筛选操作 =====
+        function handleSearch() {
+            var kw = document.getElementById('filter-keyword');
+            var st = document.getElementById('filter-status');
+            currentKeyword = kw ? kw.value.trim() : '';
+            currentStatus = st ? st.value : '';
+            renderTable();
+        }
+
+        function handleReset() {
+            var kw = document.getElementById('filter-keyword');
+            var st = document.getElementById('filter-status');
+            var start = document.getElementById('filter-start');
+            var end = document.getElementById('filter-end');
+            if (kw) kw.value = '';
+            if (st) st.value = '';
+            if (start) start.value = '';
+            if (end) end.value = '';
+            currentKeyword = '';
+            currentStatus = '';
+            renderTable();
+            showToast('筛选条件已重置', 'success');
+        }
+
+        // ===== 订单详情抽屉 =====
+        function infoRow(label, value) {
+            return '<div class="flex items-center justify-between py-1.5 border-b border-neutral-50">' +
+                '<span class="text-sm text-neutral-500">' + label + '</span>' +
+                '<span class="text-sm text-neutral-900 text-right">' + value + '</span>' +
+            '</div>';
+        }
+
+        function renderStars(rating) {
+            var s = '';
+            for (var i = 1; i <= 5; i++) {
+                s += (i <= rating) ? '★' : '☆';
+            }
+            return '<span class="stars">' + s + '</span>';
+        }
+
+        function buildTimeline(order) {
+            var items = [{ title: '订单创建', cls: 'done' }];
+            if (order.status === 'cancelled') {
+                items.push({ title: '订单已取消', cls: 'cancelled' });
+            } else {
+                if (order.status === 'accepted' || order.status === 'transporting' || order.status === 'completed') {
+                    items.push({ title: '司机已接单', cls: 'done' });
+                }
+                if (order.status === 'transporting' || order.status === 'completed') {
+                    items.push({ title: '已装车，运输中', cls: (order.status === 'transporting' ? 'current' : 'done') });
+                }
+                if (order.status === 'completed') {
+                    items.push({ title: '已送达，订单完成', cls: 'done' });
+                }
+            }
+            var html = '';
+            for (var i = 0; i < items.length; i++) {
+                html += '<div class="timeline-item">' +
+                    '<div class="timeline-dot ' + items[i].cls + '"></div>' +
+                    '<div class="text-sm text-neutral-800">' + items[i].title + '</div>' +
+                '</div>';
+            }
+            return html;
+        }
+
+        function buildEvaluation(order) {
+            if (order.status !== 'completed') return '';
+            var ownerHtml = '';
+            var driverHtml = '';
+            if (order.ownerRating > 0 && order.ownerComment) {
+                ownerHtml = '<div class="mb-3">' +
+                    '<div class="flex items-center justify-between mb-1">' +
+                        '<span class="text-sm text-neutral-600">货主评价</span>' +
+                        renderStars(order.ownerRating) +
+                    '</div>' +
+                    '<div class="text-sm text-neutral-800 leading-relaxed">' + order.ownerComment + '</div>' +
+                '</div>';
+            }
+            if (order.driverRating > 0 && order.driverComment) {
+                driverHtml = '<div>' +
+                    '<div class="flex items-center justify-between mb-1">' +
+                        '<span class="text-sm text-neutral-600">司机评价</span>' +
+                        renderStars(order.driverRating) +
+                    '</div>' +
+                    '<div class="text-sm text-neutral-800 leading-relaxed">' + order.driverComment + '</div>' +
+                '</div>';
+            }
+            if (!ownerHtml && !driverHtml) return '';
+            return '<h4 class="text-sm font-semibold text-neutral-800 mb-2">评价信息</h4>' +
+                '<div>' + ownerHtml + driverHtml + '</div>';
+        }
+
+        function showOrderDetail(orderNo) {
+            var order = null;
+            for (var i = 0; i < logisticsOrders.length; i++) {
+                if (logisticsOrders[i].orderNo === orderNo) { order = logisticsOrders[i]; break; }
+            }
+            if (!order) return;
+
+            var body = document.getElementById('order-detail-body');
+            if (!body) return;
+
+            var infoRows = '';
+            infoRows += infoRow('订单编号', order.orderNo);
+            infoRows += infoRow('订单状态', statusBadge(order.status));
+            infoRows += infoRow('下单时间', order.time);
+            infoRows += infoRow('运费金额', order.price);
+            infoRows += infoRow('路线', order.route);
+            infoRows += infoRow('货物/车辆', order.goods);
+            if (order.status === 'cancelled' && order.cancelReason) {
+                infoRows += infoRow('取消原因', order.cancelReason);
+            }
+
+            var partyRows = '';
+            partyRows += infoRow('货主姓名', order.owner);
+            partyRows += infoRow('货主电话', order.ownerPhone);
+            partyRows += infoRow('司机姓名', order.driver);
+            partyRows += infoRow('司机电话', order.driverPhone);
+
+            body.innerHTML =
+                '<h4 class="text-sm font-semibold text-neutral-800 mb-1">订单信息</h4>' +
+                '<div class="mb-4">' + infoRows + '</div>' +
+                '<h4 class="text-sm font-semibold text-neutral-800 mb-1">交易双方信息</h4>' +
+                '<div class="mb-4">' + partyRows + '</div>' +
+                '<h4 class="text-sm font-semibold text-neutral-800 mb-1">订单进度</h4>' +
+                '<div class="order-timeline mb-4">' + buildTimeline(order) + '</div>' +
+                buildEvaluation(order);
+
+            var drawer = document.getElementById('drawer-order-detail');
+            if (drawer) drawer.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeOrderDetail() {
+            var drawer = document.getElementById('drawer-order-detail');
+            if (drawer) drawer.classList.add('hidden');
+        }
+
+        // ===== 导出 =====
+        function handleExport() {
+            showToast('导出文件准备中...', 'success');
+        }
+
+        // ===== Toast =====
+        function showToast(message, type) {
+            var container = document.getElementById('toast-container');
+            if (!container) return;
+            var toast = document.createElement('div');
+            var bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            toast.className = bgColor + ' text-white px-4 py-2 rounded shadow-lg text-sm font-medium';
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(function () {
+                if (toast.parentNode) toast.parentNode.removeChild(toast);
+            }, 2500);
+        }
+
+        // ===== Esc关闭弹窗 =====
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeOrderDetail();
+            }
+        });
+
+        // ===== 初始化 =====
+        document.addEventListener('DOMContentLoaded', function () {
+            renderTable();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

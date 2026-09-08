@@ -424,6 +424,31 @@
       background: var(--color-primary-bg);
     }
 
+    .btn-danger {
+      height: 32px;
+      padding: 0 var(--spacing-md);
+      background: var(--color-danger);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      transition: background 0.2s;
+    }
+
+    .btn-danger:hover {
+      background: #D32F2F;
+    }
+
+    .btn-danger:active {
+      transform: scale(0.95);
+    }
+
     .btn-icon {
       width: 32px;
       height: 32px;
@@ -574,6 +599,57 @@
       padding: var(--spacing-sm) var(--spacing-md);
       border-bottom: 1px solid var(--color-border);
       color: var(--color-text-primary);
+    }
+
+    .fee-list {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .fee-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .fee-item .fee-price {
+      font-weight: 500;
+    }
+
+    .fee-desc {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: var(--spacing-xs);
+    }
+
+    .fee-detail {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .fee-detail > div {
+      flex: 1;
+    }
+
+    .fee-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: var(--spacing-md);
+      border-top: 1px solid var(--color-border);
+      font-size: 14px;
+      color: var(--color-text-primary);
+    }
+
+    .fee-total .fee-total-price {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--color-danger);
     }
 
     .review-item {
@@ -1058,6 +1134,39 @@
       padding: var(--spacing-md) var(--spacing-lg);
     }
 
+    .status-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .status-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .status-tab {
+      flex-shrink: 0;
+      padding: 6px var(--spacing-md);
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      background: var(--color-bg-light);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .status-tab.active {
+      background: var(--color-primary);
+      color: var(--color-white);
+      font-weight: 500;
+    }
+
     .record-card {
       background: var(--color-white);
       border-radius: var(--radius-md);
@@ -1351,6 +1460,14 @@
       <div style="width: 20px;"></div>
     </nav>
 
+    <div class="status-tabs" id="statusTabs">
+      <div class="status-tab active" data-status="all">全部</div>
+      <div class="status-tab" data-status="pending">待完成</div>
+      <div class="status-tab" data-status="unpaid">待支付</div>
+      <div class="status-tab" data-status="completed">已完成</div>
+      <div class="status-tab" data-status="cancelled">已取消</div>
+    </div>
+
     <div class="record-list" id="recordList"></div>
   </div>
 
@@ -1589,10 +1706,12 @@
 
     var appointments = [
       {
-        id: 'ORD20260525001',
+        id: 'WX20260525001',
         stationId: 1,
         stationName: '丰乐服务区（合肥方向）',
         phone: '13812341234',
+        userPhone: '138****1234',
+        vehicle: '皖A-6T318',
         faultDesc: '发动机异响，轮胎磨损严重',
         expectDate: '2026-05-26',
         expectTime: '10:00',
@@ -1601,10 +1720,12 @@
         desc: '发动机异响，轮胎磨损严重'
       },
       {
-        id: 'ORD20260524002',
+        id: 'WX20260524002',
         stationId: 3,
         stationName: '安捷服务区（南京方向）',
         phone: '13790129012',
+        userPhone: '139****5678',
+        vehicle: '皖B-8K520',
         faultDesc: '车灯不亮',
         expectDate: '2026-05-25',
         expectTime: '14:00',
@@ -1613,47 +1734,58 @@
         desc: '车灯不亮'
       },
       {
-        id: 'ORD20260523003',
+        id: 'WX20260523003',
         stationId: 2,
         stationName: '顺达服务区（上海方向）',
         phone: '13956785678',
+        userPhone: '137****9012',
+        vehicle: '皖C-3M889',
         faultDesc: '车身刮擦',
         expectDate: '2026-05-24',
         expectTime: '09:00',
         services: ['钣金喷漆'],
         status: 'completed',
         desc: '车身刮擦',
+        fee: { items: [{ name: '钣金喷漆', price: 300 }], partsFee: 300, laborFee: 150, total: 450 },
         review: { rating: 5, content: '喷漆效果很好，颜色很正', images: ['review1.jpg'], followUp: '用了一周，质量没问题', followUpImages: ['follow1.jpg'] }
       },
       {
-        id: 'ORD20260522004',
+        id: 'WX20260522004',
         stationId: 1,
         stationName: '丰乐服务区（合肥方向）',
         phone: '13812341234',
+        userPhone: '138****1234',
+        vehicle: '皖A-6T318',
         faultDesc: '刹车片磨损严重',
         expectDate: '2026-05-23',
         expectTime: '08:00',
         services: ['刹车维修'],
-        status: 'pending',
-        desc: '刹车片磨损严重'
+        status: 'unpaid',
+        desc: '刹车片磨损严重',
+        fee: { items: [{ name: '刹车维修', price: 300 }], partsFee: 300, laborFee: 150, total: 450 }
       },
       {
-        id: 'ORD20260521005',
+        id: 'WX20260521005',
         stationId: 5,
         stationName: '专业服务区（成都方向）',
         phone: '13578907890',
+        userPhone: '135****7890',
+        vehicle: '皖D-5N210',
         faultDesc: '底盘漏油',
         expectDate: '2026-05-22',
         expectTime: '15:00',
         services: ['底盘维修'],
         status: 'completed',
-        desc: '底盘漏油'
+        desc: '底盘漏油',
+        fee: { items: [{ name: '底盘维修', price: 400 }], partsFee: 400, laborFee: 200, total: 600 }
       },
       {
-        id: 'ORD20260520006',
+        id: 'WX20260520006',
         stationId: 3,
         stationName: '安捷服务区（南京方向）',
         phone: '13790129012',
+        userPhone: '136****2345',
+        vehicle: '皖E-2P963',
         faultDesc: '发动机故障灯亮',
         expectDate: '2026-05-21',
         expectTime: '10:00',
@@ -1677,6 +1809,11 @@
         stars += '<i data-lucide="star-half" style="width: 12px; height: 12px; fill: #FF9800; color: #FF9800;"></i>';
       }
       return stars;
+    }
+
+    function maskPhone(phone) {
+      if (!phone || phone.length < 7) return phone || '';
+      return phone.slice(0, 3) + '****' + phone.slice(-4);
     }
 
     function showView(viewName) {
@@ -1793,10 +1930,6 @@
           ? '<span class="tag tag-success">营业中</span>'
           : '<span class="tag tag-danger">已关闭</span>';
 
-        var queueTag = station.queueCount > 0
-          ? '<span class="tag tag-warning">排队 ' + station.queueCount + ' 人</span>'
-          : '<span class="tag tag-success">无需排队</span>';
-
         var serviceTags = '';
         for (var j = 0; j < station.services.length; j++) {
           serviceTags += '<span class="service-tag">' + station.services[j] + '</span>';
@@ -1807,7 +1940,6 @@
           '<div class="list-item-content">' +
             '<div class="list-item-title">' + station.name + ' ' + statusTag + '</div>' +
             '<div class="list-item-distance"><i data-lucide="navigation" style="width: 12px; height: 12px;"></i> 距您 ' + station.distance + 'km</div>' +
-            '<div class="list-item-rating">' + renderStars(station.rating) + ' ' + station.rating + ' ' + queueTag + '</div>' +
             '<div class="list-item-address"><i data-lucide="map-pin" style="width: 12px; height: 12px;"></i> ' + station.address + '</div>' +
             '<div class="list-item-services">' + serviceTags + '</div>' +
             '<div class="list-item-actions">' +
@@ -1866,36 +1998,10 @@
         ? '<span class="tag tag-success">营业中</span>'
         : '<span class="tag tag-danger">已关闭</span>';
 
-      var queueCard = station.status === 'open'
-        ? '<div class="detail-section">' +
-            '<div class="detail-section-title"><i data-lucide="users" style="width: 14px; height: 14px;"></i> 实时排队信息</div>' +
-            '<div class="queue-info">' +
-              '<div class="queue-item">' +
-                '<div class="queue-label">当前排队人数</div>' +
-                '<div class="queue-value">' + station.queueCount + ' 人</div>' +
-              '</div>' +
-              '<div class="queue-item">' +
-                '<div class="queue-label">预计等待时间</div>' +
-                '<div class="queue-value">' + (station.queueCount > 0 ? '约 ' + (station.queueCount * 15) + ' 分钟' : '无需等待') + '</div>' +
-              '</div>' +
-            '</div>' +
-          '</div>'
-        : '';
-
-      var qualItems = '';
-      for (var i = 0; i < station.qualifications.length; i++) {
-        var q = station.qualifications[i];
-        qualItems +=
-          '<div class="qual-item">' +
-            '<i data-lucide="' + q.icon + '" style="width: 16px; height: 16px; color: var(--color-primary);"></i>' +
-            '<span>' + q.name + '</span>' +
-          '</div>';
-      }
-
       var priceRows = '';
       for (var i = 0; i < station.prices.length; i++) {
         var p = station.prices[i];
-        priceRows += '<tr><td>' + p.name + '</td><td>¥' + p.price + '</td><td>' + p.desc + '</td></tr>';
+        priceRows += '<tr><td>' + p.name + '</td><td>¥' + p.price + '</td></tr>';
       }
 
       var reviewItems = '';
@@ -1926,15 +2032,10 @@
           '<div class="detail-info-row"><i data-lucide="map-pin" style="width: 14px; height: 14px;"></i> 地址：<span>' + station.address + '</span></div>' +
           '<div class="detail-info-row"><i data-lucide="navigation" style="width: 14px; height: 14px;"></i> 距离：<span>距您 ' + station.distance + 'km</span> <button class="btn-secondary" style="height: 28px; font-size: 12px; padding: 0 12px; margin-left: auto;" onclick="navigateTo(\'' + station.name + '\')"><i data-lucide="navigation" style="width: 12px; height: 12px;"></i> 导航到服务区</button></span></div>' +
         '</div>' +
-        queueCard +
-        '<div class="detail-section">' +
-          '<div class="detail-section-title"><i data-lucide="award" style="width: 14px; height: 14px;"></i> 店铺资质</div>' +
-          '<div class="qual-list">' + qualItems + '</div>' +
-        '</div>' +
         '<div class="detail-section">' +
           '<div class="detail-section-title">维修项目及价格</div>' +
           '<table class="price-table">' +
-            '<thead><tr><th>项目</th><th>价格</th><th>说明</th></tr></thead>' +
+            '<thead><tr><th>项目</th><th>价格</th></tr></thead>' +
             '<tbody>' + priceRows + '</tbody>' +
           '</table>' +
         '</div>' +
@@ -2009,8 +2110,12 @@
             '</div>' +
           '</div>' +
           '<div class="form-group">' +
-            '<label class="form-label">联系电话 <span class="required">*</span></label>' +
+            '<label class="form-label">手机号 <span class="required">*</span></label>' +
             '<input type="tel" class="form-input" id="bookingPhone" value="13812341234">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">车牌号</label>' +
+            '<input type="text" class="form-input" id="bookingVehicle" placeholder="请输入车牌号（选填）...">' +
           '</div>' +
           '<div class="form-group">' +
             '<label class="form-label">备注</label>' +
@@ -2039,11 +2144,13 @@
       var expectDate = document.getElementById('expectDate');
       var expectTime = document.getElementById('expectTime');
       var phone = document.getElementById('bookingPhone');
+      var vehicle = document.getElementById('bookingVehicle');
 
       var descVal = desc ? desc.value.trim() : '';
       var expectDateVal = expectDate ? expectDate.value : '';
       var expectTimeVal = expectTime ? expectTime.value : '';
       var phoneVal = phone ? phone.value.trim() : '';
+      var vehicleVal = vehicle ? vehicle.value.trim() : '';
 
       if (!expectDateVal) {
         showToast('请选择预约日期');
@@ -2071,10 +2178,12 @@
       }
 
       var newAppointment = {
-        id: 'ORD' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + String(appointments.length + 1).padStart(3, '0'),
+        id: 'WX' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + String(appointments.length + 1).padStart(3, '0'),
         stationId: currentStation.id,
         stationName: currentStation.name,
         phone: currentStation.phone,
+        userPhone: maskPhone(phoneVal),
+        vehicle: vehicleVal,
         faultDesc: descVal,
         expectDate: expectDateVal,
         expectTime: expectTimeVal,
@@ -2089,24 +2198,38 @@
       showView('records');
     }
 
+    var currentStatusFilter = 'all';
+
     function renderRecords() {
       var list = document.getElementById('recordList');
       if (!list) return;
       list.innerHTML = '';
 
-      if (appointments.length === 0) {
+      var filtered = appointments;
+      if (currentStatusFilter !== 'all') {
+        filtered = [];
+        for (var i = 0; i < appointments.length; i++) {
+          if (appointments[i].status === currentStatusFilter) {
+            filtered.push(appointments[i]);
+          }
+        }
+      }
+
+      if (filtered.length === 0) {
         list.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--color-text-muted);">暂无预约记录</div>';
         return;
       }
 
-      for (var i = 0; i < appointments.length; i++) {
-        var appt = appointments[i];
+      for (var i = 0; i < filtered.length; i++) {
+        var appt = filtered[i];
         var card = document.createElement('div');
         card.className = 'record-card list-item-animate';
 
         var statusTag = '';
         if (appt.status === 'pending') {
           statusTag = '<span class="tag tag-warning">待完成</span>';
+        } else if (appt.status === 'unpaid') {
+          statusTag = '<span class="tag tag-danger">待支付</span>';
         } else if (appt.status === 'completed') {
           statusTag = '<span class="tag tag-default">已完成</span>';
         } else if (appt.status === 'cancelled') {
@@ -2118,6 +2241,10 @@
         var actions = '';
         if (appt.status === 'pending') {
           actions += '<button class="btn-secondary" onclick="event.stopPropagation(); cancelAppointment(\'' + appt.id + '\')">取消预约</button>';
+          actions += '<button class="btn-primary" onclick="event.stopPropagation(); showToast(\'将拨打电话\')"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 打电话</button>';
+        } else if (appt.status === 'unpaid') {
+          actions += '<button class="btn-secondary" onclick="viewOrderDetail(\'' + appt.id + '\')">查看详情</button>';
+          actions += '<button class="btn-danger" onclick="event.stopPropagation(); goPay(\'' + appt.id + '\')">去支付</button>';
           actions += '<button class="btn-primary" onclick="event.stopPropagation(); showToast(\'将拨打电话\')"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 打电话</button>';
         } else if (appt.status === 'completed') {
           actions += '<button class="btn-secondary" onclick="viewOrderDetail(\'' + appt.id + '\')">查看详情</button>';
@@ -2162,6 +2289,20 @@
       renderRecords();
     }
 
+    function goPay(id) {
+      showToast('正在跳转到支付页面...');
+      setTimeout(function() {
+        for (var i = 0; i < appointments.length; i++) {
+          if (appointments[i].id === id) {
+            appointments[i].status = 'completed';
+            break;
+          }
+        }
+        showToast('支付成功');
+        renderRecords();
+      }, 1500);
+    }
+
     function viewOrderDetail(id) {
       var appt = null;
       for (var i = 0; i < appointments.length; i++) {
@@ -2181,57 +2322,12 @@
       var statusTag = '';
       if (appt.status === 'pending') {
         statusTag = '<span class="tag tag-warning">待完成</span>';
+      } else if (appt.status === 'unpaid') {
+        statusTag = '<span class="tag tag-danger">待支付</span>';
       } else if (appt.status === 'completed') {
         statusTag = '<span class="tag tag-default">已完成</span>';
       } else if (appt.status === 'cancelled') {
         statusTag = '<span class="tag tag-default">已取消</span>';
-      }
-
-      var timelineItems = '';
-      if (appt.status === 'completed') {
-        timelineItems =
-          '<div class="detail-section">' +
-            '<div class="detail-section-title"><i data-lucide="clock" style="width: 14px; height: 14px;"></i> 维修过程记录</div>' +
-            '<div class="timeline">' +
-              '<div class="timeline-item">' +
-                '<div class="timeline-dot"></div>' +
-                '<div class="timeline-content">' +
-                  '<div class="timeline-title">预约提交</div>' +
-                  '<div class="timeline-time">' + appt.expectDate + ' ' + appt.expectTime + '</div>' +
-                '</div>' +
-              '</div>' +
-              '<div class="timeline-item">' +
-                '<div class="timeline-dot"></div>' +
-                '<div class="timeline-content">' +
-                  '<div class="timeline-title">开始维修</div>' +
-                  '<div class="timeline-time">' + appt.expectDate + ' 09:00</div>' +
-                  '<div class="timeline-desc">技师：张师傅</div>' +
-                '</div>' +
-              '</div>' +
-              '<div class="timeline-item">' +
-                '<div class="timeline-dot"></div>' +
-                '<div class="timeline-content">' +
-                  '<div class="timeline-title">维修完成</div>' +
-                  '<div class="timeline-time">' + appt.expectDate + ' 11:30</div>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-          '</div>';
-      }
-
-      var partsTable = '';
-      if (appt.status === 'completed') {
-        partsTable =
-          '<div class="detail-section">' +
-            '<div class="detail-section-title"><i data-lucide="package" style="width: 14px; height: 14px;"></i> 零件使用清单</div>' +
-            '<table class="price-table">' +
-              '<thead><tr><th>零件名称</th><th>品牌</th><th>单价</th><th>数量</th><th>小计</th></tr></thead>' +
-              '<tbody>' +
-                '<tr><td>机油滤芯</td><td>博世</td><td>¥45</td><td>1</td><td>¥45</td></tr>' +
-                '<tr><td>空气滤芯</td><td>马勒</td><td>¥68</td><td>1</td><td>¥68</td></tr>' +
-              '</tbody>' +
-            '</table>' +
-          '</div>';
       }
 
       var reviewSection = '';
@@ -2256,16 +2352,46 @@
           '</div>';
       }
 
+      var feeSection = '';
+      if ((appt.status === 'unpaid' || appt.status === 'completed') && appt.fee) {
+        var fee = appt.fee;
+        var feeItemsHtml = '';
+        for (var j = 0; j < fee.items.length; j++) {
+          feeItemsHtml +=
+            '<div class="fee-item">' +
+              '<span>' + fee.items[j].name + '</span>' +
+              '<span class="fee-price">￥' + fee.items[j].price + '</span>' +
+            '</div>';
+        }
+        feeSection =
+          '<div class="detail-section">' +
+            '<div class="detail-section-title"><i data-lucide="receipt" style="width: 14px; height: 14px;"></i> 维修项目与费用</div>' +
+            '<div class="fee-list">' +
+              feeItemsHtml +
+              '<div class="fee-desc">维修配件、材料、检测、维修及质检</div>' +
+            '</div>' +
+            '<div class="fee-detail">' +
+              '<div>配件费：￥' + fee.partsFee + '</div>' +
+              '<div>工时费：￥' + fee.laborFee + '</div>' +
+            '</div>' +
+            '<div class="fee-total">' +
+              '<span>' + (appt.status === 'completed' ? '实付金额' : '应付金额') + '</span>' +
+              '<span class="fee-total-price">¥' + fee.total + '.00</span>' +
+            '</div>' +
+          '</div>';
+      }
+
       container.innerHTML =
         '<div class="detail-info-card">' +
           '<div class="detail-title">' + appt.stationName + ' ' + statusTag + '</div>' +
           '<div class="detail-info-row"><i data-lucide="file-text" style="width: 14px; height: 14px;"></i> 订单号：<span>' + appt.id + '</span></div>' +
-          '<div class="detail-info-row"><i data-lucide="calendar" style="width: 14px; height: 14px;"></i> 到店时间：<span>' + appt.expectDate + ' ' + appt.expectTime + '</span></div>' +
-          '<div class="detail-info-row"><i data-lucide="wrench" style="width: 14px; height: 14px;"></i> 服务项目：<span>' + appt.services.join('、') + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="calendar" style="width: 14px; height: 14px;"></i> 预约时间：<span>' + appt.expectDate + ' ' + appt.expectTime + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="phone" style="width: 14px; height: 14px;"></i> 手机号：<span>' + appt.userPhone + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="car" style="width: 14px; height: 14px;"></i> 车辆：<span>' + (appt.vehicle || '未填写') + '</span></div>' +
+          '<div class="detail-info-row"><i data-lucide="wrench" style="width: 14px; height: 14px;"></i> 维修项目：<span>' + appt.services.join('、') + '</span></div>' +
           (appt.faultDesc ? '<div class="detail-info-row"><i data-lucide="message-square" style="width: 14px; height: 14px;"></i> 故障描述：<span>' + appt.faultDesc + '</span></div>' : '') +
         '</div>' +
-        timelineItems +
-        partsTable +
+        feeSection +
         reviewSection;
 
       var footer = document.getElementById('orderDetailFooter');
@@ -2460,9 +2586,33 @@
     });
 
     document.getElementById('recordsBtn').addEventListener('click', function() {
+      currentStatusFilter = 'all';
+      updateStatusTabs();
       renderRecords();
       showView('records');
     });
+
+    (function() {
+      var tabs = document.querySelectorAll('#statusTabs .status-tab');
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].addEventListener('click', function() {
+          currentStatusFilter = this.getAttribute('data-status');
+          updateStatusTabs();
+          renderRecords();
+        });
+      }
+    })();
+
+    function updateStatusTabs() {
+      var tabs = document.querySelectorAll('#statusTabs .status-tab');
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].getAttribute('data-status') === currentStatusFilter) {
+          tabs[i].classList.add('active');
+        } else {
+          tabs[i].classList.remove('active');
+        }
+      }
+    }
 
     document.getElementById('detailBackBtn').addEventListener('click', function() {
       showView('list');
